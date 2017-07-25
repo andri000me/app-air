@@ -6,7 +6,7 @@ if($this->session->userdata('role') == "loket" && $this->session->userdata('sess
         $("#nama_pembeli").autocomplete({
             minLength:1,
             delay:0,
-            source:'<?php echo site_url('main/get_pembeli_darat'); ?>',
+            source:'<?php echo site_url('main/get_pembeli_darat_perusahaan'); ?>',
             select:function(event, ui){
                 $('#id_pengguna').val(ui.item.id);
                 $('#alamat_pembeli').val(ui.item.alamat);
@@ -40,16 +40,16 @@ if($this->session->userdata('role') == "loket" && $this->session->userdata('sess
         <div class="row col-sm-6">
             <center><h4>Form Permintaan Pelayanan Jasa Air Bersih</h4></center><br>
             <?php echo validation_errors(); ?>
-            <form method="post" action="<?php echo base_url(). 'main/transaksi_darat'; ?>">
+            <form method="post" action="<?php echo base_url(). 'main/transaksi_darat_perusahaan'; ?>">
                 <table class="table table-striped">
                     <tr>
                         <div class="form-group">
                             <td>
-                                <label for="nama_pembeli">Nama Pembeli</label>
+                                <label for="nama_pembeli">Nama Perusahaan</label>
                             </td>
                             <td>:</td>
                             <td>
-                                <input type="text" class="form-control" id="nama_pembeli" name="nama_pembeli" placeholder="Masukkan Nama Pembeli"/>
+                                <input type="text" class="form-control" id="nama_pembeli" name="nama_pembeli" placeholder="Masukkan Nama Perusahaan"/>
                                 <input type="hidden" class="form-control" id="id_pengguna" name="id_pengguna" />
                             </td>
                         </div>
@@ -57,11 +57,11 @@ if($this->session->userdata('role') == "loket" && $this->session->userdata('sess
                     <tr>
                         <div class="form-group">
                             <td>
-                                <label for="alamat_pembeli">Alamat Pembeli</label>
+                                <label for="alamat_pembeli">Alamat Perusahaan</label>
                             </td>
                             <td>:</td>
                             <td>
-                                <input type="text" class="form-control" id="alamat_pembeli" name="alamat_pembeli" placeholder="Masukkan Alamat Pembeli"/>
+                                <input type="text" class="form-control" id="alamat_pembeli" name="alamat_pembeli" placeholder="Masukkan Alamat Perusahaan"/>
                             </td>
                         </div>
                     </tr>

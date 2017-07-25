@@ -8,7 +8,7 @@ if($this->session->userdata('role') == "keuangan" && $this->session->userdata('s
             var kwitansi = $('#no_kwitansi').val();
             if(kwitansi != ""){
                 $.ajax({
-                    url: "<?= base_url('main/cari')?>",
+                    url: "<?= base_url('main/cari_batal')?>",
                     method: "POST",
                     data: {kwitansi : kwitansi},
                     dataType: 'json',
@@ -75,9 +75,9 @@ if($this->session->userdata('role') == "keuangan" && $this->session->userdata('s
     </div>
     <div class="container container-fluid">
         <div class="row col-sm-6">
-            <center><h4>Form Validasi Pembayaran Jasa Air Bersih</h4></center><br>
+            <center><h4>Form Pembatalan Pembayaran Jasa Air Bersih</h4></center><br>
             <?php echo validation_errors(); ?>
-            <form method="post" action="<?php echo base_url(). 'main/validasi_pembayaran_darat'; ?>">
+            <form method="post" action="<?php echo base_url(). 'main/cancel_pembayaran_darat'; ?>">
                 <div id="error"></div>
                 <table class="table table-striped">
                     <tr>
@@ -199,7 +199,7 @@ if($this->session->userdata('role') == "keuangan" && $this->session->userdata('s
                     <tr>
                         <div class="form-group">
                             <td>
-                                <input disabled type="submit" class="form-control btn btn-primary" id="input" name="Input" value="Validasi" onclick="return confirm('Apakah Anda Yakin Ingin Mengvalidasi No Kwitansi ini ?');"/>
+                                <input disabled type="submit" class="form-control btn btn-primary" id="input" name="Input" value="Batal Kwitansi" onclick="return confirm('Apakah Anda Yakin Ingin Membatalkan No Kwitansi ini ?');"/>
                             </td>
                         </div>
                     </tr>

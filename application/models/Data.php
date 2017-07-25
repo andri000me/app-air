@@ -362,7 +362,7 @@
                 $this->db->where('pengguna_jasa_id_tarif !=','1');
                 $this->db->where('pembeli_darat_id_pengguna_jasa = id_pengguna_jasa');
                 $this->db->where('pengguna_jasa_id_tarif = id_tarif');
-                $this->db->where('soft_delete = 0');
+                $this->db->where('soft_delete =',0);
                 $this->db->order_by('tgl_transaksi','ASC');
             }else if($tipe == "laut"){
                 $this->db->select('*');
@@ -372,9 +372,18 @@
                 $this->db->where('pengguna_jasa_id_tarif = id_tarif');
                 $this->db->where('id_agent = id_agent_master');
                 $this->db->where('realisasi_transaksi_laut_id_realisasi = id_realisasi');
-                $this->db->where('soft_delete = 0');
+                $this->db->where('soft_delete =',0);
                 $this->db->order_by('tgl_transaksi','ASC');
-            }else{
+            } else if($tipe == "laut_operasi"){
+                $this->db->select('*');
+                $this->db->from('transaksi_laut , pembeli_laut ,pengguna_jasa,master_agent');
+                $this->db->where('tgl_transaksi BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
+                $this->db->where('pembeli_laut_id_pengguna_jasa = id_pengguna_jasa');
+                $this->db->where('pengguna_jasa_id_tarif = id_tarif');
+                $this->db->where('id_agent = id_agent_master');
+                $this->db->where('soft_delete =',0);
+                $this->db->order_by('tgl_transaksi','ASC');
+            } else{
                 $this->db->select('*');
                 $this->db->from('master_flowmeter,pembeli_darat ,pengguna_jasa');
                 $this->db->where('pengguna_jasa_id_tarif =','1');

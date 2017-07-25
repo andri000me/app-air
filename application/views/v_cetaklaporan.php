@@ -106,7 +106,7 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
     </html>
 <?php
 }
-else if($this->session->userdata('role') == "operasi" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "laut" ){
+else if($this->session->userdata('role') == "operasi" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "laut_operasi" ){
     ?>
     <!DOCTYPE html>
     <html>
@@ -143,6 +143,7 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
             <th align="center">Tipe Kapal</th>
             <th align="center">Nama Perusahaan</th>
             <th align="center">Tanggal Transaksi</th>
+            <th align="center">Tarif</th>
             <th align="center">Total Permintaan (Ton)</th>
             <th align="center">Realisasi Pengisian (Ton)</th>
             <th align="center">Total Pembayaran (Rp.)</th>
@@ -196,6 +197,7 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
                     <td align="center"><?= $rbarang->pengguna_jasa_id_tarif ?></td>
                     <td align="center"><?= $rbarang->nama_perusahaan ?></td>
                     <td align="center"><?= $format_tgl ?></td>
+                    <td align="center"><?= $rbarang->tarif ?></td>
                     <td align="center"><?= $rbarang->total_permintaan ?></td>
                     <td align="center"><?= $realisasi ?></td>
                     <td align="center"><?= $total_pembayaran ?></td>
@@ -212,7 +214,7 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
         ?>
 
         <tr>
-            <td align="center"colspan="7"><b>Total</b></td>
+            <td align="center"colspan="8"><b>Total</b></td>
             <td align="center"><b><?= $ton?></b></td>
             <td align="center"><b><?= $ton_realiasi?></b></td>
             <td align="center"><b><?= $total?></b></td>
@@ -618,6 +620,7 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
             <th align="center">Tipe Kapal</th>
             <th align="center">Nama Perusahaan</th>
             <th align="center">Tanggal Transaksi</th>
+            <th align="center">Tarif</th>
             <th align="center">Total Permintaan (Ton)</th>
             <th align="center">Realisasi Pengisian (Ton)</th>
             <th align="center">Total Pembayaran (Rp.)</th>
@@ -673,6 +676,7 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
                     <td align="center"><?= $rbarang->pengguna_jasa_id_tarif ?></td>
                     <td align="center"><?= $rbarang->nama_perusahaan ?></td>
                     <td align="center"><?= $format_tgl ?></td>
+                    <td align="center"><?= $rbarang->tarif ?></td>
                     <td align="center"><?= $rbarang->total_permintaan ?></td>
                     <td align="center"><?= $realisasi ?></td>
                     <td align="center"><?= $total_pembayaran ?></td>
@@ -689,7 +693,7 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
         ?>
 
         <tr>
-            <td align="center"colspan="9"><b>Total</b></td>
+            <td align="center"colspan="10"><b>Total</b></td>
             <td align="center"><b><?= $ton?></b></td>
             <td align="center"><b><?= $ton_realiasi?></b></td>
             <td align="center"><b><?= $total?></b></td>
@@ -835,7 +839,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
     </html>
     <?php
 }
-else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "laut" ){
+else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "laut_operasi" ){
     ?>
     <!DOCTYPE html>
     <html>
@@ -954,7 +958,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
     </html>
     <?php
 }
-else if($this->session->userdata('role') == "perencanaan" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "laut" ){
+else if($this->session->userdata('role') == "perencanaan" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "laut_operasi" ){
     ?>
     <!DOCTYPE html>
     <html>
