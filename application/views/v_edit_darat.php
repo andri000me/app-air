@@ -45,24 +45,6 @@ if(isset($_SESSION['session'])) {
     if($_SESSION['role'] == "loket") {
         ?>
         <div class="container" data-role="main" class="ui-content">
-            <script>
-                var myVar = setInterval(showNotifAntar, 3000);
-
-                function showNotifAntar() {
-                    var xmlhttp = new XMLHttpRequest();
-                    xmlhttp.onreadystatechange = function() {
-                        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                            if(xmlhttp.responseText != "0")
-                                document.getElementById("notifAntar").innerHTML = "<a class='btn btn-danger' href='<?= base_url("main/view?id=monitoring_darat")?>'><span class='glyphicon glyphicon-refresh'> Antar : " + xmlhttp.responseText + "</a>";
-                        }
-                    };
-                    xmlhttp.open("GET", "<?php echo base_url('main/cekNotifAntar') ?>" , true);
-                    xmlhttp.send();
-                }
-            </script>
-            <div class="topright" align="right">
-                <span id="notifAntar" ></span>
-            </div>
             <h3>Form Edit Master Pengguna Jasa</h3>
             <div class="row col-md-5">
                 <table class="table">

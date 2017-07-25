@@ -45,24 +45,6 @@
 if(isset($_SESSION['session'])) {
     if($_SESSION['role'] == "keuangan") {
         ?>
-        <script>
-            var myVar = setInterval(showNotifAntar, 3000);
-
-            function showNotifAntar() {
-                var xmlhttp = new XMLHttpRequest();
-                xmlhttp.onreadystatechange = function() {
-                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                        if(xmlhttp.responseText != "0")
-                            document.getElementById("notifAntar").innerHTML = "<a class='btn btn-danger' title='Realisasi Piutang' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
-                    }
-                };
-                xmlhttp.open("GET", "<?php echo base_url('main/cekNotifBayar') ?>" , true);
-                xmlhttp.send();
-            }
-        </script>
-        <div class="topright" align="right">
-            <span id="notifAntar" ></span>
-        </div>
         <div class="container" data-role="main" class="ui-content">
             <h3>Form Edit Master Agent</h3>
             <div class="row col-md-5">

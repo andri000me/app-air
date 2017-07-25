@@ -43,25 +43,7 @@ if($this->session->userdata('role') == "perencanaan" || $this->session->userdata
             xmlhttp.send();
         }
     </script>
-    <script>
-        var myVar = setInterval(showNotifRealisasi, 3000);
-
-        function showNotifRealisasi() {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    if(xmlhttp.responseText != "0")
-                        document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh' title='Realisasi Pengisian'> "+ xmlhttp.responseText +"</a>";
-                }
-            };
-            xmlhttp.open("GET", "<?php echo base_url('main/cekNotifRealisasi') ?>" , true);
-            xmlhttp.send();
-        }
-    </script>
     <body>
-    <div class="topright" align="right">
-        <span id="notifKapal" ></span>
-    </div>
     <div class="container container-fluid">
         <div class="row col-sm-6">
             <center><h4>Form Permintaan Pelayanan Jasa Air Bersih Untuk Kapal</h4></center>

@@ -54,25 +54,7 @@ if($this->session->userdata('role') == "keuangan" && $this->session->userdata('s
         }
 
     </script>
-    <script>
-        var myVar = setInterval(showNotifTransaksiKapal, 3000);
-
-        function showNotifTransaksiKapal() {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    if(xmlhttp.responseText != "0")
-                        document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Piutang' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
-                }
-            };
-            xmlhttp.open("GET", "<?php echo base_url('main/cekNotifBayar') ?>" , true);
-            xmlhttp.send();
-        }
-    </script>
     <body>
-    <div class="topright" align="right">
-        <span id="notifKapal" ></span>
-    </div>
     <div class="container container-fluid">
         <div class="row col-sm-6">
             <center><h4>Form Pembatalan Pembayaran Jasa Air Bersih</h4></center><br>
@@ -210,7 +192,8 @@ if($this->session->userdata('role') == "keuangan" && $this->session->userdata('s
     </body>
 
 <?php
-}else
+}
+else
 {
     $web = base_url('main');
     ?>

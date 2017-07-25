@@ -41,25 +41,6 @@ if(isset($_SESSION['session'])) {
                 });
             });
         </script>
-        <script>
-            var myVar = setInterval(showNotifRealisasi, 3000);
-
-            function showNotifRealisasi() {
-                var xmlhttp = new XMLHttpRequest();
-                xmlhttp.onreadystatechange = function() {
-                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                        if(xmlhttp.responseText != "0"){
-                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
-                        }
-                    }
-                };
-                xmlhttp.open("GET", "<?php echo base_url('main/cekNotifBayar') ?>" , true);
-                xmlhttp.send();
-            }
-        </script>
-        <div class="topright" align="right">
-            <span id="notifKapal" ></span>
-        </div>
         <div class="container" data-role="main" class="ui-content">
             <h3>Form Master Data Tarif</h3>
             <div class="row col-md-5">

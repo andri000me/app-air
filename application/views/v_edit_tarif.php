@@ -47,7 +47,7 @@ if(isset($_SESSION['session'])) {
     if($_SESSION['role'] == "operasi") {
         ?>
         <div class="container" data-role="main" class="ui-content">
-            <h3>Form Edit Master Tahun</h3>
+            <h3>Form Edit Master Tarif</h3>
             <div class="row col-md-5">
                 <table class="table">
                     <tr>

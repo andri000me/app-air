@@ -45,26 +45,6 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
             });
         }
     </script>
-    <script>
-        var myVar = setInterval(showNotifRealisasi, 3000);
-
-        function showNotifRealisasi() {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    if(xmlhttp.responseText != "0")
-                        document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
-                    else
-                        document.getElementById("notifKapal").innerHTML = '';
-                }
-            };
-            xmlhttp.open("GET", "<?php echo base_url('main/cekNotifBayar') ?>" , true);
-            xmlhttp.send();
-        }
-    </script>
-    <div class="topright" align="right">
-        <span id="notifKapal" ></span>
-    </div>
     <div class="container container-fluid">
         <h3>Pembuatan Laporan Pelayanan Air Untuk Rumah Tangga Dan Perusahaan</h3><br><br>
         <div class="row col-sm-6">
@@ -154,26 +134,6 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
             });
         }
     </script>
-    <script>
-        var myVar = setInterval(showNotifRealisasi, 3000);
-
-        function showNotifRealisasi() {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    if(xmlhttp.responseText != "0")
-                        document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
-                    else
-                        document.getElementById("notifKapal").innerHTML = '';
-                }
-            };
-            xmlhttp.open("GET", "<?php echo base_url('main/cekNotifBayar') ?>" , true);
-            xmlhttp.send();
-        }
-    </script>
-    <div class="topright" align="right">
-        <span id="notifKapal" ></span>
-    </div>
     <div class="container container-fluid">
         <h3>Pembuatan Laporan Pelayanan Air Untuk Kapal</h3><br><br>
         <div class="row col-sm-6">
@@ -351,27 +311,7 @@ else if($this->session->userdata('role') == "loket" && $this->session->userdata(
                 }
             });
         }
-    </script>
-    <script>
-        var myVar = setInterval(showNotifAntar, 3000);
-
-        function showNotifAntar() {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    if(xmlhttp.responseText != "0")
-                        document.getElementById("notifAntar").innerHTML = "<a class='btn btn-danger' title='Antar' href='<?= base_url("main/view?id=monitoring_darat")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
-                    else
-                        document.getElementById("notifAntar").innerHTML ='';
-                }
-            };
-            xmlhttp.open("GET", "<?php echo base_url('main/cekNotifAntar') ?>" , true);
-            xmlhttp.send();
-        }
-    </script>
-    <div class="topright" align="right">
-        <span id="notifAntar" ></span>
-    </div>
+    </script>s
     <div class="container container-fluid">
         <h3>Pembuatan Laporan Pelayanan Air Untuk Rumah Tangga Dan Perusahaan</h3><br><br>
         <div class="row col-sm-6">
@@ -461,26 +401,6 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
             });
         }
     </script>
-    <script>
-        var myVar = setInterval(showNotifAntar, 3000);
-
-        function showNotifAntar() {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    if(xmlhttp.responseText != "0")
-                        document.getElementById("notifAntar").innerHTML = "<a class='btn btn-danger' title='Realisasi Piutang' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
-                    else
-                        document.getElementById("notifAntar").innerHTML ='';
-                }
-            };
-            xmlhttp.open("GET", "<?php echo base_url('main/cekNotifBayar') ?>" , true);
-            xmlhttp.send();
-        }
-    </script>
-    <div class="topright" align="right">
-        <span id="notifAntar" ></span>
-    </div>
     <div class="container container-fluid">
         <h3>Pembuatan Laporan Pelayanan Air Untuk Rumah Tangga Dan Perusahaan</h3><br><br>
         <div class="row col-sm-6">
@@ -570,26 +490,6 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
             });
         }
     </script>
-    <script>
-        var myVar = setInterval(showNotifRealisasi, 3000);
-
-        function showNotifRealisasi() {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    if(xmlhttp.responseText != "0")
-                        document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
-                    else
-                        document.getElementById("notifKapal").innerHTML = '';
-                }
-            };
-            xmlhttp.open("GET", "<?php echo base_url('main/cekNotifBayar') ?>" , true);
-            xmlhttp.send();
-        }
-    </script>
-    <div class="topright" align="right">
-        <span id="notifKapal" ></span>
-    </div>
     <div class="container container-fluid">
         <h3>Pembuatan Laporan Pelayanan Air Untuk Kapal</h3><br><br>
         <div class="row col-sm-6">
@@ -678,42 +578,6 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
             });
         }
     </script>
-    <script>
-        var myVar = setInterval(showNotifTransaksiKapal, 3000);
-        var myVar2 = setInterval(showNotifTransaksiDarat, 3000);
-
-        function showNotifTransaksiKapal() {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    if(xmlhttp.responseText != "0")
-                        document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Kapal' href='<?= base_url("main/view?id=transaksi_laut")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
-                    else
-                        document.getElementById("notifKapal").innerHTML = '';
-                }
-            };
-            xmlhttp.open("GET", "<?php echo base_url('main/cekNotifKapal') ?>" , true);
-            xmlhttp.send();
-        }
-
-        function showNotifTransaksiDarat() {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    if(xmlhttp.responseText != "0")
-                        document.getElementById("notifDarat").innerHTML = "<a class='btn btn-danger' title='Darat' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
-                    else
-                        document.getElementById("notifDarat").innerHTML = '';
-                }
-            };
-            xmlhttp.open("GET", "<?php echo base_url('main/cekNotifDarat') ?>" , true);
-            xmlhttp.send();
-        }
-    </script>
-    <div class="topright" align="right">
-        <span id="notifKapal" ></span>
-        <span id="notifDarat" ></span>
-    </div>
     <div class="container container-fluid">
         <h3>Pembuatan Laporan Pelayanan Air Untuk Kapal</h3><br><br>
         <div class="row col-sm-6">
@@ -803,42 +667,6 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
             });
         }
     </script>
-    <script>
-        var myVar = setInterval(showNotifTransaksiKapal, 3000);
-        var myVar2 = setInterval(showNotifTransaksiDarat, 3000);
-
-        function showNotifTransaksiKapal() {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    if(xmlhttp.responseText != "0")
-                        document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Kapal' href='<?= base_url("main/view?id=transaksi_laut")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
-                    else
-                        document.getElementById("notifKapal").innerHTML = '';
-                }
-            };
-            xmlhttp.open("GET", "<?php echo base_url('main/cekNotifKapal') ?>" , true);
-            xmlhttp.send();
-        }
-
-        function showNotifTransaksiDarat() {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    if(xmlhttp.responseText != "0")
-                        document.getElementById("notifDarat").innerHTML = "<a class='btn btn-danger' title='Darat' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
-                    else
-                        document.getElementById("notifDarat").innerHTML = '';
-                }
-            };
-            xmlhttp.open("GET", "<?php echo base_url('main/cekNotifDarat') ?>" , true);
-            xmlhttp.send();
-        }
-    </script>
-    <div class="topright" align="right">
-        <span id="notifKapal" ></span>
-        <span id="notifDarat" ></span>
-    </div>
     <div class="container container-fluid">
         <h3>Pembuatan Laporan Pelayanan Air Untuk Rumah Tangga Dan Perusahaan</h3><br><br>
         <div class="row col-sm-6">
@@ -927,27 +755,6 @@ else if($this->session->userdata('role') == "perencanaan" && $this->session->use
             });
         }
     </script>
-    <script>
-        var myVar = setInterval(showNotifTransaksiKapal, 3000);
-        var myVar2 = setInterval(showNotifTransaksiDarat, 3000);
-
-        function showNotifTransaksiKapal() {
-            var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-                    if(xmlhttp.responseText != "0")
-                        document.getElementById("notifAntar").innerHTML = "<a class='btn btn-danger' title='Realisasi Pengisisan' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
-                    else
-                        document.getElementById("notifAntar").innerHTML ='';
-                }
-            };
-            xmlhttp.open("GET", "<?php echo base_url('main/cekNotifRealisasi') ?>" , true);
-            xmlhttp.send();
-        }
-    </script>
-    <div class="topright" align="right">
-        <span id="notifAntar" ></span>
-    </div>
     <div class="container container-fluid">
         <h3>Pembuatan Laporan Pelayanan Air Untuk Kapal</h3><br><br>
         <div class="row col-sm-6">
