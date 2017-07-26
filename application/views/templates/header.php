@@ -131,6 +131,18 @@
                                 </ul>
                             </li>
                             <li><a href="<?= base_url('main/tarif'); ?>">Penyesuaian Tarif</a></li>
+                            <li><a href="<?= base_url('main/view?id=tenant'); ?>">Master Tenant</a></li>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Lump Sum</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="<?= base_url('main/view?id=lumpsum'); ?>">Master Lumpsum</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= base_url('main/view?id=lumpsum'); ?>">Penentuan Lump Sum</a>
+                                    </li>
+                                </ul>
+                            </li>
                             <?php
                         }
                         else if($this->session->userdata('role') == "wtp"){
@@ -157,6 +169,17 @@
                                     </li>
                                     <li>
                                         <a href="<?= base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tenant</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="<?= base_url('main/view?id=tenant'); ?>">Master Tenant</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= base_url('main/view?id=transaksi_tenant'); ?>">Transaksi Tenant</a>
                                     </li>
                                 </ul>
                             </li>

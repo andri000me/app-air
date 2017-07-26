@@ -17,9 +17,6 @@
 <body>
     <div class="container container-fluid">
         <div class="row col-sm-6">
-            <h3>PT. Kaltim Kariangau Terminal</h3>
-            <h3>Terminal Peti Kemas Balikpapan</h3>
-            <h3>Aplikasi Pelayanan Jasa Air Bersih PT KKT</h3><br><br>
             <center><h4>Form Penginputan Harian Pelayanan Jasa Air Bersih Untuk Ruko</h4></center><br>
             <?php echo validation_errors(); ?>
             <form method="post" action="<?php echo base_url(). 'main/transaksi_ruko'; ?>">

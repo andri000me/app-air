@@ -84,6 +84,16 @@ date_default_timezone_set('Asia/Makassar');
               $data['tipe'] = 'laut';
               $this->load->template('v_monitoring',$data);
           }
+          else if($page == "tenant"){
+              $data['title'] = 'Master Tenant'; //judul title
+              $data['tipe'] = 'wtp';
+              $this->load->template('v_tenant',$data);
+          }
+          else if($page == "transaksi_tenant"){
+              $data['title'] = 'Pengisian Harian Tenant'; //judul title
+              $data['tipe'] = 'wtp';
+              $this->load->template('v_tenant',$data);
+          }
           else{
               redirect('main');
           }
@@ -1365,6 +1375,13 @@ date_default_timezone_set('Asia/Makassar');
               $data['status'] = FALSE;
           }
 
+          if($this->input->post('pengantar') == NULL)
+          {
+              $data['inputerror'][] = 'pengangar';
+              $data['error_string'][] = 'Kolom Pengantar Masih Kosong';
+              $data['status'] = FALSE;
+          }
+
           if($this->input->post('realisasi') > $this->input->post('tonnase_air'))
           {
               $data['inputerror'][] = 'realisasi';
@@ -1396,6 +1413,13 @@ date_default_timezone_set('Asia/Makassar');
           {
               $data['inputerror'][] = 'flowmeter_akhir';
               $data['error_string'][] = 'Kolom Flow Meter Akhir Masih Kosong';
+              $data['status'] = FALSE;
+          }
+
+          if($this->input->post('pengisi') == NULL)
+          {
+              $data['inputerror'][] = 'pengisi';
+              $data['error_string'][] = 'Kolom Pengisi Masih Kosong';
               $data['status'] = FALSE;
           }
 
@@ -2430,7 +2454,8 @@ date_default_timezone_set('Asia/Makassar');
 
 
           $hasil = array(
-              'nama' => $query->nama_pemohon,
+              'nama_pelanggan' => $query->nama_pengguna_jasa,
+              'nama_pemohon' => $query->nama_pemohon,
               'alamat' => $query->alamat,
               'tanggal' => $tanggal,
               'tgl_perm' => $tgl_permintaan,
@@ -2518,7 +2543,8 @@ date_default_timezone_set('Asia/Makassar');
           $jam = date('H.i',strtotime($query->tgl_transaksi));
 
           $hasil = array(
-              'nama' => $query->nama_pemohon,
+              'nama_pelanggan' => $query->nama_pengguna_jasa,
+              'nama_pemohon' => $query->nama_pemohon,
               'alamat' => $query->alamat,
               'tanggal' => $tanggal,
               'total_pengisian' => $query->total_permintaan,
