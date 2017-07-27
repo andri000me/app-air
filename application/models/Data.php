@@ -24,13 +24,33 @@
         var $column_search_laut = array('id_pengguna_jasa','id_lct','nama_lct'); //set column field database for datatable searchable
         var $order_laut = array('id_pengguna_jasa' => 'desc');
 
-        var $column_order_tarif = array('tipe_pengguna_jasa',null,null, null,null); //set column field database for datatable orderable
+        var $column_order_tarif = array(null,'tipe_pengguna_jasa',null,null, null,null); //set column field database for datatable orderable
         var $column_search_tarif = array('tipe_pengguna_jasa'); //set column field database for datatable searchable
         var $order_tarif = array('id_tarif' => 'desc');
 
-        var $column_order_agent = array('nama_perusahaan',null,null); //set column field database for datatable orderable
+        var $column_order_agent = array(null,'nama_perusahaan',null,null); //set column field database for datatable orderable
         var $column_search_agent = array('nama_perusahaan'); //set column field database for datatable searchable
         var $order_agent = array('id_agent' => 'desc');
+
+        var $column_order_tenant = array(null,'nama_tenant',null,null,null,null); //set column field database for datatable orderable
+        var $column_search_tenant = array('nama_tenant','penanggung_jawab'); //set column field database for datatable searchable
+        var $order_tenant = array('id_tenant' => 'desc');
+
+        var $column_order_flowmeter = array(null,'id_flowmeter','nama_flowmeter',null,null,null,null); //set column field database for datatable orderable
+        var $column_search_flowmeter = array('id_flowmeter','nama_flowmeter'); //set column field database for datatable searchable
+        var $order_flowmeter = array('id_flow' => 'asc');
+
+        var $column_order_sumur = array(null,'id_sumur','nama_sumur',null,null,null,null); //set column field database for datatable orderable
+        var $column_search_sumur = array('id_sumur','nama_sumur'); //set column field database for datatable searchable
+        var $order_sumur = array('id_master_sumur' => 'asc');
+
+        var $column_order_pompa = array(null,'id_pompa','nama_pompa',null,null,null,null); //set column field database for datatable orderable
+        var $column_search_pompa = array('id_pompa','nama_pompa'); //set column field database for datatable searchable
+        var $order_pompa = array('id_master_pompa' => 'asc');
+
+        var $column_order_lumpsum = array(null,'id_pompa','nama_pompa',null,null,null,null); //set column field database for datatable orderable
+        var $column_search_lumpsum = array('id_pompa','nama_pompa'); //set column field database for datatable searchable
+        var $order_lumpsum = array('id_master_pompa' => 'asc');
 
         function __construct() {
             parent::__construct();
@@ -488,6 +508,354 @@
         public function count_all_ruko()
         {
             $this->db->from("master_flowmeter");
+            return $this->db->count_all_results();
+        }
+
+        //fungsi database untuk master data tenant
+        public function edit_master_tenant($data){
+            $this->db->set('flowmeter_awal',$data['flowmeter_awal']);
+            $this->db->where('id_flowmeter',$data['id_flowmeter']);
+            $query = $this->db->update('master_flowmeter');
+
+            return $query;
+        }
+
+        public function get_datatables_tenant()
+        {
+            $this->_get_datatables_query_tenant();
+            if($_POST['length'] != -1){
+                $this->db->limit($_POST['length'], $_POST['start']);
+            }
+            $query = $this->db->get();
+            return $query->result();
+        }
+
+        private function _get_datatables_query_tenant()
+        {
+
+            $this->db->from("master_tenant,master_flowmeter");
+            $this->db->where("id_master_flowmeter = id_flow");
+
+            $i = 0;
+
+            foreach ($this->column_search_tenant as $item) // loop column
+            {
+                if($_POST['search']['value']) // if datatable send POST for search
+                {
+
+                    if($i===0) // first loop
+                    {
+                        $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                        $this->db->like($item, $_POST['search']['value']);
+                    }
+                    else
+                    {
+                        $this->db->or_like($item, $_POST['search']['value']);
+                    }
+
+                    if(count($this->column_search_tenant) - 1 == $i) //last loop
+                        $this->db->group_end(); //close bracket
+                }
+                $i++;
+            }
+
+            if(isset($_POST['order'])) // here order processing
+            {
+                $this->db->order_by($this->column_order_tenant[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+            }
+            else if(isset($this->order_tenant))
+            {
+                $order = $this->order_tenant;
+                $this->db->order_by(key($order), $order[key($order)]);
+            }
+        }
+
+        public function count_filtered_tenant()
+        {
+            $this->_get_datatables_query_tenant();
+            $query = $this->db->get();
+            return $query->num_rows();
+        }
+
+        public function count_all_tenant()
+        {
+            $this->db->from("master_tenant");
+            return $this->db->count_all_results();
+        }
+
+        public function getFlowmeter(){
+            $this->db->from('master_flowmeter');
+            $query = $this->db->get();
+
+            return $query->result();
+        }
+
+        public function getLumpsum(){
+            $this->db->from('master_lumpsum');
+            $query = $this->db->get();
+
+            return $query->result();
+        }
+
+        public function getIdLumpsum($id){
+            $this->db->from('master_lumpsum');
+            $this->db->where('id_lumpsum',$id);
+            $query = $this->db->get();
+
+            return $query->row();
+        }
+
+        //fungsi database untuk master data flowmeter
+        public function edit_master_flowmeter($data){
+            $this->db->set('id_flowmeter',$data['id_flowmeter']);
+            $this->db->set('nama_flowmeter',$data['nama_flowmeter']);
+            $this->db->set('kondisi',$data['kondisi']);
+            $this->db->set('flowmeter_awal',$data['flowmeter_awal']);
+            $this->db->set('flowmeter_akhir',$data['flowmeter_akhir']);
+            $this->db->where('id_master_flowmeter',$data['id_master_flowmeter']);
+            $query = $this->db->update('master_flowmeter');
+
+            return $query->affected_rows();
+        }
+
+        public function get_datatables_flowmeter()
+        {
+            $this->_get_datatables_query_flowmeter();
+            if($_POST['length'] != -1){
+                $this->db->limit($_POST['length'], $_POST['start']);
+            }
+            $query = $this->db->get();
+            return $query->result();
+        }
+
+        private function _get_datatables_query_flowmeter()
+        {
+
+            $this->db->from("master_flowmeter");
+
+            $i = 0;
+
+            foreach ($this->column_search_flowmeter as $item) // loop column
+            {
+                if($_POST['search']['value']) // if datatable send POST for search
+                {
+
+                    if($i===0) // first loop
+                    {
+                        $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                        $this->db->like($item, $_POST['search']['value']);
+                    }
+                    else
+                    {
+                        $this->db->or_like($item, $_POST['search']['value']);
+                    }
+
+                    if(count($this->column_search_flowmeter) - 1 == $i) //last loop
+                        $this->db->group_end(); //close bracket
+                }
+                $i++;
+            }
+
+            if(isset($_POST['order'])) // here order processing
+            {
+                $this->db->order_by($this->column_order_flowmeter[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+            }
+            else if(isset($this->order_flowmeter))
+            {
+                $order = $this->order_flowmeter;
+                $this->db->order_by(key($order), $order[key($order)]);
+            }
+        }
+
+        public function count_filtered_flowmeter()
+        {
+            $this->_get_datatables_query_flowmeter();
+            $query = $this->db->get();
+            return $query->num_rows();
+        }
+
+        public function count_all_flowmeter()
+        {
+            $this->db->from("master_flowmeter");
+            return $this->db->count_all_results();
+        }
+
+        public function getKondisi(){
+            $this->db->from('master_flowmeter');
+            $query = $this->db->get();
+
+            return $query->result();
+        }
+
+        //fungsi database untuk master data sumur
+        public function edit_master_sumur($data){
+            $this->db->set('id_flowmeter',$data['id_flowmeter']);
+            $this->db->set('nama_flowmeter',$data['nama_flowmeter']);
+            $this->db->set('kondisi',$data['kondisi']);
+            $this->db->set('flowmeter_awal',$data['flowmeter_awal']);
+            $this->db->set('flowmeter_akhir',$data['flowmeter_akhir']);
+            $this->db->where('id_master_flowmeter',$data['id_master_flowmeter']);
+            $query = $this->db->update('master_flowmeter');
+
+            return $query->affected_rows();
+        }
+
+        public function get_datatables_sumur()
+        {
+            $this->_get_datatables_query_sumur();
+            if($_POST['length'] != -1){
+                $this->db->limit($_POST['length'], $_POST['start']);
+            }
+            $query = $this->db->get();
+            return $query->result();
+        }
+
+        private function _get_datatables_query_sumur()
+        {
+
+            $this->db->from("master_sumur");
+
+            $i = 0;
+
+            foreach ($this->column_search_sumur as $item) // loop column
+            {
+                if($_POST['search']['value']) // if datatable send POST for search
+                {
+
+                    if($i===0) // first loop
+                    {
+                        $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                        $this->db->like($item, $_POST['search']['value']);
+                    }
+                    else
+                    {
+                        $this->db->or_like($item, $_POST['search']['value']);
+                    }
+
+                    if(count($this->column_search_sumur) - 1 == $i) //last loop
+                        $this->db->group_end(); //close bracket
+                }
+                $i++;
+            }
+
+            if(isset($_POST['order'])) // here order processing
+            {
+                $this->db->order_by($this->column_order_sumur[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+            }
+            else if(isset($this->order_sumur))
+            {
+                $order = $this->order_sumur;
+                $this->db->order_by(key($order), $order[key($order)]);
+            }
+        }
+
+        public function count_filtered_sumur()
+        {
+            $this->_get_datatables_query_sumur();
+            $query = $this->db->get();
+            return $query->num_rows();
+        }
+
+        public function count_all_sumur()
+        {
+            $this->db->from("master_sumur");
+            return $this->db->count_all_results();
+        }
+
+        public function getPompa(){
+            $this->db->from('master_pompa');
+            $query = $this->db->get();
+
+            return $query->result();
+        }
+
+        public function getIdPompa($id){
+            $this->db->from('master_pompa');
+            $this->db->where('id_master_pompa',$id);
+            $query = $this->db->get();
+
+            return $query->row();
+        }
+
+        //fungsi database untuk master data pompa
+        public function edit_master_pompa($data){
+            $this->db->set('id_pompa',$data['id_pompa']);
+            $this->db->set('nama_pompa',$data['nama_pompa']);
+            $this->db->set('kondisi',$data['kondisi']);
+            $this->db->set('flowmeter',$data['flowmeter']);
+            $this->db->where('id_master_pompa',$data['id_master_pompa']);
+            $query = $this->db->update('master_pompa');
+
+            return $query->affected_rows();
+        }
+
+        public function getIdFlowmeter($id){
+            $this->db->from('master_flowmeter');
+            $this->db->where('id_flow',$id);
+            $query = $this->db->get();
+
+            return $query->row();
+        }
+
+        public function get_datatables_pompa()
+        {
+            $this->_get_datatables_query_pompa();
+            if($_POST['length'] != -1){
+                $this->db->limit($_POST['length'], $_POST['start']);
+            }
+            $query = $this->db->get();
+            return $query->result();
+        }
+
+        private function _get_datatables_query_pompa()
+        {
+
+            $this->db->from("master_pompa");
+
+            $i = 0;
+
+            foreach ($this->column_search_pompa as $item) // loop column
+            {
+                if($_POST['search']['value']) // if datatable send POST for search
+                {
+
+                    if($i===0) // first loop
+                    {
+                        $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                        $this->db->like($item, $_POST['search']['value']);
+                    }
+                    else
+                    {
+                        $this->db->or_like($item, $_POST['search']['value']);
+                    }
+
+                    if(count($this->column_search_pompa) - 1 == $i) //last loop
+                        $this->db->group_end(); //close bracket
+                }
+                $i++;
+            }
+
+            if(isset($_POST['order'])) // here order processing
+            {
+                $this->db->order_by($this->column_order_pompa[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+            }
+            else if(isset($this->order_pompa))
+            {
+                $order = $this->order_pompa;
+                $this->db->order_by(key($order), $order[key($order)]);
+            }
+        }
+
+        public function count_filtered_pompa()
+        {
+            $this->_get_datatables_query_pompa();
+            $query = $this->db->get();
+            return $query->num_rows();
+        }
+
+        public function count_all_pompa()
+        {
+            $this->db->from("master_pompa");
             return $this->db->count_all_results();
         }
 

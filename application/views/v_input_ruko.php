@@ -17,14 +17,14 @@
 <body>
     <div class="container container-fluid">
         <div class="row col-sm-6">
-            <center><h4>Form Penginputan Harian Pelayanan Jasa Air Bersih Untuk Ruko</h4></center><br>
+            <center><h4>Form Pencatatan Harian Pelayanan Jasa Air Bersih Untuk Tenant</h4></center><br>
             <?php echo validation_errors(); ?>
             <form method="post" action="<?php echo base_url(). 'main/transaksi_ruko'; ?>">
                 <table class="table table-striped">
                     <tr>
                         <div class="form-group">
                             <td>
-                                <label for="nama_pembeli">Nama Ruko</label>
+                                <label for="nama_pembeli">ID Flow Meter</label>
                             </td>
                             <td>:</td>
                             <td>
@@ -35,7 +35,7 @@
                     <tr>
                         <div class="form-group">
                             <td>
-                                <label for="alamat_pembeli">ID Flow Meter</label>
+                                <label for="alamat_pembeli">Nama Tenant</label>
                             </td>
                             <td>:</td>
                             <td>
@@ -47,7 +47,7 @@
                     <tr>
                         <div class="form-group">
                             <td>
-                                <label for="alamat_pembeli">Alamat Ruko</label>
+                                <label for="alamat_pembeli">Alamat Tenant</label>
                             </td>
                             <td>:</td>
                             <td>
@@ -58,7 +58,7 @@
                     <tr>
                         <div class="form-group">
                             <td>
-                                <label for="alamat_pembeli">No Telepon Ruko</label>
+                                <label for="alamat_pembeli">Penanggung Jawab</label>
                             </td>
                             <td>:</td>
                             <td>
@@ -113,11 +113,11 @@
                     <tr>
                         <div class="form-group">
                             <td>
-                                <label for="total_pengisian">Flow Meter Hari Ini</label>
+                                <label for="flow_hari_ini">Flow Meter Hari Ini</label>
                             </td>
                             <td>:</td>
                             <td>
-                                <input type="number" class="form-control" id="tonnase" name="tonnase" placeholder="Satuan (m3)"/>
+                                <input type="number" class="form-control" id="flow_hari_ini" name="flow_hari_ini" placeholder="Satuan (m3)"/>
                             </td>
                         </div>
                     </tr>

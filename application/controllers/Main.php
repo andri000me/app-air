@@ -86,13 +86,35 @@ date_default_timezone_set('Asia/Makassar');
           }
           else if($page == "tenant"){
               $data['title'] = 'Master Tenant'; //judul title
-              $data['tipe'] = 'wtp';
-              $this->load->template('v_tenant',$data);
+              if($this->session->userdata('role') == 'wtp'){
+                  $data['tenant'] = $this->data->getFlowmeter();
+                  $this->load->template('v_tenant',$data);
+              } else{
+                  $data['tenant'] = $this->data->getLumpsum();
+                  $this->load->template('v_tenant',$data);
+              }
           }
           else if($page == "transaksi_tenant"){
-              $data['title'] = 'Pengisian Harian Tenant'; //judul title
-              $data['tipe'] = 'wtp';
+              $data['title'] = 'Pencatatan Harian Tenant'; //judul title
               $this->load->template('v_tenant',$data);
+          }
+          else if($page == "flowmeter"){
+              $data['title'] = 'Master Flow Meter'; //judul title
+              $this->load->template('v_flowmeter',$data);
+          }
+          else if($page == "sumur"){
+              $data['title'] = 'Master Sumur'; //judul title
+              $data['tenant'] = $this->data->getPompa();
+              $this->load->template('v_sumur',$data);
+          }
+          else if($page == "pompa"){
+              $data['title'] = 'Master Pompa'; //judul title
+              $data['tenant'] = $this->data->getFlowmeter();
+              $this->load->template('v_pompa',$data);
+          }
+          else if($page == "lumpsum"){
+              $data['title'] = 'Master Lumpsum'; //judul title
+              $this->load->template('v_lumpsum',$data);
           }
           else{
               redirect('main');
@@ -3850,6 +3872,620 @@ date_default_timezone_set('Asia/Makassar');
           );
 
           echo json_encode($data);
+      }
+
+      //fungsi untuk master data tenant
+      public function delete_data_tenant($id){
+          $this->data->delete_data("tenant",$id);
+          echo json_encode(array("status" => TRUE));
+      }
+
+      public function ajax_data_tenant(){
+          if($this->session->userdata('role') == 'wtp'){
+              $list = $this->data->get_datatables_tenant();
+              $data = array();
+              $no = $_POST['start'];
+
+              foreach ($list as $result) {
+                  $no++;
+                  $row = array();
+                  $row[] = "<center>".$no;
+                  $row[] = "<center>".$result->nama_tenant;
+                  $row[] = "<center>".$result->penanggung_jawab;
+                  $row[] = $result->alamat;
+                  $data_flow = $this->data->getIdFlowmeter($result->id_master_flowmeter);
+                  $row[] = $data_flow->id_flowmeter;
+                  $row[] = '<center><a class="btn btn-sm btn-primary" href="editTenant?id=' . $result->id_tenant . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
+
+                  $data[] = $row;
+              }
+
+              $output = array(
+                  "draw" => $_POST['draw'],
+                  "recordsTotal" => $this->data->count_all_tenant(),
+                  "recordsFiltered" => $this->data->count_filtered_tenant(),
+                  "data" => $data,
+              );
+          }
+          else{
+              $list = $this->data->get_datatables_tenant();
+              $data = array();
+              $no = $_POST['start'];
+
+              foreach ($list as $result) {
+                  $no++;
+                  $row = array();
+                  $row[] = "<center>".$no;
+                  $row[] = "<center>".$result->nama_tenant;
+                  $row[] = "<center>".$result->penanggung_jawab;
+                  $row[] = $result->alamat;
+                  $data_lumpsum = $this->data->getIdLumpsum($result->id_master_lumpsum);
+                  $row[] = $data_lumpsum->no_perjanjian;
+                  $row[] = '<center><a class="btn btn-sm btn-primary" href="editTenant?id=' . $result->id_tenant . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
+
+                  $data[] = $row;
+              }
+
+              $output = array(
+                  "draw" => $_POST['draw'],
+                  "recordsTotal" => $this->data->count_all_tenant(),
+                  "recordsFiltered" => $this->data->count_filtered_tenant(),
+                  "data" => $data,
+              );
+          }
+
+          //output to json format
+          echo json_encode($output);
+      }
+
+      public function input_data_tenant(){
+          if($this->session->userdata('role') == 'wtp'){
+              $nama_tenant = $this->input->post('nama_tenant');
+              $penanggung_jawab = $this->input->post('penanggung_jawab');
+              $alamat = $this->input->post('alamat');
+              $id_flowmeter = $this->input->post('id_flowmeter');
+
+              if($nama_tenant != NULL && $penanggung_jawab != NULL && $alamat != NULL){
+                  $data_insert = array(
+                      'nama_tenant' => $nama_tenant,
+                      'penanggung_jawab' => $penanggung_jawab,
+                      'alamat' => $alamat,
+                      'id_master_flowmeter' => $id_flowmeter,
+                      'id_master_lumpsum' => '0',
+                      'pengguna_jasa_id' => '1',
+                      'issued_at' => date("Y-m-d H:i:s",time()),
+                      'issued_by' => $this->session->userdata('nama')
+                  );
+                  $query = $this->db->insert('master_tenant',$data_insert);
+
+                  if($query){
+                      $message = "Input Berhasil";
+                  }
+                  else{
+                      $message = "Input Gagal";
+                  }
+              }
+              else{
+                  $message = "Inputan Masih Kosong...Harap Diisi";
+              }
+          }
+          else{
+              $nama_tenant = $this->input->post('nama_tenant');
+              $penanggung_jawab = $this->input->post('penanggung_jawab');
+              $alamat = $this->input->post('alamat');
+              $id_lumpsum = $this->input->post('id_lumpsum');
+
+              if($nama_tenant != NULL && $penanggung_jawab != NULL && $alamat != NULL){
+                  $data_insert = array(
+                      'nama_tenant' => $nama_tenant,
+                      'penanggung_jawab' => $penanggung_jawab,
+                      'alamat' => $alamat,
+                      'id_master_flowmeter' => '0',
+                      'id_master_lumpsum' => $id_lumpsum,
+                      'pengguna_jasa_id' => '1',
+                      'issued_at' => date("Y-m-d H:i:s",time()),
+                      'issued_by' => $this->session->userdata('nama')
+                  );
+                  $query = $this->db->insert('master_tenant',$data_insert);
+
+                  if($query){
+                      $message = "Input Berhasil";
+                  }
+                  else{
+                      $message = "Input Gagal";
+                  }
+              }
+              else{
+                  $message = "Inputan Masih Kosong...Harap Diisi";
+              }
+          }
+
+          echo $message;
+      }
+
+      public function editTenant(){
+          if($this->session->userdata('role') == 'wtp'){
+              $id = $_GET['id'];
+              $data['id'] = $id;
+              $data['title'] = 'Edit Data Tenant';
+              $this->db->from('master_tenant');
+              $this->db->where('id_tenant',$id);
+              $query = $this->db->get();
+              $result = $query->row();
+
+              $data['tenant'] = $this->data->getFlowmeter();
+
+              $data['isi'] = array(
+                  'id_tenant' => $result->id_tenant,
+                  'nama_tenant' => $result->nama_tenant,
+                  'penanggung_jawab' => $result->penanggung_jawab,
+                  'alamat' => $result->alamat,
+                  'id_flowmeter' => $result->id_master_flowmeter,
+              );
+          } else{
+              $id = $_GET['id'];
+              $data['id'] = $id;
+              $data['title'] = 'Edit Data Tenant';
+              $this->db->from('master_tenant');
+              $this->db->where('id_tenant',$id);
+              $query = $this->db->get();
+              $result = $query->row();
+
+              $data['tenant'] = $this->data->getLumpsum();
+
+              $data['isi'] = array(
+                  'id_tenant' => $result->id_tenant,
+                  'nama_tenant' => $result->nama_tenant,
+                  'penanggung_jawab' => $result->penanggung_jawab,
+                  'alamat' => $result->alamat,
+                  'id_lumpsum' => $result->id_master_lumpsum,
+              );
+          }
+
+          $this->load->template('v_edit_tenant',$data);
+      }
+
+      public function edit_tenant(){
+          if($this->session->userdata('role') == 'wtp'){
+              $id = $this->input->post('id_tenant');
+              $nama_tenant = $this->input->post('nama_tenant');
+              $penanggung_jawab = $this->input->post('penanggung_jawab');
+              $alamat = $this->input->post('alamat');
+              $id_flowmeter = $this->input->post('id_flowmeter');
+
+              $data_edit = array(
+                  'nama_tenant' => $nama_tenant,
+                  'penanggung_jawab' => $penanggung_jawab,
+                  'alamat' => $alamat,
+                  'id_master_flowmeter' => $id_flowmeter,
+                  'modified_at' => date("Y-m-d H:i:s",time()),
+                  'modified_by' => $this->session->userdata('nama')
+              );
+
+              if($id != ""){
+                  $this->db->set($data_edit);
+                  $this->db->where('id_tenant', $id);
+                  $query = $this->db->update('master_tenant');
+
+                  if($query){
+                      $message = "Edit Berhasil";
+                  }else{
+                      $message = "Edit Gagal";
+                  }
+              }
+              else{
+                  $message = "Masih Ada Yang Harus Di Isi";
+              }
+          } else{
+              $id = $this->input->post('id_tenant');
+              $nama_tenant = $this->input->post('nama_tenant');
+              $penanggung_jawab = $this->input->post('penanggung_jawab');
+              $alamat = $this->input->post('alamat');
+              $id_lumpsum = $this->input->post('id_lumpsum');
+
+              $data_edit = array(
+                  'nama_tenant' => $nama_tenant,
+                  'penanggung_jawab' => $penanggung_jawab,
+                  'alamat' => $alamat,
+                  'id_master_lumpsum' => $id_lumpsum,
+                  'modified_at' => date("Y-m-d H:i:s",time()),
+                  'modified_by' => $this->session->userdata('nama')
+              );
+
+              if($id != ""){
+                  $this->db->set($data_edit);
+                  $this->db->where('id_tenant', $id);
+                  $query = $this->db->update('master_tenant');
+
+                  if($query){
+                      $message = "Edit Berhasil";
+                  }else{
+                      $message = "Edit Gagal";
+                  }
+              }
+              else{
+                  $message = "Masih Ada Yang Harus Di Isi";
+              }
+          }
+
+          echo $message;
+      }
+
+      //fungsi untuk master data flowmeter
+      public function ajax_data_flowmeter(){
+          if($this->session->userdata('role') == 'wtp'){
+              $list = $this->data->get_datatables_flowmeter();
+              $data = array();
+              $no = $_POST['start'];
+
+              foreach ($list as $result) {
+                  $no++;
+                  $row = array();
+                  $row[] = "<center>".$no;
+                  $row[] = "<center>".$result->id_flowmeter;
+                  $row[] = "<center>".$result->nama_flowmeter;
+                  $row[] = "<center>".$result->flowmeter_awal;
+                  $row[] = "<center>".$result->flowmeter_akhir;
+                  $row[] = $result->kondisi;
+                  $row[] = '<center><a class="btn btn-sm btn-primary" href="editFlowmeter?id=' . $result->id_flow . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
+
+                  $data[] = $row;
+              }
+
+              $output = array(
+                  "draw" => $_POST['draw'],
+                  "recordsTotal" => $this->data->count_all_flowmeter(),
+                  "recordsFiltered" => $this->data->count_filtered_flowmeter(),
+                  "data" => $data,
+              );
+          }
+          else{
+
+          }
+
+          //output to json format
+          echo json_encode($output);
+      }
+
+      public function input_data_flowmeter(){
+          if($this->session->userdata('role') == 'wtp'){
+              $id_flowmeter = $this->input->post('id_flowmeter');
+              $nama_flowmeter = $this->input->post('nama_flowmeter');
+              $kondisi = $this->input->post('kondisi');
+
+              if($id_flowmeter != NULL && $nama_flowmeter != NULL && $kondisi != NULL){
+                  $data_insert = array(
+                      'id_flowmeter' => $id_flowmeter,
+                      'nama_flowmeter' => $nama_flowmeter,
+                      'kondisi' => $kondisi,
+                      'issued_at' => date("Y-m-d H:i:s",time()),
+                      'issued_by' => $this->session->userdata('username')
+                  );
+                  $query = $this->db->insert('master_flowmeter',$data_insert);
+
+                  if($query){
+                      $message = "Input Berhasil";
+                  }
+                  else{
+                      $message = "Input Gagal";
+                  }
+              }
+              else{
+                  $message = "Inputan Masih Kosong...Harap Diisi";
+              }
+          }
+          else{
+
+          }
+
+          echo $message;
+      }
+
+      public function editFlowmeter(){
+          $id = $_GET['id'];
+          $data['id'] = $id;
+          $data['title'] = 'Edit Data Flow Meter';
+          $this->db->from('master_flowmeter');
+          $this->db->where('id_flow',$id);
+          $query = $this->db->get();
+          $result = $query->row();
+
+          $data['kondisi'] = $this->data->getKondisi();
+
+          $data['isi'] = array(
+              'id_flowmeter' => $result->id_flowmeter,
+              'nama_flowmeter' => $result->nama_flowmeter,
+              'kondisi' => $result->kondisi,
+              'flowmeter_awal' => $result->flowmeter_awal,
+              'flowmeter_akhir' => $result->flowmeter_akhir,
+          );
+
+          $this->load->template('v_edit_flowmeter',$data);
+      }
+
+      public function edit_flowmeter(){
+          $id = $this->input->post('id_flow');
+          $id_flowmeter = $this->input->post('id_flowmeter');
+          $nama_flowmeter = $this->input->post('nama_flowmeter');
+          $kondisi = $this->input->post('kondisi');
+          $flow_awal = $this->input->post('flowmeter_awal');
+          $flow_akhir = $this->input->post('flowmeter_akhir');
+
+          $data_edit = array(
+              'id_flowmeter' => $id_flowmeter,
+              'nama_flowmeter' => $nama_flowmeter,
+              'kondisi' => $kondisi,
+              'flowmeter_awal' => $flow_awal,
+              'flowmeter_akhir' => $flow_akhir,
+              'last_modified' => date("Y-m-d H:i:s",time()),
+              'modified_by' => $this->session->userdata('nama')
+          );
+
+          if($id != ""){
+              $this->db->set($data_edit);
+              $this->db->where('id_flow', $id);
+              $query = $this->db->update('master_flowmeter');
+
+              if($query){
+                  $message = "Edit Berhasil";
+              }else{
+                  $message = "Edit Gagal";
+              }
+          }
+          else{
+              $message = "Masih Ada Yang Harus Di Isi";
+          }
+
+          echo $message;
+      }
+
+      //fungsi untuk master data sumur
+      public function ajax_data_sumur(){
+          if($this->session->userdata('role') == 'wtp'){
+              $list = $this->data->get_datatables_sumur();
+              $data = array();
+              $no = $_POST['start'];
+              $data_pompa = '';
+
+              foreach ($list as $result) {
+                  $no++;
+                  $row = array();
+                  $row[] = "<center>".$no;
+                  $row[] = "<center>".$result->id_sumur;
+                  $row[] = "<center>".$result->nama_sumur;
+                  $row[] = "<center>".$result->lokasi;
+                  $data_pompa = $this->data->getIdPompa($result->sumur_pompa);
+                  $row[] = "<center>".$data_pompa->id_pompa;
+                  $row[] = '<center><a class="btn btn-sm btn-primary" href="editSumur?id=' . $result->id_master_sumur . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
+
+                  $data[] = $row;
+              }
+
+              $output = array(
+                  "draw" => $_POST['draw'],
+                  "recordsTotal" => $this->data->count_all_sumur(),
+                  "recordsFiltered" => $this->data->count_filtered_sumur(),
+                  "data" => $data,
+              );
+          }
+          else{
+
+          }
+
+          //output to json format
+          echo json_encode($output);
+      }
+
+      public function input_data_sumur(){
+          if($this->session->userdata('role') == 'wtp'){
+              $id_sumur = $this->input->post('id_sumur');
+              $nama_sumur = $this->input->post('nama_sumur');
+              $lokasi = $this->input->post('lokasi');
+              $id_pompa = $this->input->post('id_pompa');
+
+              if($id_sumur != NULL && $nama_sumur != NULL && $lokasi != NULL){
+                  $data_insert = array(
+                      'id_sumur' => $id_sumur,
+                      'nama_sumur' => $nama_sumur,
+                      'lokasi' => $lokasi,
+                      'sumur_pompa' => $id_pompa,
+                      'issued_at' => date("Y-m-d H:i:s",time()),
+                      'issued_by' => $this->session->userdata('nama')
+                  );
+                  $query = $this->db->insert('master_sumur',$data_insert);
+
+                  if($query){
+                      $message = "Input Berhasil";
+                  }
+                  else{
+                      $message = "Input Gagal";
+                  }
+              }
+              else{
+                  $message = "Inputan Masih Kosong...Harap Diisi";
+              }
+          }
+
+          echo $message;
+      }
+
+      public function editSumur(){
+          $id = $_GET['id'];
+          $data['id'] = $id;
+          $data['title'] = 'Edit Data Sumur';
+          $this->db->from('master_sumur');
+          $this->db->where('id_master_sumur',$id);
+          $query = $this->db->get();
+          $result = $query->row();
+
+          $data['pompa'] = $this->data->getPompa();
+
+          $data['isi'] = array(
+              'id_sumur' => $result->id_sumur,
+              'nama_sumur' => $result->nama_sumur,
+              'lokasi' => $result->lokasi,
+              'id_pompa' => $result->sumur_pompa,
+          );
+
+          $this->load->template('v_edit_sumur',$data);
+      }
+
+      public function edit_sumur(){
+          $id = $this->input->post('id');
+          $id_sumur = $this->input->post('id_sumur');
+          $nama_sumur = $this->input->post('nama_sumur');
+          $lokasi = $this->input->post('lokasi');
+          $id_pompa = $this->input->post('id_pompa');
+
+          $data_edit = array(
+              'id_sumur' => $id_sumur,
+              'nama_sumur' => $nama_sumur,
+              'lokasi' => $lokasi,
+              'sumur_pompa' => $id_pompa,
+              'modified_at' => date("Y-m-d H:i:s",time()),
+              'modified_by' => $this->session->userdata('nama')
+          );
+
+          if($id != ""){
+              $this->db->set($data_edit);
+              $this->db->where('id_master_sumur', $id);
+              $query = $this->db->update('master_sumur');
+
+              if($query){
+                  $message = "Edit Berhasil";
+              }else{
+                  $message = "Edit Gagal";
+              }
+          }
+          else{
+              $message = "Masih Ada Yang Harus Di Isi";
+          }
+
+          echo $message;
+      }
+
+      //fungsi untuk master data pompa
+      public function ajax_data_pompa(){
+          if($this->session->userdata('role') == 'wtp'){
+              $list = $this->data->get_datatables_pompa();
+              $data = array();
+              $no = $_POST['start'];
+
+              foreach ($list as $result) {
+                  $no++;
+                  $row = array();
+                  $row[] = "<center>".$no;
+                  $row[] = "<center>".$result->id_pompa;
+                  $row[] = "<center>".$result->nama_pompa;
+                  $row[] = "<center>".$result->kondisi;
+                  $flowmeter = $this->data->getIdFlowmeter($result->flowmeter);
+                  $row[] = "<center>".$flowmeter->id_flowmeter;
+                  $row[] = '<center><a class="btn btn-sm btn-primary" href="editPompa?id=' . $result->id_master_pompa . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
+
+                  $data[] = $row;
+              }
+
+              $output = array(
+                  "draw" => $_POST['draw'],
+                  "recordsTotal" => $this->data->count_all_pompa(),
+                  "recordsFiltered" => $this->data->count_filtered_pompa(),
+                  "data" => $data,
+              );
+          }
+          else{
+
+          }
+
+          //output to json format
+          echo json_encode($output);
+      }
+
+      public function input_data_pompa(){
+          if($this->session->userdata('role') == 'wtp'){
+              $id_pompa = $this->input->post('id_pompa');
+              $nama_pompa = $this->input->post('nama_pompa');
+              $kondisi = $this->input->post('kondisi');
+              $id_flowmeter = $this->input->post('id_flowmeter');
+
+              if($id_pompa != NULL && $nama_pompa != NULL){
+                  $data_insert = array(
+                      'id_pompa' => $id_pompa,
+                      'nama_pompa' => $nama_pompa,
+                      'kondisi' => $kondisi,
+                      'flowmeter' => $id_flowmeter,
+                      'issued_at' => date("Y-m-d H:i:s",time()),
+                      'issued_by' => $this->session->userdata('nama')
+                  );
+                  $query = $this->db->insert('master_pompa',$data_insert);
+
+                  if($query){
+                      $message = "Input Berhasil";
+                  }
+                  else{
+                      $message = "Input Gagal";
+                  }
+              }
+              else{
+                  $message = "Inputan Masih Kosong...Harap Diisi";
+              }
+          }
+
+          echo $message;
+      }
+
+      public function editPompa(){
+          $id = $_GET['id'];
+          $data['id'] = $id;
+          $data['title'] = 'Edit Data Pompa';
+          $this->db->from('master_pompa');
+          $this->db->where('id_master_pompa',$id);
+          $query = $this->db->get();
+          $result = $query->row();
+
+          $data['pompa'] = $this->data->getFlowmeter();
+
+          $data['isi'] = array(
+              'id_pompa' => $result->id_pompa,
+              'nama_pompa' => $result->nama_pompa,
+              'kondisi' => $result->kondisi,
+              'id_flowmeter' => $result->flowmeter,
+          );
+
+          $this->load->template('v_edit_pompa',$data);
+      }
+
+      public function edit_pompa(){
+          $id = $this->input->post('id');
+          $id_pompa = $this->input->post('id_pompa');
+          $nama_pompa = $this->input->post('nama_pompa');
+          $kondisi = $this->input->post('kondisi');
+          $id_flowmeter = $this->input->post('id_flowmeter');
+
+          $data_edit = array(
+              'id_pompa' => $id_pompa,
+              'nama_pompa' => $nama_pompa,
+              'kondisi' => $kondisi,
+              'flowmeter' => $id_flowmeter,
+              'modified_at' => date("Y-m-d H:i:s",time()),
+              'modified_by' => $this->session->userdata('nama')
+          );
+
+          if($id != ""){
+              $this->db->set($data_edit);
+              $this->db->where('id_master_pompa', $id);
+              $query = $this->db->update('master_pompa');
+
+              if($query){
+                  $message = "Edit Berhasil";
+              }else{
+                  $message = "Edit Gagal";
+              }
+          }
+          else{
+              $message = "Masih Ada Yang Harus Di Isi";
+          }
+
+          echo $message;
       }
 
       //fungsi untuk master data tarif

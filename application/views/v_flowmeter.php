@@ -5,19 +5,17 @@ if(isset($_SESSION['session'])) {
         <script type="text/javascript">
             $(document).ready(function (e) {
                 $('#upload').on('click', function () {
-                    var id_sumur = $('#id_sumur').val();
-                    var nama_sumur = $('#nama_sumur').val();
-                    var lokasi= $('#lokasi').val();
-                    var id_pompa = $('#id_pompa').val();
+                    var id_flowmeter = $('#id_flowmeter').val();
+                    var nama_flowmeter = $('#nama_flowmeter').val();
+                    var kondisi= $('#kondisi').val();
                     var form_data = new FormData();
                     var base_url = '<?= base_url();?>';
                     var text_alert;
-                    form_data.append('id_sumur',id_sumur);
-                    form_data.append('nama_sumur',nama_sumur);
-                    form_data.append('lokasi',lokasi);
-                    form_data.append('id_pompa',id_pompa);
+                    form_data.append('id_flowmeter',id_flowmeter);
+                    form_data.append('nama_flowmeter',nama_flowmeter);
+                    form_data.append('kondisi',kondisi);
                     $.ajax({
-                        url: base_url +'index.php/main/input_data_sumur', // point to server-side controller method
+                        url: base_url +'index.php/main/input_data_flowmeter', // point to server-side controller method
                         dataType: 'text', // what to expect back from the server
                         cache: false,
                         contentType: false,
@@ -28,7 +26,7 @@ if(isset($_SESSION['session'])) {
                             //$('#msg').html(response); // display success response from the server
                             text_alert = JSON.stringify(response);
                             window.alert(text_alert);
-                            window.location = base_url+"main/view?id=sumur";
+                            window.location = base_url+"main/view?id=flowmeter";
                         },
                         error: function (response) {
                             text_alert = JSON.stringify(response);
@@ -40,38 +38,30 @@ if(isset($_SESSION['session'])) {
             });
         </script>
         <div class="container" data-role="main" class="ui-content">
-            <h3>Form Master Data Sumur</h3>
+            <h3>Form Master Data Flow Meter</h3>
             <div class="row col-md-5">
                 <table class="table">
                     <tr>
                         <td colspan="3"><p id="msg"></p></td>
                     </tr>
                     <tr>
-                        <td><label>ID Sumur</label></td>
+                        <td><label>ID Flow Meter</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="id_sumur" id="id_sumur" required></td>
+                        <td><input class="form-control" type="text" name="id_flowmeter" id="id_flowmeter" required></td>
                     </tr>
                     <tr>
-                        <td><label>Nama Sumur</label></td>
+                        <td><label>Nama Flow Meter</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="nama_sumur" id="nama_sumur" required></td>
+                        <td><input class="form-control" type="text" name="nama_flowmeter" id="nama_flowmeter" required></td>
                     </tr>
                     <tr>
-                        <td><label>Lokasi</label></td>
-                        <td>:</td>
-                        <td><input class="form-control" type="text" name="lokasi" id="lokasi" required></td>
-                    </tr>
-                    <tr>
-                        <td><label>ID Pompa</label></td>
+                        <td><label>Kondisi</label></td>
                         <td>:</td>
                         <td>
-                            <select class="form-control" name="id_pompa" id="id_pompa">
-                                <?php foreach ($tenant as $row) {
-                                    ?>
-                                    <option value="<?= $row->id_master_pompa?>"><?= $row->id_pompa?> => <?= $row->nama_pompa?></option>
-                                    <?php
-                                }
-                                ?>
+                            <select class="form-control" name="kondisi" id="kondisi">
+                                <option value="baik">Baik</option>
+                                <option value="kurang_baik">Kurang Baik</option>
+                                <option value="rusak">Rusak</option>
                             </select>
                         </td>
                     </tr>
@@ -93,16 +83,19 @@ if(isset($_SESSION['session'])) {
                             <center>No
                         </th>
                         <th>
-                            <center>ID Sumur
+                            <center>ID Flow Meter
                         </th>
                         <th>
-                            <center>Nama Sumur
+                            <center>Nama Flow Meter
                         </th>
                         <th>
-                            <center>Lokasi
+                            <center>Flow Meter Awal
                         </th>
                         <th>
-                            <center>ID Pompa
+                            <center>Flow Meter Akhir
+                        </th>
+                        <th>
+                            <center>Kondisi
                         </th>
                         <th>
                             <center>Aksi
@@ -117,16 +110,19 @@ if(isset($_SESSION['session'])) {
                             <center>No
                         </th>
                         <th>
-                            <center>ID Sumur
+                            <center>ID Flow Meter
                         </th>
                         <th>
-                            <center>Nama Sumur
+                            <center>Nama Flow Meter
+                        </th>
+                        <th>
+                            <center>Flow Meter Awal
+                        </th>
+                        <th>
+                            <center>Flow Meter Akhir
                         </th>
                         <th>
                             <center>Kondisi
-                        </th>
-                        <th>
-                            <center>ID Pompa
                         </th>
                         <th>
                             <center>Aksi
@@ -149,7 +145,7 @@ if(isset($_SESSION['session'])) {
 
                     // Load data for the table's content from an Ajax source
                     "ajax": {
-                        "url": "<?php echo site_url('main/ajax_data_sumur')?>",
+                        "url": "<?php echo site_url('main/ajax_data_flowmeter')?>",
                         "type": "POST"
                     },
 

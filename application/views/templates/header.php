@@ -179,7 +179,24 @@
                                         <a href="<?= base_url('main/view?id=tenant'); ?>">Master Tenant</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=transaksi_tenant'); ?>">Transaksi Tenant</a>
+                                        <a href="<?= base_url('main/view?id=transaksi_tenant'); ?>">Pencatatan Harian Penggunaan Air Tenant</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Sumur</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="<?= base_url('main/view?id=sumur'); ?>">Master Sumur</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= base_url('main/view?id=pompa'); ?>">Master Pompa</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= base_url('main/view?id=flowmeter'); ?>">Master Flow Meter</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= base_url(''); ?>">Pencatatan Harian Sumur</a>
                                     </li>
                                 </ul>
                             </li>

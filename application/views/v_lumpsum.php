@@ -1,23 +1,23 @@
 <?php
 if(isset($_SESSION['session'])) {
-    if($_SESSION['role'] == "wtp"){
+    if($_SESSION['role'] == "operasi"){
         ?>
         <script type="text/javascript">
             $(document).ready(function (e) {
                 $('#upload').on('click', function () {
-                    var id_sumur = $('#id_sumur').val();
-                    var nama_sumur = $('#nama_sumur').val();
-                    var lokasi= $('#lokasi').val();
-                    var id_pompa = $('#id_pompa').val();
+                    var nama_tenant = $('#nama_tenant').val();
+                    var penanggung_jawab = $('#penanggung_jawab').val();
+                    var alamat= $('#alamat').val();
+                    var id_flowmeter = $('#id_flowmeter').val();
                     var form_data = new FormData();
                     var base_url = '<?= base_url();?>';
                     var text_alert;
-                    form_data.append('id_sumur',id_sumur);
-                    form_data.append('nama_sumur',nama_sumur);
-                    form_data.append('lokasi',lokasi);
-                    form_data.append('id_pompa',id_pompa);
+                    form_data.append('nama_tenant',nama_tenant);
+                    form_data.append('penanggung_jawab',penanggung_jawab);
+                    form_data.append('alamat',alamat);
+                    form_data.append('id_flowmeter',id_flowmeter);
                     $.ajax({
-                        url: base_url +'index.php/main/input_data_sumur', // point to server-side controller method
+                        url: base_url +'index.php/main/input_data_tenant', // point to server-side controller method
                         dataType: 'text', // what to expect back from the server
                         cache: false,
                         contentType: false,
@@ -28,7 +28,7 @@ if(isset($_SESSION['session'])) {
                             //$('#msg').html(response); // display success response from the server
                             text_alert = JSON.stringify(response);
                             window.alert(text_alert);
-                            window.location = base_url+"main/view?id=sumur";
+                            window.location = base_url+"main/view?id=tenant";
                         },
                         error: function (response) {
                             text_alert = JSON.stringify(response);
@@ -40,39 +40,50 @@ if(isset($_SESSION['session'])) {
             });
         </script>
         <div class="container" data-role="main" class="ui-content">
-            <h3>Form Master Data Sumur</h3>
+            <h3>Form Master Data Lump Sum</h3>
             <div class="row col-md-5">
                 <table class="table">
                     <tr>
                         <td colspan="3"><p id="msg"></p></td>
                     </tr>
                     <tr>
-                        <td><label>ID Sumur</label></td>
+                        <td><label>No Perjanjian</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="id_sumur" id="id_sumur" required></td>
+                        <td><input class="form-control" type="text" name="nama_tenant" id="nama_tenant" required></td>
                     </tr>
                     <tr>
-                        <td><label>Nama Sumur</label></td>
+                        <td><label>Nama Perjanjian</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="nama_sumur" id="nama_sumur" required></td>
+                        <td><input class="form-control" type="text" name="penanggung_jawab" id="penanggung_jawab" required></td>
                     </tr>
                     <tr>
-                        <td><label>Lokasi</label></td>
-                        <td>:</td>
-                        <td><input class="form-control" type="text" name="lokasi" id="lokasi" required></td>
-                    </tr>
-                    <tr>
-                        <td><label>ID Pompa</label></td>
+                        <td><label>Waktu Kadaluarsa</label></td>
                         <td>:</td>
                         <td>
-                            <select class="form-control" name="id_pompa" id="id_pompa">
-                                <?php foreach ($tenant as $row) {
-                                    ?>
-                                    <option value="<?= $row->id_master_pompa?>"><?= $row->id_pompa?> => <?= $row->nama_pompa?></option>
-                                    <?php
-                                }
-                                ?>
-                            </select>
+                            <div class="form-group">
+                                <div class='input-group date' id='datetimepicker2'>
+                                    <input type='text' class="form-control" name="waktu_kadaluarsa" id="waktu_kadaluarsa"/>
+                                    <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                </div>
+                            </div>
+                            <script type="text/javascript">
+                                $(function () {
+                                    $('#datetimepicker2').datepicker({
+                                        locale: 'id',
+                                        sideBySide:true,
+                                        format:'YYYY-MM-DD HH:mm'
+                                    });
+                                });
+                            </script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Nominal</label></td>
+                        <td>:</td>
+                        <td>
+                           <input class="form-control" type="text" name="nominal" id="nominal">
                         </td>
                     </tr>
                     <tr>
@@ -93,16 +104,16 @@ if(isset($_SESSION['session'])) {
                             <center>No
                         </th>
                         <th>
-                            <center>ID Sumur
+                            <center>Nama Tenant
                         </th>
                         <th>
-                            <center>Nama Sumur
+                            <center>Penanggung Jawab
                         </th>
                         <th>
                             <center>Lokasi
                         </th>
                         <th>
-                            <center>ID Pompa
+                            <center>ID Flow Meter
                         </th>
                         <th>
                             <center>Aksi
@@ -117,16 +128,16 @@ if(isset($_SESSION['session'])) {
                             <center>No
                         </th>
                         <th>
-                            <center>ID Sumur
+                            <center>Nama Tenant
                         </th>
                         <th>
-                            <center>Nama Sumur
+                            <center>Penanggung Jawab
                         </th>
                         <th>
-                            <center>Kondisi
+                            <center>Lokasi
                         </th>
                         <th>
-                            <center>ID Pompa
+                            <center>ID Flow Meter
                         </th>
                         <th>
                             <center>Aksi
@@ -149,7 +160,7 @@ if(isset($_SESSION['session'])) {
 
                     // Load data for the table's content from an Ajax source
                     "ajax": {
-                        "url": "<?php echo site_url('main/ajax_data_sumur')?>",
+                        "url": "<?php echo site_url('main/ajax_data_tenant')?>",
                         "type": "POST"
                     },
 
