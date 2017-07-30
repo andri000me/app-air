@@ -71,10 +71,9 @@
                 $this->db->where('pengguna_jasa_id_tarif !=','2');
                 $this->db->where('pengguna_jasa_id_tarif !=','3');
             }else if($tipe == "ruko"){
-                $tabel = $this->tabel_darat;
-                $this->db->like('nama_pengguna_jasa', $nama);
-                $this->db->from($tabel);
-                $this->db->where('pengguna_jasa_id_tarif =','1');
+                $this->db->like('id_master_flowmeter', $nama);
+                $this->db->from('master_tenant,master_flowmeter');
+                $this->db->where('id_flow = id_master_flowmeter');
             } else if($tipe == "agent"){
                 $this->db->like('nama_perusahaan', $nama);
                 $this->db->from('master_agent');

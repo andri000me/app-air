@@ -1,15 +1,15 @@
 <script>
     $(function () {
-        $("#nama_ruko").autocomplete({
+        $("#id_flowmeter").autocomplete({
             minLength:1,
             delay:0,
-            source:'<?php echo site_url('main/get_pembeli_ruko'); ?>',
+            source:'<?php echo site_url('main/get_tenant'); ?>',
             select:function(event, ui){
-                $('#id_flowmeter').val(ui.item.id_flowmeter);
-                $('#id_flowmeter_hidden').val(ui.item.id_flowmeter);
-                $('#alamat').val(ui.item.alamat);
+                $('#id_flow').val(ui.itemm.id_flow);
+                $('#nama_tenant').val(ui.item.nama_tenant);
+                $('#lokasi').val(ui.item.lokasi);
+                $('#penanggung_jawab').val(ui.item.penanggung_jawab);
                 $('#no_telp').val(ui.item.no_telp);
-                $('#pengguna').val(ui.item.pengguna);
             }
         });
     });
@@ -24,41 +24,52 @@
                     <tr>
                         <div class="form-group">
                             <td>
-                                <label for="nama_pembeli">ID Flow Meter</label>
+                                <label for="id_flowmeter">ID Flow Meter</label>
                             </td>
                             <td>:</td>
                             <td>
-                                <input type="text" class="form-control" id="nama_ruko" name="nama_ruko" placeholder="Masukkan Nama Ruko"/>
+                                <input type="text" class="form-control" id="id_flowmeter" name="id_flowmeter" placeholder="Masukkan ID Flowmeter"/>
+                                <input type="hidden" class="form-control" id="id_flow" name="id_flow" />
                             </td>
                         </div>
                     </tr>
                     <tr>
                         <div class="form-group">
                             <td>
-                                <label for="alamat_pembeli">Nama Tenant</label>
+                                <label for="nama_tenant">Nama Tenant</label>
                             </td>
                             <td>:</td>
                             <td>
-                                <input type="text" disabled class="form-control" id="id_flowmeter" name="id_flowmeter" />
-                                <input type="hidden" class="form-control" id="id_flowmeter_hidden" name="id_flowmeter_hidden" />
+                                <input type="text" disabled class="form-control" id="nama_tenant" name="nama_tenant" />
                             </td>
                         </div>
                     </tr>
                     <tr>
                         <div class="form-group">
                             <td>
-                                <label for="alamat_pembeli">Alamat Tenant</label>
+                                <label for="lokasi">Lokasi Tenant</label>
                             </td>
                             <td>:</td>
                             <td>
-                                <input type="text" disabled class="form-control" id="alamat" name="alamat" />
+                                <input type="text" disabled class="form-control" id="lokasi" name="lokasi" />
                             </td>
                         </div>
                     </tr>
                     <tr>
                         <div class="form-group">
                             <td>
-                                <label for="alamat_pembeli">Penanggung Jawab</label>
+                                <label for="penanggung_jawab">Penanggung Jawab</label>
+                            </td>
+                            <td>:</td>
+                            <td>
+                                <input type="text" disabled class="form-control" id="penanggung_jawab" name="penanggung_jawab" />
+                            </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="form-group">
+                            <td>
+                                <label for="no_telp">No Telepon</label>
                             </td>
                             <td>:</td>
                             <td>
@@ -69,23 +80,7 @@
                     <tr>
                         <div class="form-group">
                             <td>
-                                <label for="pengguna_jasa">Jenis Pengguna Jasa</label>
-                            </td>
-                            <td>:</td>
-                            <td>
-                                <select disabled name="pengguna" id="pengguna" class="form-control">
-                                    <option></option>
-                                    <?php foreach($pengguna as $rowpengguna){?>
-                                        <option value="<?=$rowpengguna->id_tarif?>"><?=$rowpengguna->tipe_pengguna_jasa?></option>
-                                    <?php }?>
-                                </select>
-                            </td>
-                        </div>
-                    </tr>
-                    <tr>
-                        <div class="form-group">
-                            <td>
-                                <label for="tanggal">Tanggal</label>
+                                <label for="tanggal">Waktu Perekaman</label>
                             </td>
                             <td>:</td>
                             <td>
@@ -99,11 +94,10 @@
                                 </div>
                                 <script type="text/javascript">
                                     $(function () {
-                                        $('#datepicker').datepicker({
-                                            todayBtn: "linked",
-                                            clearBtn: true,
-                                            autoclose: true,
-                                            format: "yyyy-mm-dd"
+                                        $('#datepicker').datetimepicker({
+                                            locale: 'id',
+                                            sideBySide:true,
+                                            format:'YYYY-MM-DD HH:mm'
                                         });
                                     });
                                 </script>

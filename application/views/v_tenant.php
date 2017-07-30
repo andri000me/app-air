@@ -8,6 +8,7 @@ if(isset($_SESSION['session'])) {
                     var nama_tenant = $('#nama_tenant').val();
                     var penanggung_jawab = $('#penanggung_jawab').val();
                     var alamat= $('#alamat').val();
+                    var no_telp= $('#no_telp').val();
                     var id_flowmeter = $('#id_flowmeter').val();
                     var form_data = new FormData();
                     var base_url = '<?= base_url();?>';
@@ -15,6 +16,7 @@ if(isset($_SESSION['session'])) {
                     form_data.append('nama_tenant',nama_tenant);
                     form_data.append('penanggung_jawab',penanggung_jawab);
                     form_data.append('alamat',alamat);
+                    form_data.append('no_telp',no_telp);
                     form_data.append('id_flowmeter',id_flowmeter);
                     $.ajax({
                         url: base_url +'index.php/main/input_data_tenant', // point to server-side controller method
@@ -62,6 +64,11 @@ if(isset($_SESSION['session'])) {
                         <td><input class="form-control" type="text" name="alamat" id="alamat" required></td>
                     </tr>
                     <tr>
+                        <td><label>No Telp</label></td>
+                        <td>:</td>
+                        <td><input class="form-control" type="text" name="no_telp" id="no_telp" required></td>
+                    </tr>
+                    <tr>
                         <td><label>ID Flow Meter</label></td>
                         <td>:</td>
                         <td>
@@ -102,6 +109,9 @@ if(isset($_SESSION['session'])) {
                             <center>Lokasi
                         </th>
                         <th>
+                            <center>No Telp
+                        </th>
+                        <th>
                             <center>ID Flow Meter
                         </th>
                         <th>
@@ -124,6 +134,9 @@ if(isset($_SESSION['session'])) {
                         </th>
                         <th>
                             <center>Lokasi
+                        </th>
+                        <th>
+                            <center>No Telp
                         </th>
                         <th>
                             <center>ID Flow Meter
