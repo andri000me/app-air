@@ -115,6 +115,10 @@ date_default_timezone_set('Asia/Makassar');
               $data['title'] = 'Penagihan Ruko'; //judul title
               $this->load->template('v_tagihan',$data);
           }
+          else if($page == "realisasi_pembayaran_darat"){
+              $data['title'] = 'Realisasi Pembayaran Darat'; //judul title
+              $this->load->template('v_realisasi_pembayaran_darat',$data);
+          }
           else{
               redirect('main');
           }
@@ -253,7 +257,6 @@ date_default_timezone_set('Asia/Makassar');
                             'tgl_perm_pengantaran' => date('Y-m-d H:i:s',strtotime($tanggal)),
                             'total_permintaan' => $tonnase,
                             'no_kwitansi' => $no_kwitansi,
-                            'status_pembayaran' => $status_invoice,
                             'status_invoice' => $status_invoice,
                             'issued_at' => date("Y-m-d H:i:s",time()),
                             'issued_by' => $this->session->userdata('nama')
@@ -307,7 +310,6 @@ date_default_timezone_set('Asia/Makassar');
                             'tgl_perm_pengantaran' => date('Y-m-d H:i:s',strtotime($tanggal)),
                             'total_permintaan' => $tonnase,
                             'no_kwitansi' => $no_kwitansi,
-                            'status_pembayaran' => $status_invoice,
                             'status_invoice' => $status_invoice,
                             'issued_at' => date("Y-m-d H:i:s",time()),
                             'issued_by' => $this->session->userdata('nama')
@@ -697,7 +699,7 @@ date_default_timezone_set('Asia/Makassar');
               $data = array();
               $no = 1;
               $color = '';
-
+              $aksi = "";
               foreach ($result as $row){
                   if($row->diskon != NULL || $row->diskon != 0){
                       $row->tarif -= $row->diskon/100 * $row->tarif;
@@ -706,11 +708,15 @@ date_default_timezone_set('Asia/Makassar');
                       $total_pembayaran = $row->tarif * $row->total_permintaan;
                   }
 
+                  if($this->session->userdata('role') == 'loket'){
+                      $aksi = '<a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Form Permintaan" target="_blank" href="'.base_url("main/cetakFPermintaan?id=".$row->id_transaksi."").'"></a>&nbsp;';
+                  }
+
                   if($row->batal_nota == 1){
-                      $aksi = '<span class=""><a class="btn btn-danger glyphicon glyphicon-remove" title="batal kwitansi" target="_blank" href="javascript:void(0)" onclick="cancel_kwitansi('."'".$row->id_transaksi."'".');"> </a></span>';
+                      $aksi .= '<span class=""><a class="btn btn-danger glyphicon glyphicon-remove" title="batal kwitansi" target="_blank" href="javascript:void(0)" onclick="cancel_kwitansi('."'".$row->id_transaksi."'".');"> </a></span>';
                       $color = '#ff0000';
                   } else if($row->waktu_mulai_pengantaran == NULL || $row->waktu_selesai_pengantaran == NULL){
-                      $aksi = '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="cetak kwitansi" target="_blank" href="'.base_url("main/cetakKwitansi?id=".$row->id_transaksi."").'"> </a></span>';
+                      $aksi .= '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="cetak kwitansi" target="_blank" href="'.base_url("main/cetakKwitansi?id=".$row->id_transaksi."").'"> </a></span>';
                       $aksi .= '&nbsp;<span class=""><a class="btn btn-danger glyphicon glyphicon-remove" title="batal transaksi" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a></span>';
                   } else{
                       $aksi = "";
@@ -728,7 +734,7 @@ date_default_timezone_set('Asia/Makassar');
                       $row->tgl_perm_pengantaran = "";
                   }
 
-                  if($row->status_pembayaran == 0 && $row->batal_kwitansi == 0){
+                  if($row->status_pembayaran == 0 && $row->batal_kwitansi == 0 && $row->status_invoice == 0){
                       $data[] = array(
                           'no' => $no,
                           'nama' => $row->nama_pengguna_jasa." / ".$row->nama_pemohon,
@@ -805,10 +811,13 @@ date_default_timezone_set('Asia/Makassar');
                           $aksi = '';
                       }
                   } else if($this->session->userdata('role') == "wtp"){
-                      if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL)
-                          $aksi = '<a class="btn btn-primary glyphicon glyphicon-list-alt" target="_blank" href="'.base_url("main/cetakPengisian?id=".$row->id_transaksi."").'" title="Cetak Form Pengisian"></a>';
-                      else
+                      if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
+                          $aksi = '<a class="btn btn-primary glyphicon glyphicon-list-alt" target="_blank" href="' . base_url("main/cetakPengisian?id=" . $row->id_transaksi . "") . '" title="Cetak Form Pengisian"></a>&nbsp;';
+                          $aksi .= '<a class="btn btn-primary glyphicon glyphicon-list-alt" target="_blank" href="' . base_url("main/cetakPengisianKapal?id=" . $row->id_transaksi . "") . '" title="Cetak Form Pengisian Untuk Kapal"></a>';
+                      }
+                      else{
                           $aksi = '';
+                      }
                   } else{
                       if($row->flowmeter_awal == NULL && $row->flowmeter_akhir == NULL)
                           $aksi = '<a class="btn btn-sm btn-danger glyphicon glyphicon-trash" href="javascript:void(0)" title="Batal Transaksi" onclick="batal(' . "'" . $row->id_transaksi . "'" . ')"></a>';
@@ -882,6 +891,54 @@ date_default_timezone_set('Asia/Makassar');
                   if($no > 20){
                       break;
                   }
+              }
+          }
+
+          echo json_encode($data);
+      }
+
+      public function tabel_tagihan(){
+          $result = $this->data->get_tabel_transaksi("darat");
+          $data = array();
+          $no = 1;
+          $color = '';
+
+          foreach ($result as $row){
+              if($row->diskon != NULL || $row->diskon != 0){
+                  $row->tarif -= $row->diskon/100 * $row->tarif;
+                  $total_pembayaran = $row->tarif * $row->total_permintaan;
+              }else{
+                  $total_pembayaran = $row->tarif * $row->total_permintaan;
+              }
+
+              $aksi = '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="realisasi pembayaran" onclick="realisasi('."'".$row->id_transaksi."'".');" target="_blank" href="javascript:void(0)"> </a></span>';
+
+              if($row->waktu_mulai_pengantaran == NULL){
+                  $row->waktu_mulai_pengantaran = "";
+              }
+
+              if($row->waktu_selesai_pengantaran == NULL){
+                  $row->waktu_selesai_pengantaran = "";
+              }
+
+              if($row->tgl_perm_pengantaran == NULL){
+                  $row->tgl_perm_pengantaran = "";
+              }
+
+              if($row->status_delivery == 1 && $row->soft_delete == 0 && $row->batal_nota == 0 && $row->batal_kwitansi == 0 && $row->status_invoice == 1){
+                  $data[] = array(
+                      'no' => $no,
+                      'nama_pelanggan' => $row->nama_pengguna_jasa." / ".$row->nama_pemohon,
+                      'waktu_transaksi' => $row->tgl_transaksi,
+                      'no_telp' => $row->no_telp,
+                      'alamat' => $row->alamat,
+                      'tarif' => $this->Ribuan($row->tarif),
+                      'total_pengisian' => $row->total_permintaan,
+                      'pembayaran' => $this->Ribuan($total_pembayaran),
+                      'aksi' => $aksi,
+                      'color' => $color
+                  );
+                  $no++;
               }
           }
 
@@ -973,11 +1030,25 @@ date_default_timezone_set('Asia/Makassar');
               'id_realisasi' => $this->input->post('id-transaksi'),
               'no_nota' => $this->input->post('no_nota'),
               'no_faktur' => $this->input->post('no_faktur'),
-              'tgl_pembayaran' => date('d-m-Y', time()),
-              'last_modified' => date("Y-m-d",time()),
+              'tgl_pembayaran' => date('Y-m-d H:i:s', time()),
+              'last_modified' => date("Y-m-d H:i:s",time()),
               'modified_by' => $this->session->userdata('nama')
           );
           $this->data->update_pembayaran($this->input->post('id-transaksi'), $data);
+          echo json_encode(array("status" => TRUE));
+      }
+
+      public function realisasi_pembayaran_darat(){
+          $this->_validate_pembayaran_darat();
+          $data = array(
+              'id_realisasi' => $this->input->post('id-transaksi'),
+              'no_nota' => $this->input->post('no_nota'),
+              'no_faktur' => $this->input->post('no_faktur'),
+              'tgl_pembayaran' => date('Y-m-d H:i:s', time()),
+              'last_modified' => date("Y-m-d H:i:s",time()),
+              'modified_by' => $this->session->userdata('nama')
+          );
+          $this->data->update_pembayaran_darat($this->input->post('id-transaksi'), $data);
           echo json_encode(array("status" => TRUE));
       }
 
@@ -1086,7 +1157,7 @@ date_default_timezone_set('Asia/Makassar');
 
                   if($row->waktu_mulai_pengantaran == NULL || $row->waktu_selesai_pengantaran == NULL){
                       if($row->status_invoice == 1){
-                          $aksi = '<span class=""><a class="btn btn-danger glyphicon glyphicon-remove" title="batal transaksi" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a></span>';
+                          $aksi .= '<span class=""><a class="btn btn-danger glyphicon glyphicon-remove" title="batal transaksi" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a></span>';
                       }
                   } else {
                       $aksi = "";
@@ -1103,10 +1174,11 @@ date_default_timezone_set('Asia/Makassar');
                       $row->tgl_perm_pengantaran = "";
                   }
 
-                  if($row->status_pembayaran == 1 && $row->status_delivery == 0){
+                  if($row->status_delivery == 0 && $row->batal_nota == 0 && $row->batal_kwitansi == 0){
                       $data[] = array(
                           'no' => $no,
                           'nama' => $row->nama_pengguna_jasa." / ".$row->nama_pemohon,
+                          'alamat' => $row->alamat,
                           'tgl_transaksi' => $row->tgl_transaksi,
                           'tgl_permintaan' => $row->tgl_perm_pengantaran,
                           'total_pengisian' => $row->total_permintaan,
@@ -1254,14 +1326,14 @@ date_default_timezone_set('Asia/Makassar');
               $result = $this->data->get_tabel_transaksi($tipe);
               $data = array();
               $no = 1;
+              $aksi = "";
               foreach ($result as $row){
-                  $aksi = '<a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Form Permintaan" target="_blank" href="'.base_url("main/cetakFPermintaan?id=".$row->id_transaksi."").'"></a>';
                   if($row->waktu_mulai_pengantaran == NULL){
-                      $aksi .= '&nbsp;<a class="btn btn-sm btn-info glyphicon glyphicon-road" href="javascript:void(0)" title="Pengantaran" onclick="pengantaran('."'".$row->id_transaksi."'".');"></a>';
+                      $aksi = '&nbsp;<a class="btn btn-sm btn-info glyphicon glyphicon-road" href="javascript:void(0)" title="Pengantaran" onclick="pengantaran('."'".$row->id_transaksi."'".');"></a>';
                   }else if($row->waktu_selesai_pengantaran != NULL){
                       $aksi = "";
                   }else{
-                      $aksi .= '&nbsp;<a class="btn btn-sm btn-primary glyphicon glyphicon-ok" href="javascript:void(0)" title="Realisasi" onclick="realisasi('."'".$row->id_transaksi."'".')"></a>';
+                      $aksi = '&nbsp;<a class="btn btn-sm btn-primary glyphicon glyphicon-ok" href="javascript:void(0)" title="Realisasi" onclick="realisasi('."'".$row->id_transaksi."'".')"></a>';
                   }
                   $format_tgl = date('d-m-Y H:i', strtotime($row->tgl_transaksi ));
                   $format_tgl_pengantaran = date('d-m-Y H:i', strtotime($row->tgl_perm_pengantaran ));
@@ -1274,7 +1346,7 @@ date_default_timezone_set('Asia/Makassar');
                       $status_pengantaran = "Belum Diantar";
                   }
 
-                  if($row->status_pembayaran == 1 && $row->status_delivery == 0){
+                  if(($row->status_pembayaran == 1 || $row->status_pembayaran == 0) && $row->status_delivery == 0 && $row->batal_nota == 0 && $row->batal_kwitansi == 0){
                       $data[] = array(
                           'no' => $no,
                           'nama' => $row->nama_pemohon,
@@ -1387,6 +1459,11 @@ date_default_timezone_set('Asia/Makassar');
           echo json_encode($data);
       }
 
+      public function pembayaran_darat($id) {
+          $data = $this->data->get_by_id("darat", $id);
+          echo json_encode($data);
+      }
+
       public function update_realisasi_darat(){
           $this->_validate_realisasi_darat();
           $data = array(
@@ -1394,7 +1471,6 @@ date_default_timezone_set('Asia/Makassar');
               'waktu_selesai_pengantaran' => date("Y-m-d H:i:s",time()),
               'pengantar' => $this->input->post('pengantar'),
               'status_delivery' => '1',
-              'status_invoice' => '0',
               'last_modified' => date("Y-m-d H:i:s",time()),
               'modified_by' => $this->session->userdata('username')
           );
@@ -1517,6 +1593,33 @@ date_default_timezone_set('Asia/Makassar');
           }
       }
 
+      private function _validate_pembayaran_darat() {
+          $data = array();
+          $data['error_string'] = array();
+          $data['inputerror'] = array();
+          $data['status'] = TRUE;
+
+          if($this->input->post('no_nota') == NULL)
+          {
+              $data['inputerror'][] = 'no_nota';
+              $data['error_string'][] = 'Kolom No Nota Awal Masih Kosong';
+              $data['status'] = FALSE;
+          }
+
+          if($this->input->post('no_faktur') == NULL)
+          {
+              $data['inputerror'][] = 'no_faktur';
+              $data['error_string'][] = 'Kolom No Faktur Akhir Masih Kosong';
+              $data['status'] = FALSE;
+          }
+
+          if($data['status'] === FALSE)
+          {
+              echo json_encode($data);
+              exit();
+          }
+      }
+
       //fungsi untuk membuat notifikasi
       public function cekNotifKapal(){
             $result = $this->data->notifKapal();
@@ -1540,6 +1643,11 @@ date_default_timezone_set('Asia/Makassar');
 
       public function cekNotifBayar(){
           $result = $this->data->notifBayar();
+          echo json_encode($result);
+      }
+
+      public function cekNotifBayarDarat(){
+          $result = $this->data->notifBayarDarat();
           echo json_encode($result);
       }
 
@@ -1582,7 +1690,7 @@ date_default_timezone_set('Asia/Makassar');
                   }
 
                   if($this->session->userdata('role') == 'keuangan'){
-                      if($row->status_pembayaran == 1) {
+                      if($row->status_pembayaran == 1 && $row->status_invoice == 0) {
                           $total += $total_pembayaran;
                           $ton += $row->total_permintaan;
                           $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi));
@@ -2615,6 +2723,30 @@ date_default_timezone_set('Asia/Makassar');
           $this->load->view('v_pengisian', $data);
       }
 
+      function cetakPengisianKapal(){
+          $id = $this->input->get('id');
+          define('FPDF_FONTPATH',$this->config->item('fonts_path'));
+          $query = $this->data->cetakkwitansi("laut",$id);
+
+          $tanggal = date('d M Y', time());
+          $tgl_transaksi = date('D, d M Y', strtotime($query->tgl_transaksi));
+          $realisasi = $query->flowmeter_akhir - $query->flowmeter_awal;
+
+          $hasil = array(
+              'nama_perusahaan' => $query->nama_perusahaan,
+              'kapal' => $query->nama_lct,
+              'voy_no' => $query->voy_no,
+              'tgl_transaksi' => $tgl_transaksi,
+              'total_permintaan' => $query->total_permintaan,
+              'flowmeter_sebelum' => $query->flowmeter_awal,
+              'flowmeter_sesudah' => $query->flowmeter_akhir,
+              'realisasi' => $realisasi,
+              'tanggal' => $tanggal
+          );
+          $data['hasil'] = $hasil;
+          $this->load->view('v_pengisian_kapal', $data);
+      }
+
       function cetakFPermintaan(){
           $id = $this->input->get('id');
           define('FPDF_FONTPATH',$this->config->item('fonts_path'));
@@ -2799,7 +2931,7 @@ date_default_timezone_set('Asia/Makassar');
               $ton = 0;
               $ex = $object->setActiveSheetIndex(0);
               foreach($result as $row){
-                  if($row->status_pembayaran == 1){
+                  if($row->status_pembayaran == 1 && $row->status_invoice == 0){
                       $no++;
                       $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
                       $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($style);

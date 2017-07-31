@@ -521,7 +521,7 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
         $total = 0;
         $ton = 0;
         foreach ($laporan as $rbarang) {
-            if ($rbarang->status_pembayaran == 1) {
+            if ($rbarang->status_pembayaran == 1 && $rbarang->status_invoice == 0) {
                 $no++;
 
                 if ($rbarang->diskon != NULL ||$rbarang->diskon != 0) {

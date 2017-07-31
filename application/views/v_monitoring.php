@@ -15,6 +15,7 @@ if($this->session->userdata('role') == "loket" && $this->session->userdata('sess
                         "<tr>" +
                         "<th><center>No</center></th>" +
                         "<th><center>Nama Perusahaan / Pemohon</center></th>" +
+                        "<th><center>Alamat</center></th>" +
                         "<th><center>Waktu Permohonan</center></th>" +
                         "<th><center>Waktu Pelayanan</center></th>" +
                         "<th><center>Vol (Ton)</center></th>" +
@@ -28,6 +29,7 @@ if($this->session->userdata('role') == "loket" && $this->session->userdata('sess
                         a +="<tr>" +
                             "<td align='center'>"+myArr[i]["no"]+"</td>" +
                             "<td align='center'>"+myArr[i]["nama"]+"</td>" +
+                            "<td align='center'>"+myArr[i]["alamat"]+"</td>" +
                             "<td align='center'>"+myArr[i]["tgl_transaksi"]+"</td>" +
                             "<td align='center'>"+myArr[i]["tgl_permintaan"]+"</td>" +
                             "<td align='center'>"+myArr[i]["total_pengisian"]+"</td>" +
@@ -42,6 +44,7 @@ if($this->session->userdata('role') == "loket" && $this->session->userdata('sess
                         "<tr>" +
                         "<th><center>No</center></th>" +
                         "<th><center>Nama Pelanggan</center></th>" +
+                        "<th><center>Alamat</center></th>" +
                         "<th><center>Waktu Permohonan</center></th>" +
                         "<th><center>Waktu Pelayanan</center></th>" +
                         "<th><center>Vol (Ton)</center></th>" +
@@ -188,6 +191,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
                             "<tr>" +
                             "<th><center>No</center></th>" +
                             "<th><center>Nama Perusahaan / Pemohon</center></th>" +
+                            "<th><center>Alamat</center></th>" +
                             "<th><center>Waktu Permohonan</center></th>" +
                             "<th><center>Waktu Pelayanan</center></th>" +
                             "<th><center>Vol (Ton)</center></th>" +
@@ -200,6 +204,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
                             a +="<tr>" +
                                 "<td align='center'>"+myArr[i]["no"]+"</td>" +
                                 "<td align='center'>"+myArr[i]["nama"]+"</td>" +
+                                "<td align='center'>"+myArr[i]["alamat"]+"</td>" +
                                 "<td align='center'>"+myArr[i]["tgl_transaksi"]+"</td>" +
                                 "<td align='center'>"+myArr[i]["tgl_permintaan"]+"</td>" +
                                 "<td align='center'>"+myArr[i]["total_pengisian"]+"</td>" +
@@ -212,7 +217,8 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
                             "<tfoot>" +
                             "<tr>" +
                             "<th><center>No</center></th>" +
-                            "<th><center>Nama Pelanggan</center></th>" +
+                            "<th><center>Nama Perusahaan / Pemohon</center></th>" +
+                            "<th><center>Alamat</center></th>" +
                             "<th><center>Waktu Permohonan</center></th>" +
                             "<th><center>Waktu Pelayanan</center></th>" +
                             "<th><center>Vol (Ton)</center></th>" +

@@ -127,10 +127,11 @@
                                     <li>
                                         <a href="<?= base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
                                     </li>
-                                    <li><a href="<?= base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Air Ruko</a></li>
+                                    <!---<li><a href="<?= base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Air Ruko</a></li>--->
                                 </ul>
                             </li>
                             <li><a href="<?= base_url('main/tarif'); ?>">Penyesuaian Tarif</a></li>
+                            <!----
                             <li><a href="<?= base_url('main/view?id=tenant'); ?>">Master Tenant</a></li>
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Lumpsum</a>
@@ -143,6 +144,7 @@
                                     </li>
                                 </ul>
                             </li>
+                            ---->
                             <?php
                         }
                         else if($this->session->userdata('role') == "wtp"){
@@ -170,11 +172,14 @@
                                     <li>
                                         <a href="<?= base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
                                     </li>
+                                    <!---
                                     <li>
                                         <a href="<?= base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Transaksi Air Tenant</a>
                                     </li>
+                                    --->
                                 </ul>
                             </li>
+                            <!---
                             <li>
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tenant</a>
                                 <ul class="dropdown-menu">
@@ -186,6 +191,8 @@
                                     </li>
                                 </ul>
                             </li>
+                            --->
+                            <!---
                             <li>
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Sumur</a>
                                 <ul class="dropdown-menu">
@@ -203,10 +210,14 @@
                                     </li>
                                 </ul>
                             </li>
+                            --->
                             <?php
                         }
                         else if($this->session->userdata('role') == "keuangan"){
                             ?>
+                            <li>
+                                <a href="<?= base_url('main/view?id=realisasi_pembayaran_darat'); ?>">Realisasi Pembayaran Air Darat</a>
+                            </li>
                             <li>
                                 <a href="<?= base_url('main/view?id=validasi_pembayaran_darat'); ?>">Validasi Pembayaran Air Darat</a>
                             </li>
@@ -272,13 +283,14 @@
     ?>
         <script>
             var myVar = setInterval(showNotifTransaksiKapal, 3000);
+            var myVar2 = setInterval(showNotifTransaksiDarat, 3000);
 
             function showNotifTransaksiKapal() {
                 var xmlhttp = new XMLHttpRequest();
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Piutang' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Piutang Kapal' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifKapal").innerHTML = '';
                     }
@@ -286,9 +298,24 @@
                 xmlhttp.open("GET", "<?php echo base_url('main/cekNotifBayar') ?>" , true);
                 xmlhttp.send();
             }
+
+            function showNotifTransaksiDarat() {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        if(xmlhttp.responseText != "0")
+                            document.getElementById("notifDarat").innerHTML = "<a class='btn btn-danger' title='Realisasi Piutang Darat' href='<?= base_url("main/view?id=realisasi_pembayaran_darat")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                        else
+                            document.getElementById("notifDarat").innerHTML = '';
+                    }
+                };
+                xmlhttp.open("GET", "<?php echo base_url('main/cekNotifBayarDarat') ?>" , true);
+                xmlhttp.send();
+            }
         </script>
         <div class="topright" align="right">
             <span id="notifKapal" ></span>
+            <span id="notifDarat" ></span>
         </div>
     <?php
     }

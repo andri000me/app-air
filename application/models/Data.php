@@ -276,9 +276,10 @@
 
         public function get_by_id($tipe,$id) {
             if($tipe == "darat"){
-                $this->db->from('transaksi_darat ,pembeli_darat');
+                $this->db->from('transaksi_darat ,pembeli_darat,pengguna_jasa');
                 $this->db->where('id_transaksi',$id);
                 $this->db->where('pembeli_darat_id_pengguna_jasa = id_pengguna_jasa');
+                $this->db->where('pengguna_jasa_id_tarif = id_tarif');
             }
             else if($tipe == "ruko"){
                 $this->db->from('master_tenant,master_flowmeter');
@@ -322,6 +323,18 @@
             $this->db->set('realisasi_transaksi_laut_id_realisasi', $where);
             $this->db->where('id_transaksi',$where);
             $this->db->update($this->tabel_transaksi_laut);
+
+            return $this->db->affected_rows();
+        }
+
+        public function update_pembayaran_darat($where, $data){
+            $this->db->insert('realisasi_transaksi_darat',$data);
+
+            $this->db->set('realisasi_transaksi_darat_id_realisasi', $where);
+            $this->db->set('status_invoice', '0');
+            $this->db->set('status_pembayaran', '1');
+            $this->db->where('id_transaksi',$where);
+            $this->db->update($this->tabel_transaksi_darat);
 
             return $this->db->affected_rows();
         }
@@ -1455,7 +1468,7 @@
             $this->db->select("*");
             $this->db->from('transaksi_darat');
             $this->db->where('status_delivery =',0);
-            $this->db->where('status_pembayaran =',1);
+            $this->db->where('batal_kwitansi =',0);
             $this->db->where('soft_delete =',0);
             $query = $this->db->get();
 
@@ -1478,7 +1491,7 @@
             $this->db->select("*");
             $this->db->from('transaksi_darat');
             $this->db->where('status_delivery =',0);
-            $this->db->where('status_pembayaran =',1);
+            $this->db->where('batal_kwitansi =',0);
             $this->db->where('soft_delete =',0);
             $query = $this->db->get();
 
@@ -1504,6 +1517,19 @@
             $this->db->where('flowmeter_akhir !=',NULL);
             $this->db->where('realisasi_transaksi_laut_id_realisasi =',NULL);
             $this->db->where('soft_delete =', 0);
+
+            $query = $this->db->get();
+
+            return $query->num_rows();
+        }
+
+        public function notifBayarDarat(){
+            $this->db->select("*");
+            $this->db->from('transaksi_darat');
+            $this->db->where('status_invoice =', 1);
+            $this->db->where('status_delivery =', 1);
+            $this->db->where('soft_delete =', 0);
+            $this->db->where('batal_kwitansi =',0);
 
             $query = $this->db->get();
 
