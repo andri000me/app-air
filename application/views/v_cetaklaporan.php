@@ -958,6 +958,146 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
     </html>
     <?php
 }
+else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "ruko"){
+    ?>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title><?=$title?></title>
+        <style>
+            table{
+                border-collapse: collapse;
+                width: 100%;
+                margin: 0 auto;
+            }
+            table th{
+                border:1px solid #000;
+                padding: 3px;
+                font-weight: bold;
+                text-align: center;
+            }
+            table td{
+                border:1px solid #000;
+                padding: 3px;
+                vertical-align: top;
+            }
+        </style>
+    </head>
+    <body>
+    <h3 style="text-align: center"><?= $title?></h3>
+    <br><br>
+    <table>
+        <tr>
+            <th align="center">No</th>
+            <th align="center">ID FLow Meter</th>
+            <th align="center">Nama Tenant</th>
+            <th align="center">Tarif</th>
+            <th align="center">Diskon</th>
+            <th align="center">Pemakaian Awal</th>
+            <th align="center">Pemakaian Akhir</th>
+            <th align="center">Total Penggunaan</th>
+            <th align="center">Total Pembayaran (Rp. )</th>
+        </tr>
+        <?php
+        $total_pembayaran =0;
+        $ton_total = 0;
+        $ton = 0;
+        $no = 1;
+
+        foreach($laporan as $row) {
+            $data_tagihan = $this->data->getTagihan($tgl_awal, $tgl_akhir, $row->id_flow);
+
+            $ttl_akhir = 0;
+            $ttl_awal = 0;
+
+            $i = 1;
+
+            foreach ($data_tagihan as $data) {
+                if ($data->flowmeter_tenant == $row->id_tenant) {
+                    if ($i == 1 && $data->flow_hari_ini != NULL) {
+                        $ttl_awal = $data->flow_hari_ini;
+                    } else {
+                        if ($ttl_awal == 0) {
+                            $ttl_awal = $data->flow_hari_ini;
+                        }
+                    }
+                    if ($i == count($data_tagihan) && $data->flow_hari_ini != NULL) {
+                        $ttl_akhir = $data->flow_hari_ini;
+                    }
+                    $i++;
+                } else {
+                    $i = 1;
+                }
+            }
+
+            $ton = $ttl_akhir - $ttl_awal;
+            $ton_total += $ton;
+
+            if ($data->id_master_lumpsum == 0) {
+                if ($row->diskon != NULL) {
+                    $pembayaran = ($row->tarif - ($row->tarif * $row->diskon / 100)) * $ton;
+                } else {
+                    $pembayaran = $row->tarif * $ton;
+                }
+            } else {
+                $date_now = strtotime(date('Y-m-d', time()));
+                $date_kadaluarsa = strtotime($row->waktu_kadaluarsa);
+                if ($date_now <= $date_kadaluarsa)
+                    $pembayaran = $row->nominal;
+                else
+                    $pembayaran = 0;
+            }
+
+            $total_pembayaran += $pembayaran;
+
+            if ($row->tarif == '0')
+                return '';
+            else if ($row->tarif < 100)
+                $row->tarif .= ',-';
+            else
+                $row->tarif = number_format($row->tarif, 0, '', '.') . ',-';
+
+            if ($pembayaran == '0')
+                return '';
+            else if ($pembayaran < 100)
+                $pembayaran .= ',-';
+            else
+                $pembayaran = number_format($pembayaran, 0, '', '.') . ',-';
+
+            ?>
+            <tr>
+                <td align="center"><?=$no?></td>
+                <td align="center"><?= $row->id_flowmeter ?></td>
+                <td align="center"><?= $row->nama_tenant ?></td>
+                <td align="center"><?= $row->tarif ?></td>
+                <td align="center"><?= $row->diskon ?></td>
+                <td align="center"><?= $ttl_awal ?></td>
+                <td align="center"><?= $ttl_akhir ?></td>
+                <td align="center"><?= $ton ?></td>
+                <td align="center"><?= $pembayaran ?></td>
+            </tr>
+            <?php
+            $no++;
+        }
+
+        if($total_pembayaran == '0')
+            return '';
+        else if($total_pembayaran < 100)
+            $total_pembayaran.= ',-';
+        else
+            $total_pembayaran = number_format($total_pembayaran,0,'','.').',-';
+        ?>
+
+        <tr>
+            <td align="center"colspan="7"><b>Total</b></td>
+            <td align="center"><b><?= $ton_total?></b></td>
+            <td align="center"><b><?= $total_pembayaran?></b></td>
+        </tr>
+    </table>
+    </body>
+    </html>
+    <?php
+}
 else if($this->session->userdata('role') == "perencanaan" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "laut_operasi" ){
     ?>
     <!DOCTYPE html>

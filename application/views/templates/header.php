@@ -127,19 +127,19 @@
                                     <li>
                                         <a href="<?= base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
                                     </li>
-                                    <!----<li><a href="<?= base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Air Ruko</a></li>--->
+                                    <li><a href="<?= base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Air Ruko</a></li>
                                 </ul>
                             </li>
                             <li><a href="<?= base_url('main/tarif'); ?>">Penyesuaian Tarif</a></li>
                             <li><a href="<?= base_url('main/view?id=tenant'); ?>">Master Tenant</a></li>
                             <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Lump Sum</a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Lumpsum</a>
                                 <ul class="dropdown-menu">
                                     <li>
                                         <a href="<?= base_url('main/view?id=lumpsum'); ?>">Master Lumpsum</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=lumpsum'); ?>">Penentuan Lump Sum</a>
+                                        <a href="<?= base_url('main/view?id=tagihan'); ?>">Penagihan Ruko</a>
                                     </li>
                                 </ul>
                             </li>
@@ -169,6 +169,9 @@
                                     </li>
                                     <li>
                                         <a href="<?= base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Transaksi Air Tenant</a>
                                     </li>
                                 </ul>
                             </li>

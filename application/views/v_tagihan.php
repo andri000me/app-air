@@ -6,7 +6,7 @@
             delay:0,
             source:'<?php echo site_url('main/get_pembeli_ruko'); ?>',
             select:function(event, ui){
-                $('#id_flowmeter').val(ui.item.id_flowmeter);
+                $('#id_flowmeter').val(ui.item.id_tenant);
             }
         });
     });

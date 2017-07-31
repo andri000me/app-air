@@ -68,12 +68,12 @@ if(isset($_SESSION['session'])) {
                         <td><input class="form-control" type="text" name="alamat" id="alamat" required value="<?= $isi['alamat'] ?>"></td>
                     </tr>
                     <tr>
-                        <td><label>ID FLow Meter</label></td>
+                        <td><label>ID Flow Meter</label></td>
                         <td>:</td>
                         <td>
                             <select class="form-control" name="id_flowmeter" id="id_flowmeter">
                                 <?php foreach ($tenant as $row) {
-                                    if($row->id_flowmeter == $isi['id_flowmeter']) {
+                                    if($row->id_flow == $isi['id_flowmeter']) {
                                         ?>
                                         <option selected value="<?= $row->id_flow ?>"><?= $row->id_flowmeter ?>
                                             => <?= $row->nama_flowmeter ?></option>

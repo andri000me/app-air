@@ -5,11 +5,13 @@
             delay:0,
             source:'<?php echo site_url('main/get_tenant'); ?>',
             select:function(event, ui){
-                $('#id_flow').val(ui.itemm.id_flow);
+                $('#id_flow').val(ui.item.id_flow);
+                $('#id_tenant').val(ui.item.id_tenant);
                 $('#nama_tenant').val(ui.item.nama_tenant);
                 $('#lokasi').val(ui.item.lokasi);
                 $('#penanggung_jawab').val(ui.item.penanggung_jawab);
                 $('#no_telp').val(ui.item.no_telp);
+                $('#flow_akhir').val(ui.item.flow_akhir);
             }
         });
     });
@@ -30,6 +32,7 @@
                             <td>
                                 <input type="text" class="form-control" id="id_flowmeter" name="id_flowmeter" placeholder="Masukkan ID Flowmeter"/>
                                 <input type="hidden" class="form-control" id="id_flow" name="id_flow" />
+                                <input type="hidden" class="form-control" id="id_tenant" name="id_tenant" />
                             </td>
                         </div>
                     </tr>
@@ -74,6 +77,17 @@
                             <td>:</td>
                             <td>
                                 <input type="text" disabled class="form-control" id="no_telp" name="no_telp" />
+                            </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="form-group">
+                            <td>
+                                <label for="flow_akhir">Flow Akhir</label>
+                            </td>
+                            <td>:</td>
+                            <td>
+                                <input type="text" disabled class="form-control" id="flow_akhir" name="flow_akhir" />
                             </td>
                         </div>
                     </tr>

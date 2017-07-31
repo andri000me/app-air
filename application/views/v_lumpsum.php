@@ -5,19 +5,19 @@ if(isset($_SESSION['session'])) {
         <script type="text/javascript">
             $(document).ready(function (e) {
                 $('#upload').on('click', function () {
-                    var nama_tenant = $('#nama_tenant').val();
-                    var penanggung_jawab = $('#penanggung_jawab').val();
-                    var alamat= $('#alamat').val();
-                    var id_flowmeter = $('#id_flowmeter').val();
+                    var no_perjanjian = $('#no_perjanjian').val();
+                    var nama_perjanjian = $('#nama_perjanjian').val();
+                    var waktu_kadaluarsa = $('#waktu_kadaluarsa').val();
+                    var nominal = $('#nominal').val();
                     var form_data = new FormData();
                     var base_url = '<?= base_url();?>';
                     var text_alert;
-                    form_data.append('nama_tenant',nama_tenant);
-                    form_data.append('penanggung_jawab',penanggung_jawab);
-                    form_data.append('alamat',alamat);
-                    form_data.append('id_flowmeter',id_flowmeter);
+                    form_data.append('no_perjanjian',no_perjanjian);
+                    form_data.append('nama_perjanjian',nama_perjanjian);
+                    form_data.append('waktu_kadaluarsa',waktu_kadaluarsa);
+                    form_data.append('nominal',nominal);
                     $.ajax({
-                        url: base_url +'index.php/main/input_data_tenant', // point to server-side controller method
+                        url: base_url +'index.php/main/input_data_lumpsum', // point to server-side controller method
                         dataType: 'text', // what to expect back from the server
                         cache: false,
                         contentType: false,
@@ -28,7 +28,7 @@ if(isset($_SESSION['session'])) {
                             //$('#msg').html(response); // display success response from the server
                             text_alert = JSON.stringify(response);
                             window.alert(text_alert);
-                            window.location = base_url+"main/view?id=tenant";
+                            window.location = base_url+"main/view?id=lumpsum";
                         },
                         error: function (response) {
                             text_alert = JSON.stringify(response);
@@ -49,12 +49,12 @@ if(isset($_SESSION['session'])) {
                     <tr>
                         <td><label>No Perjanjian</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="nama_tenant" id="nama_tenant" required></td>
+                        <td><input class="form-control" type="text" name="no_perjanjian" id="no_perjanjian" required></td>
                     </tr>
                     <tr>
                         <td><label>Nama Perjanjian</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="penanggung_jawab" id="penanggung_jawab" required></td>
+                        <td><input class="form-control" type="text" name="nama_perjanjian" id="nama_perjanjian" required></td>
                     </tr>
                     <tr>
                         <td><label>Waktu Kadaluarsa</label></td>
@@ -71,9 +71,9 @@ if(isset($_SESSION['session'])) {
                             <script type="text/javascript">
                                 $(function () {
                                     $('#datetimepicker2').datepicker({
-                                        locale: 'id',
-                                        sideBySide:true,
-                                        format:'YYYY-MM-DD HH:mm'
+                                        format: "yyyy-mm-dd",
+                                        autoclose: true,
+                                        todayHighlight: true
                                     });
                                 });
                             </script>
@@ -104,16 +104,16 @@ if(isset($_SESSION['session'])) {
                             <center>No
                         </th>
                         <th>
-                            <center>Nama Tenant
+                            <center>No Perjanjian
                         </th>
                         <th>
-                            <center>Penanggung Jawab
+                            <center>Nama Perjanjian
                         </th>
                         <th>
-                            <center>Lokasi
+                            <center>Waktu Kadaluarsa
                         </th>
                         <th>
-                            <center>ID Flow Meter
+                            <center>Nominal
                         </th>
                         <th>
                             <center>Aksi
@@ -128,16 +128,16 @@ if(isset($_SESSION['session'])) {
                             <center>No
                         </th>
                         <th>
-                            <center>Nama Tenant
+                            <center>No Perjanjian
                         </th>
                         <th>
-                            <center>Penanggung Jawab
+                            <center>Nama Perjanjian
                         </th>
                         <th>
-                            <center>Lokasi
+                            <center>Waktu Kadaluarsa
                         </th>
                         <th>
-                            <center>ID Flow Meter
+                            <center>Nominal
                         </th>
                         <th>
                             <center>Aksi
@@ -160,7 +160,7 @@ if(isset($_SESSION['session'])) {
 
                     // Load data for the table's content from an Ajax source
                     "ajax": {
-                        "url": "<?php echo site_url('main/ajax_data_tenant')?>",
+                        "url": "<?php echo site_url('main/ajax_data_lumpsum')?>",
                         "type": "POST"
                     },
 
@@ -173,7 +173,6 @@ if(isset($_SESSION['session'])) {
                     ],
                 });
             });
-
         </script>
         <?php
     }

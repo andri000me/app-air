@@ -43,10 +43,10 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
         <tr>
             <th align="left" style="width: 10%">Nama Ruko</th>
             <td style="width: 2%">:</td>
-            <td><?= $data_tagihan->nama_pengguna_jasa ?></td>
+            <td><?= $data_tagihan->nama_tenant?></td>
         </tr>
         <tr>
-            <th align="left" style="width: 10%">Alamat</th>
+            <th align="left" style="width: 10%">Lokasi</th>
             <td style="width: 2%">:</td>
             <td><?= $data_tagihan->alamat ?></td>
         </tr>
@@ -66,16 +66,16 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
         $i=1;
 
         foreach($tagihan as $row) {
-            if($i == 1 && $row->flowmeter_hari_ini != NULL){
-                $ttl_awal = $row->flowmeter_hari_ini;
+            if($i == 1 && $row->flow_hari_ini != NULL){
+                $ttl_awal = $row->flow_hari_ini;
             }else{
                 if($ttl_awal == 0){
-                    $ttl_awal = $row->flowmeter_hari_ini;
+                    $ttl_awal = $row->flow_hari_ini;
                 }
             }
 
-            if($i == count($tagihan) && $row->flowmeter_hari_ini != NULL){
-                $ttl_akhir = $row->flowmeter_hari_ini;
+            if($i == count($tagihan) && $row->flow_hari_ini != NULL){
+                $ttl_akhir = $row->flow_hari_ini;
             }
             $i++;
         }
