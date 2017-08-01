@@ -740,7 +740,6 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
             <th align="center">Waktu Mulai Pengantaran</th>
             <th align="center">Waktu Selesai Pengantaran</th>
             <th align="center">Lama Pengantaran</th>
-            <th align="center">Tarif (Rp.)</th>
             <th align="center">Total Permintaan (Ton)</th>
             <th align="center">Total Pembayaran (Rp.)</th>
         </tr>
@@ -814,7 +813,6 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
                     <td align="center"><?php echo $format_jam_awal; ?></td>
                     <td align="center"><?php echo $format_jam_akhir; ?></td>
                     <td align="center"><?php echo $lama_pengantaran; ?></td>
-                    <td align="center"><?php echo $rbarang->tarif; ?></td>
                     <td align="center"><?php echo $rbarang->total_permintaan; ?></td>
                     <td align="center"><?php echo $total_pembayaran; ?></td>
                 </tr>
@@ -830,7 +828,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
         ?>
 
         <tr>
-            <td align="center"colspan="8"><b>Total</b></td>
+            <td align="center"colspan="7"><b>Total</b></td>
             <td align="center"><b><?= $ton?></b></td>
             <td align="center"><b><?= $total?></b></td>
         </tr>

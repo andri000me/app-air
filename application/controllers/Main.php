@@ -911,7 +911,7 @@ date_default_timezone_set('Asia/Makassar');
                   $total_pembayaran = $row->tarif * $row->total_permintaan;
               }
 
-              $aksi = '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="realisasi pembayaran" onclick="realisasi('."'".$row->id_transaksi."'".');" target="_blank" href="javascript:void(0)"> </a></span>';
+              $aksi = '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="realisasi pembayaran" onclick="realisasi('."'".$row->id_transaksi."'".');" target="_self" href="javascript:void(0)"> </a></span>';
 
               if($row->waktu_mulai_pengantaran == NULL){
                   $row->waktu_mulai_pengantaran = "";
@@ -1777,12 +1777,13 @@ date_default_timezone_set('Asia/Makassar');
 
           $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"darat");
 
-          if($result != NULL){
-              $total = 0;
-              $ton = 0;
-              $no = 1;
+          if($this->session->userdata('role') == 'loket'){
+              if($result != NULL){
+                  $total = 0;
+                  $ton = 0;
+                  $no = 1;
 
-              $tabel = '<center><h4>Laporan Pendapatan Air Darat Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir )).'</h4></center>
+                  $tabel = '<center><h4>Laporan Pendapatan Air Darat Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir )).'</h4></center>
                         <table class="table table-responsive table-condensed table-striped">
                         <thead>
                             <tr>
@@ -1801,47 +1802,47 @@ date_default_timezone_set('Asia/Makassar');
                         </thead>
                         <tbody>';
 
-              foreach($result as $row){
-                  $lama_pengantaran = 0;
-                  $format_jam_awal = "";
-                  $format_jam_akhir = "";
-
-                  if($row->batal_kwitansi == 1){
-                      $total_pembayaran = 0;
-                  } else if($row->diskon != NULL || $row->diskon != 0){
-                      $row->tarif -= $row->tarif * $row->diskon/100;
-                      $total_pembayaran = $row->tarif * $row->total_permintaan ;
-                  } else{
-                      $total_pembayaran = $row->tarif * $row->total_permintaan;
-                  }
-
-                  if($row->waktu_mulai_pengantaran == NULL){
+                  foreach($result as $row){
+                      $lama_pengantaran = 0;
                       $format_jam_awal = "";
-                  } else if($row->waktu_selesai_pengantaran == NULL){
                       $format_jam_akhir = "";
-                  } else {
-                      $format_jam_awal = date("d-m-y H:i:s",strtotime($row->waktu_mulai_pengantaran));
-                      $format_jam_akhir = date("d-m-y H:i:s",strtotime($row->waktu_selesai_pengantaran));
 
-                      $waktu_awal = mktime(date("H",strtotime($row->waktu_mulai_pengantaran)),date("i",strtotime($row->waktu_mulai_pengantaran)),date("s",strtotime($row->waktu_mulai_pengantaran)),date("m",strtotime($row->waktu_mulai_pengantaran)),date("d",strtotime($row->waktu_mulai_pengantaran)),date("y",strtotime($row->waktu_mulai_pengantaran)));
-                      $waktu_akhir = mktime(date("H",strtotime($row->waktu_selesai_pengantaran)),date("i",strtotime($row->waktu_selesai_pengantaran)),date("s",strtotime($row->waktu_selesai_pengantaran)),date("m",strtotime($row->waktu_selesai_pengantaran)),date("d",strtotime($row->waktu_selesai_pengantaran)),date("y",strtotime($row->waktu_selesai_pengantaran)) );
-                      $lama_pengantaran = round((($waktu_akhir - $waktu_awal) % 86400)/3600,2);
-                  }
+                      if($row->batal_kwitansi == 1){
+                          $total_pembayaran = 0;
+                      } else if($row->diskon != NULL || $row->diskon != 0){
+                          $row->tarif -= $row->tarif * $row->diskon/100;
+                          $total_pembayaran = $row->tarif * $row->total_permintaan ;
+                      } else{
+                          $total_pembayaran = $row->tarif * $row->total_permintaan;
+                      }
 
-                  if($lama_pengantaran > 0){
-                      $lama_pengantaran .= " Jam";
-                  }else{
-                      $lama_pengantaran = "";
-                  }
-                  $format_tgl = date('d-m-Y H:i:s', strtotime($row->tgl_transaksi ));
-                  $format_tgl_pengantaran = date('d-m-Y H:i:s', strtotime($row->tgl_perm_pengantaran ));
+                      if($row->waktu_mulai_pengantaran == NULL){
+                          $format_jam_awal = "";
+                      } else if($row->waktu_selesai_pengantaran == NULL){
+                          $format_jam_akhir = "";
+                      } else {
+                          $format_jam_awal = date("d-m-y H:i:s",strtotime($row->waktu_mulai_pengantaran));
+                          $format_jam_akhir = date("d-m-y H:i:s",strtotime($row->waktu_selesai_pengantaran));
 
-                  $total += $total_pembayaran;
+                          $waktu_awal = mktime(date("H",strtotime($row->waktu_mulai_pengantaran)),date("i",strtotime($row->waktu_mulai_pengantaran)),date("s",strtotime($row->waktu_mulai_pengantaran)),date("m",strtotime($row->waktu_mulai_pengantaran)),date("d",strtotime($row->waktu_mulai_pengantaran)),date("y",strtotime($row->waktu_mulai_pengantaran)));
+                          $waktu_akhir = mktime(date("H",strtotime($row->waktu_selesai_pengantaran)),date("i",strtotime($row->waktu_selesai_pengantaran)),date("s",strtotime($row->waktu_selesai_pengantaran)),date("m",strtotime($row->waktu_selesai_pengantaran)),date("d",strtotime($row->waktu_selesai_pengantaran)),date("y",strtotime($row->waktu_selesai_pengantaran)) );
+                          $lama_pengantaran = round((($waktu_akhir - $waktu_awal) % 86400)/3600,2);
+                      }
 
-                  if($row->batal_kwitansi == 0){
-                      $ton += $row->total_permintaan;
+                      if($lama_pengantaran > 0){
+                          $lama_pengantaran .= " Jam";
+                      }else{
+                          $lama_pengantaran = "";
+                      }
+                      $format_tgl = date('d-m-Y H:i:s', strtotime($row->tgl_transaksi ));
+                      $format_tgl_pengantaran = date('d-m-Y H:i:s', strtotime($row->tgl_perm_pengantaran ));
 
-                      $tabel .='<tr>
+                      $total += $total_pembayaran;
+
+                      if($row->batal_kwitansi == 0){
+                          $ton += $row->total_permintaan;
+
+                          $tabel .='<tr>
                             <td align="center">'.$no.'</td>
                             <td align="center">'.$row->nama_pengguna_jasa.'</td>
                             <td align="center">'.$row->alamat.'</td>
@@ -1855,10 +1856,10 @@ date_default_timezone_set('Asia/Makassar');
                             <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
                         </tr>
                         ';
-                      $no++;
-                  } else {
-                      $total_pembayaran = "Kwitansi Di Batalkan";
-                      $tabel .='<tr style="background-color: #990000">
+                          $no++;
+                      } else {
+                          $total_pembayaran = "Kwitansi Di Batalkan";
+                          $tabel .='<tr style="background-color: #990000">
                             <td align="center">'.$no.'</td>
                             <td align="center">'.$row->nama_pengguna_jasa.'</td>
                             <td align="center">'.$row->alamat.'</td>
@@ -1872,11 +1873,11 @@ date_default_timezone_set('Asia/Makassar');
                             <td align="center">'.$total_pembayaran.'</td>
                         </tr>
                         ';
-                      $no++;
+                          $no++;
+                      }
                   }
-              }
 
-              $tabel .= '<tr>
+                  $tabel .= '<tr>
                             <td align="center" colspan="9"><b>Total</b></td>
                             <td align="center"><b>'.$ton.'</b></td>
                             <td align="center"><b>'.$this->Ribuan($total).'</b></td>
@@ -1886,15 +1887,134 @@ date_default_timezone_set('Asia/Makassar');
                     <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=darat").'>Cetak PDF</a>
                     <a class="btn btn-primary" target="_blank" href='.base_url("main/excelDarat?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>';
 
-              $data = array(
-                  'status' => 'success',
-                  'tabel' => $tabel
-              );
+                  $data = array(
+                      'status' => 'success',
+                      'tabel' => $tabel
+                  );
+              }
+              else{
+                  $data = array(
+                      'status' => 'failed'
+                  );
+              }
           }
           else{
-              $data = array(
-                  'status' => 'failed'
-              );
+              if($result != NULL){
+                  $total = 0;
+                  $ton = 0;
+                  $no = 1;
+
+                  $tabel = '<center><h4>Laporan Pendapatan Air Darat Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir )).'</h4></center>
+                        <table class="table table-responsive table-condensed table-striped">
+                        <thead>
+                            <tr>
+                                <th align="center">No</th>
+                                <th align="center">Nama Pengguna Jasa</th>
+                                <th align="center">Alamat</th>
+                                <th align="center">Tanggal Transaksi</th>
+                                <th align="center">Waktu Permintaan Pengantaran</th>
+                                <th align="center">Waktu Mulai Pengantaran</th>
+                                <th align="center">Waktu Selesai Pengantaran</th>
+                                <th align="center">Lama Pengantaran</th>
+                                <th align="center">Total Permintaan (Ton)</th>
+                                <th align="center">Total Pembayaran (Rp.)</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
+
+                  foreach($result as $row){
+                      $lama_pengantaran = 0;
+                      $format_jam_awal = "";
+                      $format_jam_akhir = "";
+
+                      if($row->batal_kwitansi == 1){
+                          $total_pembayaran = 0;
+                      } else if($row->diskon != NULL || $row->diskon != 0){
+                          $row->tarif -= $row->tarif * $row->diskon/100;
+                          $total_pembayaran = $row->tarif * $row->total_permintaan ;
+                      } else{
+                          $total_pembayaran = $row->tarif * $row->total_permintaan;
+                      }
+
+                      if($row->waktu_mulai_pengantaran == NULL){
+                          $format_jam_awal = "";
+                      } else if($row->waktu_selesai_pengantaran == NULL){
+                          $format_jam_akhir = "";
+                      } else {
+                          $format_jam_awal = date("d-m-y H:i:s",strtotime($row->waktu_mulai_pengantaran));
+                          $format_jam_akhir = date("d-m-y H:i:s",strtotime($row->waktu_selesai_pengantaran));
+
+                          $waktu_awal = mktime(date("H",strtotime($row->waktu_mulai_pengantaran)),date("i",strtotime($row->waktu_mulai_pengantaran)),date("s",strtotime($row->waktu_mulai_pengantaran)),date("m",strtotime($row->waktu_mulai_pengantaran)),date("d",strtotime($row->waktu_mulai_pengantaran)),date("y",strtotime($row->waktu_mulai_pengantaran)));
+                          $waktu_akhir = mktime(date("H",strtotime($row->waktu_selesai_pengantaran)),date("i",strtotime($row->waktu_selesai_pengantaran)),date("s",strtotime($row->waktu_selesai_pengantaran)),date("m",strtotime($row->waktu_selesai_pengantaran)),date("d",strtotime($row->waktu_selesai_pengantaran)),date("y",strtotime($row->waktu_selesai_pengantaran)) );
+                          $lama_pengantaran = round((($waktu_akhir - $waktu_awal) % 86400)/3600,2);
+                      }
+
+                      if($lama_pengantaran > 0){
+                          $lama_pengantaran .= " Jam";
+                      }else{
+                          $lama_pengantaran = "";
+                      }
+                      $format_tgl = date('d-m-Y H:i:s', strtotime($row->tgl_transaksi ));
+                      $format_tgl_pengantaran = date('d-m-Y H:i:s', strtotime($row->tgl_perm_pengantaran ));
+
+                      $total += $total_pembayaran;
+
+                      if($row->batal_kwitansi == 0){
+                          $ton += $row->total_permintaan;
+
+                          $tabel .='<tr>
+                            <td align="center">'.$no.'</td>
+                            <td align="center">'.$row->nama_pengguna_jasa.'</td>
+                            <td align="center">'.$row->alamat.'</td>
+                            <td align="center">'.$format_tgl.'</td>
+                            <td align="center">'.$format_tgl_pengantaran.'</td>
+                            <td align="center">'.$format_jam_awal.'</td>
+                            <td align="center">'.$format_jam_akhir.'</td>
+                            <td align="center">'.$lama_pengantaran.'</td>
+                            <td align="center">'.$row->total_permintaan.'</td>
+                            <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
+                        </tr>
+                        ';
+                          $no++;
+                      } else {
+                          $total_pembayaran = "Kwitansi Di Batalkan";
+                          $tabel .='<tr style="background-color: #990000">
+                            <td align="center">'.$no.'</td>
+                            <td align="center">'.$row->nama_pengguna_jasa.'</td>
+                            <td align="center">'.$row->alamat.'</td>
+                            <td align="center">'.$format_tgl.'</td>
+                            <td align="center">'.$format_tgl_pengantaran.'</td>
+                            <td align="center">'.$format_jam_awal.'</td>
+                            <td align="center">'.$format_jam_akhir.'</td>
+                            <td align="center">'.$lama_pengantaran.'</td>
+                            <td align="center">'.$row->total_permintaan.'</td>
+                            <td align="center">'.$total_pembayaran.'</td>
+                        </tr>
+                        ';
+                          $no++;
+                      }
+                  }
+
+                  $tabel .= '<tr>
+                            <td align="center" colspan="8"><b>Total</b></td>
+                            <td align="center"><b>'.$ton.'</b></td>
+                            <td align="center"><b>'.$this->Ribuan($total).'</b></td>
+                        </tr>
+                    </tbody>
+                    </table>
+                    <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=darat").'>Cetak PDF</a>
+                    <a class="btn btn-primary" target="_blank" href='.base_url("main/excelDarat?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>';
+
+                  $data = array(
+                      'status' => 'success',
+                      'tabel' => $tabel
+                  );
+              }
+              else{
+                  $data = array(
+                      'status' => 'failed'
+                  );
+              }
           }
 
           echo json_encode($data);
@@ -3133,7 +3253,7 @@ date_default_timezone_set('Asia/Makassar');
               $objWriter = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
               $objWriter->save('php://output');
           }
-          else{
+          else if($this->session->userdata('role') == 'loket'){
               $tgl_awal = $this->input->get('id');
               $tgl_akhir = $this->input->get('id2');
 
@@ -3271,6 +3391,155 @@ date_default_timezone_set('Asia/Makassar');
               $ex->setCellValue("A".$counter,"Total");
               $ex->setCellValue("L".$counter,"$ton");
               $ex->setCellValue("M".$counter,"$total");
+              // Rename sheet
+              $object->getActiveSheet()->setTitle('Lap_Transaksi_Air_Darat');
+
+              // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+              $object->setActiveSheetIndex(0);
+
+              // Redirect output to a client’s web browser (Excel2007)
+              header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+              header('Content-Disposition: attachment;filename="Laporan_Transaksi_Darat_periode_'.$_GET['id'].'_'.$_GET['id2'].'.xlsx"');
+              header('Cache-Control: max-age=0');
+
+              $objWriter = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
+              $objWriter->save('php://output');
+          }
+          else{
+              $tgl_awal = $this->input->get('id');
+              $tgl_akhir = $this->input->get('id2');
+
+              $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"darat");
+
+              // Create new PHPExcel object
+              $object = new PHPExcel();
+              $style = array(
+                  'alignment' => array(
+                      'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                      'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                  )
+              );
+              $font = array(
+                  'font'  => array(
+                      'bold'  => true,
+                      'size'  => 12,
+                      'name'  => 'Times New Roman'
+                  )
+              );
+              $object->getActiveSheet()->getStyle("A7:M7")->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("A7:M7")->applyFromArray($font);
+              $object->getActiveSheet()->getStyle("A1:A5")->applyFromArray($font);
+              $object->getActiveSheet()->getStyle('A7:M7')->getAlignment()->setWrapText(true);
+
+              // Set properties
+              $object->getProperties()->setCreator($this->session->userdata('nama'))
+                  ->setLastModifiedBy($this->session->userdata('nama'))
+                  ->setCategory("Approve by ");
+              // Add some data
+              $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
+              $object->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+              $object->getActiveSheet()->getColumnDimension('C')->setWidth(20);
+              $object->getActiveSheet()->getColumnDimension('D')->setWidth(30);
+              $object->getActiveSheet()->getColumnDimension('E')->setWidth(20);
+              $object->getActiveSheet()->getColumnDimension('F')->setWidth(20);
+              $object->getActiveSheet()->getColumnDimension('G')->setWidth(20);
+              $object->getActiveSheet()->getColumnDimension('H')->setWidth(20);
+              $object->getActiveSheet()->getColumnDimension('I')->setWidth(20);
+              $object->getActiveSheet()->getColumnDimension('J')->setWidth(20);
+              $object->getActiveSheet()->getColumnDimension('K')->setWidth(20);
+              $object->getActiveSheet()->getColumnDimension('L')->setWidth(20);
+
+              $object->getActiveSheet()->mergeCells('A1:L1');
+              $object->getActiveSheet()->mergeCells('A2:L2');
+              $object->getActiveSheet()->mergeCells('A3:L3');
+              $object->getActiveSheet()->mergeCells('A4:L4');
+              $object->getActiveSheet()->mergeCells('A5:L5');
+
+              $object->setActiveSheetIndex(0)
+                  ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
+                  ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
+                  ->setCellValue('A4', 'Terminal Peti Kemas')
+                  ->setCellValue('A5', 'Laporan Transaksi Air Darat Periode '.$tgl_awal.' s/d '.$tgl_akhir)
+                  ->setCellValue('A7', 'No')
+                  ->setCellValue('B7', 'Nama Pengguna Jasa')
+                  ->setCellValue('C7', 'Nama Pemohon')
+                  ->setCellValue('D7', 'Alamat')
+                  ->setCellValue('E7', 'No Telepon')
+                  ->setCellValue('F7', 'Tanggal Transaksi')
+                  ->setCellValue('G7', 'Tanggal Waktu Pengantaran')
+                  ->setCellValue('H7', 'Waktu Mulai Pengantaran')
+                  ->setCellValue('I7', 'Waktu Selesai Pengantaran')
+                  ->setCellValue('J7', 'Lama Pengantaran (Jam)')
+                  ->setCellValue('K7', 'Total Permintaan (Ton)')
+                  ->setCellValue('L7', 'Total Pembayaran (Rp.)')
+              ;
+              $no=0;
+              //add data
+              $counter=8;
+              $total = 0;
+              $ton = 0;
+              $ex = $object->setActiveSheetIndex(0);
+              foreach($result as $row){
+                  $no++;
+                  $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("M".$counter)->applyFromArray($style);
+
+                  if($row->diskon != NULL || $row->diskon != 0){
+                      $row->tarif -= $row->tarif * $row->diskon/100;
+                      $total_pembayaran = $row->tarif * $row->total_permintaan ;
+                  }
+                  else{
+                      $total_pembayaran = $row->tarif * $row->total_permintaan;
+                  }
+
+                  $waktu_awal = mktime(date("H",strtotime($row->waktu_mulai_pengantaran)),date("i",strtotime($row->waktu_mulai_pengantaran)),date("s",strtotime($row->waktu_mulai_pengantaran)),date("m",strtotime($row->waktu_mulai_pengantaran)),date("d",strtotime($row->waktu_mulai_pengantaran)),date("y",strtotime($row->waktu_mulai_pengantaran)));
+                  $waktu_akhir = mktime(date("H",strtotime($row->waktu_selesai_pengantaran)),date("i",strtotime($row->waktu_selesai_pengantaran)),date("s",strtotime($row->waktu_selesai_pengantaran)),date("m",strtotime($row->waktu_selesai_pengantaran)),date("d",strtotime($row->waktu_selesai_pengantaran)),date("y",strtotime($row->waktu_selesai_pengantaran)) );
+                  if($row->waktu_mulai_pengantaran == NULL){
+                      $format_jam_awal = "";
+                  } else if($row->waktu_selesai_pengantaran == NULL){
+                      $format_jam_akhir = "";
+                  } else{
+                      $lama_pengantaran = round((($waktu_akhir - $waktu_awal) % 86400)/3600,2);
+                      $format_jam_awal = date("d-m-y H:i:s",strtotime($row->waktu_mulai_pengantaran));
+                      $format_jam_akhir = date("d-m-y H:i:s",strtotime($row->waktu_selesai_pengantaran));
+                  }
+
+                  if($row->batal_kwitansi == 0){
+                      $total += $total_pembayaran;
+                      $ton += $row->total_permintaan;
+                  }
+
+                  $format_tgl = date('d-m-Y H:i:s', strtotime($row->tgl_transaksi ));
+                  $format_tgl_pengantaran = date('d-m-Y H:i:s', strtotime($row->tgl_perm_pengantaran ));
+
+                  $ex->setCellValue("A".$counter,"$no");
+                  $ex->setCellValue("B".$counter,"$row->nama_pengguna_jasa");
+                  $ex->setCellValue("C".$counter,"$row->nama_pemohon");
+                  $ex->setCellValue("D".$counter,"$row->alamat");
+                  $ex->setCellValue("E".$counter,"$row->no_telp");
+                  $ex->setCellValue("F".$counter,"$format_tgl");
+                  $ex->setCellValue("G".$counter,"$format_tgl_pengantaran");
+                  $ex->setCellValue("H".$counter,"$format_jam_awal");
+                  $ex->setCellValue("I".$counter,"$format_jam_akhir");
+                  $ex->setCellValue("J".$counter,"$lama_pengantaran");
+                  $ex->setCellValue("K".$counter,"$row->total_permintaan");
+                  $ex->setCellValue("L".$counter,"$total_pembayaran");
+                  $counter=$counter+1;
+              }
+              $object->getActiveSheet()->mergeCells('A'.$counter.':J'.$counter);
+              $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($font);
+              $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($font);
+              $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($font);
+
+              $ex->setCellValue("A".$counter,"Total");
+              $ex->setCellValue("K".$counter,"$ton");
+              $ex->setCellValue("L".$counter,"$total");
               // Rename sheet
               $object->getActiveSheet()->setTitle('Lap_Transaksi_Air_Darat');
 

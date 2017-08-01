@@ -331,8 +331,8 @@
             $this->db->insert('realisasi_transaksi_darat',$data);
 
             $this->db->set('realisasi_transaksi_darat_id_realisasi', $where);
-            $this->db->set('status_invoice', '0');
-            $this->db->set('status_pembayaran', '1');
+            $this->db->set('status_invoice', 0);
+            $this->db->set('status_pembayaran', 1);
             $this->db->where('id_transaksi',$where);
             $this->db->update($this->tabel_transaksi_darat);
 
