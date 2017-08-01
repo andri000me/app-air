@@ -62,7 +62,6 @@ if($this->session->userdata('role') == "loket" && $this->session->userdata('sess
         <body>
         <div class="container container-fluid">
             <div class="row">
-                <br><br>
                 <center><h4>Daftar Monitoring Pelayanan Jasa Pengisian Air Bersih</h4></center><br>
                 <table class="table table-responsive table-bordered table-striped" id="table"></table>
             </div>
@@ -235,7 +234,6 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
             <body>
             <div class="container container-fluid">
                 <div class="row">
-                    <br><br>
                     <center><h4>Daftar Monitoring Pelayanan Jasa Pengisian Air Bersih</h4></center><br>
                     <table class="table table-responsive table-bordered table-striped" id="table"></table>
                 </div>

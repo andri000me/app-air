@@ -58,7 +58,6 @@ if(isset($_SESSION['session'])) {
                         <td>:</td>
                         <td>
                             <select name="kawasan" id="kawasan" class="form-control">
-                                <option></option>
                                 <option value="KIK">Kawasan Indrusti Kariangau</option>
                                 <option value="NON-KIK">Kawasan Non Indrusti Kariangau</option>
                                 <option value="">Non</option>
@@ -70,7 +69,6 @@ if(isset($_SESSION['session'])) {
                         <td>:</td>
                         <td>
                             <select name="tipe" id="tipe" class="form-control">
-                                <option></option>
                                 <option value="laut">Laut</option>
                                 <option value="darat">Darat</option>
                             </select>
