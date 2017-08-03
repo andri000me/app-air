@@ -209,4 +209,6 @@ if(isset($_SESSION['session'])) {
     else{
        redirect('main');
     }
+} else{
+    redirect('main');
 }

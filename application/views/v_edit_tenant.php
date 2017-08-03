@@ -1,6 +1,6 @@
 <?php
 if(isset($_SESSION['session'])) {
-    if($_SESSION['role'] == "wtp") {
+    if($_SESSION['role'] == "admin") {
         ?>
         <script type="text/javascript">
             $(document).ready(function (e) {
@@ -68,6 +68,27 @@ if(isset($_SESSION['session'])) {
                         <td><input class="form-control" type="text" name="alamat" id="alamat" required value="<?= $isi['alamat'] ?>"></td>
                     </tr>
                     <tr>
+                        <td><label>Status Keaktifan</label></td>
+                        <td>:</td>
+                        <td>
+                            <select class="form-control" name="status_aktif" id="status_aktif">
+                                <?php
+                                if($isi['status_aktif'] == 1){
+                                    ?>
+                                    <option selected value="1">Aktif</option>
+                                    <option value="0">Tidak Aktif</option>
+                                    <?php
+                                } else{
+                                    ?>
+                                    <option value="1">Aktif</option>
+                                    <option selected value="0">Tidak Aktif</option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
                         <td><label>ID Flow Meter</label></td>
                         <td>:</td>
                         <td>
@@ -107,6 +128,7 @@ if(isset($_SESSION['session'])) {
                     var id = $('#id').val();
                     var nama_tenant = $('#nama_tenant').val();
                     var penanggung_jawab = $('#penanggung_jawab').val();
+                    var status_aktif = $('#status_aktif').val();
                     var alamat = $('#alamat').val();
                     var id_lumpsum = $('#id_lumpsum').val();
                     var form_data = new FormData();
@@ -171,6 +193,7 @@ if(isset($_SESSION['session'])) {
                         <td>:</td>
                         <td>
                             <select class="form-control" name="id_lumpsum" id="id_lumpsum">
+                                <option value="0">Kosong</option>
                                 <?php foreach ($tenant as $row) {
                                     if($row->id_lumpsum == $isi['id_lumpsum']) {
                                         ?>

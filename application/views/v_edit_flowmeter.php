@@ -127,5 +127,10 @@ if(isset($_SESSION['session'])) {
         </div>
         <?php
     }
+    else{
+        redirect('main');
+    }
+} else{
+    redirect('main');
 }
 ?>

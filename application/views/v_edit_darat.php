@@ -6,6 +6,8 @@
             var alamat = $('#alamat').val();
             var no_telp = $('#no_telp').val();
             var pengguna = $('#pengguna').val();
+            var deposit = $('#deposit').val();
+
             var form_data = new FormData();
             var base_url = '<?= base_url();?>';
             var text_alert;
@@ -15,6 +17,7 @@
             form_data.append('alamat',alamat);
             form_data.append('no_telp',no_telp);
             form_data.append('pengguna',pengguna);
+
             $.ajax({
                 url: base_url +'main/edit_darat', // point to server-side controller method
                 dataType: 'text', // what to expect back from the server
@@ -92,5 +95,10 @@ if(isset($_SESSION['session'])) {
         </div>
         <?php
     }
+    else{
+        redirect('main');
+    }
+} else{
+    redirect('main');
 }
 ?>

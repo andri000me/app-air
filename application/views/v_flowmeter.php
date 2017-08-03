@@ -166,3 +166,6 @@ if(isset($_SESSION['session'])) {
         redirect('main');
     }
 }
+else{
+    redirect('main');
+}

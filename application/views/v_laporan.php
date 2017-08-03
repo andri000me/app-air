@@ -311,7 +311,7 @@ else if($this->session->userdata('role') == "loket" && $this->session->userdata(
                 }
             });
         }
-    </script>s
+    </script>
     <div class="container container-fluid">
         <h3>Pembuatan Laporan Pelayanan Air Untuk Rumah Tangga Dan Perusahaan</h3><br><br>
         <div class="row col-sm-6">

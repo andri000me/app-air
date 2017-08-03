@@ -1,6 +1,6 @@
 <?php
 if(isset($_SESSION['session'])) {
-    if($_SESSION['role'] == "wtp"){
+    if($_SESSION['role'] == "admin"){
         ?>
         <script type="text/javascript">
             $(document).ready(function (e) {
@@ -112,6 +112,9 @@ if(isset($_SESSION['session'])) {
                             <center>No Telp
                         </th>
                         <th>
+                            <center>Status
+                        </th>
+                        <th>
                             <center>ID Flow Meter
                         </th>
                         <th>
@@ -137,6 +140,9 @@ if(isset($_SESSION['session'])) {
                         </th>
                         <th>
                             <center>No Telp
+                        </th>
+                        <th>
+                            <center>Status
                         </th>
                         <th>
                             <center>ID Flow Meter
@@ -245,9 +251,10 @@ if(isset($_SESSION['session'])) {
                         <td>:</td>
                         <td>
                             <select class="form-control" name="id_lumpsum" id="id_lumpsum">
+                                <option value="0">Kosong</option>
                                 <?php foreach ($tenant as $row) {
                                     ?>
-                                    <option value="<?= $row->id_lumpsum?>"><?= $row->id_lumpsum?> => <?= $row->no_perjanjian?></option>
+                                    <option value="<?= $row->id_lumpsum?>"><?= $row->no_perjanjian?> => <?= $row->nama_perjanjian?></option>
                                     <?php
                                 }
                                 ?>
@@ -348,4 +355,6 @@ if(isset($_SESSION['session'])) {
     else{
         redirect('main');
     }
+} else{
+    redirect('main');
 }

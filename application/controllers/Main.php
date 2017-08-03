@@ -81,7 +81,7 @@ date_default_timezone_set('Asia/Makassar');
           }
           else if($page == "tenant"){
               $data['title'] = 'Master Tenant'; //judul title
-              if($this->session->userdata('role') == 'wtp'){
+              if($this->session->userdata('role') == 'admin'){
                   $data['tenant'] = $this->data->getFlowmeter();
                   $this->load->template('v_tenant',$data);
               } else{
@@ -119,6 +119,10 @@ date_default_timezone_set('Asia/Makassar');
               $data['title'] = 'Realisasi Pembayaran Darat'; //judul title
               $this->load->template('v_realisasi_pembayaran_darat',$data);
           }
+          else if($page == "riwayat_pencatatan_flow"){
+              $data['title'] = 'Riwayat Pencatatan Flow Meter'; //judul title
+              $this->load->template('v_riwayat_catat_flow',$data);
+          }
           else{
               redirect('main');
           }
@@ -140,7 +144,7 @@ date_default_timezone_set('Asia/Makassar');
                       'nama'    => $data->nama_pengguna_jasa , //variabel yg dibawa ke id nama
                       'alamat'  => $data->alamat, //variabel yang dibawa ke id alamat
                       'no_telp' => $data->no_telp, //variabel yang dibawa ke id no telp
-                      'pengguna'=> $data->pengguna_jasa_id_tarif //variabel yang dibawa ke id pengguna jasa
+                      'pengguna'=> $data->pengguna_jasa_id_tarif, //variabel yang dibawa ke id pengguna jasa
                   );
               }
           }
@@ -170,27 +174,37 @@ date_default_timezone_set('Asia/Makassar');
           echo json_encode($pelanggan);      //data array yang telah kota deklarasikan dibawa menggunakan json
       }
 
+      function check_equal_more($second_field,$first_field){
+          if (  $second_field >= $first_field) {
+              $this->form_validation->set_message('check_equal_more', 'Permintaan Tidak Boleh Lebih Dari Deposit');
+              return false;
+          }
+          else {
+              return true;
+          }
+      }
+
       public function transaksi_darat() {
-            $result = NULL;
-            $id_pengguna = $this->input->post('id_pengguna');
-            $nama_pengguna = $this->input->post('nama_pembeli');
-            $alamat = $this->input->post('alamat_pembeli');
-            $no_telp = $this->input->post('no_telp');
-            $pengguna = $this->input->post('pengguna');
-            $nama_pemohon = $this->input->post('nama_pemohon');
-            $tanggal = $this->input->post('tgl_permintaan');
-            $tonnase = $this->input->post('tonnase');
-            $pelunasan = $this->input->post('pelunasan');
+          $result = NULL;
+          $id_pengguna = $this->input->post('id_pengguna');
+          $nama_pengguna = $this->input->post('nama_pembeli');
+          $alamat = $this->input->post('alamat_pembeli');
+          $no_telp = $this->input->post('no_telp');
+          $pengguna = $this->input->post('pengguna');
+          $nama_pemohon = $this->input->post('nama_pemohon');
+          $tanggal = $this->input->post('tgl_permintaan');
+          $tonnase = $this->input->post('tonnase');
+          $pelunasan = $this->input->post('pelunasan');
 
-            $this->form_validation->set_rules('nama_pembeli', 'Nama Pembeli', 'required');
-            $this->form_validation->set_rules('alamat_pembeli', 'Alamat', 'required');
-            $this->form_validation->set_rules('no_telp', 'No Telepon', 'required');
-            $this->form_validation->set_rules('pengguna', 'Jenis Pengguna Jasa', 'required');
-            $this->form_validation->set_rules('nama_pemohon', 'Nama Pemohon', 'required');
-            $this->form_validation->set_rules('tgl_permintaan', 'Tanggal Permintaan', 'required');
-            $this->form_validation->set_rules('tonnase', 'Total Pengisian', 'required');
+          $this->form_validation->set_rules('nama_pembeli', 'Nama Pembeli', 'required');
+          $this->form_validation->set_rules('alamat_pembeli', 'Alamat', 'required');
+          $this->form_validation->set_rules('no_telp', 'No Telepon', 'required');
+          $this->form_validation->set_rules('pengguna', 'Jenis Pengguna Jasa', 'required');
+          $this->form_validation->set_rules('nama_pemohon', 'Nama Pemohon', 'required');
+          $this->form_validation->set_rules('tgl_permintaan', 'Tanggal Permintaan', 'required');
+          $this->form_validation->set_rules('tonnase', 'Total Pengisian', 'required');
 
-            $kwitansi = $this->data->get_no_kwitansi();
+          $kwitansi = $this->data->get_no_kwitansi();
             $tgl_tahun = date("YYYY",time());
 
             if ($this->form_validation->run() == FALSE) {
@@ -215,7 +229,8 @@ date_default_timezone_set('Asia/Makassar');
                     $no_pengguna = $this->data->get_no_pengguna($id_pengguna);
                     $no_kwitansi = $no_tahun.sprintf("%02s", $no_pengguna).sprintf("%05s", $no);
                     $this->data->setNoKwitansi($no);
-                }else{
+                }
+                else{
                     $tahun = substr($tgl_tahun, 2, 2);
                     $no_tahun = sprintf("%02s",$tahun);
                     $no = 1;
@@ -230,7 +245,7 @@ date_default_timezone_set('Asia/Makassar');
                     'no_telp' => $no_telp,
                     'pengguna_jasa_id_tarif' => $pengguna,
                     'issued_at' => date("Y-m-d H:i:s",time()),
-                    'issued_by' => $this->session->userdata('nama')
+                    'issued_by' => $this->session->userdata('username')
                 );
 
                 if($cek_result == FALSE){
@@ -246,9 +261,10 @@ date_default_timezone_set('Asia/Makassar');
                             'total_permintaan' => $tonnase,
                             'no_kwitansi' => $no_kwitansi,
                             'issued_at' => date("Y-m-d H:i:s",time()),
-                            'issued_by' => $this->session->userdata('nama')
+                            'issued_by' => $this->session->userdata('username')
                         );
-                    } else {
+                    }
+                    else {
                         $status_invoice = 1;
                         $data_transaksi = array(
                             'pembeli_darat_id_pengguna_jasa' => $id_pengguna,
@@ -259,7 +275,7 @@ date_default_timezone_set('Asia/Makassar');
                             'no_kwitansi' => $no_kwitansi,
                             'status_invoice' => $status_invoice,
                             'issued_at' => date("Y-m-d H:i:s",time()),
-                            'issued_by' => $this->session->userdata('nama')
+                            'issued_by' => $this->session->userdata('username')
                         );
                     }
                     $result = $this->data->input_transaksi("darat",$data_transaksi);
@@ -281,7 +297,8 @@ date_default_timezone_set('Asia/Makassar');
                         $no_pengguna = $this->data->get_no_pengguna($id->id_pengguna_jasa);
                         $no_kwitansi = $no_tahun.sprintf("%02s", $no_pengguna).sprintf("%05s", $no);
                         $this->data->setNoKwitansi($no);
-                    }else{
+                    }
+                    else{
                         $tahun = substr($tgl_tahun, 2, 2);
                         $no_tahun = sprintf("%02s",$tahun);
                         $no = 1;
@@ -299,9 +316,10 @@ date_default_timezone_set('Asia/Makassar');
                             'total_permintaan' => $tonnase,
                             'no_kwitansi' => $no_kwitansi,
                             'issued_at' => date("Y-m-d H:i:s",time()),
-                            'issued_by' => $this->session->userdata('nama')
+                            'issued_by' => $this->session->userdata('username')
                         );
-                    } else {
+                    }
+                    else {
                         $status_invoice = 1;
                         $data_transaksi = array(
                             'pembeli_darat_id_pengguna_jasa' => $id_pengguna,
@@ -312,7 +330,7 @@ date_default_timezone_set('Asia/Makassar');
                             'no_kwitansi' => $no_kwitansi,
                             'status_invoice' => $status_invoice,
                             'issued_at' => date("Y-m-d H:i:s",time()),
-                            'issued_by' => $this->session->userdata('nama')
+                            'issued_by' => $this->session->userdata('username')
                         );
                     }
 
@@ -455,7 +473,7 @@ date_default_timezone_set('Asia/Makassar');
                       'total_permintaan' => $tonnase,
                       'no_kwitansi' => $no_kwitansi,
                       'issued_at' => date("Y-m-d H:i:s",time()),
-                      'issued_by' => $this->session->userdata('nama')
+                      'issued_by' => $this->session->userdata('username')
                   );
 
                   $this->db->select('*');
@@ -590,13 +608,9 @@ date_default_timezone_set('Asia/Makassar');
               foreach ($query as $data) {
                   $pelanggan[] = array(
                       'id_flow' => $data->id_flow,
-                      'id_tenant' => $data->id_tenant,
                       'label' => $data->id_flowmeter, //variabel array yg dibawa ke label ketikan kunci
-                      'nama_tenant' => $data->nama_tenant , //variabel yg dibawa ke id nama
-                      'lokasi' => $data->alamat, //variabel yang dibawa ke id alamat
-                      'no_telp' => $data->no_telp,
-                      'flow_akhir' => $data->flow_akhir,
-                      'penanggung_jawab' => $data->penanggung_jawab, //variabel yang dibawa ke id no telp
+                      'nama_flow' => $data->nama_flowmeter , //variabel yg dibawa ke id nama
+                      'flow_akhir' => $data->flowmeter_akhir,
                   );
               }
           }
@@ -615,7 +629,8 @@ date_default_timezone_set('Asia/Makassar');
                   $pelanggan[] = array(
                       'id_flow' => $data->id_flow,
                       'id_tenant' => $data->id_tenant,
-                      'label' => $data->nama_tenant, //variabel array yg dibawa ke label ketikan kunci
+                      'nama_tenant' => $data->nama_tenant,
+                      'label' => $data->id_flowmeter, //variabel array yg dibawa ke label ketikan kunci
                   );
               }
           }
@@ -623,16 +638,24 @@ date_default_timezone_set('Asia/Makassar');
           echo json_encode($pelanggan);      //data array yang telah kota deklarasikan dibawa menggunakan json
       }
 
+      function check_equal_less($second_field,$first_field){
+          if ($second_field <= $first_field) {
+              $this->form_validation->set_message('check_equal_less', 'Flow Meter Tidak Boleh Kurang Dari Sebelumnya');
+              return false;
+          }
+          else {
+              return true;
+          }
+      }
+
       public function transaksi_ruko() {
-          $id_pengguna = $this->input->post('id_flowmeter');
           $id_tenant = $this->input->post('id_tenant');
           $id_flow = $this->input->post('id_flow');
           $tanggal = $this->input->post('tanggal');
           $tonnase = $this->input->post('flow_hari_ini');
-          $flow_awal = $this->input->post('flow_awal');
           $this->form_validation->set_rules('id_flowmeter', 'ID Flowmeter', 'required');
           $this->form_validation->set_rules('tanggal', 'Tanggal', 'required');
-          $this->form_validation->set_rules('flow_hari_ini', 'Flow Meter Hari Ini', 'required');
+          $this->form_validation->set_rules('flow_hari_ini', 'Flow Meter Hari Ini', 'required|is_natural_no_zero|callback_check_equal_less['.$this->input->post('flowmeter_akhir').']');
 
           $cekFlow = $this->data->cekFlowAwal($id_flow);
 
@@ -657,20 +680,11 @@ date_default_timezone_set('Asia/Makassar');
               $this->load->template('v_input_ruko',$data);
           }
           else {
-              if($flow_awal == "1"){
-                  if($cekFlow == TRUE){
-                      $this->data->inputFlowAwal($data_flow);
-                      $result = $this->data->edit_flow_tenant($data_transaksi);
-                  } else{
-                      $result = $this->data->edit_flow_tenant($data_transaksi);
-                  }
-              }else{
-                  if($cekFlow == TRUE){
-                      $this->data->inputFlowAwal($data_flow);
-                      $result = $this->data->input_transaksi("ruko",$data_transaksi);
-                  } else{
-                      $result = $this->data->input_transaksi("ruko",$data_transaksi);
-                  }
+              if($cekFlow == TRUE){
+                  $this->data->inputFlowAwal($data_flow);
+                  $result = $this->data->input_transaksi("ruko",$data_transaksi);
+              } else{
+                  $result = $this->data->input_transaksi("ruko",$data_transaksi);
               }
 
               if($result == TRUE){
@@ -1032,7 +1046,7 @@ date_default_timezone_set('Asia/Makassar');
               'no_faktur' => $this->input->post('no_faktur'),
               'tgl_pembayaran' => date('Y-m-d H:i:s', time()),
               'last_modified' => date("Y-m-d H:i:s",time()),
-              'modified_by' => $this->session->userdata('nama')
+              'modified_by' => $this->session->userdata('username')
           );
           $this->data->update_pembayaran($this->input->post('id-transaksi'), $data);
           echo json_encode(array("status" => TRUE));
@@ -1157,6 +1171,8 @@ date_default_timezone_set('Asia/Makassar');
 
                   if($row->waktu_mulai_pengantaran == NULL || $row->waktu_selesai_pengantaran == NULL){
                       if($row->status_invoice == 1){
+                          $aksi .= '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Perhitungan" target="_blank" href="'.base_url("main/cetakPerhitunganPiutang?id=".$row->id_transaksi."").'"> </a>&nbsp;</span>';
+                          $aksi .= '<a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Form Permintaan" target="_blank" href="'.base_url("main/cetakFPermintaan?id=".$row->id_transaksi."").'"></a>&nbsp;';
                           $aksi .= '<span class=""><a class="btn btn-danger glyphicon glyphicon-remove" title="batal transaksi" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a></span>';
                       }
                   } else {
@@ -1829,10 +1845,16 @@ date_default_timezone_set('Asia/Makassar');
                           $lama_pengantaran = round((($waktu_akhir - $waktu_awal) % 86400)/3600,2);
                       }
 
-                      if($lama_pengantaran > 0){
+                      if($lama_pengantaran > 1){
                           $lama_pengantaran .= " Jam";
-                      }else{
-                          $lama_pengantaran = "";
+                      }else {
+                          $lama_pengantaran = $lama_pengantaran * 60;
+                          if ($lama_pengantaran > 1){
+                              $lama_pengantaran .= " Menit";
+                          }else {
+                              $lama_pengantaran = $lama_pengantaran * 60;
+                              $lama_pengantaran .= " Detik";
+                          }
                       }
                       $format_tgl = date('d-m-Y H:i:s', strtotime($row->tgl_transaksi ));
                       $format_tgl_pengantaran = date('d-m-Y H:i:s', strtotime($row->tgl_perm_pengantaran ));
@@ -1949,10 +1971,11 @@ date_default_timezone_set('Asia/Makassar');
                           $lama_pengantaran = round((($waktu_akhir - $waktu_awal) % 86400)/3600,2);
                       }
 
-                      if($lama_pengantaran > 0){
+                      if($lama_pengantaran > 1){
                           $lama_pengantaran .= " Jam";
                       }else{
-                          $lama_pengantaran = "";
+                          $lama_pengantaran = $lama_pengantaran * 60;
+                          $lama_pengantaran .= " Menit";
                       }
                       $format_tgl = date('d-m-Y H:i:s', strtotime($row->tgl_transaksi ));
                       $format_tgl_pengantaran = date('d-m-Y H:i:s', strtotime($row->tgl_perm_pengantaran ));
@@ -2552,7 +2575,7 @@ date_default_timezone_set('Asia/Makassar');
 
                   if($data_tagihan != NULL){
                       foreach($data_tagihan as $data) {
-                          if($data->flowmeter_tenant == $row->id_tenant){
+                          if($data->flowmeter_tenant == $row->id_flow){
                               if($i == 1 && $data->flow_hari_ini != NULL){
                                   $ttl_awal = $data->flow_hari_ini;
                               }else{
@@ -2582,7 +2605,7 @@ date_default_timezone_set('Asia/Makassar');
                       } else {
                           $date_now = strtotime(date('Y-m-d',time() ));
                           $date_kadaluarsa = strtotime($row->waktu_kadaluarsa);
-                          if($date_now <= $date_kadaluarsa)
+                          if($date_now < $date_kadaluarsa || $date_now == $date_kadaluarsa)
                               $pembayaran = $row->nominal;
                           else
                               $pembayaran = 0;
@@ -2705,10 +2728,15 @@ date_default_timezone_set('Asia/Makassar');
           $tgl_akhir = $this->input->get('tgl_akhir');
           $id_flowmeter = $this->input->get('id');
           $row = $this->data->get_by_id("ruko",$id_flowmeter);
-
           $data['title'] = 'Tagihan Penggunaan Air '.$row->nama_tenant.' Periode '.date('d-M-Y', strtotime($tgl_awal)).' s/d '.date('d-M-Y', strtotime($tgl_akhir)); //judul title
-          $data['tagihan'] = $this->data->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter); //query model semua barang
-          $data['data_tagihan'] = $this->data->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+
+          if($row->id_master_lumpsum != 0){
+              $data['tagihan'] = $this->data->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter); //query model semua barang
+              $data['data_tagihan'] = $this->data->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+          } else{
+              $data['tagihan'] = $this->data->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter); //query model semua barang
+              $data['data_tagihan'] = $this->data->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+          }
           $this->load->view('v_cetaktagihan', $data);
 
           $paper_size  = 'A4'; //paper size
@@ -2726,12 +2754,67 @@ date_default_timezone_set('Asia/Makassar');
           $tgl_awal = $this->input->post('tgl_awal');
           $tgl_akhir = $this->input->post('tgl_akhir');
           $id_flowmeter = $this->input->post('id');
+          $no = 1;
+          $data = $this->data->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+          $data_tagihan = $this->data->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+          $tabel = '';
 
-          $data = array(
-              'status' => 'success',
-              'url' => '<a class="btn btn-primary" target="_blank" href='.base_url('main/cetakTagihan?id=').$id_flowmeter."&tgl_awal=".$tgl_awal."&tgl_akhir=".$tgl_akhir.'>Cetak PDF</a>'
-          );
+          if($data != NULL){
+              $tabel = '
+                    <div class="col-sm-7">
+                    <table class="table table-responsive table-condensed table-striped">
+                        <tr>
+                            <td>Nama Tenant</td>
+                            <td>:</td>
+                            <td>'.$data_tagihan->nama_tenant.'</td>
+                        </tr>
+                        <tr>
+                            <td>Lokasi</td>
+                            <td>:</td>
+                            <td>'.$data_tagihan->alamat.'</td>
+                        </tr>
+                        <tr>
+                            <td>No Telepon</td>
+                            <td>:</td>
+                            <td>'.$data_tagihan->no_telp.'</td>
+                        </tr>
+                        <tr>
+                            <td>Penanggung Jawab</td>
+                            <td>:</td>
+                            <td>'.$data_tagihan->penanggung_jawab.'</td>
+                        </tr>
+                    </table></div>';
+              $tabel .='
+            <table class="table table-responsive table-condensed table-striped">
+                <thead>
+                    <td>No</td>
+                    <td>Tanggal Pencatatan</td>
+                    <td>Flow Meter</td>
+                </thead>
+                ';
+              foreach ($data as $row){
+                  $tabel .= '
+              <tr>
+                <td>'.$no.'</td>
+                <td>'.$row->waktu_perekaman.'</td>
+                <td>'.$row->flow_hari_ini.'</td>
+              </tr>';
+                  $no++;
+              }
+              $tabel .= '</table>';
 
+              $data = array(
+                  'status' => 'success',
+                  'tabel' => $tabel,
+                  'url' => '<a class="btn btn-primary" target="_blank" href='.base_url('main/cetakTagihan?id=').$id_flowmeter."&tgl_awal=".$tgl_awal."&tgl_akhir=".$tgl_akhir.'>Cetak PDF</a>'
+              );
+          }
+          else{
+              $data = array(
+                  'status' => 'fail',
+                  'message' => 'Data Tidak Ada'
+              );
+          }
           echo json_encode($data);
       }
 
@@ -2776,6 +2859,41 @@ date_default_timezone_set('Asia/Makassar');
           );
           $data['hasil'] = $hasil;
           $this->load->view('v_kwitansi', $data);
+      }
+
+      function cetakPerhitunganPiutang(){
+          $id = $this->input->get('id');
+          define('FPDF_FONTPATH',$this->config->item('fonts_path'));
+          $query = $this->data->cetakkwitansi("darat",$id);
+
+          $tanggal = date('d M Y', time());
+          $tgl_permintaan = date("d M Y", strtotime($query->tgl_transaksi));
+
+          if($query->diskon != NULL || $query->diskon != 0){
+              $tarif = $this->Ribuan($query->tarif - ($query->diskon / 100 * $query->tarif));
+              $total = $this->Ribuan(($query->tarif - ($query->diskon / 100 * $query->tarif)) * $query->total_permintaan);
+              $terbilang = $this->terbilang(($query->tarif - ($query->diskon / 100 * $query->tarif)) * $query->total_permintaan);
+          }else{
+              $tarif = $this->Ribuan($query->tarif);
+              $total = $this->Ribuan($query->tarif * $query->total_permintaan);
+              $terbilang = $this->terbilang($query->tarif * $query->total_permintaan);
+          }
+
+
+          $hasil = array(
+              'nama_pelanggan' => $query->nama_pengguna_jasa,
+              'nama_pemohon' => $query->nama_pemohon,
+              'alamat' => $query->alamat,
+              'tanggal' => $tanggal,
+              'tgl_perm' => $tgl_permintaan,
+              'total_pengisian' => $query->total_permintaan,
+              'tarif' => $tarif,
+              'total' => $total,
+              'loket' => $this->session->userdata('nama'),
+              'terbilang' => $terbilang." Rupiah"
+          );
+          $data['hasil'] = $hasil;
+          $this->load->view('v_perhitungan_piutang', $data);
       }
 
       function cetakPerhitungan(){
@@ -4261,6 +4379,7 @@ date_default_timezone_set('Asia/Makassar');
           $alamat = $this->input->post('alamat');
           $no_telp = $this->input->post('no_telp');
           $pengguna = $this->input->post('pengguna_jasa');
+          $deposit = $this->input->post('deposit');
 
           if(isset($nama) && $nama != NULL && $alamat != NULL && $no_telp != NULL && $pengguna != NULL){
               $data_insert = array(
@@ -4268,6 +4387,7 @@ date_default_timezone_set('Asia/Makassar');
                   'alamat' => $alamat,
                   'no_telp' => $no_telp,
                   'pengguna_jasa_id_tarif' => $pengguna,
+                  'deposit' => $deposit,
                   'issued_at' => date("Y-m-d H:i:s",time()),
                   'issued_by' => $this->session->userdata('username')
               );
@@ -4310,7 +4430,8 @@ date_default_timezone_set('Asia/Makassar');
               'alamat' => $result->alamat,
               'no_telp' => $result->no_telp,
               'pengguna' => $result->pengguna_jasa_id_tarif,
-              'nama_pengguna' => $data['nama_pengguna']
+              'deposit' => $result->deposit,
+              'nama_pengguna' => $data['nama_pengguna'],
           );
 
           $this->load->template('v_edit_darat',$data);
@@ -4322,11 +4443,14 @@ date_default_timezone_set('Asia/Makassar');
           $alamat = $this->input->post('alamat');
           $no_telp = $this->input->post('no_telp');
           $pengguna = $this->input->post('pengguna');
+          $deposit = $this->input->post('deposit');
+
           $data_edit = array(
               'nama_pengguna_jasa' => $nama,
               'alamat' => $alamat,
               'no_telp' => $no_telp,
               'pengguna_jasa_id_tarif' => $pengguna,
+              'deposit' => $deposit,
               'last_modified' => date("Y-m-d H:i:s",time()),
               'modified_by' => $this->session->userdata('username')
           );
@@ -4497,7 +4621,7 @@ date_default_timezone_set('Asia/Makassar');
       }
 
       public function ajax_data_tenant(){
-          if($this->session->userdata('role') == 'wtp'){
+          if($this->session->userdata('role') == 'admin'){
               $list = $this->data->get_datatables_tenant();
               $data = array();
               $no = $_POST['start'];
@@ -4510,6 +4634,11 @@ date_default_timezone_set('Asia/Makassar');
                   $row[] = "<center>".$result->penanggung_jawab;
                   $row[] = $result->alamat;
                   $row[] = $result->no_telp;
+                  if($result->status_aktif == 1)
+                      $status = "Aktif";
+                  else
+                      $status = "Tidak Aktif";
+                  $row[] = $status;
                   $data_flow = $this->data->getIdFlowmeter($result->id_master_flowmeter);
                   $row[] = $data_flow->id_flowmeter;
                   $row[] = '<center><a class="btn btn-sm btn-primary" href="editTenant?id=' . $result->id_tenant . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
@@ -4556,7 +4685,7 @@ date_default_timezone_set('Asia/Makassar');
       }
 
       public function input_data_tenant(){
-          if($this->session->userdata('role') == 'wtp'){
+          if($this->session->userdata('role') == 'admin'){
               $nama_tenant = $this->input->post('nama_tenant');
               $penanggung_jawab = $this->input->post('penanggung_jawab');
               $alamat = $this->input->post('alamat');
@@ -4581,7 +4710,7 @@ date_default_timezone_set('Asia/Makassar');
                       $message = "Input Berhasil";
                   }
                   else{
-                      $message = "Input Gagal";
+                      $message = $this->db->error();
                   }
               }
               else{
@@ -4623,7 +4752,7 @@ date_default_timezone_set('Asia/Makassar');
       }
 
       public function editTenant(){
-          if($this->session->userdata('role') == 'wtp'){
+          if($this->session->userdata('role') == 'admin'){
               $id = $_GET['id'];
               $data['id'] = $id;
               $data['title'] = 'Edit Data Tenant';
@@ -4638,6 +4767,7 @@ date_default_timezone_set('Asia/Makassar');
                   'id_tenant' => $result->id_tenant,
                   'nama_tenant' => $result->nama_tenant,
                   'penanggung_jawab' => $result->penanggung_jawab,
+                  'status_aktif' => $result->status_aktif,
                   'alamat' => $result->alamat,
                   'id_flowmeter' => $result->id_master_flowmeter,
               );
@@ -4665,7 +4795,7 @@ date_default_timezone_set('Asia/Makassar');
       }
 
       public function edit_tenant(){
-          if($this->session->userdata('role') == 'wtp'){
+          if($this->session->userdata('role') == 'admin'){
               $id = $this->input->post('id_tenant');
               $nama_tenant = $this->input->post('nama_tenant');
               $penanggung_jawab = $this->input->post('penanggung_jawab');
@@ -4737,6 +4867,9 @@ date_default_timezone_set('Asia/Makassar');
           $no = $_POST['start'];
 
           foreach ($list as $result) {
+              $date_now = strtotime(date('Y-m-d',time() ));
+              $date_kadaluarsa = strtotime($result->waktu_kadaluarsa);
+
               $no++;
               $row = array();
               $row[] = "<center>".$no;
@@ -4744,7 +4877,12 @@ date_default_timezone_set('Asia/Makassar');
               $row[] = "<center>".$result->nama_perjanjian;
               $row[] = "<center>".$result->waktu_kadaluarsa;
               $row[] = "<center>".$result->nominal;
-              $row[] = '<center><a class="btn btn-sm btn-primary" href="editLumpsum?id=' . $result->id_lumpsum . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
+
+              if($date_now < $date_kadaluarsa || $date_now == $date_kadaluarsa){
+                  $row[] = '<center><a class="btn btn-sm btn-primary" href="editLumpsum?id=' . $result->id_lumpsum . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
+              } else{
+                  $row[] = '';
+              }
 
               $data[] = $row;
           }
@@ -4860,7 +4998,13 @@ date_default_timezone_set('Asia/Makassar');
                   $row[] = "<center>".$result->nama_flowmeter;
                   $row[] = "<center>".$result->flowmeter_awal;
                   $row[] = "<center>".$result->flowmeter_akhir;
-                  $row[] = $result->kondisi;
+                  if($result->kondisi == 'baik')
+                      $kondisi = "Baik";
+                  else if($result->kondisi == 'kurang_baik')
+                      $kondisi = "Kurang Baik";
+                  else
+                      $kondisi = "Rusak";
+                  $row[] = $kondisi;
                   $row[] = '<center><a class="btn btn-sm btn-primary" href="editFlowmeter?id=' . $result->id_flow . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
 
                   $data[] = $row;
@@ -5529,7 +5673,7 @@ date_default_timezone_set('Asia/Makassar');
 
                   // Add user data in session
                   $this->session->set_userdata($session_data);
-                  $waktu = date("Y-m-d", time());
+                  $waktu = date("Y-m-d H:i:s", time());
 
                   $data = array(
                       'username'   => $username,

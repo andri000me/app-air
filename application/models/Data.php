@@ -32,7 +32,7 @@
         var $column_search_agent = array('nama_perusahaan'); //set column field database for datatable searchable
         var $order_agent = array('id_agent' => 'desc');
 
-        var $column_order_tenant = array(null,'nama_tenant',null,null,null,null); //set column field database for datatable orderable
+        var $column_order_tenant = array(null,'nama_tenant',null,null,null,null,null,null); //set column field database for datatable orderable
         var $column_search_tenant = array('nama_tenant','penanggung_jawab'); //set column field database for datatable searchable
         var $order_tenant = array('id_tenant' => 'desc');
 
@@ -71,9 +71,9 @@
                 $this->db->where('pengguna_jasa_id_tarif !=','2');
                 $this->db->where('pengguna_jasa_id_tarif !=','3');
             } else if($tipe == "ruko"){
-                $this->db->like('id_master_flowmeter', $nama);
-                $this->db->from('master_tenant,master_flowmeter');
-                $this->db->where('id_flow = id_master_flowmeter');
+                $this->db->like('id_flow', $nama);
+                $this->db->where('id_flow !=',0);
+                $this->db->from('master_flowmeter');
             } else if($tipe == "ruko_tagihan"){
                 $this->db->like('id_tenant', $nama);
                 $this->db->from('master_tenant,master_flowmeter');
@@ -133,7 +133,7 @@
                 $query = $this->db->insert($this->tabel_transaksi_darat,$data);
             }else if($tipe == "ruko"){
                 $insert_data = array(
-                    'flowmeter_tenant' => $data['id_tenant'],
+                    'flowmeter_tenant' => $data['id_flow'],
                     'waktu_perekaman' => $data['waktu_perekaman'],
                     'flow_hari_ini' => $data['flow_hari_ini'],
                     'issued_at' => $data['issued_at'],
@@ -141,19 +141,9 @@
                 );
                 $query = $this->db->insert($this->tabel_transaksi_ruko, $insert_data);
 
-                if($this->cekFlowTenant($data['id_flow']) == TRUE){
-                    $this->db->set('flow_awal',$data['flow_hari_ini']);
-                    $this->db->where('id_master_flowmeter',$data['id_flow']);
-                    $this->db->update('master_tenant');
-                }
-
                 $this->db->set('flowmeter_akhir',$data['flow_hari_ini']);
                 $this->db->where('id_flow',$data['id_flow']);
                 $this->db->update("master_flowmeter");
-
-                $this->db->set('flow_akhir',$data['flow_hari_ini']);
-                $this->db->where('id_master_flowmeter',$data['id_flow']);
-                $this->db->update("master_tenant");
             }else{
                 $query = $this->db->insert($this->tabel_transaksi_laut,$data);
             }
@@ -284,7 +274,7 @@
             else if($tipe == "ruko"){
                 $this->db->from('master_tenant,master_flowmeter');
                 $this->db->where('id_master_flowmeter = id_flow');
-                $this->db->where('id_tenant',$id);
+                $this->db->where('id_flow',$id);
             }
             else if($tipe == "laut_realisasi"){
                 $this->db->from('transaksi_laut ,pembeli_laut,pengguna_jasa,master_agent');
@@ -381,29 +371,35 @@
             $this->db->from('transaksi_tenant , master_tenant ,pengguna_jasa,master_flowmeter,master_lumpsum');
             $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
             $this->db->where('id_master_flowmeter = id_flow');
-            $this->db->where('flowmeter_tenant = id_tenant');
+            $this->db->where('flowmeter_tenant = id_flow');
+            $this->db->where('id_master_lumpsum = id_lumpsum');
             $this->db->where('pengguna_jasa_id = id_tarif');
-            $this->db->where('id_tenant =',$id);
+            $this->db->where('id_flow =',$id);
             $this->db->order_by('flow_hari_ini', 'ASC');
             $query = $this->db->get();
 
             if($query->num_rows() > 0){
                 return $query->result();
+            }else{
+                return false;
             }
         }
 
         function getDataTagihan($tgl_awal,$tgl_akhir,$id){
             $this->db->select('*');
-            $this->db->from('transaksi_tenant , master_tenant ,pengguna_jasa,master_flowmeter');
+            $this->db->from('transaksi_tenant , master_tenant ,pengguna_jasa,master_flowmeter,master_lumpsum');
             $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
             $this->db->where('id_master_flowmeter = id_flow');
-            $this->db->where('flowmeter_tenant = id_tenant');
+            $this->db->where('flowmeter_tenant = id_flow');
+            $this->db->where('id_master_lumpsum = id_lumpsum');
             $this->db->where('pengguna_jasa_id = id_tarif');
-            $this->db->where('id_tenant =',$id);
+            $this->db->where('id_flow =',$id);
             $query = $this->db->get();
 
             if($query->num_rows() > 0){
                 return $query->row();
+            }else{
+                return false;
             }
         }
 
@@ -625,6 +621,7 @@
 
         public function getLumpsum(){
             $this->db->from('master_lumpsum');
+            $this->db->where('waktu_kadaluarsa >=',date('Y-m=d',time() ));
             $query = $this->db->get();
 
             return $query->result();
@@ -664,13 +661,7 @@
             return $this->db->affected_rows();
         }
 
-        //fungsi database untuk master data ruko
         public function edit_flow_tenant($data){
-            $this->db->set('flow_awal',$data['flow_hari_ini']);
-            $this->db->set('flow_akhir',$data['flow_hari_ini']);
-            $this->db->where('id_master_flowmeter',$data['id_flow']);
-            $query = $this->db->update('master_tenant');
-
             $this->db->set('flowmeter_akhir',$data['flow_hari_ini']);
             $this->db->where('id_flow',$data['id_flow']);
             $this->db->update('master_flowmeter');

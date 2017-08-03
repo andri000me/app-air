@@ -196,6 +196,7 @@ if(isset($_SESSION['session'])) {
                     var alamat = $('#alamat').val();
                     var no_telp = $('#no_telp').val();
                     var pengguna_jasa = $('#pengguna').val();
+
                     var form_data = new FormData();
                     var base_url = '<?= base_url();?>';
                     var text_alert;
@@ -321,11 +322,6 @@ if(isset($_SESSION['session'])) {
                 </table>
             </div>
         </div>
-        <script type="text/javascript">
-            function confirmDelete() {
-
-            }
-        </script>
         <script type="text/javascript">
             var table;
 
@@ -796,35 +792,12 @@ if(isset($_SESSION['session'])) {
             });
 
         </script>
-        <script>
-            function delete_data_darat(id)
-            {
-                if(confirm('Apakah Anda Yakin Untuk Menghapus Data Ini?'))
-                {
-                    // ajax delete data to database
-                    $.ajax({
-                        url : "<?php echo site_url('main/delete_data_agent')?>/"+id,
-                        type: "POST",
-                        dataType: "JSON",
-                        success: function(data)
-                        {
-                            //if success reload ajax table
-                            alert("Data Berhasil Dihapus");
-                            window.location = "<?= site_url()?>"+"main/master?id=agent";
-                        },
-                        error: function (jqXHR, textStatus, errorThrown)
-                        {
-                            alert('Error Ketika Menghapus Data');
-                        }
-                    });
-
-                }
-            }
-        </script>
 <?php
     }
     else{
         redirect('main');
     }
+} else{
+    redirect('main');
 }
 ?>

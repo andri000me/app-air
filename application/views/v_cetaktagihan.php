@@ -41,7 +41,7 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
             <td><?= $data_tagihan->id_flowmeter ?></td>
         </tr>
         <tr>
-            <th align="left" style="width: 10%">Nama Ruko</th>
+            <th align="left" style="width: 10%">Nama Tenant</th>
             <td style="width: 2%">:</td>
             <td><?= $data_tagihan->nama_tenant?></td>
         </tr>
@@ -88,6 +88,10 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
             $total = $ton_total * $data_tagihan->tarif;
         }
 
+        if($data_tagihan->id_master_lumpsum != 0){
+            $total = $data_tagihan->nominal;
+        }
+
         if($total == '0'){
             return '';
         }
@@ -113,35 +117,59 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
         <tr>
             <th align="center" style="width: 3%">No</th>
             <td align="center">Jenis Pelayanan</td>
+            <td align="center">Flow Meter Awal</td>
+            <td align="center">Flow Meter Terakhir</td>
             <td align="center">Total Penggunaan</td>
-            <td align="center">Tarif</td>
-            <td align="center">Diskon</td>
-            <td align="center">Total Pembayaran</td>
+            <?php
+            if($data_tagihan->id_master_lumpsum == 0) {
+                ?>
+                <td align="center">Tarif</td>
+                <td align="center">Diskon</td>
+                <td align="center">Total Pembayaran</td>
+                <?php
+            } else{
+                ?>
+                <td align="center">Total Pembayaran</td>
+                <?php
+            }
+            ?>
         </tr>
         <tr>
             <td align="center">1</td>
             <td align="center">Jasa Air Bersih</td>
+            <td align="center"><?= $ttl_awal?></td>
+            <td align="center"><?= $ttl_akhir?></td>
             <td align="center"><?= $ton_total ?> m3</td>
-            <td align="center">Rp. <?= $data_tagihan->tarif ?></td>
-            <td align="center"><?= $data_tagihan->diskon ?>%</td>
-            <td align="center">Rp. <?= $total ?></td>
+            <?php
+            if($data_tagihan->id_master_lumpsum == 0) {
+                ?>
+                <td align="center">Rp. <?= $data_tagihan->tarif ?></td>
+                <td align="center"><?= $data_tagihan->diskon ?>%</td>
+                <td align="center">Rp. <?= $total ?></td>
+                <?php
+            } else{
+                ?>
+                <td align="center">Rp. <?= $total ?></td>
+                <?php
+            }
+            ?>
         </tr>
     </table>
     <br><br><br>
     <table border="0">
         <tr>
-            <td style="width: 80%" align="right" colspan="5">&nbsp;</td>
+            <td style="width: 80%" align="right" colspan="4">&nbsp;</td>
             <td align="center">Balikpapan, <?= date("d M Y",time())?></td>
         </tr>
         <tr>
-            <td style="width: 80%" align="right" colspan="5">&nbsp;</td>
+            <td style="width: 80%" align="right" colspan="4">&nbsp;</td>
             <td align="center">Asisten Manager Operasi</td>
         </tr>
     </table>
-    <br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br>
     <table border="0">
         <tr>
-            <td style="width: 80%" align="right" colspan="5">&nbsp;</td>
+            <td style="width: 80%" align="right" colspan="4">&nbsp;</td>
             <td align="center">(..............................................)</td>
         </tr>
     </table>

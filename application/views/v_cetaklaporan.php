@@ -256,7 +256,9 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
         <tr>
             <th align="center">No</th>
             <th align="center">ID FLow Meter</th>
-            <th align="center">Nama Ruko</th>
+            <th align="center">Nama Tenant</th>
+            <th align="center">Flow Meter Awal</th>
+            <th align="center">Flow Meter Akhir</th>
             <th align="center">Total Penggunaan</th>
             <th align="center">Tarif</th>
             <th align="center">Diskon</th>
@@ -268,55 +270,8 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
         $no = 0;
         $ton_realiasi =0;
         foreach($laporan as $rbarang) {
-                if ($rbarang->flowmeter_awal != NULL && $rbarang->flowmeter_akhir != NULL) {
-                    $no++;
-                    $realisasi = $rbarang->flowmeter_akhir - $rbarang->flowmeter_awal;
-                    if ($rbarang->diskon != NULL || $rbarang->diskon != 0) {
-                        $total_pembayaran = $rbarang->tarif * $rbarang->diskon * $realisasi;
-                    } else {
-                        $total_pembayaran = $rbarang->tarif * $realisasi;
-                    }
 
-                    $total += $total_pembayaran;
-                    $ton += $rbarang->total_permintaan;
-                    $ton_realiasi += $realisasi;
-                    $format_tgl = date('d-m-Y', strtotime($rbarang->tgl_transaksi));
-
-                    if ($rbarang->pengguna_jasa_id_tarif == 6) {
-                        $rbarang->pengguna_jasa_id_tarif = "Peti Kemas";
-                    } else {
-                        $rbarang->pengguna_jasa_id_tarif = "Tongkang";
-                    }
-
-                    if ($total_pembayaran == '0')
-                        return '';
-                    elseif ($total_pembayaran < 100)
-                        $total_pembayaran .= ',-';
-                    else
-                        $total_pembayaran = number_format($total_pembayaran, 0, '', '.') . ',-';
-
-                    if ($rbarang->tarif == '0')
-                        return '';
-                    elseif ($rbarang->tarif < 100)
-                        $rbarang->tarif .= ',-';
-                    else
-                        $rbarang->tarif = number_format($rbarang->tarif, 0, '', '.') . ',-';
-                    ?>
-                    <tr>
-                        <td align="center"><?= $no ?></td>
-                        <td align="center"><?= $rbarang->id_lct ?></td>
-                        <td align="center"><?= $rbarang->nama_lct ?></td>
-                        <td align="center"><?= $rbarang->voy_no ?></td>
-                        <td align="center"><?= $rbarang->pengguna_jasa_id_tarif ?></td>
-                        <td align="center"><?= $rbarang->nama_perusahaan ?></td>
-                        <td align="center"><?= $format_tgl ?></td>
-                        <td align="center"><?= $rbarang->total_permintaan ?></td>
-                        <td align="center"><?= $realisasi ?></td>
-                        <td align="center"><?= $total_pembayaran ?></td>
-                    </tr>
-                    <?php
-                }
-            }
+        }
         if($total == '0')
             return '';
         elseif($total < 100)
@@ -326,9 +281,8 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
         ?>
 
         <tr>
-            <td align="center"colspan="7"><b>Total</b></td>
-            <td align="center"><b><?= $ton?></b></td>
-            <td align="center"><b><?= $ton_realiasi?></b></td>
+            <td align="center" colspan="5"><b>Total</b></td>
+            <td align="center" colspan="3"><b><?= $ton?></b></td>
             <td align="center"><b><?= $total?></b></td>
         </tr>
     </table>
