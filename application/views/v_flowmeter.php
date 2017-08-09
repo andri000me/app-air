@@ -98,6 +98,9 @@ if(isset($_SESSION['session'])) {
                             <center>Kondisi
                         </th>
                         <th>
+                            <center>Status
+                        </th>
+                        <th>
                             <center>Aksi
                         </th>
                     </tr>
@@ -123,6 +126,9 @@ if(isset($_SESSION['session'])) {
                         </th>
                         <th>
                             <center>Kondisi
+                        </th>
+                        <th>
+                            <center>Status
                         </th>
                         <th>
                             <center>Aksi

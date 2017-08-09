@@ -19,7 +19,7 @@ if($this->session->userdata('role') == 'wtp'){
                 new_div = document.createElement("div"),
                 existingdiv1 = document.getElementById("tabel");
             $.ajax({
-                url: "<?= base_url('main/riwayat_catat_flow')?>",
+                url: "<?= base_url('main/riwayat_catat_sumur')?>",
                 method: "POST",
                 data: {
                     tgl_awal: tgl_awal,
@@ -45,7 +45,7 @@ if($this->session->userdata('role') == 'wtp'){
         }
     </script>
     <div class="container container-fluid">
-        <h3>Riwayat Pencatatan Flow Harian</h3><br><br>
+        <h3>Riwayat Pencatatan Sumur</h3><br><br>
         <div class="row col-sm-6">
             <table class="table table-responsive table-condensed">
                 <tr>
@@ -80,7 +80,7 @@ if($this->session->userdata('role') == 'wtp'){
                 </tr>
             </table>
         </div>
-        <div class="row col-sm-10">
+        <div class="row col-sm-12">
             <div id="laporan"></div>
         </div>
     </div>

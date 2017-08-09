@@ -100,7 +100,7 @@ if($this->session->userdata('role') == 'wtp'){
                     <tr>
                         <div class="form-group">
                             <td>
-                                <input type="submit" class="form-control" id="input" name="Input" value="Submit" />
+                                <input type="submit" class="form-control btn btn-primary" id="input" name="Input" value="Submit" />
                             </td>
                         </div>
                     </tr>

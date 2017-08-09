@@ -43,7 +43,7 @@ if($this->session->userdata('role') == "loket" && $this->session->userdata('sess
                         "<tfoot>" +
                         "<tr>" +
                         "<th><center>No</center></th>" +
-                        "<th><center>Nama Pelanggan</center></th>" +
+                        "<th><center>Nama Perusahaan / Pemohon</center></th>" +
                         "<th><center>Alamat</center></th>" +
                         "<th><center>Waktu Permohonan</center></th>" +
                         "<th><center>Waktu Pelayanan</center></th>" +

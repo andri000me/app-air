@@ -110,6 +110,9 @@ if(isset($_SESSION['session'])) {
                             <center>Kondisi
                         </th>
                         <th>
+                            <center>Status
+                        </th>
+                        <th>
                             <center>ID Flow Meter
                         </th>
                         <th>
@@ -132,6 +135,9 @@ if(isset($_SESSION['session'])) {
                         </th>
                         <th>
                             <center>Kondisi
+                        </th>
+                        <th>
+                            <center>Status
                         </th>
                         <th>
                             <center>ID Flow Meter

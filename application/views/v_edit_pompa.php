@@ -6,6 +6,9 @@
             var nama_pompa = $('#nama_pompa').val();
             var kondisi = $('#kondisi').val();
             var id_flowmeter = $('#id_flowmeter').val();
+            var id_flow = $('#id_flow').val();
+            var status = $('#status_aktif').val();
+
             var form_data = new FormData();
             var base_url = '<?= base_url();?>';
             var text_alert;
@@ -14,7 +17,10 @@
             form_data.append('id_pompa',id_pompa);
             form_data.append('nama_pompa', nama_pompa);
             form_data.append('kondisi',kondisi);
+            form_data.append('status',status);
             form_data.append('id_flowmeter',id_flowmeter);
+            form_data.append('id_flow',id_flow);
+
             $.ajax({
                 url: base_url +'main/edit_pompa', // point to server-side controller method
                 dataType: 'text', // what to expect back from the server
@@ -104,12 +110,43 @@ if(isset($_SESSION['session'])) {
                         </td>
                     </tr>
                     <tr>
-                        <td><label>ID FLow Meter</label></td>
+                        <td><label>Kondisi</label></td>
                         <td>:</td>
                         <td>
+                            <select class="form-control" id="status_aktif" name="status_aktif">
+                                <?php
+                                if($isi['status_aktif'] == 1){
+                                    ?>
+                                    <option selected value="1">Aktif</option>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <option value="1">Aktif</option>
+                                    <?php
+                                }
+                                ?>
+                                <?php
+                                if($isi['status_aktif'] == 0){
+                                    ?>
+                                    <option selected value="0">Tidak Aktif</option>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <option value="0">Tidak Aktif</option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>ID Flow Meter</label></td>
+                        <td>:</td>
+                        <td>
+                            <input type="hidden" id="id_flow" name="id_flow" value="<?= $isi['id_flowmeter']?>"/>
                             <select class="form-control" name="id_flowmeter" id="id_flowmeter">
                                 <?php foreach ($pompa as $row) {
-                                    if($row->id_master_pompa == $isi['id_pompa']) {
+                                    if($row->id_flow == $isi['id_flowmeter']) {
                                         ?>
                                         <option selected value="<?= $row->id_flow ?>"><?= $row->id_flowmeter ?>
                                             => <?= $row->nama_flowmeter ?></option>

@@ -17,8 +17,6 @@
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap-clockpicker.min.css')?>" >
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/jquery-ui.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/sweetalert.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/dataTables.bootstrap.min.css')?>" >
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/datatables.min.css')?>" >
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/jquery.dataTables.min.css')?>" >
 
     <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.js'); ?>"></script>
@@ -127,15 +125,14 @@
                                     <li>
                                         <a href="<?= base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
                                     </li>
-                                    <!---<li><a href="<?= base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Air Ruko</a></li>--->
+                                    <li><a href="<?= base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Air Ruko</a></li>
                                 </ul>
                             </li>
                             <li><a href="<?= base_url('main/tarif'); ?>">Penyesuaian Tarif</a></li>
-                            <!----
-                            <li><a href="<?= base_url('main/view?id=tenant'); ?>">Master Tenant</a></li>
                             <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Lumpsum</a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tenant</a>
                                 <ul class="dropdown-menu">
+                                    <li><a href="<?= base_url('main/view?id=tenant'); ?>">Master Tenant</a></li>
                                     <li>
                                         <a href="<?= base_url('main/view?id=lumpsum'); ?>">Master Lumpsum</a>
                                     </li>
@@ -144,7 +141,6 @@
                                     </li>
                                 </ul>
                             </li>
-                            ---->
                             <?php
                         }
                         else if($this->session->userdata('role') == "wtp"){
@@ -172,27 +168,32 @@
                                     <li>
                                         <a href="<?= base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
                                     </li>
-                                    <!---
+
                                     <li>
-                                        <a href="<?= base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Transaksi Air Tenant</a>
+                                        <a href="<?= base_url('main/view?id=cetak_laporan_flow'); ?>">Laporan Pencatatan Flow Meter</a>
                                     </li>
-                                    --->
+                                    <li>
+                                        <a href="<?= base_url('main/view?id=cetak_laporan_sumur'); ?>">Laporan Pencatatan Sumur</a>
+                                    </li>
+
                                 </ul>
                             </li>
-                            <!---
+
                             <li>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tenant</a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Flow Meter</a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="<?= base_url('main/view?id=tenant'); ?>">Master Tenant</a>
+                                        <a href="<?= base_url('main/view?id=flowmeter'); ?>">Master Flow Meter</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=transaksi_tenant'); ?>">Pencatatan Harian Penggunaan Air Tenant</a>
+                                        <a href="<?= base_url('main/view?id=transaksi_tenant'); ?>">Pencatatan Harian Penggunaan Air</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= base_url('main/view?id=riwayat_pencatatan_flow'); ?>">Riwayat Pencatatan Harian Penggunaan Air</a>
                                     </li>
                                 </ul>
                             </li>
-                            --->
-                            <!---
+
                             <li>
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Sumur</a>
                                 <ul class="dropdown-menu">
@@ -203,14 +204,14 @@
                                         <a href="<?= base_url('main/view?id=pompa'); ?>">Master Pompa</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=flowmeter'); ?>">Master Flow Meter</a>
+                                        <a href="<?= base_url('main/view?id=catat_sumur'); ?>">Pencatatan Harian Sumur</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url(''); ?>">Pencatatan Harian Sumur</a>
+                                        <a href="<?= base_url('main/view?id=riwayat_pencatatan_sumur'); ?>">Riwayat Pencatatan Harian Sumur</a>
                                     </li>
                                 </ul>
                             </li>
-                            --->
+
                             <?php
                         }
                         else if($this->session->userdata('role') == "keuangan"){
@@ -237,6 +238,13 @@
                                         <a href="<?= base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
                                     </li>
                                 </ul>
+                            </li>
+                            <?php
+                        }
+                        else{
+                            ?>
+                            <li>
+                                <a href="<?= base_url('main/view?id=tenant'); ?>">Master Tenant</a>
                             </li>
                             <?php
                         }

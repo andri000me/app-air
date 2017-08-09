@@ -7,6 +7,7 @@
             var kondisi = $('#kondisi').val();
             var flowmeter_awal = $('#flowmeter_awal').val();
             var flowmeter_akhir = $('#flowmeter_akhir').val();
+            var status_aktif = $('#status_aktif').val();
 
             var form_data = new FormData();
             var base_url = '<?= base_url();?>';
@@ -101,6 +102,36 @@ if(isset($_SESSION['session'])) {
                                 }else{
                                     ?>
                                     <option value="rusak">rusak</option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Status Aktif</label></td>
+                        <td>:</td>
+                        <td>
+                            <select class="form-control" id="status_aktif" name="status_aktif">
+                                <?php
+                                if($isi['status_aktif'] == 1){
+                                    ?>
+                                    <option selected value="1">Aktif</option>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <option value="1">Aktif</option>
+                                    <?php
+                                }
+                                ?>
+                                <?php
+                                if($isi['status_aktif'] == 0){
+                                    ?>
+                                    <option selected value="0">Tidak Aktif</option>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <option value="0">Tidak Aktif</option>
                                     <?php
                                 }
                                 ?>

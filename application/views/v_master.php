@@ -529,13 +529,13 @@ if(isset($_SESSION['session'])) {
                             <center>Nama Perusahaan
                         </th>
                         <th>
-                            <center>Jenis Kapal
-                        </th>
-                        <th>
                             <center>Alamat
                         </th>
                         <th>
                             <center>No Telepon
+                        </th>
+                        <th>
+                            <center>Jenis Kapal
                         </th>
                         <th>
                             <center>Aksi
@@ -559,13 +559,13 @@ if(isset($_SESSION['session'])) {
                             <center>Nama Perusahaan
                         </th>
                         <th>
-                            <center>Jenis Kapal
-                        </th>
-                        <th>
                             <center>Alamat
                         </th>
                         <th>
                             <center>No Telepon
+                        </th>
+                        <th>
+                            <center>Jenis Kapal
                         </th>
                         <th>
                             <center>Aksi

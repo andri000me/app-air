@@ -69,6 +69,16 @@ date_default_timezone_set('Asia/Makassar');
               $data['tipe'] = "ruko";
               $this->load->template('v_laporan',$data);
           }
+          else if($page == "cetak_laporan_flow"){
+              $data['title'] = 'Laporan Pencatatan Flow Meter'; //judul title
+              $data['tipe'] = "flow";
+              $this->load->template('v_laporan',$data);
+          }
+          else if($page == "cetak_laporan_sumur"){
+              $data['title'] = 'Laporan Pencatatan Sumur'; //judul title
+              $data['tipe'] = "sumur";
+              $this->load->template('v_laporan',$data);
+          }
           else if($page == "monitoring_darat"){
               $data['title'] = 'Monitoring Layanan Jasa Air Darat'; //judul title
               $data['tipe'] = 'darat';
@@ -122,6 +132,14 @@ date_default_timezone_set('Asia/Makassar');
           else if($page == "riwayat_pencatatan_flow"){
               $data['title'] = 'Riwayat Pencatatan Flow Meter'; //judul title
               $this->load->template('v_riwayat_catat_flow',$data);
+          }
+          else if($page == "catat_sumur"){
+              $data['title'] = 'Pencatatan Harian Sumur'; //judul title
+              $this->load->template('v_pencatatan_sumur',$data);
+          }
+          else if($page == "riwayat_pencatatan_sumur"){
+              $data['title'] = 'Riwayat Pencatatan Sumur'; //judul title
+              $this->load->template('v_riwayat_catat_sumur',$data);
           }
           else{
               redirect('main');
@@ -696,6 +714,106 @@ date_default_timezone_set('Asia/Makassar');
               }
               else{
                   $web = base_url('main/view?id=transaksi_tenant');
+                  echo "<script type='text/javascript'>
+                        alert('Permintaan Gagal Di Input ! Coba Lagi')
+                        window.location.replace('$web')
+                      </script>";
+              }
+          }
+      }
+
+      //fungsi untuk pencatatan sumur
+      public function get_sumur() {
+          $nama = $this->input->post('id_sumur',TRUE); //variabel kunci yang di bawa dari input text id kode
+          $tipe = "sumur";
+          $query = $this->data->get_pembeli($tipe,$nama); //query model
+
+          if($query == TRUE){
+              $pelanggan = array();
+              foreach ($query as $data) {
+                  $pelanggan[] = array(
+                      'id_sumur' => $data->id_master_sumur,
+                      'label' => $data->id_sumur, //variabel array yg dibawa ke label ketikan kunci
+                      'nama_sumur' => $data->nama_sumur , //variabel yg dibawa ke id nama
+                      'nama_pompa' => $data->nama_pompa,
+                      'nama_flowmeter' => $data->nama_flowmeter,
+                      'id_pompa' => $data->id_master_pompa,
+                      'id_flowmeter' => $data->id_flow,
+                  );
+              }
+          }
+
+          echo json_encode($pelanggan);      //data array yang telah kota deklarasikan dibawa menggunakan json
+      }
+
+      public function transaksi_sumur() {
+          $id_sumur = $this->input->post('id_master_sumur_awal');
+          $id_flow = $this->input->post('id_flowmeter');
+
+          $cuaca_awal = $this->input->post('cuaca_awal');
+          $cuaca_akhir = $this->input->post('cuaca_akhir');
+          $waktu_awal = $this->input->post('tanggal_awal');
+          $waktu_akhir = $this->input->post('tanggal_akhir');
+          $tonnase_awal = $this->input->post('flow_hari_ini_awal');
+          $tonnase_akhir = $this->input->post('flow_hari_ini_akhir');
+          $debit_awal= $this->input->post('debit_awal');
+          $debit_akhir = $this->input->post('debit_akhir');
+
+          $this->form_validation->set_rules('id_master_sumur_awal', 'Nama Sumur', 'required');
+          $this->form_validation->set_rules('tanggal_awal', 'Tanggal', 'required');
+          $this->form_validation->set_rules('flow_hari_ini_awal', 'Flow Meter Awal', 'required');
+          $this->form_validation->set_rules('tanggal_akhir', 'Tanggal', 'required');
+          $this->form_validation->set_rules('flow_hari_ini_akhir', 'Flow Meter Akhir', 'required');
+          $this->form_validation->set_rules('debit_awal', 'Debit Awal', 'required');
+          $this->form_validation->set_rules('debit_akhir', 'Debit Akhir', 'required');
+          $this->form_validation->set_rules('cuaca_awal', 'Kondisi Cuaca', 'required');
+          $this->form_validation->set_rules('cuaca_akhir', 'Kondisi Cuaca', 'required');
+
+          $cekFlow = $this->data->cekFlowAwal($id_flow);
+
+          if($cekFlow == TRUE){
+              $data_flow = array(
+                  'id_flow' => $id_flow,
+                  'flowmeter_awal' => $tonnase_awal,
+              );
+          }
+
+          $data_transaksi = array(
+              'id_catat_sumur' => $id_sumur,
+              'cuaca_awal' => $cuaca_awal,
+              'cuaca_akhir' => $cuaca_akhir,
+              'waktu_rekam_awal' => $waktu_awal,
+              'waktu_rekam_akhir' => $waktu_akhir,
+              'flow_sumur_awal' => $tonnase_awal,
+              'flow_sumur_akhir' => $tonnase_akhir,
+              'debit_air_awal' => $debit_awal,
+              'debit_air_akhir' => $debit_akhir,
+              'waktu_perekaman' => date("Y-m-d H:i:s",time()),
+              'issued_at' => date("Y-m-d H:i:s",time()),
+              'issued_by' => $this->session->userdata('username')
+          );
+
+          if ($this->form_validation->run() == FALSE) {
+              $data['title']='Aplikasi Pelayanan Jasa Air Bersih';
+              $this->load->template('v_pencatatan_sumur',$data);
+          }
+          else {
+              if($cekFlow == TRUE){
+                  $this->data->inputFlowAwal($data_flow);
+                  $result = $this->data->input_transaksi("sumur",$data_transaksi);
+              } else{
+                  $result = $this->data->input_transaksi("sumur",$data_transaksi);
+              }
+
+              if($result == TRUE){
+                  $web = base_url('main/view?id=catat_sumur');
+                  echo "<script type='text/javascript'>
+                        alert('Permintaan Berhasil Di Input')
+                        window.location.replace('$web')
+                      </script>";
+              }
+              else{
+                  $web = base_url('main/view?id=catat_sumur');
                   echo "<script type='text/javascript'>
                         alert('Permintaan Gagal Di Input ! Coba Lagi')
                         window.location.replace('$web')
@@ -1973,10 +2091,16 @@ date_default_timezone_set('Asia/Makassar');
 
                       if($lama_pengantaran > 1){
                           $lama_pengantaran .= " Jam";
-                      }else{
+                      }else {
                           $lama_pengantaran = $lama_pengantaran * 60;
-                          $lama_pengantaran .= " Menit";
+                          if ($lama_pengantaran > 1){
+                              $lama_pengantaran .= " Menit";
+                          }else {
+                              $lama_pengantaran = $lama_pengantaran * 60;
+                              $lama_pengantaran .= " Detik";
+                          }
                       }
+
                       $format_tgl = date('d-m-Y H:i:s', strtotime($row->tgl_transaksi ));
                       $format_tgl_pengantaran = date('d-m-Y H:i:s', strtotime($row->tgl_perm_pengantaran ));
 
@@ -2653,6 +2777,186 @@ date_default_timezone_set('Asia/Makassar');
           echo json_encode($data);
       }
 
+      public function laporan_flow() {
+          $tgl_awal = $this->input->post('tgl_awal');
+          $tgl_akhir = $this->input->post('tgl_akhir');
+          $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"flow");
+
+          if($result != NULL){
+              $ton_total = 0;
+              $no = 1;
+              $tabel = '<center><h4>Laporan Pencatatan Flow Meter Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir )).'</h4></center>
+                        <table class="table table-responsive table-condensed table-striped">
+                        <thead>
+                            <tr>
+                                <th align="center">No</th>
+                                <th align="center">ID Flow Meter</th>
+                                <th align="center">Nama Flow Meter</th>
+                                <th align="center">Flow Meter Awal</th>
+                                <th align="center">Flow Meter Akhir</th>
+                                <th align="center">Total Pemakaian</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
+
+              foreach($result as $row){
+                  $data_tagihan = $this->data->getFlow($tgl_awal,$tgl_akhir,$row->id_flow);
+                  $ttl_akhir = 0;
+                  $ttl_awal = 0;
+                  $i = 1;
+
+                  if($data_tagihan != NULL){
+                      foreach($data_tagihan as $data) {
+                          if($data->flowmeter_tenant == $row->id_flow){
+                              if($i == 1 && $data->flow_hari_ini != NULL){
+                                  $ttl_awal = $data->flow_hari_ini;
+                              }
+                              else{
+                                  if($ttl_awal == 0){
+                                      $ttl_awal = $data->flow_hari_ini;
+                                  }
+                              }
+                              if($i == count($data_tagihan) && $data->flow_hari_ini != NULL){
+                                  $ttl_akhir = $data->flow_hari_ini;
+                              }
+                              $i++;
+                          }else{
+                              $i=1;
+                          }
+                      }
+
+                      $ton = $ttl_akhir - $ttl_awal;
+                      $ton_total += $ton;
+
+                      $tabel .='<tr>
+                            <td align="center">'.$no.'</td>
+                            <td align="center">'.$row->id_flowmeter.'</td>
+                            <td align="center">'.$row->nama_flowmeter.'</td>
+                            <td align="center">'.$ttl_awal.'</td>
+                            <td align="center">'.$ttl_akhir.'</td>
+                            <td align="center">'.$ton.'</td>
+                        </tr>
+                        ';
+                      $no++;
+                  }
+              }
+
+              $tabel .= '<tr>
+                            <td align="center" colspan="5"><b>Total</b></td>
+                            <td align="center"><b>'.$ton_total.'</b></td>
+                        </tr>
+                    </tbody>
+                    </table>
+                    <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=flow").'>Cetak PDF</a>
+                    <a class="btn btn-primary" target="_blank" href='.base_url("main/excelFlow?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>';
+
+              $data = array(
+                  'status' => 'success',
+                  'tabel' => $tabel
+              );
+          }
+          else{
+              $data = array(
+                  'status' => 'failed'
+              );
+          }
+
+          echo json_encode($data);
+      }
+
+      public function laporan_sumur() {
+          $tgl_awal = $this->input->post('tgl_awal');
+          $tgl_akhir = $this->input->post('tgl_akhir');
+          $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"sumur");
+
+          if($result != NULL){
+              $ton_total = 0;
+              $no = 1;
+              $tabel = '<center><h4>Laporan Pencatatan Sumur Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir )).'</h4></center>
+                        <table class="table table-responsive table-condensed table-striped">
+                        <thead>
+                            <tr>
+                                <th align="center"><center>No</th>
+                                <th align="center"><center>ID Sumur</th>
+                                <th align="center"><center>Nama Sumur</th>
+                                <th align="center"><center>Nama Pompa</th>
+                                <th align="center"><center>Nama Flow Meter</th>
+                                <th align="center"><center>Start Running</th>
+                                <th align="center"><center>Cuaca</th>
+                                <th align="center"><center>Debit Air (L/Detik)</th>
+                                <th align="center"><center>Nilai Flow (m3)</th>
+                                <th align="center"><center>Finish Running</th>
+                                <th align="center"><center>Cuaca</th>
+                                <th align="center"><center>Debit Air (L/Detik)</th>
+                                <th align="center"><center>Nilai Flow Akhir (m3)</th>
+                                <th align="center"><center>Pemakaian (m3)</th>
+                                <th align="center"><center>Issued By</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
+
+              foreach($result as $row){
+                  $data_tagihan = $this->data->getSumur($tgl_awal,$tgl_akhir,$row->id_master_sumur);
+                  $ttl_akhir = 0;
+                  $ttl_awal = 0;
+
+                  if($data_tagihan != NULL){
+                      foreach($data_tagihan as $data) {
+                          if($data->id_catat_sumur == $row->id_master_sumur){
+                                $ttl_akhir = $row->flow_sumur_akhir;
+                                $ttl_awal = $row->flow_sumur_awal;
+                          }
+                      }
+
+                      $ton = $ttl_akhir - $ttl_awal;
+                      $ton_total += $ton;
+
+                      $tabel .='<tr>
+                            <td align="center">'.$no.'</td>
+                            <td align="center">'.$row->id_sumur.'</td>
+                            <td align="center">'.$row->nama_sumur.'</td>
+                            <td align="center">'.$data->nama_pompa.'</td>
+                            <td align="center">'.$data->nama_flowmeter.'</td>
+                            <td align="center">'.$row->waktu_rekam_awal.'</td>
+                            <td align="center">'.$row->cuaca_awal.'</td>
+                            <td align="center">'.$row->debit_air_awal.'</td>
+                            <td align="center">'.$row->flow_sumur_awal.'</td>
+                            <td align="center">'.$row->waktu_rekam_akhir.'</td>
+                            <td align="center">'.$row->cuaca_akhir.'</td>
+                            <td align="center">'.$row->debit_air_akhir.'</td>
+                            <td align="center">'.$row->flow_sumur_akhir.'</td>
+                            <td align="center">'.$ton.'</td>
+                            <td align="center">'.$row->issued_by.'</td>
+                        </tr>
+                        ';
+                      $no++;
+                  }
+              }
+
+              $tabel .= '<tr>
+                            <td align="center" colspan="13"><b>Total</b></td>
+                            <td align="center"><b>'.$ton_total.'</b></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                    </tbody>
+                    </table>
+                    <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=sumur").'>Cetak PDF</a>
+                    <a class="btn btn-primary" target="_blank" href='.base_url("main/excelSumur?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>';
+
+              $data = array(
+                  'status' => 'success',
+                  'tabel' => $tabel
+              );
+          }
+          else{
+              $data = array(
+                  'status' => 'failed'
+              );
+          }
+
+          echo json_encode($data);
+      }
+
       public function cetakLaporan(){
           $tgl_awal = $this->input->get('id');
           $tgl_akhir = $this->input->get('id2');
@@ -2689,7 +2993,8 @@ date_default_timezone_set('Asia/Makassar');
               $this->dompdf->load_html($html);
               $this->dompdf->render();
               $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
-          } else if($tipe == "laut_operasi"){
+          }
+          else if($tipe == "laut_operasi"){
               $data['title'] = 'Laporan Transaksi Air Kapal Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
               $data['laporan'] = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
 
@@ -2704,7 +3009,42 @@ date_default_timezone_set('Asia/Makassar');
               $this->dompdf->load_html($html);
               $this->dompdf->render();
               $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
-          } else{
+          }
+          else if($tipe == "flow"){
+              $data['title'] = 'Laporan Pencatatan Flow Meter Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
+              $data['laporan'] = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
+              $data['tgl_awal'] = $tgl_awal;
+              $data['tgl_akhir'] = $tgl_akhir;
+              $this->load->view('v_cetaklaporan', $data);
+
+              $paper_size  = 'A4'; //paper size
+              $orientation = 'landscape'; //tipe format kertas
+              $html = $this->output->get_output();
+
+              $this->dompdf->set_paper($paper_size, $orientation);
+              //Convert to PDF
+              $this->dompdf->load_html($html);
+              $this->dompdf->render();
+              $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
+          }
+          else if($tipe == "sumur"){
+              $data['title'] = 'Laporan Pencatatan Sumur Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
+              $data['laporan'] = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
+              $data['tgl_awal'] = $tgl_awal;
+              $data['tgl_akhir'] = $tgl_akhir;
+              $this->load->view('v_cetaklaporan', $data);
+
+              $paper_size  = 'A4'; //paper size
+              $orientation = 'landscape'; //tipe format kertas
+              $html = $this->output->get_output();
+
+              $this->dompdf->set_paper($paper_size, $orientation);
+              //Convert to PDF
+              $this->dompdf->load_html($html);
+              $this->dompdf->render();
+              $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
+          }
+          else{
               $data['title'] = 'Laporan Transaksi Air Ruko Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
               $data['laporan'] = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
               $data['tgl_awal'] = $tgl_awal;
@@ -2823,6 +3163,217 @@ date_default_timezone_set('Asia/Makassar');
           $data['data'] = $this->data->get_by_id("ruko",$id);
           $data['title'] = 'Tagihan Penggunaan';
           $this->load->template('v_tagihan',$data);
+      }
+
+      public function updatePerekaman(){
+          $tipe = $this->input->post('action');
+
+          if($tipe == 'batal'){
+              $result = $this->data->setPerekaman($tipe);
+
+              if($result){	//jika data berhasil dihapus
+                  echo '<script language="javascript">alert("Berhasil Membatalkan Data"); document.location="'.base_url("main/view?id=riwayat_pencatatan_flow").'";</script>';
+              }else{		//jika gagal menghapus data
+                  echo '<script language="javascript">alert("Gagal Membatalkan Data"); document.location="'.base_url("main/view?id=riwayat_pencatatan_flow").'";</script>';
+              }
+          }
+          else{
+              $result = $this->data->setPerekaman($tipe);
+
+              if($result){	//jika data berhasil dihapus
+                  echo '<script language="javascript">alert("Berhasil Memvalidasi Data"); document.location="'.base_url("main/view?id=riwayat_pencatatan_flow").'";</script>';
+              }else{		//jika gagal menghapus data
+                  echo '<script language="javascript">alert("Gagal Memvalidasi Data"); document.location="'.base_url("main/view?id=riwayat_pencatatan_flow").'";</script>';
+              }
+          }
+      }
+
+      public function updatePencatatan(){
+          $tipe = $this->input->post('action');
+
+          if($tipe == 'batal'){
+              $result = $this->data->setPencatatan($tipe);
+
+              if($result){	//jika data berhasil dihapus
+                  echo '<script language="javascript">alert("Berhasil Membatalkan Data"); document.location="'.base_url("main/view?id=riwayat_pencatatan_sumur").'";</script>';
+              }else{		//jika gagal menghapus data
+                  echo '<script language="javascript">alert("Gagal Membatalkan Data"); document.location="'.base_url("main/view?id=riwayat_pencatatan_sumur").'";</script>';
+              }
+          }
+          else{
+              $result = $this->data->setPencatatan($tipe);
+
+              if($result){	//jika data berhasil dihapus
+                  echo '<script language="javascript">alert("Berhasil Memvalidasi Data"); document.location="'.base_url("main/view?id=riwayat_pencatatan_sumur").'";</script>';
+              }else{		//jika gagal menghapus data
+                  echo '<script language="javascript">alert("Gagal Memvalidasi Data"); document.location="'.base_url("main/view?id=riwayat_pencatatan_sumur").'";</script>';
+              }
+          }
+      }
+
+      public function riwayat_catat_flow(){
+          $tgl_awal = $this->input->post('tgl_awal');
+          $tgl_akhir = $this->input->post('tgl_akhir');
+
+          $result = $this->data->riwayat_flow($tgl_awal,$tgl_akhir);
+
+          if($result != NULL){
+              $no = 1;
+              $tabel = '
+                    <h4>Riwayat Pencatatan Harian Periode '.date('d-m-Y',strtotime($tgl_awal)).' s/d '.date('d-m-Y',strtotime($tgl_akhir)).' </h4>
+                    <form action="'.base_url('main/updatePerekaman').'" method="post">
+                    <table class="table table-responsive table-condensed table-striped" id="myTable">
+                        <thead>
+                            <tr>
+                                <td>
+                                    <select class="form-control" name="action">
+			                            <option value="valid">Validasi</option>
+			                            <option value="batal">Batal</option>
+		                            </select>
+                                </td>
+                                <td><input class="btn btn-info" type="submit" value="Eksekusi"></td>
+                            </tr>
+                            <tr>
+                                <th>No</th>
+                                <th>ID Flow Meter</th>
+                                <th>Nama Flow Meter</th>
+                                <th>Tanggal Perekaman</th>
+                                <th>Flow Meter</th>
+                                <th>Issued By</th>
+                                <th><center>Check Box</center></th>
+                            </tr>      
+                        </thead>
+                        <tbody>
+              ';
+
+              foreach ($result as $row){
+                  $tabel .= '
+                     <tr>
+                        <td>'.$no.'</td>
+                        <td>'.$row->id_flowmeter.'</td>
+                        <td>'.$row->nama_flowmeter.'</td>
+                        <td>'.$row->waktu_perekaman.'</td>
+                        <td>'.$row->flow_hari_ini.'</td>
+                        <td>'.$row->pembuat.'</td>
+                        <td align="center">
+                            <input type="checkbox" name="cek[]" value="'.$row->id_transaksi.'"/>
+                            <input type="hidden" name="flow[]" value="'.$row->flow_hari_ini.'"/>
+                            <input type="hidden" name="id[]" value="'.$row->id_flow.'"/>
+                        </td>
+                     </tr>
+                  ';
+                  $no++;
+              }
+
+              $tabel .= '
+                            </tbody>
+                        </table>
+                        </form>
+                    ';
+
+              $data = array(
+                  'status' => 'success',
+                  'tabel' => $tabel,
+              );
+          } else{
+              $data = array(
+                  'status' => 'failed'
+              );
+          }
+
+          echo json_encode($data);
+      }
+
+      public function riwayat_catat_sumur(){
+          $tgl_awal = $this->input->post('tgl_awal');
+          $tgl_akhir = $this->input->post('tgl_akhir');
+
+          $result = $this->data->riwayat_sumur($tgl_awal,$tgl_akhir);
+
+          if($result != NULL){
+              $no = 1;
+              $tabel = '
+                    <h4>Riwayat Pencatatan Harian Periode '.date('d-m-Y',strtotime($tgl_awal)).' s/d '.date('d-m-Y',strtotime($tgl_akhir)).' </h4>
+                    <form action="'.base_url('main/updatePencatatan').'" method="post">
+                    <table class="table table-responsive table-condensed table-striped" id="myTable">
+                        <thead>
+                            <tr>
+                                <td colspan="3">
+                                    <select class="form-control" name="action">
+			                            <option value="valid">Validasi</option>
+			                            <option value="batal">Batal</option>
+		                            </select>
+                                </td>
+                                <td><input class="btn btn-info" type="submit" value="Eksekusi"></td>
+                            </tr>
+                            <tr>
+                                <th>No</th>
+                                <th>ID Sumur</th>
+                                <th>Nama Sumur</th>
+                                <th>Nama Pompa</th>
+                                <th>Nama Flow Meter</th>
+                                <th>Waktu Perekaman Awal</th>
+                                <th>Cuaca</th>
+                                <th>Debit Air</th>
+                                <th>Nilai Flow Awal</th>
+                                <th>Waktu Perekaman Akhir</th>
+                                <th>Cuaca</th>
+                                <th>Debit Air</th>
+                                <th>Nilai Flow Akhir</th>
+                                <th>Total Penggunaan</th>
+                                <th>Issued By</th>
+                                <th><center>Check Box</center></th>
+                            </tr>      
+                        </thead>
+                        <tbody>
+              ';
+
+              foreach ($result as $row){
+                  $total_penggunaan = $row->flow_sumur_akhir - $row->flow_sumur_awal;
+                  $tabel .= '
+                     <tr>
+                        <td>'.$no.'</td>
+                        <td>'.$row->id_sumur.'</td>
+                        <td>'.$row->nama_sumur.'</td>
+                        <td>'.$row->nama_pompa.'</td>
+                        <td>'.$row->nama_flowmeter.'</td>
+                        <td>'.$row->waktu_rekam_awal.'</td>
+                        <td>'.$row->cuaca_awal.'</td>
+                        <td>'.$row->debit_air_awal.'</td>
+                        <td>'.$row->flow_sumur_awal.'</td>
+                        <td>'.$row->waktu_rekam_akhir.'</td>
+                        <td>'.$row->cuaca_akhir.'</td>
+                        <td>'.$row->debit_air_akhir.'</td>
+                        <td>'.$row->flow_sumur_akhir.'</td>
+                        <td>'.$total_penggunaan.'</td>
+                        <td>'.$row->pembuat.'</td>
+                        <td align="center">
+                            <input type="checkbox" name="cek[]" value="'.$row->id_pencatatan.'"/>
+                            <input type="hidden" name="flow[]" value="'.$row->flow_sumur_akhir.'"/>
+                            <input type="hidden" name="id[]" value="'.$row->id_flow.'"/>
+                        </td>
+                     </tr>
+                  ';
+                  $no++;
+              }
+
+              $tabel .= '
+                            </tbody>
+                        </table>
+                        </form>
+                    ';
+
+              $data = array(
+                  'status' => 'success',
+                  'tabel' => $tabel,
+              );
+          } else{
+              $data = array(
+                  'status' => 'failed'
+              );
+          }
+
+          echo json_encode($data);
       }
 
       function cetakKwitansi(){
@@ -3109,6 +3660,13 @@ date_default_timezone_set('Asia/Makassar');
                       'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
                   )
               );
+              $styleArray = array(
+                  'borders' => array(
+                      'allborders' => array(
+                          'style' => PHPExcel_Style_Border::BORDER_THIN
+                      )
+                  )
+              );
               $font = array(
                   'font'  => array(
                       'bold'  => true,
@@ -3116,10 +3674,12 @@ date_default_timezone_set('Asia/Makassar');
                       'name'  => 'Times New Roman'
                   )
               );
-              $object->getActiveSheet()->getStyle("A7:M7")->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("A7:M7")->applyFromArray($font);
+
+              $object->getActiveSheet()->getStyle("A7:J7")->applyFromArray($styleArray);
+              $object->getActiveSheet()->getStyle("A7:J7")->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("A7:J7")->applyFromArray($font);
               $object->getActiveSheet()->getStyle("A1:A5")->applyFromArray($font);
-              $object->getActiveSheet()->getStyle('A7:M7')->getAlignment()->setWrapText(true);
+              $object->getActiveSheet()->getStyle('A7:J7')->getAlignment()->setWrapText(true);
 
               // Set properties
               $object->getProperties()->setCreator($this->session->userdata('nama'))
@@ -3136,15 +3696,12 @@ date_default_timezone_set('Asia/Makassar');
               $object->getActiveSheet()->getColumnDimension('H')->setWidth(20);
               $object->getActiveSheet()->getColumnDimension('I')->setWidth(20);
               $object->getActiveSheet()->getColumnDimension('J')->setWidth(20);
-              $object->getActiveSheet()->getColumnDimension('K')->setWidth(20);
-              $object->getActiveSheet()->getColumnDimension('L')->setWidth(20);
-              $object->getActiveSheet()->getColumnDimension('M')->setWidth(20);
 
-              $object->getActiveSheet()->mergeCells('A1:M1');
-              $object->getActiveSheet()->mergeCells('A2:M2');
-              $object->getActiveSheet()->mergeCells('A3:M3');
-              $object->getActiveSheet()->mergeCells('A4:M4');
-              $object->getActiveSheet()->mergeCells('A5:M5');
+              $object->getActiveSheet()->mergeCells('A1:J1');
+              $object->getActiveSheet()->mergeCells('A2:J2');
+              $object->getActiveSheet()->mergeCells('A3:J3');
+              $object->getActiveSheet()->mergeCells('A4:J4');
+              $object->getActiveSheet()->mergeCells('A5:J5');
 
               $object->setActiveSheetIndex(0)
                   ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
@@ -3171,11 +3728,8 @@ date_default_timezone_set('Asia/Makassar');
               foreach($result as $row){
                   if($row->status_pembayaran == 1 && $row->status_invoice == 0){
                       $no++;
-                      $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
-                      $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($style);
-                      $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($style);
-                      $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($style);
-                      $object->getActiveSheet()->getStyle("M".$counter)->applyFromArray($style);
+                      $object->getActiveSheet()->getStyle("A".$counter.":J".$counter)->applyFromArray($style);
+                      $object->getActiveSheet()->getStyle("A".$counter.":J".$counter)->applyFromArray($styleArray);
 
                       if($row->diskon != NULL || $row->diskon != 0){
                           $row->tarif -= $row->tarif * $row->diskon/100;
@@ -3187,14 +3741,10 @@ date_default_timezone_set('Asia/Makassar');
 
                       $waktu_awal = mktime(date("H",strtotime($row->waktu_mulai_pengantaran)),date("i",strtotime($row->waktu_mulai_pengantaran)),date("s",strtotime($row->waktu_mulai_pengantaran)),date("m",strtotime($row->waktu_mulai_pengantaran)),date("d",strtotime($row->waktu_mulai_pengantaran)),date("y",strtotime($row->waktu_mulai_pengantaran)));
                       $waktu_akhir = mktime(date("H",strtotime($row->waktu_selesai_pengantaran)),date("i",strtotime($row->waktu_selesai_pengantaran)),date("s",strtotime($row->waktu_selesai_pengantaran)),date("m",strtotime($row->waktu_selesai_pengantaran)),date("d",strtotime($row->waktu_selesai_pengantaran)),date("y",strtotime($row->waktu_selesai_pengantaran)) );
-                      $lama_pengantaran = round((($waktu_akhir - $waktu_awal) % 86400)/3600,2);
 
                       $total += $total_pembayaran;
                       $ton += $row->total_permintaan;
                       $format_tgl = date('d-m-Y H:i:s', strtotime($row->tgl_transaksi ));
-                      $format_tgl_pengantaran = date('d-m-Y H:i:s', strtotime($row->tgl_perm_pengantaran ));
-                      $format_jam_awal = date("d-m-y H:i:s",strtotime($row->waktu_mulai_pengantaran));
-                      $format_jam_akhir = date("d-m-y H:i:s",strtotime($row->waktu_selesai_pengantaran));
 
                       $ex->setCellValue("A".$counter,"$no");
                       $ex->setCellValue("B".$counter,"$row->no_kwitansi");
@@ -3209,10 +3759,9 @@ date_default_timezone_set('Asia/Makassar');
                       $counter=$counter+1;
                   }
               }
-              $object->getActiveSheet()->mergeCells('A'.$counter.':H'.$counter);
-              $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->mergeCells('A'.$counter.':I'.$counter);
+              $object->getActiveSheet()->getStyle("A".$counter.":J".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("A".$counter.":J".$counter)->applyFromArray($styleArray);
               $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($font);
               $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($font);
               $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($font);
@@ -3246,6 +3795,11 @@ date_default_timezone_set('Asia/Makassar');
                   'alignment' => array(
                       'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
                       'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                  ),
+                  'borders' => array(
+                      'allborders' => array(
+                          'style' => PHPExcel_Style_Border::BORDER_THIN
+                      )
                   )
               );
               $font = array(
@@ -3255,10 +3809,10 @@ date_default_timezone_set('Asia/Makassar');
                       'name'  => 'Times New Roman'
                   )
               );
-              $object->getActiveSheet()->getStyle("A7:M7")->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("A7:M7")->applyFromArray($font);
+              $object->getActiveSheet()->getStyle("A7:J7")->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("A7:J7")->applyFromArray($font);
               $object->getActiveSheet()->getStyle("A1:A5")->applyFromArray($font);
-              $object->getActiveSheet()->getStyle('A7:M7')->getAlignment()->setWrapText(true);
+              $object->getActiveSheet()->getStyle('A7:J7')->getAlignment()->setWrapText(true);
 
               // Set properties
               $object->getProperties()->setCreator($this->session->userdata('nama'))
@@ -3275,15 +3829,12 @@ date_default_timezone_set('Asia/Makassar');
               $object->getActiveSheet()->getColumnDimension('H')->setWidth(20);
               $object->getActiveSheet()->getColumnDimension('I')->setWidth(20);
               $object->getActiveSheet()->getColumnDimension('J')->setWidth(20);
-              $object->getActiveSheet()->getColumnDimension('K')->setWidth(20);
-              $object->getActiveSheet()->getColumnDimension('L')->setWidth(20);
-              $object->getActiveSheet()->getColumnDimension('M')->setWidth(20);
 
-              $object->getActiveSheet()->mergeCells('A1:M1');
-              $object->getActiveSheet()->mergeCells('A2:M2');
-              $object->getActiveSheet()->mergeCells('A3:M3');
-              $object->getActiveSheet()->mergeCells('A4:M4');
-              $object->getActiveSheet()->mergeCells('A5:M5');
+              $object->getActiveSheet()->mergeCells('A1:J1');
+              $object->getActiveSheet()->mergeCells('A2:J2');
+              $object->getActiveSheet()->mergeCells('A3:J3');
+              $object->getActiveSheet()->mergeCells('A4:J4');
+              $object->getActiveSheet()->mergeCells('A5:J5');
 
               $object->setActiveSheetIndex(0)
                   ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
@@ -3308,48 +3859,43 @@ date_default_timezone_set('Asia/Makassar');
               $ton = 0;
               $ex = $object->setActiveSheetIndex(0);
               foreach($result as $row){
-                      $no++;
-                      $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
-                      $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($style);
-                      $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($style);
-                      $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($style);
-                      $object->getActiveSheet()->getStyle("M".$counter)->applyFromArray($style);
+                  $no++;
 
-                      if($row->batal_kwitansi == 1){
-                          $total_pembayaran = '';
-                      }
-                      else if($row->diskon != NULL || $row->diskon != 0){
-                          $row->tarif -= $row->tarif * $row->diskon/100;
-                          $total_pembayaran = $row->tarif * $row->total_permintaan ;
-                      }
-                      else{
-                          $total_pembayaran = $row->tarif * $row->total_permintaan;
-                      }
+                  $object->getActiveSheet()->getStyle("A".$counter.":J".$counter)->applyFromArray($style);
 
-                      if($row->batal_kwitansi == 0){
-                          $total += $total_pembayaran;
-                          $ton += $row->total_permintaan;
-                      }
+                  if($row->batal_kwitansi == 1){
+                      $total_pembayaran = '';
+                  }
+                  else if($row->diskon != NULL || $row->diskon != 0){
+                      $row->tarif -= $row->tarif * $row->diskon/100;
+                      $total_pembayaran = $row->tarif * $row->total_permintaan ;
+                  }
+                  else{
+                      $total_pembayaran = $row->tarif * $row->total_permintaan;
+                  }
 
-                      $format_tgl = date('d-m-Y H:i:s', strtotime($row->tgl_transaksi ));
+                  if($row->batal_kwitansi == 0){
+                      $total += $total_pembayaran;
+                      $ton += $row->total_permintaan;
+                  }
 
-                      $ex->setCellValue("A".$counter,"$no");
-                      $ex->setCellValue("B".$counter,"$row->no_kwitansi");
-                      $ex->setCellValue("C".$counter,"$row->nama_pengguna_jasa");
-                      $ex->setCellValue("D".$counter,"$row->nama_pemohon");
-                      $ex->setCellValue("E".$counter,"$row->alamat");
-                      $ex->setCellValue("F".$counter,"$row->no_telp");
-                      $ex->setCellValue("G".$counter,"$format_tgl");
-                      $ex->setCellValue("H".$counter,"$row->tarif");
-                      $ex->setCellValue("I".$counter,"$row->total_permintaan");
-                      $ex->setCellValue("J".$counter,"$total_pembayaran");
-                      $counter=$counter+1;
+                  $format_tgl = date('d-m-Y H:i:s', strtotime($row->tgl_transaksi ));
+
+                  $ex->setCellValue("A".$counter,"$no");
+                  $ex->setCellValue("B".$counter,"$row->no_kwitansi");
+                  $ex->setCellValue("C".$counter,"$row->nama_pengguna_jasa");
+                  $ex->setCellValue("D".$counter,"$row->nama_pemohon");
+                  $ex->setCellValue("E".$counter,"$row->alamat");
+                  $ex->setCellValue("F".$counter,"$row->no_telp");
+                  $ex->setCellValue("G".$counter,"$format_tgl");
+                  $ex->setCellValue("H".$counter,"$row->tarif");
+                  $ex->setCellValue("I".$counter,"$row->total_permintaan");
+                  $ex->setCellValue("J".$counter,"$total_pembayaran");
+                  $counter=$counter+1;
 
               }
-              $object->getActiveSheet()->mergeCells('A'.$counter.':H'.$counter);
-              $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->mergeCells('A'.$counter.':I'.$counter);
+              $object->getActiveSheet()->getStyle("A".$counter.":J".$counter)->applyFromArray($style);
               $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($font);
               $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($font);
               $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($font);
@@ -3383,6 +3929,11 @@ date_default_timezone_set('Asia/Makassar');
                   'alignment' => array(
                       'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
                       'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                  ),
+                  'borders' => array(
+                      'allborders' => array(
+                          'style' => PHPExcel_Style_Border::BORDER_THIN
+                      )
                   )
               );
               $font = array(
@@ -3448,60 +3999,79 @@ date_default_timezone_set('Asia/Makassar');
               $ton = 0;
               $ex = $object->setActiveSheetIndex(0);
               foreach($result as $row){
-                      $no++;
-                      $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
-                      $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($style);
-                      $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($style);
-                      $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($style);
-                      $object->getActiveSheet()->getStyle("M".$counter)->applyFromArray($style);
+                  $no++;
+                  $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("B".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("C".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("D".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("F".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("G".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("H".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("M".$counter)->applyFromArray($style);
 
-                      if($row->diskon != NULL || $row->diskon != 0){
-                          $row->tarif -= $row->tarif * $row->diskon/100;
-                          $total_pembayaran = $row->tarif * $row->total_permintaan ;
+                  if($row->diskon != NULL || $row->diskon != 0){
+                      $row->tarif -= $row->tarif * $row->diskon/100;
+                      $total_pembayaran = $row->tarif * $row->total_permintaan ;
+                  }
+                  else{
+                      $total_pembayaran = $row->tarif * $row->total_permintaan;
+                  }
+
+                  $waktu_awal = mktime(date("H",strtotime($row->waktu_mulai_pengantaran)),date("i",strtotime($row->waktu_mulai_pengantaran)),date("s",strtotime($row->waktu_mulai_pengantaran)),date("m",strtotime($row->waktu_mulai_pengantaran)),date("d",strtotime($row->waktu_mulai_pengantaran)),date("y",strtotime($row->waktu_mulai_pengantaran)));
+                  $waktu_akhir = mktime(date("H",strtotime($row->waktu_selesai_pengantaran)),date("i",strtotime($row->waktu_selesai_pengantaran)),date("s",strtotime($row->waktu_selesai_pengantaran)),date("m",strtotime($row->waktu_selesai_pengantaran)),date("d",strtotime($row->waktu_selesai_pengantaran)),date("y",strtotime($row->waktu_selesai_pengantaran)) );
+
+                  if($row->waktu_mulai_pengantaran == NULL){
+                      $format_jam_awal = "";
+                  } else if($row->waktu_selesai_pengantaran == NULL){
+                      $format_jam_akhir = "";
+                  } else{
+                      $lama_pengantaran = round((($waktu_akhir - $waktu_awal) % 86400)/3600,2);
+                      $format_jam_awal = date("d-m-y H:i:s",strtotime($row->waktu_mulai_pengantaran));
+                      $format_jam_akhir = date("d-m-y H:i:s",strtotime($row->waktu_selesai_pengantaran));
+                  }
+
+                  if($lama_pengantaran > 1){
+                      $lama_pengantaran .= " Jam";
+                  }else {
+                      $lama_pengantaran = $lama_pengantaran * 60;
+                      if ($lama_pengantaran > 1){
+                          $lama_pengantaran .= " Menit";
+                      }else {
+                          $lama_pengantaran = $lama_pengantaran * 60;
+                          $lama_pengantaran .= " Detik";
                       }
-                      else{
-                          $total_pembayaran = $row->tarif * $row->total_permintaan;
-                      }
+                  }
 
-                      $waktu_awal = mktime(date("H",strtotime($row->waktu_mulai_pengantaran)),date("i",strtotime($row->waktu_mulai_pengantaran)),date("s",strtotime($row->waktu_mulai_pengantaran)),date("m",strtotime($row->waktu_mulai_pengantaran)),date("d",strtotime($row->waktu_mulai_pengantaran)),date("y",strtotime($row->waktu_mulai_pengantaran)));
-                      $waktu_akhir = mktime(date("H",strtotime($row->waktu_selesai_pengantaran)),date("i",strtotime($row->waktu_selesai_pengantaran)),date("s",strtotime($row->waktu_selesai_pengantaran)),date("m",strtotime($row->waktu_selesai_pengantaran)),date("d",strtotime($row->waktu_selesai_pengantaran)),date("y",strtotime($row->waktu_selesai_pengantaran)) );
-                      if($row->waktu_mulai_pengantaran == NULL){
-                        $format_jam_awal = "";
-                      } else if($row->waktu_selesai_pengantaran == NULL){
-                        $format_jam_akhir = "";
-                      } else{
-                          $lama_pengantaran = round((($waktu_akhir - $waktu_awal) % 86400)/3600,2);
-                          $format_jam_awal = date("d-m-y H:i:s",strtotime($row->waktu_mulai_pengantaran));
-                          $format_jam_akhir = date("d-m-y H:i:s",strtotime($row->waktu_selesai_pengantaran));
-                      }
+                  if($row->batal_kwitansi == 0){
+                      $total += $total_pembayaran;
+                      $ton += $row->total_permintaan;
+                  }
 
-                      if($row->batal_kwitansi == 0){
-                          $total += $total_pembayaran;
-                          $ton += $row->total_permintaan;
-                      }
+                  $format_tgl = date('d-m-Y H:i:s', strtotime($row->tgl_transaksi ));
+                  $format_tgl_pengantaran = date('d-m-Y H:i:s', strtotime($row->tgl_perm_pengantaran ));
 
-                      $format_tgl = date('d-m-Y H:i:s', strtotime($row->tgl_transaksi ));
-                      $format_tgl_pengantaran = date('d-m-Y H:i:s', strtotime($row->tgl_perm_pengantaran ));
-
-                      $ex->setCellValue("A".$counter,"$no");
-                      $ex->setCellValue("B".$counter,"$row->nama_pengguna_jasa");
-                      $ex->setCellValue("C".$counter,"$row->nama_pemohon");
-                      $ex->setCellValue("D".$counter,"$row->alamat");
-                      $ex->setCellValue("E".$counter,"$row->no_telp");
-                      $ex->setCellValue("F".$counter,"$format_tgl");
-                      $ex->setCellValue("G".$counter,"$format_tgl_pengantaran");
-                      $ex->setCellValue("H".$counter,"$format_jam_awal");
-                      $ex->setCellValue("I".$counter,"$format_jam_akhir");
-                      $ex->setCellValue("J".$counter,"$lama_pengantaran");
-                      $ex->setCellValue("K".$counter,"$row->tarif");
-                      $ex->setCellValue("L".$counter,"$row->total_permintaan");
-                      $ex->setCellValue("M".$counter,"$total_pembayaran");
-                      $counter=$counter+1;
+                  $ex->setCellValue("A".$counter,"$no");
+                  $ex->setCellValue("B".$counter,"$row->nama_pengguna_jasa");
+                  $ex->setCellValue("C".$counter,"$row->nama_pemohon");
+                  $ex->setCellValue("D".$counter,"$row->alamat");
+                  $ex->setCellValue("E".$counter,"$row->no_telp");
+                  $ex->setCellValue("F".$counter,"$format_tgl");
+                  $ex->setCellValue("G".$counter,"$format_tgl_pengantaran");
+                  $ex->setCellValue("H".$counter,"$format_jam_awal");
+                  $ex->setCellValue("I".$counter,"$format_jam_akhir");
+                  $ex->setCellValue("J".$counter,"$lama_pengantaran");
+                  $ex->setCellValue("K".$counter,"$row->tarif");
+                  $ex->setCellValue("L".$counter,"$row->total_permintaan");
+                  $ex->setCellValue("M".$counter,"$total_pembayaran");
+                  $counter=$counter+1;
               }
               $object->getActiveSheet()->mergeCells('A'.$counter.':K'.$counter);
-              $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("M".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("A".$counter.":M".$counter)->applyFromArray($style);
               $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($font);
               $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($font);
               $object->getActiveSheet()->getStyle("M".$counter)->applyFromArray($font);
@@ -3535,6 +4105,11 @@ date_default_timezone_set('Asia/Makassar');
                   'alignment' => array(
                       'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
                       'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                  ),
+                  'borders' => array(
+                      'allborders' => array(
+                          'style' => PHPExcel_Style_Border::BORDER_THIN
+                      )
                   )
               );
               $font = array(
@@ -3544,10 +4119,10 @@ date_default_timezone_set('Asia/Makassar');
                       'name'  => 'Times New Roman'
                   )
               );
-              $object->getActiveSheet()->getStyle("A7:M7")->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("A7:M7")->applyFromArray($font);
+              $object->getActiveSheet()->getStyle("A7:L7")->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("A7:L7")->applyFromArray($font);
               $object->getActiveSheet()->getStyle("A1:A5")->applyFromArray($font);
-              $object->getActiveSheet()->getStyle('A7:M7')->getAlignment()->setWrapText(true);
+              $object->getActiveSheet()->getStyle('A7:L7')->getAlignment()->setWrapText(true);
 
               // Set properties
               $object->getProperties()->setCreator($this->session->userdata('nama'))
@@ -3600,10 +4175,17 @@ date_default_timezone_set('Asia/Makassar');
               foreach($result as $row){
                   $no++;
                   $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("B".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("C".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("D".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("F".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("G".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("H".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($style);
                   $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($style);
                   $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($style);
                   $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($style);
-                  $object->getActiveSheet()->getStyle("M".$counter)->applyFromArray($style);
 
                   if($row->diskon != NULL || $row->diskon != 0){
                       $row->tarif -= $row->tarif * $row->diskon/100;
@@ -3623,6 +4205,18 @@ date_default_timezone_set('Asia/Makassar');
                       $lama_pengantaran = round((($waktu_akhir - $waktu_awal) % 86400)/3600,2);
                       $format_jam_awal = date("d-m-y H:i:s",strtotime($row->waktu_mulai_pengantaran));
                       $format_jam_akhir = date("d-m-y H:i:s",strtotime($row->waktu_selesai_pengantaran));
+                  }
+
+                  if($lama_pengantaran > 1){
+                      $lama_pengantaran .= " Jam";
+                  }else {
+                      $lama_pengantaran = $lama_pengantaran * 60;
+                      if ($lama_pengantaran > 1){
+                          $lama_pengantaran .= " Menit";
+                      }else {
+                          $lama_pengantaran = $lama_pengantaran * 60;
+                          $lama_pengantaran .= " Detik";
+                      }
                   }
 
                   if($row->batal_kwitansi == 0){
@@ -3648,9 +4242,7 @@ date_default_timezone_set('Asia/Makassar');
                   $counter=$counter+1;
               }
               $object->getActiveSheet()->mergeCells('A'.$counter.':J'.$counter);
-              $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("A".$counter.":L".$counter)->applyFromArray($style);
               $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($font);
               $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($font);
               $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($font);
@@ -3686,6 +4278,11 @@ date_default_timezone_set('Asia/Makassar');
               'alignment' => array(
                   'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
                   'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+              ),
+              'borders' => array(
+                  'allborders' => array(
+                      'style' => PHPExcel_Style_Border::BORDER_THIN
+                  )
               )
           );
           $font = array(
@@ -3696,17 +4293,16 @@ date_default_timezone_set('Asia/Makassar');
               )
           );
 
-          $object->getActiveSheet()->getStyle("A7:N7")->applyFromArray($style);
-          $object->getActiveSheet()->getStyle("A7:N7")->applyFromArray($font);
-          $object->getActiveSheet()->getStyle("A1:A5")->applyFromArray($font);
-          $object->getActiveSheet()->getStyle('A7:N7')->getAlignment()->setWrapText(true);
-
           // Set properties
           $object->getProperties()->setCreator($this->session->userdata('nama'))
               ->setLastModifiedBy($this->session->userdata('nama'))
               ->setCategory("Approve by ");
           // Add some data
           if($this->session->userdata('role') == 'keuangan'){
+              $object->getActiveSheet()->getStyle("A7:M7")->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("A7:M7")->applyFromArray($font);
+              $object->getActiveSheet()->getStyle("A1:A5")->applyFromArray($font);
+              $object->getActiveSheet()->getStyle('A7:M7')->getAlignment()->setWrapText(true);
               $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"laut");
 
               $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
@@ -3759,6 +4355,14 @@ date_default_timezone_set('Asia/Makassar');
               foreach($result as $row){
                   $no++;
                   $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("B".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("C".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("D".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("F".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("G".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("H".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($style);
                   $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($style);
                   $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($style);
                   $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($style);
@@ -3795,11 +4399,7 @@ date_default_timezone_set('Asia/Makassar');
                   $counter=$counter+1;
               }
               $object->getActiveSheet()->mergeCells('A'.$counter.':I'.$counter);
-              $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("M".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("A".$counter.":M".$counter)->applyFromArray($style);
               $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($font);
               $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($font);
               $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($font);
@@ -3810,7 +4410,13 @@ date_default_timezone_set('Asia/Makassar');
               $ex->setCellValue("K".$counter,"$ton");
               $ex->setCellValue("L".$counter,"$total_realisasi");
               $ex->setCellValue("M".$counter,"$total");
-          } else if($this->session->userdata('role') == 'operasi'){
+          }
+          else if($this->session->userdata('role') == 'operasi'){
+              $object->getActiveSheet()->getStyle("A7:K7")->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("A7:K7")->applyFromArray($font);
+              $object->getActiveSheet()->getStyle("A1:A5")->applyFromArray($font);
+              $object->getActiveSheet()->getStyle('A7:K7')->getAlignment()->setWrapText(true);
+
               $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"laut_operasi");
 
               $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
@@ -3858,6 +4464,13 @@ date_default_timezone_set('Asia/Makassar');
               foreach($result as $row){
                   $no++;
                   $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("B".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("C".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("D".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("F".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("G".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("H".$counter)->applyFromArray($style);
                   $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($style);
                   $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($style);
                   $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($style);
@@ -3890,10 +4503,7 @@ date_default_timezone_set('Asia/Makassar');
                   $counter=$counter+1;
               }
               $object->getActiveSheet()->mergeCells('A'.$counter.':H'.$counter);
-              $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("A".$counter.":K".$counter)->applyFromArray($style);
               $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($font);
               $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($font);
               $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($font);
@@ -3904,7 +4514,13 @@ date_default_timezone_set('Asia/Makassar');
               $ex->setCellValue("J".$counter,"$ton_realisasi");
               $ex->setCellValue("K".$counter,"$total");
 
-          } else {
+          }
+          else {
+              $object->getActiveSheet()->getStyle("A7:L7")->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("A7:L7")->applyFromArray($font);
+              $object->getActiveSheet()->getStyle("A1:A5")->applyFromArray($font);
+              $object->getActiveSheet()->getStyle('A7:L7')->getAlignment()->setWrapText(true);
+
               $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"laut_operasi");
 
               $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
@@ -3954,7 +4570,15 @@ date_default_timezone_set('Asia/Makassar');
               foreach($result as $row){
                   $no++;
                   $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("B".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("C".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("D".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("F".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("G".$counter)->applyFromArray($style);
                   $object->getActiveSheet()->getStyle("H".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($style);
                   $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($style);
                   $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($style);
 
@@ -3987,10 +4611,7 @@ date_default_timezone_set('Asia/Makassar');
                   $counter=$counter+1;
               }
               $object->getActiveSheet()->mergeCells('A'.$counter.':G'.$counter);
-              $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("H".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("A".$counter.":L".$counter)->applyFromArray($style);
               $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($font);
               $object->getActiveSheet()->getStyle("H".$counter)->applyFromArray($font);
               $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($font);
@@ -4027,6 +4648,11 @@ date_default_timezone_set('Asia/Makassar');
               'alignment' => array(
                   'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
                   'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+              ),
+              'borders' => array(
+                  'allborders' => array(
+                      'style' => PHPExcel_Style_Border::BORDER_THIN
+                  )
               )
           );
           $font = array(
@@ -4037,10 +4663,10 @@ date_default_timezone_set('Asia/Makassar');
               )
           );
 
-          $object->getActiveSheet()->getStyle("A7:N7")->applyFromArray($style);
-          $object->getActiveSheet()->getStyle("A7:N7")->applyFromArray($font);
+          $object->getActiveSheet()->getStyle("A7:I7")->applyFromArray($style);
+          $object->getActiveSheet()->getStyle("A7:I7")->applyFromArray($font);
           $object->getActiveSheet()->getStyle("A1:A5")->applyFromArray($font);
-          $object->getActiveSheet()->getStyle('A7:N7')->getAlignment()->setWrapText(true);
+          $object->getActiveSheet()->getStyle('A7:I7')->getAlignment()->setWrapText(true);
 
           // Set properties
           $object->getProperties()->setCreator($this->session->userdata('nama'))
@@ -4092,12 +4718,10 @@ date_default_timezone_set('Asia/Makassar');
                   $data_tagihan = $this->data->getTagihan($tgl_awal,$tgl_akhir,$row->id_flow);
                   $i = 1;
 
-                  $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
-                  $object->getActiveSheet()->getStyle("H".$counter)->applyFromArray($style);
-                  $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("A".$counter.":I".$counter)->applyFromArray($style);
 
                   foreach($data_tagihan as $data) {
-                      if($data->flowmeter_tenant == $row->id_tenant){
+                      if($data->flowmeter_tenant == $row->id_flow){
                           if($i == 1 && $data->flow_hari_ini != NULL){
                               $ttl_awal = $data->flow_hari_ini;
                           }else{
@@ -4144,12 +4768,21 @@ date_default_timezone_set('Asia/Makassar');
                   $ex->setCellValue("G".$counter,"$ttl_akhir");
                   $ex->setCellValue("H".$counter,"$ton");
                   $ex->setCellValue("I".$counter,"$total_pembayaran");
+
+                  $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("H".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("H".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("H".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($style);
+
                   $counter=$counter+1;
               }
               $object->getActiveSheet()->mergeCells('A'.$counter.':G'.$counter);
-              $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("H".$counter)->applyFromArray($style);
-              $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("A".$counter.":I".$counter)->applyFromArray($style);
               $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($font);
               $object->getActiveSheet()->getStyle("H".$counter)->applyFromArray($font);
               $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($font);
@@ -4167,6 +4800,305 @@ date_default_timezone_set('Asia/Makassar');
           // Redirect output to a client’s web browser (Excel2007)
           header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
           header('Content-Disposition: attachment;filename="Laporan_Transaksi_Ruko_periode_'.$_GET['id'].'_'.$_GET['id2'].'.xlsx"');
+          header('Cache-Control: max-age=0');
+
+          $objWriter = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
+          $objWriter->save('php://output');
+      }
+
+      public function excelFlow()
+      {
+          $tgl_awal = $this->input->get('id');
+          $tgl_akhir = $this->input->get('id2');
+
+          // Create new PHPExcel object
+          $object = new PHPExcel();
+          $style = array(
+              'alignment' => array(
+                  'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                  'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+              ),
+              'borders' => array(
+                  'allborders' => array(
+                      'style' => PHPExcel_Style_Border::BORDER_THIN
+                  )
+              )
+          );
+          $font = array(
+              'font'  => array(
+                  'bold'  => true,
+                  'size'  => 12,
+                  'name'  => 'Times New Roman'
+              )
+          );
+
+          $object->getActiveSheet()->getStyle("A7:F7")->applyFromArray($style);
+          $object->getActiveSheet()->getStyle("A7:F7")->applyFromArray($font);
+          $object->getActiveSheet()->getStyle("A1:A5")->applyFromArray($font);
+          $object->getActiveSheet()->getStyle('A7:F7')->getAlignment()->setWrapText(true);
+
+          // Set properties
+          $object->getProperties()->setCreator($this->session->userdata('nama'))
+              ->setLastModifiedBy($this->session->userdata('nama'))
+              ->setCategory("Approve by ");
+          // Add some data
+          $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"flow");
+
+          $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
+          $object->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+          $object->getActiveSheet()->getColumnDimension('C')->setWidth(20);
+          $object->getActiveSheet()->getColumnDimension('D')->setWidth(15);
+          $object->getActiveSheet()->getColumnDimension('E')->setWidth(15);
+          $object->getActiveSheet()->getColumnDimension('F')->setWidth(20);
+
+          $object->getActiveSheet()->mergeCells('A1:F1');
+          $object->getActiveSheet()->mergeCells('A2:F2');
+          $object->getActiveSheet()->mergeCells('A3:F3');
+          $object->getActiveSheet()->mergeCells('A4:F4');
+          $object->getActiveSheet()->mergeCells('A5:F5');
+
+          $object->setActiveSheetIndex(0)
+              ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
+              ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
+              ->setCellValue('A4', 'Terminal Peti Kemas')
+              ->setCellValue('A5', 'Laporan Pencatatan Flow Meter Periode '.$tgl_awal.' s/d '.$tgl_akhir)
+              ->setCellValue('A7', 'No')
+              ->setCellValue('B7', 'ID Flow Meter')
+              ->setCellValue('C7', 'Nama Flow Meter')
+              ->setCellValue('D7', 'Pemakaian Awal')
+              ->setCellValue('E7', 'Pemakaian Akhir')
+              ->setCellValue('F7', 'Total Penggunaan')
+          ;
+          $no=0;
+          //add data
+          $counter=8;
+          $ton_total = 0;
+          $ex = $object->setActiveSheetIndex(0);
+
+          foreach($result as $row){
+              $no++;
+              $data_tagihan = $this->data->getFlow($tgl_awal,$tgl_akhir,$row->id_flow);
+              $i = 1;
+
+              $object->getActiveSheet()->getStyle("A".$counter.":F".$counter)->applyFromArray($style);
+
+              if($data_tagihan != NULL) {
+                  foreach($data_tagihan as $data) {
+                      if($data->flowmeter_tenant == $row->id_flow){
+                          if($i == 1 && $data->flow_hari_ini != NULL){
+                              $ttl_awal = $data->flow_hari_ini;
+                          }else{
+                              if($ttl_awal == 0){
+                                  $ttl_awal = $data->flow_hari_ini;
+                              }
+                          }
+                          if($i == count($data_tagihan) && $data->flow_hari_ini != NULL){
+                              $ttl_akhir = $data->flow_hari_ini;
+                          }
+                          $i++;
+                      }else{
+                          $i=1;
+                      }
+                  }
+              }
+
+              $ton = $ttl_akhir - $ttl_awal;
+              $ton_total += $ton;
+
+              $ex->setCellValue("A".$counter,"$no");
+              $ex->setCellValue("B".$counter,"$row->id_flowmeter");
+              $ex->setCellValue("C".$counter,"$row->nama_flowmeter");
+              $ex->setCellValue("D".$counter,"$ttl_awal");
+              $ex->setCellValue("E".$counter,"$ttl_akhir");
+              $ex->setCellValue("F".$counter,"$ton");
+
+              $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("B".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("C".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("D".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($style);
+              $object->getActiveSheet()->getStyle("F".$counter)->applyFromArray($style);
+              $counter=$counter+1;
+          }
+          $object->getActiveSheet()->mergeCells('A'.$counter.':E'.$counter);
+          $object->getActiveSheet()->getStyle("A".$counter.":F".$counter)->applyFromArray($style);
+          $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($font);
+          $object->getActiveSheet()->getStyle("F".$counter)->applyFromArray($font);
+
+          $ex->setCellValue("A".$counter,"Total");
+          $ex->setCellValue("F".$counter,"$ton_total");
+
+          // Rename sheet
+          $object->getActiveSheet()->setTitle('Lap_Transaksi_Air_Flow');
+
+          // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+          $object->setActiveSheetIndex(0);
+
+          // Redirect output to a client’s web browser (Excel2007)
+          header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+          header('Content-Disposition: attachment;filename="Laporan_Transaksi_Flow_periode_'.$_GET['id'].'_'.$_GET['id2'].'.xlsx"');
+          header('Cache-Control: max-age=0');
+
+          $objWriter = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
+          $objWriter->save('php://output');
+      }
+
+      public function excelSumur()
+      {
+          $tgl_awal = $this->input->get('id');
+          $tgl_akhir = $this->input->get('id2');
+
+          // Create new PHPExcel object
+          $object = new PHPExcel();
+          $style = array(
+              'alignment' => array(
+                  'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                  'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+              ),
+              'borders' => array(
+                  'allborders' => array(
+                      'style' => PHPExcel_Style_Border::BORDER_THIN
+                  )
+              )
+          );
+          $font = array(
+              'font'  => array(
+                  'bold'  => true,
+                  'size'  => 12,
+                  'name'  => 'Times New Roman'
+              )
+          );
+
+          $object->getActiveSheet()->getStyle("A7:O7")->applyFromArray($style);
+          $object->getActiveSheet()->getStyle("A7:O7")->applyFromArray($font);
+          $object->getActiveSheet()->getStyle("A1:O5")->applyFromArray($font);
+          $object->getActiveSheet()->getStyle('A7:O7')->getAlignment()->setWrapText(true);
+
+          // Set properties
+          $object->getProperties()->setCreator($this->session->userdata('nama'))
+              ->setLastModifiedBy($this->session->userdata('nama'))
+              ->setCategory("Approve by ");
+          // Add some data
+          $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"sumur");
+
+          $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
+          $object->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+          $object->getActiveSheet()->getColumnDimension('C')->setWidth(20);
+          $object->getActiveSheet()->getColumnDimension('D')->setWidth(20);
+          $object->getActiveSheet()->getColumnDimension('E')->setWidth(20);
+          $object->getActiveSheet()->getColumnDimension('F')->setWidth(20);
+          $object->getActiveSheet()->getColumnDimension('G')->setWidth(20);
+          $object->getActiveSheet()->getColumnDimension('H')->setWidth(20);
+          $object->getActiveSheet()->getColumnDimension('I')->setWidth(20);
+          $object->getActiveSheet()->getColumnDimension('J')->setWidth(20);
+          $object->getActiveSheet()->getColumnDimension('K')->setWidth(20);
+          $object->getActiveSheet()->getColumnDimension('L')->setWidth(20);
+          $object->getActiveSheet()->getColumnDimension('M')->setWidth(20);
+          $object->getActiveSheet()->getColumnDimension('N')->setWidth(20);
+          $object->getActiveSheet()->getColumnDimension('O')->setWidth(20);
+
+          $object->getActiveSheet()->mergeCells('A1:O1');
+          $object->getActiveSheet()->mergeCells('A2:O2');
+          $object->getActiveSheet()->mergeCells('A3:O3');
+          $object->getActiveSheet()->mergeCells('A4:O4');
+          $object->getActiveSheet()->mergeCells('A5:O5');
+
+          $object->setActiveSheetIndex(0)
+              ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
+              ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
+              ->setCellValue('A4', 'Terminal Peti Kemas')
+              ->setCellValue('A5', 'Laporan Pencatatan Sumur Periode '.$tgl_awal.' s/d '.$tgl_akhir)
+              ->setCellValue('A7', 'No')
+              ->setCellValue('B7', 'ID Sumur')
+              ->setCellValue('C7', 'Nama Sumur')
+              ->setCellValue('D7', 'Nama Pompa')
+              ->setCellValue('E7', 'Nama Flow Meter')
+              ->setCellValue('F7', 'Start Running')
+              ->setCellValue('G7', 'Cuaca')
+              ->setCellValue('H7', 'Debit Air (L/Detik)')
+              ->setCellValue('I7', 'Nilai Flow (m3)')
+              ->setCellValue('J7', 'Finish Running')
+              ->setCellValue('K7', 'Cuaca')
+              ->setCellValue('L7', 'Debit Air (L/Detik)')
+              ->setCellValue('M7', 'Nilai Flow (m3)')
+              ->setCellValue('N7', 'Pemakaian (m3)')
+              ->setCellValue('O7', 'Issued By')
+          ;
+          $no=0;
+          //add data
+          $counter=8;
+          $ton_total = 0;
+          $ex = $object->setActiveSheetIndex(0);
+
+          foreach($result as $row){
+              $no++;
+              $data_tagihan = $this->data->getSumur($tgl_awal,$tgl_akhir,$row->id_master_sumur);
+
+              $object->getActiveSheet()->getStyle("A".$counter.":O".$counter)->applyFromArray($style);
+
+              if($data_tagihan != NULL) {
+                  foreach($data_tagihan as $data) {
+                      if($data->id_catat_sumur == $row->id_master_sumur){
+                          $ttl_awal = $row->flow_sumur_awal;
+                          $ttl_akhir = $row->flow_sumur_akhir;
+                      }
+                  }
+
+                $ton = $ttl_akhir - $ttl_awal;
+                $ton_total += $ton;
+
+                $ex->setCellValue("A".$counter,"$no");
+                $ex->setCellValue("B".$counter,"$row->id_sumur");
+                $ex->setCellValue("C".$counter,"$row->nama_sumur");
+                $ex->setCellValue("D".$counter,"$data->nama_pompa");
+                $ex->setCellValue("E".$counter,"$data->nama_flowmeter");
+                $ex->setCellValue("F".$counter,"$row->waktu_rekam_awal");
+                $ex->setCellValue("G".$counter,"$row->cuaca_awal");
+                $ex->setCellValue("H".$counter,"$row->debit_air_awal");
+                $ex->setCellValue("I".$counter,"$row->flow_sumur_awal");
+                $ex->setCellValue("J".$counter,"$row->waktu_rekam_akhir");
+                $ex->setCellValue("K".$counter,"$row->cuaca_akhir");
+                $ex->setCellValue("L".$counter,"$row->debit_air_akhir");
+                $ex->setCellValue("M".$counter,"$row->flow_sumur_akhir");
+                $ex->setCellValue("N".$counter,"$ton");
+                $ex->setCellValue("O".$counter,"$row->issued_by");
+
+                  $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("B".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("C".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("D".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("F".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("G".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("H".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("K".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("L".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("M".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("N".$counter)->applyFromArray($style);
+                  $object->getActiveSheet()->getStyle("O".$counter)->applyFromArray($style);
+                $counter=$counter+1;
+              }
+          }
+          $object->getActiveSheet()->mergeCells('A'.$counter.':M'.$counter);
+          $object->getActiveSheet()->getStyle("A".$counter.":O".$counter)->applyFromArray($style);
+
+          $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($font);
+          $object->getActiveSheet()->getStyle("N".$counter)->applyFromArray($font);
+
+          $ex->setCellValue("A".$counter,"Total");
+          $ex->setCellValue("N".$counter,"$ton_total");
+
+          // Rename sheet
+          $object->getActiveSheet()->setTitle('Lap_Transaksi_Air_Sumur');
+
+          // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+          $object->setActiveSheetIndex(0);
+
+          // Redirect output to a client’s web browser (Excel2007)
+          header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+          header('Content-Disposition: attachment;filename="Laporan_Transaksi_Sumur_periode_'.$_GET['id'].'_'.$_GET['id2'].'.xlsx"');
           header('Cache-Control: max-age=0');
 
           $objWriter = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
@@ -4767,7 +5699,7 @@ date_default_timezone_set('Asia/Makassar');
                   'id_tenant' => $result->id_tenant,
                   'nama_tenant' => $result->nama_tenant,
                   'penanggung_jawab' => $result->penanggung_jawab,
-                  'status_aktif' => $result->status_aktif,
+                  'status_aktif' => $result->status_aktif_tenant,
                   'alamat' => $result->alamat,
                   'id_flowmeter' => $result->id_master_flowmeter,
               );
@@ -4876,7 +5808,7 @@ date_default_timezone_set('Asia/Makassar');
               $row[] = "<center>".$result->no_perjanjian;
               $row[] = "<center>".$result->nama_perjanjian;
               $row[] = "<center>".$result->waktu_kadaluarsa;
-              $row[] = "<center>".$result->nominal;
+              $row[] = "<center>Rp. ".$this->Ribuan($result->nominal);
 
               if($date_now < $date_kadaluarsa || $date_now == $date_kadaluarsa){
                   $row[] = '<center><a class="btn btn-sm btn-primary" href="editLumpsum?id=' . $result->id_lumpsum . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
@@ -5005,6 +5937,13 @@ date_default_timezone_set('Asia/Makassar');
                   else
                       $kondisi = "Rusak";
                   $row[] = $kondisi;
+
+                  if($result->status_aktif == 1)
+                      $status = 'Aktif';
+                  else
+                      $status = 'Tidak Aktif';
+
+                  $row[] = $status;
                   $row[] = '<center><a class="btn btn-sm btn-primary" href="editFlowmeter?id=' . $result->id_flow . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
 
                   $data[] = $row;
@@ -5073,6 +6012,7 @@ date_default_timezone_set('Asia/Makassar');
           $data['isi'] = array(
               'id_flowmeter' => $result->id_flowmeter,
               'nama_flowmeter' => $result->nama_flowmeter,
+              'status_aktif' => $result->status_aktif,
               'kondisi' => $result->kondisi,
               'flowmeter_awal' => $result->flowmeter_awal,
               'flowmeter_akhir' => $result->flowmeter_akhir,
@@ -5086,12 +6026,14 @@ date_default_timezone_set('Asia/Makassar');
           $id_flowmeter = $this->input->post('id_flowmeter');
           $nama_flowmeter = $this->input->post('nama_flowmeter');
           $kondisi = $this->input->post('kondisi');
+          $status = $this->input->post('status_aktif');
           $flow_awal = $this->input->post('flowmeter_awal');
           $flow_akhir = $this->input->post('flowmeter_akhir');
 
           $data_edit = array(
               'id_flowmeter' => $id_flowmeter,
               'nama_flowmeter' => $nama_flowmeter,
+              'status_aktif' => $status,
               'kondisi' => $kondisi,
               'flowmeter_awal' => $flow_awal,
               'flowmeter_akhir' => $flow_akhir,
@@ -5255,7 +6197,21 @@ date_default_timezone_set('Asia/Makassar');
                   $row[] = "<center>".$no;
                   $row[] = "<center>".$result->id_pompa;
                   $row[] = "<center>".$result->nama_pompa;
-                  $row[] = "<center>".$result->kondisi;
+                  if($result->kondisi == 'baik')
+                      $kondisi = 'Baik';
+                  else if($result->kondisi == 'kurang_baik')
+                      $kondisi = "Kurang Baik";
+                  else
+                      $kondisi = "Rusak";
+
+                  $row[] = "<center>".$kondisi;
+
+                  if($result->status_aktif == 1)
+                      $status = "Aktif";
+                  else
+                      $status = "Tidak Aktif";
+
+                  $row[] = "<center>".$status;
                   $flowmeter = $this->data->getIdFlowmeter($result->flowmeter);
                   $row[] = "<center>".$flowmeter->id_flowmeter;
                   $row[] = '<center><a class="btn btn-sm btn-primary" href="editPompa?id=' . $result->id_master_pompa . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
@@ -5326,6 +6282,7 @@ date_default_timezone_set('Asia/Makassar');
               'id_pompa' => $result->id_pompa,
               'nama_pompa' => $result->nama_pompa,
               'kondisi' => $result->kondisi,
+              'status_aktif' => $result->status_aktif,
               'id_flowmeter' => $result->flowmeter,
           );
 
@@ -5338,14 +6295,16 @@ date_default_timezone_set('Asia/Makassar');
           $nama_pompa = $this->input->post('nama_pompa');
           $kondisi = $this->input->post('kondisi');
           $id_flowmeter = $this->input->post('id_flowmeter');
+          $status = $this->input->post('status');
 
           $data_edit = array(
               'id_pompa' => $id_pompa,
               'nama_pompa' => $nama_pompa,
               'kondisi' => $kondisi,
+              'status_aktif' => $status,
               'flowmeter' => $id_flowmeter,
               'modified_at' => date("Y-m-d H:i:s",time()),
-              'modified_by' => $this->session->userdata('nama')
+              'modified_by' => $this->session->userdata('username')
           );
 
           if($id != ""){
