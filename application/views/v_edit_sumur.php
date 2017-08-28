@@ -5,7 +5,6 @@
             var id_sumur = $('#id_sumur').val();
             var nama_sumur = $('#nama_sumur').val();
             var lokasi = $('#lokasi').val();
-            var id_pompa = $('#id_pompa').val();
             var form_data = new FormData();
             var base_url = '<?= base_url();?>';
             var text_alert;
@@ -14,7 +13,6 @@
             form_data.append('id_sumur',id_sumur);
             form_data.append('nama_sumur', nama_sumur);
             form_data.append('lokasi',lokasi);
-            form_data.append('id_pompa',id_pompa);
             $.ajax({
                 url: base_url +'main/edit_sumur', // point to server-side controller method
                 dataType: 'text', // what to expect back from the server
@@ -66,28 +64,6 @@ if(isset($_SESSION['session'])) {
                         <td><label>Lokasi</label></td>
                         <td>:</td>
                         <td><input class="form-control" type="text" name="lokasi" id="lokasi" required value="<?= $isi['lokasi'] ?>"></td>
-                    </tr>
-                    <tr>
-                        <td><label>ID Pompa</label></td>
-                        <td>:</td>
-                        <td>
-                            <select class="form-control" name="id_pompa" id="id_pompa">
-                                <?php foreach ($pompa as $row) {
-                                    if($row->id_master_pompa == $isi['id_pompa']) {
-                                        ?>
-                                        <option selected value="<?= $row->id_master_pompa ?>"><?= $row->id_pompa ?>
-                                            => <?= $row->nama_pompa ?></option>
-                                        <?php
-                                    }else{
-                                        ?>
-                                        <option value="<?= $row->id_master_pompa ?>"><?= $row->id_pompa ?>
-                                            => <?= $row->nama_pompa ?></option>
-                                        <?php
-                                    }
-                                }
-                                ?>
-                            </select>
-                        </td>
                     </tr>
                     <tr>
                         <td colspan="3">

@@ -185,7 +185,7 @@ if(isset($_SESSION['session'])) {
         </script>
         <?php
     }
-    else if($_SESSION['role'] == "operasi"){
+    else if($_SESSION['role'] == "tusi"){
     ?>
         <script type="text/javascript">
             $(document).ready(function (e) {

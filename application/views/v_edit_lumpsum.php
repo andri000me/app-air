@@ -10,6 +10,7 @@ if(isset($_SESSION['session'])) {
                     var nama_perjanjian = $('#nama_perjanjian').val();
                     var waktu_kadaluarsa = $('#waktu_kadaluarsa').val();
                     var nominal = $('#nominal').val();
+                    var tenant = $('#tenant').val();
 
                     var form_data = new FormData();
                     var base_url = '<?= base_url();?>';
@@ -20,6 +21,7 @@ if(isset($_SESSION['session'])) {
                     form_data.append('nama_perjanjian',nama_perjanjian);
                     form_data.append('waktu_kadaluarsa',waktu_kadaluarsa);
                     form_data.append('nominal',nominal);
+                    form_data.append('id_tenant',tenant);
                     $.ajax({
                         url: base_url +'main/edit_lumpsum', // point to server-side controller method
                         dataType: 'text', // what to expect back from the server
@@ -45,6 +47,30 @@ if(isset($_SESSION['session'])) {
                 });
             });
         </script>
+        <script>
+            function showTenant(str) {
+                if (str=="") {
+                    document.getElementById("penanggung_jawab").innerHTML="";
+                    document.getElementById("lokasi").innerHTML="";
+                    return;
+                }
+                if (window.XMLHttpRequest) {
+                    // code for IE7+, Firefox, Chrome, Opera, Safari
+                    xmlhttp=new XMLHttpRequest();
+                } else { // code for IE6, IE5
+                    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+                }
+                xmlhttp.onreadystatechange=function() {
+                    if (this.readyState==4 && this.status==200) {
+                        var data = JSON.parse(this.responseText);
+                        document.getElementById("penanggung_jawab").value= data.penanggung_jawab;
+                        document.getElementById("lokasi").value=data.lokasi;
+                    }
+                }
+                xmlhttp.open("GET","<?= base_url('main/cari_tenant?id=')?>"+str,true);
+                xmlhttp.send();
+            }
+        </script>
         <div class="container" data-role="main" class="ui-content">
             <h3>Form Edit Data Lumpsum</h3>
             <div class="row col-md-5">
@@ -59,9 +85,9 @@ if(isset($_SESSION['session'])) {
                         <td><input class="form-control" type="text" name="no_perjanjian" id="no_perjanjian" required value="<?= $isi['no_perjanjian'] ?>"></td>
                     </tr>
                     <tr>
-                        <td><label>Nama Perjanjian</label></td>
+                        <td><label>Perihal</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="nama_perjanjian" id="nama_perjanjian" required value="<?= $isi['nama_perjanjian'] ?>"></td>
+                        <td><input class="form-control" type="text" name="nama_perjanjian" id="nama_perjanjian" required value="<?= $isi['perihal'] ?>"></td>
                     </tr>
                     <tr>
                         <td><label>Waktu Kadaluarsa</label></td>
@@ -84,6 +110,41 @@ if(isset($_SESSION['session'])) {
                                     });
                                 });
                             </script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Nama Tenant</label></td>
+                        <td>:</td>
+                        <td>
+                            <select class="form-control" name="tenant" id="tenant" onchange="showTenant(this.value)">
+                                <?php
+                                foreach ($lumpsum as $row) {
+                                    if ($row->id_tenant == $isi['id_tenant']) {
+                                        ?>
+                                        <option selected value="<?= $row->id_tenant ?>"><?= $row->nama_tenant ?></option>
+                                        <?php
+                                    } else{
+                                        ?>
+                                        <option value="<?= $row->id_tenant ?>"><?= $row->nama_tenant ?></option>
+                                        <?php
+                                    }
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Penanggung Jawab</label></td>
+                        <td>:</td>
+                        <td>
+                            <input class="form-control" disabled type="text" name="penanggung_jawab" id="penanggung_jawab">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Lokasi Tenant</label></td>
+                        <td>:</td>
+                        <td>
+                            <input class="form-control" disabled type="text" name="lokasi" id="lokasi">
                         </td>
                     </tr>
                     <tr>

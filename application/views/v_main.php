@@ -65,7 +65,7 @@ if($this->session->userdata('role') == "loket" && $this->session->userdata('sess
                             "<th><center>Jenis</center></th>" +
                             "<th><center>Tarif (Rp.)</center></th>" +
                             "<th><center>Vol (Ton)</center></th>" +
-                            "<th><center>Jumlah Bayar<center></th>" +
+                            "<th><center>Jumlah Bayar (Rp.)<center></th>" +
                             "<th><center>Aksi</center></th>" +
                             "</tr>" +
                             "</tfoot>";
@@ -1030,7 +1030,7 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-3">Nama Perusahaan</label>
+                                <label class="control-label col-md-3">Nama Agent</label>
                                 <div class="col-md-9">
                                     <input disabled name="nama_perusahaan" placeholder="Nama Perusahaan" class="form-control" type="text">
                                     <span class="help-block"></span>
@@ -1105,10 +1105,10 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
                 success: function(data)
                 {
                     $('[name="id-transaksi"]').val(data.id_transaksi);
-                    $('[name="id_lct"]').val(data.id_lct);
+                    $('[name="id_lct"]').val(data.id_vessel);
                     $('[name="voy_no"]').val(data.voy_no);
-                    $('[name="nama_lct"]').val(data.nama_lct);
-                    $('[name="nama_perusahaan"]').val(data.nama_perusahaan);
+                    $('[name="nama_lct"]').val(data.nama_vessel);
+                    $('[name="nama_perusahaan"]').val(data.nama_agent);
                     $('[name="nama_pemohon"]').val(data.nama_pemohon);
                     $('[name="tgl_transaksi"]').val(data.tgl_transaksi);
                     $('[name="realisasi"]').val(data.flowmeter_akhir - data.flowmeter_awal);

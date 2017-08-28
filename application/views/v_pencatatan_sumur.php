@@ -42,11 +42,11 @@ if($this->session->userdata('role') == 'wtp'){
                         <tr>
                             <div class="form-group">
                                 <td>
-                                    <label for="id_flowmeter">ID Sumur</label>
+                                    <label for="id_flowmeter">ID Flow Meter</label>
                                 </td>
                                 <td>:</td>
                                 <td>
-                                    <input type="text" class="form-control" id="id_sumur_awal" name="id_sumur_awal" placeholder="Masukkan ID Sumur"/>
+                                    <input type="text" class="form-control" id="id_sumur_awal" name="id_sumur_awal" placeholder="Masukkan ID Flow Meter"/>
                                     <input type="hidden" class="form-control" id="id_master_sumur_awal" name="id_master_sumur_awal" />
                                 </td>
                             </div>
@@ -69,7 +69,8 @@ if($this->session->userdata('role') == 'wtp'){
                                 </td>
                                 <td>:</td>
                                 <td>
-                                    <input type="text" disabled class="form-control" id="nama_pompa" name="nama_pompa" />                                <input type="hidden" class="form-control" id="id_master_sumur" name="id_master_sumur" />
+                                    <input type="text" disabled class="form-control" id="nama_pompa" name="nama_pompa" />
+                                    <input type="hidden" class="form-control" id="id_master_sumur" name="id_master_sumur" />
                                     <input type="hidden" class="form-control" id="id_pompa" name="id_pompa" />
                                     <input type="hidden" class="form-control" id="id_flowmeter" name="id_flowmeter" />
                                 </td>
@@ -82,7 +83,8 @@ if($this->session->userdata('role') == 'wtp'){
                                 </td>
                                 <td>:</td>
                                 <td>
-                                    <input type="text" disabled class="form-control" id="nama_flowmeter" name="nama_flowmeter" />                                <input type="hidden" class="form-control" id="id_master_sumur" name="id_master_sumur" />
+                                    <input type="text" disabled class="form-control" id="nama_flowmeter" name="nama_flowmeter" />
+                                    <input type="hidden" class="form-control" id="id_master_sumur" name="id_master_sumur" />
                                 </td>
                             </div>
                         </tr>
@@ -135,7 +137,7 @@ if($this->session->userdata('role') == 'wtp'){
                                 </td>
                                 <td>:</td>
                                 <td>
-                                    <input type="number" class="form-control" id="flow_hari_ini_awal" name="flow_hari_ini_awal" placeholder="Satuan (m3)"/>
+                                    <input type="number" class="form-control" step=".01" id="flow_hari_ini_awal" name="flow_hari_ini_awal" placeholder="Satuan (m3)"/>
                                 </td>
                             </div>
                         </tr>
@@ -146,7 +148,7 @@ if($this->session->userdata('role') == 'wtp'){
                                 </td>
                                 <td>:</td>
                                 <td>
-                                    <input type="number" class="form-control" id="debit_awal" name="debit_awal" placeholder="Satuan (m3)"/>
+                                    <input type="number" class="form-control" step=".01" id="debit_awal" name="debit_awal" placeholder="Satuan (L/Detik)"/>
                                 </td>
                             </div>
                         </tr>
@@ -164,11 +166,11 @@ if($this->session->userdata('role') == 'wtp'){
                         <tr>
                             <div class="form-group">
                                 <td>
-                                    <label for="id_flowmeter">ID Sumur</label>
+                                    <label for="id_flowmeter">ID Flow Meter</label>
                                 </td>
                                 <td>:</td>
                                 <td>
-                                    <input type="text" disabled class="form-control" id="id_sumur_akhir" name="id_sumur_akhir" placeholder="Masukkan ID Sumur"/>
+                                    <input type="text" disabled class="form-control" id="id_sumur_akhir" name="id_sumur_akhir" placeholder="Masukkan ID Flow Meter"/>
                                     <input type="hidden" class="form-control" id="id_master_sumur_akhir" name="id_master_sumur_akhir" />
                                 </td>
                             </div>
@@ -191,7 +193,8 @@ if($this->session->userdata('role') == 'wtp'){
                                 </td>
                                 <td>:</td>
                                 <td>
-                                    <input type="text" disabled class="form-control" id="nama_pompa_akhir" name="nama_pompa_akhir" />                                <input type="hidden" class="form-control" id="id_master_sumur" name="id_master_sumur" />
+                                    <input type="text" disabled class="form-control" id="nama_pompa_akhir" name="nama_pompa_akhir" />
+                                    <input type="hidden" class="form-control" id="id_master_sumur" name="id_master_sumur" />
                                     <input type="hidden" class="form-control" id="id_pompa_akhir" name="id_pompa_akhir" />
                                     <input type="hidden" class="form-control" id="id_flowmeter_akhir" name="id_flowmeter_akhir" />
                                 </td>
@@ -204,7 +207,8 @@ if($this->session->userdata('role') == 'wtp'){
                                 </td>
                                 <td>:</td>
                                 <td>
-                                    <input type="text" disabled class="form-control" id="nama_flowmeter_akhir" name="nama_flowmeter_akhir" />                                <input type="hidden" class="form-control" id="id_master_sumur" name="id_master_sumur" />
+                                    <input type="text" disabled class="form-control" id="nama_flowmeter_akhir" name="nama_flowmeter_akhir" />
+                                    <input type="hidden" class="form-control" id="id_master_sumur" name="id_master_sumur" />
                                 </td>
                             </div>
                         </tr>
@@ -257,7 +261,7 @@ if($this->session->userdata('role') == 'wtp'){
                                 </td>
                                 <td>:</td>
                                 <td>
-                                    <input type="number" class="form-control" id="flow_hari_ini_akhir" name="flow_hari_ini_akhir" placeholder="Satuan (m3)"/>
+                                    <input type="number" class="form-control" id="flow_hari_ini_akhir" step=".01" name="flow_hari_ini_akhir" placeholder="Satuan (m3)"/>
                                 </td>
                             </div>
                         </tr>
@@ -268,7 +272,7 @@ if($this->session->userdata('role') == 'wtp'){
                                 </td>
                                 <td>:</td>
                                 <td>
-                                    <input type="number" class="form-control" id="debit_akhir" name="debit_akhir" placeholder="Satuan (m3)"/>
+                                    <input type="number" class="form-control" step=".01" id="debit_akhir" name="debit_akhir" placeholder="Satuan (L/Detik)"/>
                                 </td>
                             </div>
                         </tr>

@@ -482,10 +482,11 @@ if(isset($_SESSION['session'])) {
                         <td>:</td>
                         <td>
                             <select name="id_agent" id="id_agent" onchange="showAgent(this.value)">
+                                <option value=""></option>
                                 <?php
                                     foreach ($agent as $row){
                                         ?>
-                                        <option value="<?= $row->id_agent?>"><?= $row->nama_perusahaan?></option>
+                                        <option value="<?= $row->id_agent?>"><?= $row->nama_agent?></option>
                                     <?php
                                     }
                                 ?>

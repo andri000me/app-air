@@ -56,7 +56,7 @@ if(isset($_SESSION['session'])) {
                     <tr>
                         <td><label>Nama Perusahaan</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="nama" id="nama" required value="<?= $isi['nama_perusahaan']?>"></td>
+                        <td><input class="form-control" type="text" name="nama" id="nama" required value="<?= $isi['nama_agent']?>"></td>
                     </tr>
                     <tr>
                         <td><label>Alamat</label></td>

@@ -8,12 +8,15 @@ if(isset($_SESSION['session'])) {
                     var id_flowmeter = $('#id_flowmeter').val();
                     var nama_flowmeter = $('#nama_flowmeter').val();
                     var kondisi= $('#kondisi').val();
+                    var pompa = $('#id_pompa').val();
+
                     var form_data = new FormData();
                     var base_url = '<?= base_url();?>';
                     var text_alert;
                     form_data.append('id_flowmeter',id_flowmeter);
                     form_data.append('nama_flowmeter',nama_flowmeter);
                     form_data.append('kondisi',kondisi);
+                    form_data.append('id_pompa',pompa);
                     $.ajax({
                         url: base_url +'index.php/main/input_data_flowmeter', // point to server-side controller method
                         dataType: 'text', // what to expect back from the server
@@ -66,6 +69,20 @@ if(isset($_SESSION['session'])) {
                         </td>
                     </tr>
                     <tr>
+                        <td><label>ID Pompa</label></td>
+                        <td>:</td>
+                        <td>
+                            <select class="form-control" name="id_pompa" id="id_pompa">
+                                <?php foreach ($tenant as $row) {
+                                    ?>
+                                    <option value="<?= $row->id_master_pompa?>"><?= $row->id_pompa?> => <?= $row->nama_pompa?></option>
+                                    <?php
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
                         <td colspan="3">
                             <button class="btn btn-success" id="upload">Input</button>
                         </td>
@@ -98,6 +115,9 @@ if(isset($_SESSION['session'])) {
                             <center>Kondisi
                         </th>
                         <th>
+                            <center>ID Pompa
+                        </th>
+                        <th>
                             <center>Status
                         </th>
                         <th>
@@ -126,6 +146,9 @@ if(isset($_SESSION['session'])) {
                         </th>
                         <th>
                             <center>Kondisi
+                        </th>
+                        <th>
+                            <center>ID Pompa
                         </th>
                         <th>
                             <center>Status

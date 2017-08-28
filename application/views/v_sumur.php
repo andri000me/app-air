@@ -62,20 +62,6 @@ if(isset($_SESSION['session'])) {
                         <td><input class="form-control" type="text" name="lokasi" id="lokasi" required></td>
                     </tr>
                     <tr>
-                        <td><label>ID Pompa</label></td>
-                        <td>:</td>
-                        <td>
-                            <select class="form-control" name="id_pompa" id="id_pompa">
-                                <?php foreach ($tenant as $row) {
-                                    ?>
-                                    <option value="<?= $row->id_master_pompa?>"><?= $row->id_pompa?> => <?= $row->nama_pompa?></option>
-                                    <?php
-                                }
-                                ?>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
                         <td colspan="3">
                             <button class="btn btn-success" id="upload">Input</button>
                         </td>
@@ -102,9 +88,6 @@ if(isset($_SESSION['session'])) {
                             <center>Lokasi
                         </th>
                         <th>
-                            <center>ID Pompa
-                        </th>
-                        <th>
                             <center>Aksi
                         </th>
                     </tr>
@@ -123,10 +106,7 @@ if(isset($_SESSION['session'])) {
                             <center>Nama Sumur
                         </th>
                         <th>
-                            <center>Kondisi
-                        </th>
-                        <th>
-                            <center>ID Pompa
+                            <center>Lokasi
                         </th>
                         <th>
                             <center>Aksi

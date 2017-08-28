@@ -93,7 +93,7 @@ if($this->session->userdata('role') == 'wtp'){
                             </td>
                             <td>:</td>
                             <td>
-                                <input type="number" class="form-control" id="flow_hari_ini" name="flow_hari_ini" placeholder="Satuan (m3)"/>
+                                <input type="number" class="form-control" id="flow_hari_ini" step=".01" name="flow_hari_ini" placeholder="Satuan (m3)"/>
                             </td>
                         </div>
                     </tr>

@@ -8,6 +8,7 @@
             var flowmeter_awal = $('#flowmeter_awal').val();
             var flowmeter_akhir = $('#flowmeter_akhir').val();
             var status_aktif = $('#status_aktif').val();
+            var id_pompa = $('#id_pompa').val();
 
             var form_data = new FormData();
             var base_url = '<?= base_url();?>';
@@ -19,6 +20,8 @@
             form_data.append('kondisi',kondisi);
             form_data.append('flowmeter_awal',flowmeter_awal);
             form_data.append('flowmeter_akhir',flowmeter_akhir);
+            form_data.append('status_aktif',status_aktif);
+            form_data.append('id_pompa',id_pompa);
 
             $.ajax({
                 url: base_url +'main/edit_flowmeter', // point to server-side controller method
@@ -133,6 +136,28 @@ if(isset($_SESSION['session'])) {
                                     ?>
                                     <option value="0">Tidak Aktif</option>
                                     <?php
+                                }
+                                ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>ID Pompa</label></td>
+                        <td>:</td>
+                        <td>
+                            <select class="form-control" name="id_pompa" id="id_pompa">
+                                <?php foreach ($pompa as $row) {
+                                    if($row->id_master_pompa == $isi['id_pompa']) {
+                                        ?>
+                                        <option selected value="<?= $row->id_master_pompa ?>"><?= $row->id_pompa ?>
+                                            => <?= $row->nama_pompa ?></option>
+                                        <?php
+                                    }else{
+                                        ?>
+                                        <option value="<?= $row->id_master_pompa ?>"><?= $row->id_pompa ?>
+                                            => <?= $row->nama_pompa ?></option>
+                                        <?php
+                                    }
                                 }
                                 ?>
                             </select>

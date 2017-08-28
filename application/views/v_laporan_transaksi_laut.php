@@ -81,14 +81,14 @@ if($this->session->userdata('role') == "wtp" && $this->session->userdata('sessio
                         <input type="hidden" value="" name="id-transaksi"/>
                         <div class="form-body">
                             <div class="form-group">
-                                <label class="control-label col-md-3">ID LCT</label>
+                                <label class="control-label col-md-3">ID VESSEL</label>
                                 <div class="col-md-9">
                                     <input disabled name="id_lct" id="id_lct" placeholder="ID LCT" class="form-control" type="text">
                                     <span class="help-block"></span>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-3">Nama LCT</label>
+                                <label class="control-label col-md-3">Nama VESSEL</label>
                                 <div class="col-md-9">
                                     <input disabled name="nama_lct" placeholder="Nama LCT" class="form-control" type="text">
                                     <span class="help-block"></span>
@@ -130,16 +130,30 @@ if($this->session->userdata('role') == "wtp" && $this->session->userdata('sessio
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-3">Flow Meter Awal</label>
+                                <label class="control-label col-md-3">Flow Meter 1 Awal</label>
                                 <div class="col-md-9">
                                     <input name="flowmeter_awal" placeholder="Satuan (Ton)" class="form-control" type="text">
                                     <span class="help-block"></span>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="control-label col-md-3">Flow Meter Akhir</label>
+                                <label class="control-label col-md-3">Flow Meter 1 Akhir</label>
                                 <div class="col-md-9">
                                     <input name="flowmeter_akhir" placeholder="Satuan (Ton)" class="form-control" type="text">
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">Flow Meter 2 Awal</label>
+                                <div class="col-md-9">
+                                    <input name="flowmeter_awal_2" placeholder="Satuan (Ton)" class="form-control" type="text">
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">Flow Meter 2 Akhir</label>
+                                <div class="col-md-9">
+                                    <input name="flowmeter_akhir_2" placeholder="Satuan (Ton)" class="form-control" type="text">
                                     <span class="help-block"></span>
                                 </div>
                             </div>
@@ -177,10 +191,10 @@ if($this->session->userdata('role') == "wtp" && $this->session->userdata('sessio
                 success: function(data)
                 {
                     $('[name="id-transaksi"]').val(data.id_transaksi);
-                    $('[name="id_lct"]').val(data.id_lct);
+                    $('[name="id_lct"]').val(data.id_vessel);
                     $('[name="voy_no"]').val(data.voy_no);
-                    $('[name="nama_lct"]').val(data.nama_lct);
-                    $('[name="nama_perusahaan"]').val(data.nama_perusahaan);
+                    $('[name="nama_lct"]').val(data.nama_vessel);
+                    $('[name="nama_perusahaan"]').val(data.nama_agent);
                     $('[name="nama_pemohon"]').val(data.nama_pemohon);
                     $('[name="tgl_transaksi"]').val(data.tgl_transaksi);
                     $('[name="tonnase"]').val(data.total_permintaan);

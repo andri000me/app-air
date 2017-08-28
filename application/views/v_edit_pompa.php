@@ -5,8 +5,7 @@
             var id_pompa = $('#id_pompa').val();
             var nama_pompa = $('#nama_pompa').val();
             var kondisi = $('#kondisi').val();
-            var id_flowmeter = $('#id_flowmeter').val();
-            var id_flow = $('#id_flow').val();
+            var id_sumur = $('#id_sumur').val();
             var status = $('#status_aktif').val();
 
             var form_data = new FormData();
@@ -18,8 +17,7 @@
             form_data.append('nama_pompa', nama_pompa);
             form_data.append('kondisi',kondisi);
             form_data.append('status',status);
-            form_data.append('id_flowmeter',id_flowmeter);
-            form_data.append('id_flow',id_flow);
+            form_data.append('id_sumur',id_sumur);
 
             $.ajax({
                 url: base_url +'main/edit_pompa', // point to server-side controller method
@@ -140,21 +138,21 @@ if(isset($_SESSION['session'])) {
                         </td>
                     </tr>
                     <tr>
-                        <td><label>ID Flow Meter</label></td>
+                        <td><label>ID Sumur</label></td>
                         <td>:</td>
                         <td>
-                            <input type="hidden" id="id_flow" name="id_flow" value="<?= $isi['id_flowmeter']?>"/>
-                            <select class="form-control" name="id_flowmeter" id="id_flowmeter">
+                            <input type="hidden" id="id_sum" name="id_sum" value="<?= $isi['id_sumur']?>"/>
+                            <select class="form-control" name="id_sumur" id="id_sumur">
                                 <?php foreach ($pompa as $row) {
-                                    if($row->id_flow == $isi['id_flowmeter']) {
+                                    if($row->id_master_sumur == $isi['id_sumur']) {
                                         ?>
-                                        <option selected value="<?= $row->id_flow ?>"><?= $row->id_flowmeter ?>
-                                            => <?= $row->nama_flowmeter ?></option>
+                                        <option selected value="<?= $row->id_master_sumur ?>"><?= $row->id_sumur ?>
+                                            => <?= $row->nama_sumur ?></option>
                                         <?php
                                     }else{
                                         ?>
-                                        <option value="<?= $row->id_flow ?>"><?= $row->id_flowmeter ?>
-                                            => <?= $row->nama_flowmeter ?></option>
+                                        <option value="<?= $row->id_master_sumur ?>"><?= $row->id_sumur ?>
+                                            => <?= $row->nama_sumur ?></option>
                                         <?php
                                     }
                                 }

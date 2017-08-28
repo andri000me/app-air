@@ -132,12 +132,14 @@
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tenant</a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="<?= base_url('main/view?id=tenant'); ?>">Master Tenant</a></li>
                                     <li>
                                         <a href="<?= base_url('main/view?id=lumpsum'); ?>">Master Lumpsum</a>
                                     </li>
                                     <li>
                                         <a href="<?= base_url('main/view?id=tagihan'); ?>">Penagihan Ruko</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= base_url('main/view?id=daftar_tagihan'); ?>">Daftar Tagihan</a>
                                     </li>
                                 </ul>
                             </li>
@@ -217,13 +219,21 @@
                         else if($this->session->userdata('role') == "keuangan"){
                             ?>
                             <li>
-                                <a href="<?= base_url('main/view?id=realisasi_pembayaran_darat'); ?>">Realisasi Pembayaran Air Darat</a>
-                            </li>
-                            <li>
-                                <a href="<?= base_url('main/view?id=validasi_pembayaran_darat'); ?>">Validasi Pembayaran Air Darat</a>
-                            </li>
-                            <li>
-                                <a href="<?= base_url('main/view?id=cancel_pembayaran_darat'); ?>">Pembatalan Pembayaran Air Darat</a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Pembayaran</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="<?= base_url('main/view?id=realisasi_pembayaran_darat'); ?>">Realisasi Pembayaran Air Darat</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= base_url('main/view?id=validasi_pembayaran_darat'); ?>">Validasi Pembayaran Air Darat</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= base_url('main/view?id=cancel_pembayaran_darat'); ?>">Pembatalan Pembayaran Air Darat</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= base_url('main/view?id=realisasi_pembayaran_tenant'); ?>">Realisasi Pembayaran Air Tenant</a>
+                                    </li>
+                                </ul>
                             </li>
                             <li>
                                 <a href="<?= base_url('main/agent'); ?>">Master Agent</a>
@@ -236,6 +246,9 @@
                                     </li>
                                     <li>
                                         <a href="<?= base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?= base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Transaksi Air Ruko</a>
                                     </li>
                                 </ul>
                             </li>
@@ -292,6 +305,7 @@
         <script>
             var myVar = setInterval(showNotifTransaksiKapal, 3000);
             var myVar2 = setInterval(showNotifTransaksiDarat, 3000);
+            var myVar3 = setInterval(showNotifBayarRuko, 3000);
 
             function showNotifTransaksiKapal() {
                 var xmlhttp = new XMLHttpRequest();
@@ -320,10 +334,24 @@
                 xmlhttp.open("GET", "<?php echo base_url('main/cekNotifBayarDarat') ?>" , true);
                 xmlhttp.send();
             }
+            function showNotifBayarRuko() {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        if(xmlhttp.responseText != "0")
+                            document.getElementById("notifRuko").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran Ruko' href='<?= base_url("main/view?id=realisasi_pembayaran_tenant")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                        else
+                            document.getElementById("notifRuko").innerHTML = '';
+                    }
+                };
+                xmlhttp.open("GET", "<?php echo base_url('main/cekNotifBayarRuko') ?>" , true);
+                xmlhttp.send();
+            }
         </script>
         <div class="topright" align="right">
             <span id="notifKapal" ></span>
             <span id="notifDarat" ></span>
+            <span id="notifRuko" ></span>
         </div>
     <?php
     }
@@ -395,13 +423,14 @@
         ?>
         <script>
             var myVar = setInterval(showNotifRealisasi, 3000);
+            var myVar1 = setInterval(showNotifBayarRuko, 3000);
 
             function showNotifRealisasi() {
                 var xmlhttp = new XMLHttpRequest();
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran Kapal' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifKapal").innerHTML = '';
                     }
@@ -409,9 +438,23 @@
                 xmlhttp.open("GET", "<?php echo base_url('main/cekNotifBayar') ?>" , true);
                 xmlhttp.send();
             }
+            function showNotifBayarRuko() {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = function() {
+                    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                        if(xmlhttp.responseText != "0")
+                            document.getElementById("notifRuko").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran Ruko' href='<?= base_url("main/view?id=daftar_tagihan")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                        else
+                            document.getElementById("notifRuko").innerHTML = '';
+                    }
+                };
+                xmlhttp.open("GET", "<?php echo base_url('main/cekNotifBayarRuko') ?>" , true);
+                xmlhttp.send();
+            }
         </script>
         <div class="topright" align="right">
             <span id="notifKapal" ></span>
+            <span id="notifRuko" ></span>
         </div>
     <?php
     }

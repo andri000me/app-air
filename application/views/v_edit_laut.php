@@ -69,7 +69,7 @@ if(isset($_SESSION['session'])) {
     if($_SESSION['role'] == "perencanaan") {
         ?>
         <div class="container" data-role="main" class="ui-content">
-            <h3>Form Edit Master Data Agent</h3>
+            <h3>Form Edit Master Data VESSEL</h3>
             <div class="row col-md-5">
                 <table class="table">
                     <tr>
@@ -79,12 +79,12 @@ if(isset($_SESSION['session'])) {
                     <tr>
                         <td><label>Nama VESSEL</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="nama_lct" id="nama_lct"  value="<?= $isi['nama_lct'] ?>" required ></td>
+                        <td><input class="form-control" type="text" name="nama_lct" id="nama_lct"  value="<?= $isi['nama_vessel'] ?>" required ></td>
                     </tr>
                     <tr>
                         <td><label>ID VESSEL</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="id_lct" id="id_lct" value="<?= $isi['id_lct'] ?>" required></td>
+                        <td><input class="form-control" type="text" name="id_lct" id="id_lct" value="<?= $isi['id_vessel'] ?>" required></td>
                     </tr>
                     <tr>
                         <td><label>Nama Perusahaan</label></td>
@@ -95,11 +95,11 @@ if(isset($_SESSION['session'])) {
                                 foreach ($agent as $row){
                                     if($row->id_agent == $isi['id_agent']){
                                     ?>
-                                        <option selected value="<?= $row->id_agent?>"><?= $row->nama_perusahaan?></option>
+                                        <option selected value="<?= $row->id_agent?>"><?= $row->nama_agent?></option>
                                     <?php
                                     } else {
                                         ?>
-                                        <option value="<?= $row->id_agent?>"><?= $row->nama_perusahaan?></option>
+                                        <option value="<?= $row->id_agent?>"><?= $row->nama_agent?></option>
                                     <?php
                                         }
                                 }
