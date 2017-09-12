@@ -8,7 +8,7 @@ if($this->session->userdata('role') == "keuangan" && $this->session->userdata('s
             var kwitansi = $('#no_kwitansi').val();
             if(kwitansi != ""){
                 $.ajax({
-                    url: "<?= base_url('main/cari_batal')?>",
+                    url: "<?php echo base_url('main/cari_batal')?>",
                     method: "POST",
                     data: {kwitansi : kwitansi},
                     dataType: 'json',
@@ -116,7 +116,7 @@ if($this->session->userdata('role') == "keuangan" && $this->session->userdata('s
                                 <select disabled name="pengguna" id="pengguna" class="form-control">
                                     <option></option>
                                     <?php foreach($pengguna as $rowpengguna){?>
-                                        <option value="<?=$rowpengguna->id_tarif?>"><?=$rowpengguna->tipe_pengguna_jasa?></option>
+                                        <option value="<?php echo$rowpengguna->id_tarif?>"><?php echo$rowpengguna->tipe_pengguna_jasa?></option>
                                     <?php }?>
                                 </select>
                             </td>
@@ -199,7 +199,7 @@ else
     ?>
     <script>
         alert('Anda Tidak Memiliki Hak Akses Ke Halaman Ini. Silahkan Login Terlebih Dahulu');
-        window.location.replace('<?= $web?>');
+        window.location.replace('<?php echo $web?>');
     </script>
 <?php
 }

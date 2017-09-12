@@ -7,7 +7,7 @@
             var nama_perusahaan = $('#id_agent').val();
             var pengguna_jasa = $('#pengguna').val();
             var form_data = new FormData();
-            var base_url = '<?= base_url();?>';
+            var base_url = '<?php echo base_url();?>';
             var text_alert;
 
             form_data.append('id',id);
@@ -60,7 +60,7 @@
                 document.getElementById("no_telp").value=data.no_telp;
             }
         }
-        xmlhttp.open("GET","<?= base_url('main/cari_agent?id=')?>"+str,true);
+        xmlhttp.open("GET","<?php echo base_url('main/cari_agent?id=')?>"+str,true);
         xmlhttp.send();
     }
 </script>
@@ -74,17 +74,17 @@ if(isset($_SESSION['session'])) {
                 <table class="table">
                     <tr>
                         <td colspan="2"><p id="msg"></p></td>
-                        <td><input name="id" id="id" hidden value="<?= $id ?>"/></td>
+                        <td><input name="id" id="id" hidden value="<?php echo $id ?>"/></td>
                     </tr>
                     <tr>
                         <td><label>Nama VESSEL</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="nama_lct" id="nama_lct"  value="<?= $isi['nama_vessel'] ?>" required ></td>
+                        <td><input class="form-control" type="text" name="nama_lct" id="nama_lct"  value="<?php echo $isi['nama_vessel'] ?>" required ></td>
                     </tr>
                     <tr>
                         <td><label>ID VESSEL</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="id_lct" id="id_lct" value="<?= $isi['id_vessel'] ?>" required></td>
+                        <td><input class="form-control" type="text" name="id_lct" id="id_lct" value="<?php echo $isi['id_vessel'] ?>" required></td>
                     </tr>
                     <tr>
                         <td><label>Nama Perusahaan</label></td>
@@ -95,11 +95,11 @@ if(isset($_SESSION['session'])) {
                                 foreach ($agent as $row){
                                     if($row->id_agent == $isi['id_agent']){
                                     ?>
-                                        <option selected value="<?= $row->id_agent?>"><?= $row->nama_agent?></option>
+                                        <option selected value="<?php echo $row->id_agent?>"><?php echo $row->nama_agent?></option>
                                     <?php
                                     } else {
                                         ?>
-                                        <option value="<?= $row->id_agent?>"><?= $row->nama_agent?></option>
+                                        <option value="<?php echo $row->id_agent?>"><?php echo $row->nama_agent?></option>
                                     <?php
                                         }
                                 }
@@ -110,12 +110,12 @@ if(isset($_SESSION['session'])) {
                     <tr>
                         <td><label>Alamat</label></td>
                         <td>:</td>
-                        <td><input disabled class="form-control" type="text" name="alamat" id="alamat" value="<?= $isi['alamat'] ?>"></td>
+                        <td><input disabled class="form-control" type="text" name="alamat" id="alamat" value="<?php echo $isi['alamat'] ?>"></td>
                     </tr>
                     <tr>
                         <td><label>No Telepon</label></td>
                         <td>:</td>
-                        <td><input disabled class="form-control" type="text" name="no_telp" id="no_telp" value="<?= $isi['no_telp'] ?>"></td>
+                        <td><input disabled class="form-control" type="text" name="no_telp" id="no_telp" value="<?php echo $isi['no_telp'] ?>"></td>
                     </tr>
                     <tr>
                         <td><label>Jenis Kapal</label></td>
@@ -125,9 +125,9 @@ if(isset($_SESSION['session'])) {
                                 <?php foreach($pengguna as $rowpengguna){
                                     if($rowpengguna->id_tarif == $isi['pengguna']){
                                     ?>
-                                    <option selected value="<?=$rowpengguna->id_tarif?>"><?=$rowpengguna->tipe_pengguna_jasa?></option>
+                                    <option selected value="<?php echo$rowpengguna->id_tarif?>"><?php echo$rowpengguna->tipe_pengguna_jasa?></option>
                                 <?php } else {?>
-                                    <option value="<?=$rowpengguna->id_tarif?>"><?=$rowpengguna->tipe_pengguna_jasa?></option>
+                                    <option value="<?php echo$rowpengguna->id_tarif?>"><?php echo$rowpengguna->tipe_pengguna_jasa?></option>
                                 <?php }}?>
                             </select>
                         </td>

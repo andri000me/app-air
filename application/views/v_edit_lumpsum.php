@@ -13,7 +13,7 @@ if(isset($_SESSION['session'])) {
                     var tenant = $('#tenant').val();
 
                     var form_data = new FormData();
-                    var base_url = '<?= base_url();?>';
+                    var base_url = '<?php echo base_url();?>';
                     var text_alert;
 
                     form_data.append('id_lumpsum',id);
@@ -67,7 +67,7 @@ if(isset($_SESSION['session'])) {
                         document.getElementById("lokasi").value=data.lokasi;
                     }
                 }
-                xmlhttp.open("GET","<?= base_url('main/cari_tenant?id=')?>"+str,true);
+                xmlhttp.open("GET","<?php echo base_url('main/cari_tenant?id=')?>"+str,true);
                 xmlhttp.send();
             }
         </script>
@@ -77,17 +77,17 @@ if(isset($_SESSION['session'])) {
                 <table class="table">
                     <tr>
                         <td colspan="2"><p id="msg"></p></td>
-                        <td><input name="id" id="id" hidden value="<?= $id ?>"/></td>
+                        <td><input name="id" id="id" hidden value="<?php echo $id ?>"/></td>
                     </tr>
                     <tr>
                         <td><label>No Perjanjian</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="no_perjanjian" id="no_perjanjian" required value="<?= $isi['no_perjanjian'] ?>"></td>
+                        <td><input class="form-control" type="text" name="no_perjanjian" id="no_perjanjian" required value="<?php echo $isi['no_perjanjian'] ?>"></td>
                     </tr>
                     <tr>
                         <td><label>Perihal</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="nama_perjanjian" id="nama_perjanjian" required value="<?= $isi['perihal'] ?>"></td>
+                        <td><input class="form-control" type="text" name="nama_perjanjian" id="nama_perjanjian" required value="<?php echo $isi['perihal'] ?>"></td>
                     </tr>
                     <tr>
                         <td><label>Waktu Kadaluarsa</label></td>
@@ -95,7 +95,7 @@ if(isset($_SESSION['session'])) {
                         <td>
                             <div class="form-group">
                                 <div class='input-group date' id='datetimepicker2'>
-                                    <input type='text' class="form-control" name="waktu_kadaluarsa" id="waktu_kadaluarsa" value="<?= $isi['waktu_kadaluarsa'] ?>"/>
+                                    <input type='text' class="form-control" name="waktu_kadaluarsa" id="waktu_kadaluarsa" value="<?php echo $isi['waktu_kadaluarsa'] ?>"/>
                                     <span class="input-group-addon">
                                             <span class="glyphicon glyphicon-calendar"></span>
                                         </span>
@@ -121,11 +121,11 @@ if(isset($_SESSION['session'])) {
                                 foreach ($lumpsum as $row) {
                                     if ($row->id_tenant == $isi['id_tenant']) {
                                         ?>
-                                        <option selected value="<?= $row->id_tenant ?>"><?= $row->nama_tenant ?></option>
+                                        <option selected value="<?php echo $row->id_tenant ?>"><?php echo $row->nama_tenant ?></option>
                                         <?php
                                     } else{
                                         ?>
-                                        <option value="<?= $row->id_tenant ?>"><?= $row->nama_tenant ?></option>
+                                        <option value="<?php echo $row->id_tenant ?>"><?php echo $row->nama_tenant ?></option>
                                         <?php
                                     }
                                 }
@@ -151,7 +151,7 @@ if(isset($_SESSION['session'])) {
                         <td><label>Nominal</label></td>
                         <td>:</td>
                         <td>
-                            <input class="form-control" type="text" name="nominal" id="nominal" value="<?= $isi['nominal'] ?>">
+                            <input class="form-control" type="text" name="nominal" id="nominal" value="<?php echo $isi['nominal'] ?>">
                         </td>
                     </tr>
                     <tr>

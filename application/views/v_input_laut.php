@@ -39,7 +39,7 @@ if($this->session->userdata('role') == "perencanaan" || $this->session->userdata
                     document.getElementById("no_telp").value=data.no_telp;
                 }
             }
-            xmlhttp.open("GET","<?= base_url('main/cari_agent?id=')?>"+str,true);
+            xmlhttp.open("GET","<?php echo base_url('main/cari_agent?id=')?>"+str,true);
             xmlhttp.send();
         }
     </script>
@@ -124,7 +124,7 @@ if($this->session->userdata('role') == "perencanaan" || $this->session->userdata
                                 <select disabled name="pengguna" id="pengguna" class="form-control">
                                     <option></option>
                                     <?php foreach ($pengguna as $rowpengguna) { ?>
-                                        <option value="<?= $rowpengguna->id_tarif ?>"><?= $rowpengguna->tipe_pengguna_jasa ?></option>
+                                        <option value="<?php echo $rowpengguna->id_tarif ?>"><?php echo $rowpengguna->tipe_pengguna_jasa ?></option>
                                     <?php } ?>
                                 </select>
                             </td>
@@ -212,7 +212,7 @@ else{
     ?>
     <script>
         alert('Anda Tidak Memiliki Hak Akses Ke Halaman Ini. Silahkan Login Terlebih Dahulu');
-        window.location.replace('<?= $web?>');
+        window.location.replace('<?php echo $web?>');
     </script>
     <?php
 }

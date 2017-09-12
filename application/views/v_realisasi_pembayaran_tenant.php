@@ -54,7 +54,7 @@ if($this->session->userdata('role') == "keuangan" && $this->session->userdata('s
             document.getElementById("table").innerHTML= a;
         }
     }
-    xmlhttp.open("GET", "<?= base_url("main/tabel_tagihan_tenant")?>", true);
+    xmlhttp.open("GET", "<?php echo base_url("main/tabel_tagihan_tenant")?>", true);
     xmlhttp.send();
     //}
 
@@ -199,7 +199,7 @@ if($this->session->userdata('role') == "keuangan" && $this->session->userdata('s
                 {
                     $('#modal_menu').modal('hide');
                     alert('Realisasi Berhasil Disimpan');
-                    window.location.replace('<?= base_url('main/view?id=realisasi_pembayaran_tenant')?>');
+                    window.location.replace('<?php echo base_url('main/view?id=realisasi_pembayaran_tenant')?>');
                 }
                 else
                 {

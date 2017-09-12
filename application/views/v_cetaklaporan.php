@@ -4,12 +4,13 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
     <!DOCTYPE html>
     <html>
     <head>
-        <title><?=$title?></title>
+        <title><?php echo$title?></title>
         <style>
             table{
                 border-collapse: collapse;
                 width: 100%;
                 margin: 0 auto;
+                page-break-after:auto;
             }
             table th{
                 border:1px solid #000;
@@ -25,9 +26,10 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
         </style>
     </head>
     <body>
-    <h3 style="text-align: center"><?= $title?></h3>
+    <h3 style="text-align: center"><?php echo $title?></h3>
     <br><br>
     <table>
+        <thead>
         <tr>
             <th align="center" style="width: 2%">No</th>
             <th align="center" style="width: 20%">No Kwitansi</th>
@@ -39,26 +41,28 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
             <th align="center">Total Permintaan (Ton)</th>
             <th align="center">Total Pembayaran (Rp.)</th>
         </tr>
+        </thead>
+        <tbody>
         <?php
         $no=0;
         $total=0;
         $ton=0;
-        foreach($laporan as $rbarang) {
+        foreach($laporan as $row) {
                 $no++;
-                $format_tgl = date('d-m-Y', strtotime($rbarang->tgl_transaksi));
+                $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi));
 
-                if($rbarang->batal_kwitansi == 1){
+                if($row->batal_kwitansi == 1){
                     $total_pembayaran = '';
-                } else if ($rbarang->diskon != NULL || $rbarang->diskon != 0) {
-                    $rbarang->tarif -= $rbarang->tarif * $rbarang->diskon / 100;
-                    $total_pembayaran = $rbarang->tarif * $rbarang->total_permintaan;
+                } else if ($row->diskon != NULL || $row->diskon != 0) {
+                    $row->tarif -= $row->tarif * $row->diskon / 100;
+                    $total_pembayaran = $row->tarif * $row->total_permintaan;
                 } else {
-                    $total_pembayaran = $rbarang->tarif * $rbarang->total_permintaan;
+                    $total_pembayaran = $row->tarif * $row->total_permintaan;
                 }
 
-                if($rbarang->batal_kwitansi == 0){
+                if($row->batal_kwitansi == 0){
                     $total += $total_pembayaran;
-                    $ton += $rbarang->total_permintaan;
+                    $ton += $row->total_permintaan;
                 }
 
                 if ($total_pembayaran == '0')
@@ -68,22 +72,22 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
                 else
                     $total_pembayaran = number_format($total_pembayaran, 0, '', '.') . ',-';
 
-                if ($rbarang->tarif == '0')
+                if ($row->tarif == '0')
                     return '';
-                elseif ($rbarang->tarif < 100)
-                    $rbarang->tarif .= ',-';
+                elseif ($row->tarif < 100)
+                    $row->tarif .= ',-';
                 else
-                    $rbarang->tarif = number_format($rbarang->tarif, 0, '', '.') . ',-';
+                    $row->tarif = number_format($row->tarif, 0, '', '.') . ',-';
                 ?>
                 <tr>
                     <td align="center"><?php echo $no; ?></td>
-                    <td align="center"><?php echo $rbarang->no_kwitansi; ?></td>
-                    <td align="center"><?php echo $rbarang->nama_pengguna_jasa; ?></td>
-                    <td align="center"><?php echo $rbarang->alamat; ?></td>
-                    <td align="center"><?php echo $rbarang->no_telp; ?></td>
+                    <td align="center"><?php echo $row->no_kwitansi; ?></td>
+                    <td align="center"><?php echo $row->nama_pengguna_jasa; ?></td>
+                    <td align="center"><?php echo $row->alamat; ?></td>
+                    <td align="center"><?php echo $row->no_telp; ?></td>
                     <td align="center"><?php echo $format_tgl; ?></td>
-                    <td align="center"><?php echo $rbarang->tarif; ?></td>
-                    <td align="center"><?php echo $rbarang->total_permintaan; ?></td>
+                    <td align="center"><?php echo $row->tarif; ?></td>
+                    <td align="center"><?php echo $row->total_permintaan; ?></td>
                     <td align="center"><?php echo $total_pembayaran; ?></td>
                 </tr>
                 <?php
@@ -98,9 +102,10 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
 
         <tr>
             <td align="center"colspan="7"><b>Total</b></td>
-            <td align="center"><b><?= $ton?></b></td>
-            <td align="center"><b><?= $total?></b></td>
+            <td align="center"><b><?php echo $ton?></b></td>
+            <td align="center"><b><?php echo $total?></b></td>
         </tr>
+        </tbody>
     </table>
     </body>
     </html>
@@ -111,12 +116,13 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
     <!DOCTYPE html>
     <html>
     <head>
-        <title><?=$title?></title>
+        <title><?php echo$title?></title>
         <style>
             table{
                 border-collapse: collapse;
                 width: 100%;
                 margin: 0 auto;
+                page-break-after:auto;
             }
             table th{
                 border:1px solid #000;
@@ -132,9 +138,10 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
         </style>
     </head>
     <body>
-    <h3 style="text-align: center"><?= $title?></h3>
+    <h3 style="text-align: center"><?php echo $title?></h3>
     <br><br>
     <table>
+        <thead>
         <tr>
             <th align="center">No</th>
             <th align="center">ID VESSEL</th>
@@ -148,38 +155,81 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
             <th align="center">Realisasi Pengisian (Ton)</th>
             <th align="center">Total Pembayaran (Rp.)</th>
         </tr>
+        </thead>
+        <tbody>
         <?php
         $total = 0;
         $ton = 0;
         $no = 0;
         $ton_realiasi =0;
-        foreach($laporan as $rbarang) {
-            if ($rbarang->flowmeter_awal != NULL && $rbarang->flowmeter_akhir != NULL) {
+        foreach($laporan as $row) {
+            if ($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
                 $no++;
 
-                if($rbarang->flowmeter_akhir_2 != NULL && $rbarang->flowmeter_awal_2 != NULL){
-                    $realisasi = $rbarang->flowmeter_akhir - $rbarang->flowmeter_awal;
-                    $realisasi += $rbarang->flowmeter_akhir_2 - $rbarang->flowmeter_awal_2;
-                } else{
-                    $realisasi = $rbarang->flowmeter_akhir - $rbarang->flowmeter_awal;
+
+                if($row->flowmeter_akhir_4 != NULL && $row->flowmeter_awal_4 != NULL){
+                    $realisasi = $row->flowmeter_akhir_4 - $row->flowmeter_awal_4;
+                    
+                    if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
+                        $realisasi += $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
+
+                        if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                            $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                            $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                        } else{
+                            $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                        }
+                    }
+                    else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                        $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                        $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                     }
+                    else {
+                        $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                    }
+                }
+                else if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
+                    $realisasi = $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
+
+                    if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                        $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                        $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                    } else {
+                        $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                    }
+                }
+                else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                    $realisasi = $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                    $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                }
+                else{
+                    $realisasi = $row->flowmeter_akhir - $row->flowmeter_awal;
                 }
 
-                if ($rbarang->diskon != NULL || $rbarang->diskon != 0) {
-                    $rbarang->tarif -= $rbarang->tarif * $rbarang->diskon/100;
-                    $total_pembayaran =  $rbarang->tarif * $realisasi;
+                if ($row->diskon != NULL || $row->diskon != 0) {
+                    $row->tarif -= $row->tarif * $row->diskon/100;
+                    $total_pembayaran =  $row->tarif * $realisasi;
                 } else {
-                    $total_pembayaran = $rbarang->tarif * $realisasi;
+                    $total_pembayaran = $row->tarif * $realisasi;
+                }
+
+                if($total_pembayaran >= 250000 && $total_pembayaran <= 1000000){
+                    $total_pembayaran += 3000;
+                } else if($total_pembayaran > 1000000){
+                    $total_pembayaran += 6000;
+                } else{
+                    $total_pembayaran += 0;
                 }
 
                 $total += $total_pembayaran;
-                $ton += $rbarang->total_permintaan;
+                $ton += $row->total_permintaan;
                 $ton_realiasi += $realisasi;
-                $format_tgl = date('d-m-Y', strtotime($rbarang->tgl_transaksi));
+                $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi));
 
-                if ($rbarang->pengguna_jasa_id_tarif == 6) {
-                    $rbarang->pengguna_jasa_id_tarif = "Peti Kemas";
+                if ($row->pengguna_jasa_id_tarif == 6) {
+                    $row->pengguna_jasa_id_tarif = "Peti Kemas";
                 } else {
-                    $rbarang->pengguna_jasa_id_tarif = "Tongkang";
+                    $row->pengguna_jasa_id_tarif = "Tongkang";
                 }
 
                 if ($total_pembayaran == '0')
@@ -189,25 +239,25 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
                 else
                     $total_pembayaran = number_format($total_pembayaran, 0, '', '.') . ',-';
 
-                if ($rbarang->tarif == '0')
+                if ($row->tarif == '0')
                     return '';
-                elseif ($rbarang->tarif < 100)
-                    $rbarang->tarif .= ',-';
+                elseif ($row->tarif < 100)
+                    $row->tarif .= ',-';
                 else
-                    $rbarang->tarif = number_format($rbarang->tarif, 0, '', '.') . ',-';
+                    $row->tarif = number_format($row->tarif, 0, '', '.') . ',-';
                 ?>
                 <tr>
-                    <td align="center"><?= $no ?></td>
-                    <td align="center"><?= $rbarang->id_vessel ?></td>
-                    <td align="center"><?= $rbarang->nama_vessel ?></td>
-                    <td align="center"><?= $rbarang->voy_no ?></td>
-                    <td align="center"><?= $rbarang->pengguna_jasa_id_tarif ?></td>
-                    <td align="center"><?= $rbarang->nama_agent ?></td>
-                    <td align="center"><?= $format_tgl ?></td>
-                    <td align="center"><?= $rbarang->tarif ?></td>
-                    <td align="center"><?= $rbarang->total_permintaan ?></td>
-                    <td align="center"><?= $realisasi ?></td>
-                    <td align="center"><?= $total_pembayaran ?></td>
+                    <td align="center"><?php echo $no ?></td>
+                    <td align="center"><?php echo $row->id_vessel ?></td>
+                    <td align="center"><?php echo $row->nama_vessel ?></td>
+                    <td align="center"><?php echo $row->voy_no ?></td>
+                    <td align="center"><?php echo $row->pengguna_jasa_id_tarif ?></td>
+                    <td align="center"><?php echo $row->nama_agent ?></td>
+                    <td align="center"><?php echo $format_tgl ?></td>
+                    <td align="center"><?php echo $row->tarif ?></td>
+                    <td align="center"><?php echo $row->total_permintaan ?></td>
+                    <td align="center"><?php echo $realisasi ?></td>
+                    <td align="center"><?php echo $total_pembayaran ?></td>
                 </tr>
                 <?php
                 }
@@ -222,10 +272,11 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
 
         <tr>
             <td align="center"colspan="8"><b>Total</b></td>
-            <td align="center"><b><?= $ton?></b></td>
-            <td align="center"><b><?= $ton_realiasi?></b></td>
-            <td align="center"><b><?= $total?></b></td>
+            <td align="center"><b><?php echo $ton?></b></td>
+            <td align="center"><b><?php echo $ton_realiasi?></b></td>
+            <td align="center"><b><?php echo $total?></b></td>
         </tr>
+        </tbody>
     </table>
     </body>
     </html>
@@ -236,12 +287,13 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
     <!DOCTYPE html>
 <html>
 <head>
-    <title><?= $title ?></title>
+    <title><?php echo $title ?></title>
     <style>
         table {
             border-collapse: collapse;
             width: 100%;
             margin: 0 auto;
+            page-break-after:auto;
         }
 
         table th {
@@ -259,7 +311,7 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
     </style>
 </head>
 <body>
-<h3 style="text-align: center"><?= $title ?></h3>
+<h3 style="text-align: center"><?php echo $title ?></h3>
 <br><br>
 <table>
     <thead>
@@ -348,15 +400,15 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
                 $row->tarif = number_format($row->tarif, 0, '', '.') . ',-';
             ?>
             <tr>
-                <td align="center"><?= $no ?></td>
-                <td align="center"><?= $row->id_flowmeter ?></td>
-                <td align="center"><?= $row->nama_tenant ?></td>
-                <td align="center"><?= $row->tarif ?></td>
-                <td align="center"><?= $row->diskon ?></td>
-                <td align="center"><?= $ttl_awal ?></td>
-                <td align="center"><?= $ttl_akhir ?></td>
-                <td align="center"><?= $ton ?></td>
-                <td align="center"><?= $pembayaran ?></td>
+                <td align="center"><?php echo $no ?></td>
+                <td align="center"><?php echo $row->id_flowmeter ?></td>
+                <td align="center"><?php echo $row->nama_tenant ?></td>
+                <td align="center"><?php echo $row->tarif ?></td>
+                <td align="center"><?php echo $row->diskon ?></td>
+                <td align="center"><?php echo $ttl_awal ?></td>
+                <td align="center"><?php echo $ttl_akhir ?></td>
+                <td align="center"><?php echo $ton ?></td>
+                <td align="center"><?php echo $pembayaran ?></td>
             </tr>
             <?php
         }
@@ -371,8 +423,8 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
     ?>
     <tr>
         <td align="center" colspan="7"><b>Total</b></td>
-        <td align="center"><b><?= $ton_total?></b></td>
-        <td align="center"><b><?= $total?></b></td>
+        <td align="center"><b><?php echo number_format($ton_total,2)?></b></td>
+        <td align="center"><b><?php echo $total?></b></td>
     </tr>
     </tbody>
 </table>
@@ -385,12 +437,13 @@ else if($this->session->userdata('role') == "loket" && $this->session->userdata(
 <!DOCTYPE html>
 <html>
 <head>
-    <title><?= $title ?></title>
+    <title><?php echo $title ?></title>
     <style>
         table {
             border-collapse: collapse;
             width: 100%;
             margin: 0 auto;
+            page-break-after:auto;
         }
 
         table th {
@@ -408,9 +461,10 @@ else if($this->session->userdata('role') == "loket" && $this->session->userdata(
     </style>
 </head>
 <body>
-<h3 style="text-align: center"><?= $title ?></h3>
+<h3 style="text-align: center"><?php echo $title ?></h3>
 <br><br>
 <table>
+    <thead>
     <tr>
         <th align="center">No</th>
         <th align="center">Nama Pengguna Jasa</th>
@@ -423,26 +477,28 @@ else if($this->session->userdata('role') == "loket" && $this->session->userdata(
         <th align="center">Total Permintaan (Ton)</th>
         <th align="center">Total Pembayaran (Rp.)</th>
     </tr>
+    </thead>
+    <tbody>
     <?php
     $no = 0;
     $total = 0;
     $ton = 0;
-    foreach ($laporan as $rbarang) {
+    foreach ($laporan as $row) {
             $no++;
             $format_jam_awal = "";
             $format_jam_akhir = "";
 
-            if($rbarang->batal_kwitansi == 1){
+            if($row->batal_kwitansi == 1){
                 $total_pembayaran = '';
-            } else if ($rbarang->diskon != NULL || $rbarang->diskon != 0) {
-                $rbarang->tarif -= $rbarang->tarif * $rbarang->diskon / 100;
-                $total_pembayaran = $rbarang->tarif * $rbarang->total_permintaan;
+            } else if ($row->diskon != NULL || $row->diskon != 0) {
+                $row->tarif -= $row->tarif * $row->diskon / 100;
+                $total_pembayaran = $row->tarif * $row->total_permintaan;
             } else {
-                $total_pembayaran = $rbarang->tarif * $rbarang->total_permintaan;
+                $total_pembayaran = $row->tarif * $row->total_permintaan;
             }
 
-            $waktu_awal = mktime(date("H", strtotime($rbarang->waktu_mulai_pengantaran)), date("i", strtotime($rbarang->waktu_mulai_pengantaran)), date("s", strtotime($rbarang->waktu_mulai_pengantaran)), date("m", strtotime($rbarang->waktu_mulai_pengantaran)), date("d", strtotime($rbarang->waktu_mulai_pengantaran)), date("y", strtotime($rbarang->waktu_mulai_pengantaran)));
-            $waktu_akhir = mktime(date("H", strtotime($rbarang->waktu_selesai_pengantaran)), date("i", strtotime($rbarang->waktu_selesai_pengantaran)), date("s", strtotime($rbarang->waktu_selesai_pengantaran)), date("m", strtotime($rbarang->waktu_selesai_pengantaran)), date("d", strtotime($rbarang->waktu_selesai_pengantaran)), date("y", strtotime($rbarang->waktu_selesai_pengantaran)));
+            $waktu_awal = mktime(date("H", strtotime($row->waktu_mulai_pengantaran)), date("i", strtotime($row->waktu_mulai_pengantaran)), date("s", strtotime($row->waktu_mulai_pengantaran)), date("m", strtotime($row->waktu_mulai_pengantaran)), date("d", strtotime($row->waktu_mulai_pengantaran)), date("y", strtotime($row->waktu_mulai_pengantaran)));
+            $waktu_akhir = mktime(date("H", strtotime($row->waktu_selesai_pengantaran)), date("i", strtotime($row->waktu_selesai_pengantaran)), date("s", strtotime($row->waktu_selesai_pengantaran)), date("m", strtotime($row->waktu_selesai_pengantaran)), date("d", strtotime($row->waktu_selesai_pengantaran)), date("y", strtotime($row->waktu_selesai_pengantaran)));
             $lama_pengantaran = round((($waktu_akhir - $waktu_awal) % 86400) / 3600, 2);
 
             if($lama_pengantaran > 1){
@@ -457,24 +513,24 @@ else if($this->session->userdata('role') == "loket" && $this->session->userdata(
                 }
             }
 
-            if($rbarang->batal_kwitansi == 0){
+            if($row->batal_kwitansi == 0){
                 $total += $total_pembayaran;
-                $ton += $rbarang->total_permintaan;
+                $ton += $row->total_permintaan;
             }
 
-            $format_tgl = date('d-m-Y H:i:s', strtotime($rbarang->tgl_transaksi));
-            $format_tgl_pengantaran = date('d-m-Y H:i:s', strtotime($rbarang->tgl_perm_pengantaran));
+            $format_tgl = date('d-m-Y H:i:s', strtotime($row->tgl_transaksi));
+            $format_tgl_pengantaran = date('d-m-Y H:i:s', strtotime($row->tgl_perm_pengantaran));
 
-            if($rbarang->waktu_mulai_pengantaran == NULL){
+            if($row->waktu_mulai_pengantaran == NULL){
                 $format_jam_awal = "";
             } else {
-                $format_jam_awal = date("d-m-y H:i:s", strtotime($rbarang->waktu_mulai_pengantaran));
+                $format_jam_awal = date("d-m-y H:i:s", strtotime($row->waktu_mulai_pengantaran));
             }
 
-            if($rbarang->waktu_selesai_pengantaran == NULL){
+            if($row->waktu_selesai_pengantaran == NULL){
                 $format_jam_akhir = "";
             } else{
-                $format_jam_akhir = date("d-m-y H:i:s", strtotime($rbarang->waktu_selesai_pengantaran));
+                $format_jam_akhir = date("d-m-y H:i:s", strtotime($row->waktu_selesai_pengantaran));
             }
 
             if ($total_pembayaran == '0')
@@ -484,23 +540,23 @@ else if($this->session->userdata('role') == "loket" && $this->session->userdata(
             else
                 $total_pembayaran = number_format($total_pembayaran, 0, '', '.') . ',-';
 
-            if ($rbarang->tarif == '0')
+            if ($row->tarif == '0')
                 return '';
-            elseif ($rbarang->tarif < 100)
-                $rbarang->tarif .= ',-';
+            elseif ($row->tarif < 100)
+                $row->tarif .= ',-';
             else
-                $rbarang->tarif = number_format($rbarang->tarif, 0, '', '.') . ',-';
+                $row->tarif = number_format($row->tarif, 0, '', '.') . ',-';
         ?>
             <tr>
                 <td align="center"><?php echo $no; ?></td>
-                <td align="center"><?php echo $rbarang->nama_pengguna_jasa; ?></td>
+                <td align="center"><?php echo $row->nama_pengguna_jasa; ?></td>
                 <td align="center"><?php echo $format_tgl; ?></td>
                 <td align="center"><?php echo $format_tgl_pengantaran; ?></td>
                 <td align="center"><?php echo $format_jam_awal; ?></td>
                 <td align="center"><?php echo $format_jam_akhir; ?></td>
                 <td align="center"><?php echo $lama_pengantaran; ?></td>
-                <td align="center"><?php echo $rbarang->tarif; ?></td>
-                <td align="center"><?php echo $rbarang->total_permintaan; ?></td>
+                <td align="center"><?php echo $row->tarif; ?></td>
+                <td align="center"><?php echo $row->total_permintaan; ?></td>
                 <td align="center"><?php echo $total_pembayaran; ?></td>
             </tr>
             <?php
@@ -516,9 +572,10 @@ else if($this->session->userdata('role') == "loket" && $this->session->userdata(
 
         <tr>
             <td align="center"colspan="8"><b>Total</b></td>
-            <td align="center"><b><?= $ton?></b></td>
-            <td align="center"><b><?= $total?></b></td>
+            <td align="center"><b><?php echo $ton?></b></td>
+            <td align="center"><b><?php echo $total?></b></td>
         </tr>
+    </tbody>
     </table>
     </body>
     </html>
@@ -529,12 +586,13 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
     <!DOCTYPE html>
     <html>
     <head>
-        <title><?= $title ?></title>
+        <title><?php echo $title ?></title>
         <style>
             table {
                 border-collapse: collapse;
                 width: 100%;
                 margin: 0 auto;
+                page-break-after:auto;
             }
 
             table th {
@@ -552,9 +610,10 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
         </style>
     </head>
     <body>
-    <h3 style="text-align: center"><?= $title ?></h3>
+    <h3 style="text-align: center"><?php echo $title ?></h3>
     <br><br>
     <table>
+        <thead>
         <tr>
             <th align="center">No</th>
             <th align="center">No Kwitansi</th>
@@ -566,24 +625,26 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
             <th align="center">Total Permintaan (Ton)</th>
             <th align="center">Total Pembayaran (Rp.)</th>
         </tr>
+        </thead>
+        <tbody>
         <?php
         $no = 0;
         $total = 0;
         $ton = 0;
-        foreach ($laporan as $rbarang) {
-            if ($rbarang->status_pembayaran == 1 && $rbarang->status_invoice == 0) {
+        foreach ($laporan as $row) {
+            if ($row->status_pembayaran == 1 && $row->status_invoice == 0) {
                 $no++;
 
-                if ($rbarang->diskon != NULL ||$rbarang->diskon != 0) {
-                    $rbarang->tarif -= $rbarang->tarif * $rbarang->diskon / 100;
-                    $total_pembayaran = $rbarang->tarif * $rbarang->total_permintaan;
+                if ($row->diskon != NULL ||$row->diskon != 0) {
+                    $row->tarif -= $row->tarif * $row->diskon / 100;
+                    $total_pembayaran = $row->tarif * $row->total_permintaan;
                 } else {
-                    $total_pembayaran = $rbarang->tarif * $rbarang->total_permintaan;
+                    $total_pembayaran = $row->tarif * $row->total_permintaan;
                 }
 
                 $total += $total_pembayaran;
-                $ton += $rbarang->total_permintaan;
-                $format_tgl = date('d-m-Y H:i:s', strtotime($rbarang->tgl_transaksi));
+                $ton += $row->total_permintaan;
+                $format_tgl = date('d-m-Y H:i:s', strtotime($row->tgl_transaksi));
 
                 if ($total_pembayaran == '0')
                     return '';
@@ -592,22 +653,22 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
                 else
                     $total_pembayaran = number_format($total_pembayaran, 0, '', '.') . ',-';
 
-                if ($rbarang->tarif == '0')
+                if ($row->tarif == '0')
                     return '';
-                elseif ($rbarang->tarif < 100)
-                    $rbarang->tarif .= ',-';
+                elseif ($row->tarif < 100)
+                    $row->tarif .= ',-';
                 else
-                    $rbarang->tarif = number_format($rbarang->tarif, 0, '', '.') . ',-';
+                    $row->tarif = number_format($row->tarif, 0, '', '.') . ',-';
                 ?>
                 <tr>
                     <td align="center"><?php echo $no; ?></td>
-                    <td align="center"><?php echo $rbarang->no_kwitansi; ?></td>
-                    <td align="center"><?php echo $rbarang->nama_pengguna_jasa; ?></td>
-                    <td align="center"><?php echo $rbarang->alamat; ?></td>
-                    <td align="center"><?php echo $rbarang->no_telp; ?></td>
+                    <td align="center"><?php echo $row->no_kwitansi; ?></td>
+                    <td align="center"><?php echo $row->nama_pengguna_jasa; ?></td>
+                    <td align="center"><?php echo $row->alamat; ?></td>
+                    <td align="center"><?php echo $row->no_telp; ?></td>
                     <td align="center"><?php echo $format_tgl; ?></td>
-                    <td align="center"><?php echo $rbarang->tarif; ?></td>
-                    <td align="center"><?php echo $rbarang->total_permintaan; ?></td>
+                    <td align="center"><?php echo $row->tarif; ?></td>
+                    <td align="center"><?php echo $row->total_permintaan; ?></td>
                     <td align="center"><?php echo $total_pembayaran; ?></td>
                 </tr>
                 <?php
@@ -623,9 +684,10 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
 
         <tr>
             <td align="center"colspan="7"><b>Total</b></td>
-            <td align="center"><b><?= $ton?></b></td>
-            <td align="center"><b><?= $total?></b></td>
+            <td align="center"><b><?php echo $ton?></b></td>
+            <td align="center"><b><?php echo $total?></b></td>
         </tr>
+        </tbody>
     </table>
     </body>
     </html>
@@ -636,12 +698,13 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
     <!DOCTYPE html>
     <html>
     <head>
-        <title><?=$title?></title>
+        <title><?php echo$title?></title>
         <style>
             table{
                 border-collapse: collapse;
                 width: 100%;
                 margin: 0 auto;
+                page-break-after:auto;
             }
             table th{
                 border:1px solid #000;
@@ -657,9 +720,10 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
         </style>
     </head>
     <body>
-    <h3 style="text-align: center"><?= $title?></h3>
+    <h3 style="text-align: center"><?php echo $title?></h3>
     <br><br>
     <table>
+        <thead>
         <tr>
             <th align="center">No</th>
             <th align="center">No Nota</th>
@@ -675,38 +739,81 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
             <th align="center">Realisasi Pengisian (Ton)</th>
             <th align="center">Total Pembayaran (Rp.)</th>
         </tr>
+        </thead>
+        <tbody>
         <?php
         $total = 0;
         $ton = 0;
         $no = 0;
         $ton_realiasi =0;
-        foreach($laporan as $rbarang) {
-            if ($rbarang->status_invoice != 1) {
+        foreach($laporan as $row) {
+            if ($row->status_invoice != 1) {
                 $no++;
 
-                if($rbarang->flowmeter_akhir_2 != NULL && $rbarang->flowmeter_awal_2 != NULL){
-                    $realisasi = $rbarang->flowmeter_akhir - $rbarang->flowmeter_awal;
-                    $realisasi += $rbarang->flowmeter_akhir_2 - $rbarang->flowmeter_awal_2;
-                } else{
-                    $realisasi = $rbarang->flowmeter_akhir - $rbarang->flowmeter_awal;
+
+                if($row->flowmeter_akhir_4 != NULL && $row->flowmeter_awal_4 != NULL){
+                    $realisasi = $row->flowmeter_akhir_4 - $row->flowmeter_awal_4;
+
+                    if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
+                        $realisasi += $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
+
+                        if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                            $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                            $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                        } else{
+                            $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                        }
+                    }
+                    else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                        $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                        $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                    }
+                    else {
+                        $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                    }
+                }
+                else if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
+                    $realisasi = $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
+
+                    if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                        $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                        $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                    } else {
+                        $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                    }
+                }
+                else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                    $realisasi = $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                    $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                }
+                else{
+                    $realisasi = $row->flowmeter_akhir - $row->flowmeter_awal;
                 }
 
-                if ($rbarang->diskon != NULL || $rbarang->diskon != 0) {
-                    $rbarang->tarif -= $rbarang->tarif * $rbarang->diskon/100;
-                    $total_pembayaran =  $rbarang->tarif * $realisasi;
+                if ($row->diskon != NULL || $row->diskon != 0) {
+                    $row->tarif -= $row->tarif * $row->diskon/100;
+                    $total_pembayaran =  $row->tarif * $realisasi;
                 } else {
-                    $total_pembayaran = $rbarang->tarif * $realisasi;
+                    $total_pembayaran = $row->tarif * $realisasi;
+                }
+
+                if($total_pembayaran >= 250000 && $total_pembayaran <= 1000000){
+                    $total_pembayaran += 3000;
+                } else if($total_pembayaran > 1000000){
+                    $total_pembayaran += 6000;
+                } else{
+                    $total_pembayaran += 0;
                 }
 
                 $total += $total_pembayaran;
-                $ton += $rbarang->total_permintaan;
+                $ton += $row->total_permintaan;
                 $ton_realiasi += $realisasi;
-                $format_tgl = date('d-m-Y', strtotime($rbarang->tgl_transaksi));
+                $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi));
 
-                if ($rbarang->pengguna_jasa_id_tarif == 6) {
-                    $rbarang->pengguna_jasa_id_tarif = "Peti Kemas";
+                if ($row->pengguna_jasa_id_tarif == 6) {
+                    $row->pengguna_jasa_id_tarif = "Peti Kemas";
                 } else {
-                    $rbarang->pengguna_jasa_id_tarif = "Tongkang";
+                    $row->pengguna_jasa_id_tarif = "Tongkang";
                 }
 
                 if ($total_pembayaran == '0')
@@ -716,27 +823,27 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
                 else
                     $total_pembayaran = number_format($total_pembayaran, 0, '', '.') . ',-';
 
-                if ($rbarang->tarif == '0')
+                if ($row->tarif == '0')
                     return '';
-                elseif ($rbarang->tarif < 100)
-                    $rbarang->tarif .= ',-';
+                elseif ($row->tarif < 100)
+                    $row->tarif .= ',-';
                 else
-                    $rbarang->tarif = number_format($rbarang->tarif, 0, '', '.') . ',-';
+                    $row->tarif = number_format($row->tarif, 0, '', '.') . ',-';
                 ?>
                 <tr>
-                    <td align="center"><?= $no ?></td>
-                    <td align="center"><?= $rbarang->no_nota ?></td>
-                    <td align="center"><?= $rbarang->no_faktur ?></td>
-                    <td align="center"><?= $rbarang->id_vessel ?></td>
-                    <td align="center"><?= $rbarang->nama_vessel ?></td>
-                    <td align="center"><?= $rbarang->voy_no ?></td>
-                    <td align="center"><?= $rbarang->pengguna_jasa_id_tarif ?></td>
-                    <td align="center"><?= $rbarang->nama_agent ?></td>
-                    <td align="center"><?= $format_tgl ?></td>
-                    <td align="center"><?= $rbarang->tarif ?></td>
-                    <td align="center"><?= $rbarang->total_permintaan ?></td>
-                    <td align="center"><?= $realisasi ?></td>
-                    <td align="center"><?= $total_pembayaran ?></td>
+                    <td align="center"><?php echo $no ?></td>
+                    <td align="center"><?php echo $row->no_nota ?></td>
+                    <td align="center"><?php echo $row->no_faktur ?></td>
+                    <td align="center"><?php echo $row->id_vessel ?></td>
+                    <td align="center"><?php echo $row->nama_vessel ?></td>
+                    <td align="center"><?php echo $row->voy_no ?></td>
+                    <td align="center"><?php echo $row->pengguna_jasa_id_tarif ?></td>
+                    <td align="center"><?php echo $row->nama_agent ?></td>
+                    <td align="center"><?php echo $format_tgl ?></td>
+                    <td align="center"><?php echo $row->tarif ?></td>
+                    <td align="center"><?php echo $row->total_permintaan ?></td>
+                    <td align="center"><?php echo $realisasi ?></td>
+                    <td align="center"><?php echo $total_pembayaran ?></td>
                 </tr>
                 <?php
             }
@@ -751,10 +858,11 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
 
         <tr>
             <td align="center"colspan="10"><b>Total</b></td>
-            <td align="center"><b><?= $ton?></b></td>
-            <td align="center"><b><?= $ton_realiasi?></b></td>
-            <td align="center"><b><?= $total?></b></td>
+            <td align="center"><b><?php echo $ton?></b></td>
+            <td align="center"><b><?php echo $ton_realiasi?></b></td>
+            <td align="center"><b><?php echo $total?></b></td>
         </tr>
+        </tbody>
     </table>
     </body>
     </html>
@@ -765,12 +873,13 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
     <!DOCTYPE html>
     <html>
     <head>
-        <title><?= $title ?></title>
+        <title><?php echo $title ?></title>
         <style>
             table {
                 border-collapse: collapse;
                 width: 100%;
                 margin: 0 auto;
+                page-break-after:auto;
             }
 
             table th {
@@ -788,8 +897,8 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
         </style>
     </head>
     <body>
-    <h3 style="text-align: center"><?= $title ?></h3>
-    <br><br>
+        <h3 style="text-align: center"><?php echo $title ?></h3>
+        <br><br>
     <table>
         <thead>
         <tr>
@@ -841,8 +950,8 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
                 }
 
                 $ton_koma = $ttl_akhir - $ttl_awal;
+                $ton_total += $ton_koma;
                 $ton = number_format($ton_koma,2);
-                $ton_total += $ton;
 
                 if ($data->id_ref_tenant == NULL) {
                     if ($row->diskon != NULL) {
@@ -877,15 +986,15 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
                     $row->tarif = number_format($row->tarif, 0, '', '.') . ',-';
                 ?>
                 <tr>
-                    <td align="center"><?= $no ?></td>
-                    <td align="center"><?= $row->no_invoice ?></td>
-                    <td align="center"><?= $row->no_nota ?></td>
-                    <td align="center"><?= $row->no_faktur ?></td>
-                    <td align="center"><?= $row->nama_tenant ?></td>
-                    <td align="center"><?= $row->lokasi ?></td>
-                    <td align="center"><?= $row->no_telp ?></td>
-                    <td align="center"><?= $ton ?></td>
-                    <td align="center"><?= $pembayaran ?></td>
+                    <td align="center"><?php echo $no ?></td>
+                    <td align="center"><?php echo $row->no_invoice ?></td>
+                    <td align="center"><?php echo $row->no_nota ?></td>
+                    <td align="center"><?php echo $row->no_faktur ?></td>
+                    <td align="center"><?php echo $row->nama_tenant ?></td>
+                    <td align="center"><?php echo $row->lokasi ?></td>
+                    <td align="center"><?php echo $row->no_telp ?></td>
+                    <td align="center"><?php echo $ton ?></td>
+                    <td align="center"><?php echo $pembayaran ?></td>
                 </tr>
                 <?php
             }
@@ -900,8 +1009,8 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
         ?>
         <tr>
             <td align="center" colspan="7"><b>Total</b></td>
-            <td align="center"><b><?= $ton_total?></b></td>
-            <td align="center"><b><?= $total?></b></td>
+            <td align="center"><b><?php echo number_format($ton_total,2)?></b></td>
+            <td align="center"><b><?php echo $total?></b></td>
         </tr>
         </tbody>
     </table>
@@ -914,12 +1023,13 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
     <!DOCTYPE html>
     <html>
     <head>
-        <title><?=$title?></title>
+        <title><?php echo$title?></title>
         <style>
             table{
                 border-collapse: collapse;
                 width: 100%;
                 margin: 0 auto;
+                page-break-after:auto;
             }
             table th{
                 border:1px solid #000;
@@ -935,9 +1045,10 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
         </style>
     </head>
     <body>
-    <h3 style="text-align: center"><?= $title?></h3>
+    <h3 style="text-align: center"><?php echo $title?></h3>
     <br><br>
     <table>
+        <thead>
         <tr>
             <th align="center">No</th>
             <th align="center">Nama Pengguna Jasa</th>
@@ -949,26 +1060,28 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
             <th align="center">Total Permintaan (Ton)</th>
             <th align="center">Total Pembayaran (Rp.)</th>
         </tr>
+        </thead>
+        <tbody>
         <?php
         $no=0;
         $total=0;
         $ton=0;
-        foreach($laporan as $rbarang) {
+        foreach($laporan as $row) {
             $no++;
             $format_jam_awal = "";
             $format_jam_akhir = "";
 
-            if($rbarang->batal_kwitansi == 1){
+            if($row->batal_kwitansi == 1){
                 $total_pembayaran = '';
-            } else if ($rbarang->diskon != NULL || $rbarang->diskon != 0) {
-                $rbarang->tarif -= $rbarang->tarif * $rbarang->diskon / 100;
-                $total_pembayaran = $rbarang->tarif * $rbarang->total_permintaan;
+            } else if ($row->diskon != NULL || $row->diskon != 0) {
+                $row->tarif -= $row->tarif * $row->diskon / 100;
+                $total_pembayaran = $row->tarif * $row->total_permintaan;
             } else {
-                $total_pembayaran = $rbarang->tarif * $rbarang->total_permintaan;
+                $total_pembayaran = $row->tarif * $row->total_permintaan;
             }
 
-            $waktu_awal = mktime(date("H", strtotime($rbarang->waktu_mulai_pengantaran)), date("i", strtotime($rbarang->waktu_mulai_pengantaran)), date("s", strtotime($rbarang->waktu_mulai_pengantaran)), date("m", strtotime($rbarang->waktu_mulai_pengantaran)), date("d", strtotime($rbarang->waktu_mulai_pengantaran)), date("y", strtotime($rbarang->waktu_mulai_pengantaran)));
-            $waktu_akhir = mktime(date("H", strtotime($rbarang->waktu_selesai_pengantaran)), date("i", strtotime($rbarang->waktu_selesai_pengantaran)), date("s", strtotime($rbarang->waktu_selesai_pengantaran)), date("m", strtotime($rbarang->waktu_selesai_pengantaran)), date("d", strtotime($rbarang->waktu_selesai_pengantaran)), date("y", strtotime($rbarang->waktu_selesai_pengantaran)));
+            $waktu_awal = mktime(date("H", strtotime($row->waktu_mulai_pengantaran)), date("i", strtotime($row->waktu_mulai_pengantaran)), date("s", strtotime($row->waktu_mulai_pengantaran)), date("m", strtotime($row->waktu_mulai_pengantaran)), date("d", strtotime($row->waktu_mulai_pengantaran)), date("y", strtotime($row->waktu_mulai_pengantaran)));
+            $waktu_akhir = mktime(date("H", strtotime($row->waktu_selesai_pengantaran)), date("i", strtotime($row->waktu_selesai_pengantaran)), date("s", strtotime($row->waktu_selesai_pengantaran)), date("m", strtotime($row->waktu_selesai_pengantaran)), date("d", strtotime($row->waktu_selesai_pengantaran)), date("y", strtotime($row->waktu_selesai_pengantaran)));
             $lama_pengantaran = round((($waktu_akhir - $waktu_awal) % 86400) / 3600, 2);
 
             if($lama_pengantaran > 1){
@@ -983,24 +1096,24 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
                 }
             }
 
-            if($rbarang->batal_kwitansi == 0){
+            if($row->batal_kwitansi == 0){
                 $total += $total_pembayaran;
-                $ton += $rbarang->total_permintaan;
+                $ton += $row->total_permintaan;
             }
 
-            $format_tgl = date('d-m-Y H:i:s', strtotime($rbarang->tgl_transaksi));
-            $format_tgl_pengantaran = date('d-m-Y H:i:s', strtotime($rbarang->tgl_perm_pengantaran));
+            $format_tgl = date('d-m-Y H:i:s', strtotime($row->tgl_transaksi));
+            $format_tgl_pengantaran = date('d-m-Y H:i:s', strtotime($row->tgl_perm_pengantaran));
 
-            if($rbarang->waktu_mulai_pengantaran == NULL){
+            if($row->waktu_mulai_pengantaran == NULL){
                 $format_jam_awal = "";
             } else {
-                $format_jam_awal = date("d-m-y H:i:s", strtotime($rbarang->waktu_mulai_pengantaran));
+                $format_jam_awal = date("d-m-y H:i:s", strtotime($row->waktu_mulai_pengantaran));
             }
 
-            if($rbarang->waktu_selesai_pengantaran == NULL){
+            if($row->waktu_selesai_pengantaran == NULL){
                 $format_jam_akhir = "";
             } else{
-                $format_jam_akhir = date("d-m-y H:i:s", strtotime($rbarang->waktu_selesai_pengantaran));
+                $format_jam_akhir = date("d-m-y H:i:s", strtotime($row->waktu_selesai_pengantaran));
             }
 
             if ($total_pembayaran == '0')
@@ -1010,22 +1123,22 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
             else
                 $total_pembayaran = number_format($total_pembayaran, 0, '', '.') . ',-';
 
-            if ($rbarang->tarif == '0')
+            if ($row->tarif == '0')
                 return '';
-            elseif ($rbarang->tarif < 100)
-                $rbarang->tarif .= ',-';
+            elseif ($row->tarif < 100)
+                $row->tarif .= ',-';
             else
-                $rbarang->tarif = number_format($rbarang->tarif, 0, '', '.') . ',-';
+                $row->tarif = number_format($row->tarif, 0, '', '.') . ',-';
                 ?>
                 <tr>
                     <td align="center"><?php echo $no; ?></td>
-                    <td align="center"><?php echo $rbarang->nama_pengguna_jasa; ?></td>
+                    <td align="center"><?php echo $row->nama_pengguna_jasa; ?></td>
                     <td align="center"><?php echo $format_tgl; ?></td>
                     <td align="center"><?php echo $format_tgl_pengantaran; ?></td>
                     <td align="center"><?php echo $format_jam_awal; ?></td>
                     <td align="center"><?php echo $format_jam_akhir; ?></td>
                     <td align="center"><?php echo $lama_pengantaran; ?></td>
-                    <td align="center"><?php echo $rbarang->total_permintaan; ?></td>
+                    <td align="center"><?php echo $row->total_permintaan; ?></td>
                     <td align="center"><?php echo $total_pembayaran; ?></td>
                 </tr>
                 <?php
@@ -1041,9 +1154,10 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
 
         <tr>
             <td align="center"colspan="7"><b>Total</b></td>
-            <td align="center"><b><?= $ton?></b></td>
-            <td align="center"><b><?= $total?></b></td>
+            <td align="center"><b><?php echo $ton?></b></td>
+            <td align="center"><b><?php echo $total?></b></td>
         </tr>
+        </tbody>
     </table>
     </body>
     </html>
@@ -1054,12 +1168,13 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
     <!DOCTYPE html>
     <html>
     <head>
-        <title><?=$title?></title>
+        <title><?php echo$title?></title>
         <style>
             table{
                 border-collapse: collapse;
                 width: 100%;
                 margin: 0 auto;
+                page-break-after:auto;
             }
             table th{
                 border:1px solid #000;
@@ -1075,9 +1190,10 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
         </style>
     </head>
     <body>
-    <h3 style="text-align: center"><?= $title?></h3>
+    <h3 style="text-align: center"><?php echo $title?></h3>
     <br><br>
     <table>
+        <thead>
         <tr>
             <th align="center">No</th>
             <th align="center">ID LCT</th>
@@ -1090,39 +1206,81 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
             <th align="center">Realisasi Pengisian (Ton)</th>
             <th align="center">Total Pembayaran (Rp.)</th>
         </tr>
+        </thead>
+        <tbody>
         <?php
         $total = 0;
         $ton = 0;
         $no = 0;
         $ton_realiasi =0;
         if($laporan != NULL){
-            foreach($laporan as $rbarang) {
-                if ($rbarang->flowmeter_awal != NULL && $rbarang->flowmeter_akhir != NULL) {
+            foreach($laporan as $row) {
+                if ($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
                     $no++;
 
-                    if($rbarang->flowmeter_akhir_2 != NULL && $rbarang->flowmeter_awal_2 != NULL){
-                        $realisasi = $rbarang->flowmeter_akhir - $rbarang->flowmeter_awal;
-                        $realisasi += $rbarang->flowmeter_akhir_2 - $rbarang->flowmeter_awal_2;
-                    } else{
-                        $realisasi = $rbarang->flowmeter_akhir - $rbarang->flowmeter_awal;
+                    if($row->flowmeter_akhir_4 != NULL && $row->flowmeter_awal_4 != NULL){
+                        $realisasi = $row->flowmeter_akhir_4 - $row->flowmeter_awal_4;
+
+                        if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
+                            $realisasi += $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
+
+                            if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                                $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                                $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                            } else{
+                                $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                            }
+                        }
+                        else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                            $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                            $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                        }
+                        else {
+                            $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                        }
+                    }
+                    else if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
+                        $realisasi = $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
+
+                        if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                            $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                            $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                        } else {
+                            $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                        }
+                    }
+                    else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                        $realisasi = $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                        $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                    }
+                    else{
+                        $realisasi = $row->flowmeter_akhir - $row->flowmeter_awal;
                     }
 
-                    if ($rbarang->diskon != NULL || $rbarang->diskon != 0) {
-                        $rbarang->tarif -= $rbarang->tarif * $rbarang->diskon/100;
-                        $total_pembayaran =  $rbarang->tarif * $realisasi;
+                    if ($row->diskon != NULL || $row->diskon != 0) {
+                        $row->tarif -= $row->tarif * $row->diskon/100;
+                        $total_pembayaran =  $row->tarif * $realisasi;
                     } else {
-                        $total_pembayaran = $rbarang->tarif * $realisasi;
+                        $total_pembayaran = $row->tarif * $realisasi;
+                    }
+
+                    if($total_pembayaran >= 250000 && $total_pembayaran <= 1000000){
+                        $total_pembayaran += 3000;
+                    } else if($total_pembayaran > 1000000){
+                        $total_pembayaran += 6000;
+                    } else{
+                        $total_pembayaran += 0;
                     }
 
                     $total += $total_pembayaran;
-                    $ton += $rbarang->total_permintaan;
+                    $ton += $row->total_permintaan;
                     $ton_realiasi += $realisasi;
-                    $format_tgl = date('d-m-Y', strtotime($rbarang->tgl_transaksi));
+                    $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi));
 
-                    if ($rbarang->pengguna_jasa_id_tarif == 6) {
-                        $rbarang->pengguna_jasa_id_tarif = "Peti Kemas";
+                    if ($row->pengguna_jasa_id_tarif == 6) {
+                        $row->pengguna_jasa_id_tarif = "Peti Kemas";
                     } else {
-                        $rbarang->pengguna_jasa_id_tarif = "Tongkang";
+                        $row->pengguna_jasa_id_tarif = "Tongkang";
                     }
 
                     if ($total_pembayaran == '0')
@@ -1132,24 +1290,24 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
                     else
                         $total_pembayaran = number_format($total_pembayaran, 0, '', '.') . ',-';
 
-                    if ($rbarang->tarif == '0')
+                    if ($row->tarif == '0')
                         return '';
-                    elseif ($rbarang->tarif < 100)
-                        $rbarang->tarif .= ',-';
+                    elseif ($row->tarif < 100)
+                        $row->tarif .= ',-';
                     else
-                        $rbarang->tarif = number_format($rbarang->tarif, 0, '', '.') . ',-';
+                        $row->tarif = number_format($row->tarif, 0, '', '.') . ',-';
                     ?>
                     <tr>
-                        <td align="center"><?= $no ?></td>
-                        <td align="center"><?= $rbarang->id_vessel ?></td>
-                        <td align="center"><?= $rbarang->nama_vessel ?></td>
-                        <td align="center"><?= $rbarang->voy_no ?></td>
-                        <td align="center"><?= $rbarang->pengguna_jasa_id_tarif ?></td>
-                        <td align="center"><?= $rbarang->nama_agent ?></td>
-                        <td align="center"><?= $format_tgl ?></td>
-                        <td align="center"><?= $rbarang->total_permintaan ?></td>
-                        <td align="center"><?= $realisasi ?></td>
-                        <td align="center"><?= $total_pembayaran ?></td>
+                        <td align="center"><?php echo $no ?></td>
+                        <td align="center"><?php echo $row->id_vessel ?></td>
+                        <td align="center"><?php echo $row->nama_vessel ?></td>
+                        <td align="center"><?php echo $row->voy_no ?></td>
+                        <td align="center"><?php echo $row->pengguna_jasa_id_tarif ?></td>
+                        <td align="center"><?php echo $row->nama_agent ?></td>
+                        <td align="center"><?php echo $format_tgl ?></td>
+                        <td align="center"><?php echo $row->total_permintaan ?></td>
+                        <td align="center"><?php echo $realisasi ?></td>
+                        <td align="center"><?php echo $total_pembayaran ?></td>
                     </tr>
                     <?php
                 }
@@ -1166,21 +1324,22 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
 
         <tr>
             <td align="center"colspan="7"><b>Total</b></td>
-            <td align="center"><b><?= $ton?></b></td>
-            <td align="center"><b><?= $ton_realiasi?></b></td>
-            <td align="center"><b><?= $total?></b></td>
+            <td align="center"><b><?php echo $ton?></b></td>
+            <td align="center"><b><?php echo $ton_realiasi?></b></td>
+            <td align="center"><b><?php echo $total?></b></td>
         </tr>
+        </tbody>
     </table>
     </body>
     </html>
     <?php
 }
-else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "flow"){
+else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "sumur"){
     ?>
     <!DOCTYPE html>
     <html>
     <head>
-        <title><?=$title?></title>
+        <title><?php echo$title?></title>
         <style>
             table{
                 border-collapse: collapse;
@@ -1201,18 +1360,133 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
         </style>
     </head>
     <body>
-    <h3 style="text-align: center"><?= $title?></h3>
+    <h3 style="text-align: center"><?php echo $title?></h3>
     <br><br>
-    <table>
+    <table width="100%" style="page-break-after:auto;">
+        <thead>
+        <tr>
+            <th align="center">No</th>
+            <th align="center">ID Sumur</th>
+            <th align="center">Nama Sumur</th>
+            <th align="center">Nama Pompa</th>
+            <th align="center">Nama Flow Meter</th>
+            <th align="center">Start Running</th>
+            <th align="center">Cuaca</th>
+            <th align="center">Debit Air (L/Detik)</th>
+            <th align="center">Nilai Flow (m3)</th>
+            <th align="center">Finish Running</th>
+            <th align="center">Cuaca</th>
+            <th align="center">Debit Air (L/Detik)</th>
+            <th align="center">Nilai Flow (m3)</th>
+            <th align="center">Pemakaian (m3)</th>
+            <th align="center">Issued By</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php
+
+        if($laporan != NULL){
+        $ton_total = 0;
+        $ton = 0;
+        $no = 1;
+
+        foreach($laporan as $row) {
+            $data_tagihan = $this->data->getSumur($tgl_awal, $tgl_akhir, $row->id_flow);
+            $ttl_akhir = 0;
+            $ttl_awal = 0;
+
+            if($data_tagihan != NULL){
+                foreach ($data_tagihan as $data) {
+                    if ($data->id_ref_flowmeter == $row->id_flow) {
+                        $ttl_akhir = $row->flow_sumur_akhir;
+                        $ttl_awal = $row->flow_sumur_awal;
+                    }
+                }
+
+                $issuer = $this->data->getIssuer($row->id_pencatatan);
+                $ton_koma = $ttl_akhir - $ttl_awal;
+                $ton_total += $ton_koma;
+                $ton = number_format($ton_koma,2);
+
+                ?>
+                <tr>
+                    <td align="center"><?php echo $no ?></td>
+                    <td align="center"><?php echo $row->id_sumur ?></td>
+                    <td align="center"><?php echo $row->nama_sumur ?></td>
+                    <td align="center"><?php echo $row->nama_pompa ?></td>
+                    <td align="center"><?php echo $row->nama_flowmeter ?></td>
+                    <td align="center"><?php echo $row->waktu_rekam_awal ?></td>
+                    <td align="center"><?php echo $row->cuaca_awal ?></td>
+                    <td align="center"><?php echo $row->debit_air_awal ?></td>
+                    <td align="center"><?php echo $row->flow_sumur_awal ?></td>
+                    <td align="center"><?php echo $row->waktu_rekam_akhir ?></td>
+                    <td align="center"><?php echo $row->cuaca_akhir ?></td>
+                    <td align="center"><?php echo $row->debit_air_akhir ?></td>
+                    <td align="center"><?php echo $row->flow_sumur_akhir ?></td>
+                    <td align="center"><?php echo $ton ?></td>
+                    <td align="center"><?php echo $issuer->issued_by ?></td>
+                </tr>
+                <?php
+                $no++;
+            }
+        }
+
+        ?>
+
+        <tr>
+            <td align="center"colspan="13"><b>Total</b></td>
+            <td align="center"><b><?php echo number_format($ton_total,2)?></b></td>
+            <td align="center"><b>&nbsp;</b></td>
+        </tr>
+        </tbody>
+        <?php
+        }
+        ?>
+    </table>
+    </body>
+    </html>
+    <?php
+}
+else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "flow"){
+    ?>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title><?php echo$title?></title>
+        <style>
+            table{
+                border-collapse: collapse;
+                width: 100%;
+                margin: 0 auto;
+                page-break-after:auto;
+            }
+            table th{
+                border:1px solid #000;
+                padding: 3px;
+                font-weight: bold;
+                text-align: center;
+            }
+            table td{
+                border:1px solid #000;
+                padding: 3px;
+                vertical-align: top;
+            }
+        </style>
+    </head>
+    <body>
+    <h3 style="text-align: center"><?php echo $title?></h3>
+    <br><br>
+    <table width="100%" style="page-break-after:auto;">
+        <thead>
         <tr>
             <th align="center">No</th>
             <th align="center">ID Flow Meter</th>
             <th align="center">Nama Flow Meter</th>
-            <th align="center">Flow Meter Awal</th>
-            <th align="center">Flow Meter Akhir</th>
-            <th align="center">Total Pemakaian</th>
+            <th align="center">Nilai Flow </th>
             <th align="center">Issued By</th>
         </tr>
+        </thead>
+        <tbody>
         <?php
 
         if($laporan != NULL){
@@ -1251,22 +1525,16 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
                         }
                     }
 
-                    $ton_koma = $ttl_akhir - $ttl_awal;
-                    $ton = number_format($ton_koma,2);
-                    $ton_total += $ton;
-
                     if($status_rekam == 1) {
-                    ?>
+                        ?>
                         <tr>
-                            <td align="center"><?= $no ?></td>
-                            <td align="center"><?= $row->id_flowmeter ?></td>
-                            <td align="center"><?= $row->nama_flowmeter ?></td>
-                            <td align="center"><?= $ttl_awal ?></td>
-                            <td align="center"><?= $ttl_akhir ?></td>
-                            <td align="center"><?= $ton ?></td>
-                            <td align="center"><?= $issuer ?></td>
+                            <td align="center"><?php echo $no ?></td>
+                            <td align="center"><?php echo $row->id_flowmeter ?></td>
+                            <td align="center"><?php echo $row->nama_flowmeter ?></td>
+                            <td align="center"><?php echo $ttl_akhir ?></td>
+                            <td align="center"><?php echo $issuer ?></td>
                         </tr>
-                    <?php
+                        <?php
                         $no++;
                     }
                 }
@@ -1274,132 +1542,18 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
         }
 
         ?>
-
-        <tr>
-            <td align="center"colspan="5"><b>Total</b></td>
-            <td align="center"><b><?= $ton_total?></b></td>
-            <td align="center"><b>&nbsp;</b></td>
-        </tr>
-    </table>
-    </body>
-    </html>
-    <?php
-}
-else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "sumur"){
-    ?>
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title><?=$title?></title>
-        <style>
-            table{
-                border-collapse: collapse;
-                width: 100%;
-                margin: 0 auto;
-            }
-            table th{
-                border:1px solid #000;
-                padding: 3px;
-                font-weight: bold;
-                text-align: center;
-            }
-            table td{
-                border:1px solid #000;
-                padding: 3px;
-                vertical-align: top;
-            }
-        </style>
-    </head>
-    <body>
-    <h3 style="text-align: center"><?= $title?></h3>
-    <br><br>
-    <table>
-        <tr>
-            <th align="center">No</th>
-            <th align="center">ID Sumur</th>
-            <th align="center">Nama Sumur</th>
-            <th align="center">Nama Pompa</th>
-            <th align="center">Nama Flow Meter</th>
-            <th align="center">Start Running</th>
-            <th align="center">Cuaca</th>
-            <th align="center">Debit Air (L/Detik)</th>
-            <th align="center">Nilai Flow (m3)</th>
-            <th align="center">Finish Running</th>
-            <th align="center">Cuaca</th>
-            <th align="center">Debit Air (L/Detik)</th>
-            <th align="center">Nilai Flow (m3)</th>
-            <th align="center">Pemakaian (m3)</th>
-            <th align="center">Issued By</th>
-        </tr>
-        <?php
-
-        if($laporan != NULL){
-            $ton_total = 0;
-            $ton = 0;
-            $no = 1;
-
-            foreach($laporan as $row) {
-                $data_tagihan = $this->data->getSumur($tgl_awal, $tgl_akhir, $row->id_flow);
-                $ttl_akhir = 0;
-                $ttl_awal = 0;
-
-                if($data_tagihan != NULL){
-                    foreach ($data_tagihan as $data) {
-                        if ($data->id_ref_flowmeter == $row->id_flow) {
-                            $ttl_akhir = $row->flow_sumur_akhir;
-                            $ttl_awal = $row->flow_sumur_awal;
-                        }
-                    }
-
-                    $issuer = $this->data->getIssuer($row->id_pencatatan);
-                    $ton_koma = $ttl_akhir - $ttl_awal;
-                    $ton = number_format($ton_koma,2);
-                    $ton_total += $ton;
-
-                ?>
-                <tr>
-                    <td align="center"><?= $no ?></td>
-                    <td align="center"><?= $row->id_sumur ?></td>
-                    <td align="center"><?= $row->nama_sumur ?></td>
-                    <td align="center"><?= $row->nama_pompa ?></td>
-                    <td align="center"><?= $row->nama_flowmeter ?></td>
-                    <td align="center"><?= $row->waktu_rekam_awal ?></td>
-                    <td align="center"><?= $row->cuaca_awal ?></td>
-                    <td align="center"><?= $row->debit_air_awal ?></td>
-                    <td align="center"><?= $row->flow_sumur_awal ?></td>
-                    <td align="center"><?= $row->waktu_rekam_akhir ?></td>
-                    <td align="center"><?= $row->cuaca_akhir ?></td>
-                    <td align="center"><?= $row->debit_air_akhir ?></td>
-                    <td align="center"><?= $row->flow_sumur_akhir ?></td>
-                    <td align="center"><?= $ton ?></td>
-                    <td align="center"><?= $issuer->issued_by ?></td>
-                </tr>
-                <?php
-                    $no++;
-                }
-            }
-
-        ?>
-
-        <tr>
-            <td align="center"colspan="13"><b>Total</b></td>
-            <td align="center"><b><?= $ton_total?></b></td>
-            <td align="center"><b>&nbsp;</b></td>
-        </tr>
-        <?php
-        }
-        ?>
+        </tbody>
     </table>
     </body>
     </html>
     <?php
 }
 else if($this->session->userdata('role') == "perencanaan" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "laut_operasi") {
-?>
+    ?>
     <!DOCTYPE html>
     <html>
     <head>
-        <title><?=$title?></title>
+        <title><?php echo$title?></title>
         <style>
             table{
                 border-collapse: collapse;
@@ -1420,9 +1574,10 @@ else if($this->session->userdata('role') == "perencanaan" && $this->session->use
         </style>
     </head>
     <body>
-    <h3 style="text-align: center"><?= $title?></h3>
+    <h3 style="text-align: center"><?php echo $title?></h3>
     <br><br>
-    <table>
+    <table width="100%" style="page-break-after:auto;">
+        <thead>
         <tr>
             <th align="center">No</th>
             <th align="center">ID VESSEL</th>
@@ -1435,39 +1590,82 @@ else if($this->session->userdata('role') == "perencanaan" && $this->session->use
             <th align="center">Realisasi Pengisian (Ton)</th>
             <th align="center">Total Pembayaran (Rp.)</th>
         </tr>
+        </thead>
+        <tbody>
         <?php
         $total = 0;
         $ton = 0;
         $no = 0;
         $ton_realiasi =0;
         if($laporan != NULL){
-            foreach($laporan as $rbarang) {
-                if ($rbarang->flowmeter_awal != NULL && $rbarang->flowmeter_akhir != NULL) {
+            foreach($laporan as $row) {
+                if ($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
                     $no++;
 
-                    if($rbarang->flowmeter_akhir_2 != NULL && $rbarang->flowmeter_awal_2 != NULL){
-                        $realisasi = $rbarang->flowmeter_akhir - $rbarang->flowmeter_awal;
-                        $realisasi += $rbarang->flowmeter_akhir_2 - $rbarang->flowmeter_awal_2;
-                    } else{
-                        $realisasi = $rbarang->flowmeter_akhir - $rbarang->flowmeter_awal;
+
+                    if($row->flowmeter_akhir_4 != NULL && $row->flowmeter_awal_4 != NULL){
+                        $realisasi = $row->flowmeter_akhir_4 - $row->flowmeter_awal_4;
+
+                        if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
+                            $realisasi += $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
+
+                            if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                                $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                                $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                            } else{
+                                $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                            }
+                        }
+                        else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                            $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                            $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                        }
+                        else {
+                            $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                        }
+                    }
+                    else if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
+                        $realisasi = $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
+
+                        if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                            $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                            $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                        } else {
+                            $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                        }
+                    }
+                    else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                        $realisasi = $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                        $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                    }
+                    else{
+                        $realisasi = $row->flowmeter_akhir - $row->flowmeter_awal;
                     }
 
-                    if ($rbarang->diskon != NULL || $rbarang->diskon != 0) {
-                        $rbarang->tarif -= $rbarang->tarif * $rbarang->diskon/100;
-                        $total_pembayaran =  $rbarang->tarif * $realisasi;
+                    if ($row->diskon != NULL || $row->diskon != 0) {
+                        $row->tarif -= $row->tarif * $row->diskon/100;
+                        $total_pembayaran =  $row->tarif * $realisasi;
                     } else {
-                        $total_pembayaran = $rbarang->tarif * $realisasi;
+                        $total_pembayaran = $row->tarif * $realisasi;
+                    }
+
+                    if($total_pembayaran >= 250000 && $total_pembayaran <= 1000000){
+                        $total_pembayaran += 3000;
+                    } else if($total_pembayaran > 1000000){
+                        $total_pembayaran += 6000;
+                    } else{
+                        $total_pembayaran += 0;
                     }
 
                     $total += $total_pembayaran;
-                    $ton += $rbarang->total_permintaan;
+                    $ton += $row->total_permintaan;
                     $ton_realiasi += $realisasi;
-                    $format_tgl = date('d-m-Y', strtotime($rbarang->tgl_transaksi));
+                    $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi));
 
-                    if ($rbarang->pengguna_jasa_id_tarif == 6) {
-                        $rbarang->pengguna_jasa_id_tarif = "Peti Kemas";
+                    if ($row->pengguna_jasa_id_tarif == 6) {
+                        $row->pengguna_jasa_id_tarif = "Peti Kemas";
                     } else {
-                        $rbarang->pengguna_jasa_id_tarif = "Tongkang";
+                        $row->pengguna_jasa_id_tarif = "Tongkang";
                     }
 
                     if ($total_pembayaran == '0')
@@ -1477,24 +1675,24 @@ else if($this->session->userdata('role') == "perencanaan" && $this->session->use
                     else
                         $total_pembayaran = number_format($total_pembayaran, 0, '', '.') . ',-';
 
-                    if ($rbarang->tarif == '0')
+                    if ($row->tarif == '0')
                         return '';
-                    elseif ($rbarang->tarif < 100)
-                        $rbarang->tarif .= ',-';
+                    elseif ($row->tarif < 100)
+                        $row->tarif .= ',-';
                     else
-                        $rbarang->tarif = number_format($rbarang->tarif, 0, '', '.') . ',-';
+                        $row->tarif = number_format($row->tarif, 0, '', '.') . ',-';
                     ?>
                     <tr>
-                        <td align="center"><?= $no ?></td>
-                        <td align="center"><?= $rbarang->id_vessel ?></td>
-                        <td align="center"><?= $rbarang->nama_vessel ?></td>
-                        <td align="center"><?= $rbarang->voy_no ?></td>
-                        <td align="center"><?= $rbarang->pengguna_jasa_id_tarif ?></td>
-                        <td align="center"><?= $rbarang->nama_agent ?></td>
-                        <td align="center"><?= $format_tgl ?></td>
-                        <td align="center"><?= $rbarang->total_permintaan ?></td>
-                        <td align="center"><?= $realisasi ?></td>
-                        <td align="center"><?= $total_pembayaran ?></td>
+                        <td align="center"><?php echo $no ?></td>
+                        <td align="center"><?php echo $row->id_vessel ?></td>
+                        <td align="center"><?php echo $row->nama_vessel ?></td>
+                        <td align="center"><?php echo $row->voy_no ?></td>
+                        <td align="center"><?php echo $row->pengguna_jasa_id_tarif ?></td>
+                        <td align="center"><?php echo $row->nama_agent ?></td>
+                        <td align="center"><?php echo $format_tgl ?></td>
+                        <td align="center"><?php echo $row->total_permintaan ?></td>
+                        <td align="center"><?php echo $realisasi ?></td>
+                        <td align="center"><?php echo $total_pembayaran ?></td>
                     </tr>
                     <?php
                 }
@@ -1511,14 +1709,15 @@ else if($this->session->userdata('role') == "perencanaan" && $this->session->use
 
         <tr>
             <td align="center"colspan="7"><b>Total</b></td>
-            <td align="center"><b><?= $ton?></b></td>
-            <td align="center"><b><?= $ton_realiasi?></b></td>
-            <td align="center"><b><?= $total?></b></td>
+            <td align="center"><b><?php echo $ton?></b></td>
+            <td align="center"><b><?php echo $ton_realiasi?></b></td>
+            <td align="center"><b><?php echo $total?></b></td>
         </tr>
+        </tbody>
     </table>
     </body>
     </html>
-<?php
+    <?php
 }
 else{
     redirect('main');

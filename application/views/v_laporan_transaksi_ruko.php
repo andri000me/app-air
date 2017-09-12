@@ -52,7 +52,7 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
                     document.getElementById("table").innerHTML= a;
                 }
             }
-            xmlhttp.open("GET", "<?= base_url("main/tabel_pembayaran?id=ruko")?>", true);
+            xmlhttp.open("GET", "<?php echo base_url("main/tabel_pembayaran?id=ruko")?>", true);
             xmlhttp.send();
         }
 
@@ -66,8 +66,8 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
             <h3>Aplikasi Pelayanan Jasa Air Bersih PT KKT</h3><br><br>
             <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
                 <div class="collapse navbar-collapse" >
-                    <a class="nav-link btn btn-info" href="<?= base_url('main/master?id=ruko'); ?>">Master ID Flow Meter</a>
-                    <a class="nav-link btn btn-info" href="<?= base_url('main/tagihan'); ?>">Cetak Tagihan</a>
+                    <a class="nav-link btn btn-info" href="<?php echo base_url('main/master?id=ruko'); ?>">Master ID Flow Meter</a>
+                    <a class="nav-link btn btn-info" href="<?php echo base_url('main/tagihan'); ?>">Cetak Tagihan</a>
                 </div>
             </nav>
             <center><h4>Status Pembayaran Pelayanan Jasa Air Bersih Di Darat</h4></center><br>
@@ -130,7 +130,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
                     document.getElementById("table").innerHTML= a;
                 }
             }
-            xmlhttp.open("GET", "<?= base_url("main/tabel_pengantaran?id=ruko")?>", true);
+            xmlhttp.open("GET", "<?php echo base_url("main/tabel_pengantaran?id=ruko")?>", true);
             xmlhttp.send();
         }
 
@@ -144,7 +144,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
             <h3>Aplikasi Pelayanan Jasa Air Bersih PT KKT</h3><br><br>
             <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
                 <div class="collapse navbar-collapse" >
-                    <a class="nav-link btn btn-info" href="<?= base_url('main/view?id=ruko'); ?>">Input Penggunaan Harian</a>
+                    <a class="nav-link btn btn-info" href="<?php echo base_url('main/view?id=ruko'); ?>">Input Penggunaan Harian</a>
                 </div>
             </nav>
             <center><h4>Status Pelayanan Jasa Air Bersih Untuk Ruko</h4></center><br>
@@ -291,7 +291,7 @@ else {
     ?>
     <script>
         alert('Maaf Anda Tidak Mempunyai Hak Akses Ke Halaman Ini. Silahkan Login Terlebih Dahulu');
-        window.location.replace('<?= $web?>');
+        window.location.replace('<?php echo $web?>');
     </script>
     <?php
 }

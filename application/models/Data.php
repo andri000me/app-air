@@ -461,7 +461,7 @@
             return $query->row();
         }
 
-        function getTagihan($tgl_awal,$tgl_akhir,$id){
+        function getTagihan($tgl_awal = '',$tgl_akhir = '',$id){
             $this->db->select('*');
             $this->db->from('master_tenant');
             $this->db->join('master_flowmeter','master_tenant.id_ref_flowmeter = id_flow','left');
@@ -481,7 +481,7 @@
             }
         }
 
-        function getDataTagihan($tgl_awal,$tgl_akhir,$id){
+        function getDataTagihan($tgl_awal = '',$tgl_akhir = '',$id){
             $this->db->select('*');
             $this->db->from('master_tenant');
             $this->db->join('master_flowmeter','master_tenant.id_ref_flowmeter = id_flow','left');
@@ -514,7 +514,7 @@
             }
         }
 
-        function getDataLaporan($tgl_awal,$tgl_akhir, $tipe){
+        function getDataLaporan($tgl_awal = '',$tgl_akhir = '', $tipe){
             if($tipe == "darat"){
                 $this->db->select('*');
                 $this->db->from('transaksi_darat , pembeli_darat ,pengguna_jasa');
@@ -606,10 +606,9 @@
             }
         }
 
-        function getFlow($tgl_awal,$tgl_akhir,$id){
+        function getFlow($tgl_awal = '',$tgl_akhir = '',$id){
             $this->db->select('*');
             $this->db->from('pencatatan_flow');
-            //$this->db->join('master_flowmeter','id_ref_flowmeter = id_flow','left');
             $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
             $this->db->where('status_perekaman',1);
             $this->db->where('id_ref_flowmeter =',$id);
@@ -623,7 +622,7 @@
             }
         }
 
-        function getSumur($tgl_awal,$tgl_akhir,$id){
+        function getSumur($tgl_awal = '',$tgl_akhir = '',$id){
             $this->db->select('*');
             $this->db->from('pencatatan_sumur');
             //$this->db->join('master_flowmeter','id_ref_flowmeter = id_flow','left');
@@ -654,7 +653,7 @@
             }
         }
 
-        function riwayat_flow($tgl_awal,$tgl_akhir){
+        function riwayat_flow($tgl_awal = '',$tgl_akhir = ''){
             $this->db->select('id_flow,id_flowmeter,nama_flowmeter,flow_hari_ini,waktu_perekaman,id_transaksi,pencatatan_flow.issued_by as pembuat');
             $this->db->from('pencatatan_flow,master_flowmeter');
             $this->db->where('status_perekaman',NULL);
@@ -667,7 +666,7 @@
                 return $query->result();
         }
 
-        function riwayat_sumur($tgl_awal,$tgl_akhir){
+        function riwayat_sumur($tgl_awal = '',$tgl_akhir = ''){
             $this->db->select('id_flow,id_master_sumur,id_sumur,nama_pompa,nama_flowmeter,nama_sumur,cuaca_awal,cuaca_akhir,debit_air_awal,debit_air_akhir,
             flow_sumur_awal,flow_sumur_akhir,waktu_rekam_awal,waktu_rekam_akhir,id_pencatatan,pencatatan_sumur.issued_by as pembuat');
             $this->db->from('pencatatan_sumur,master_sumur,master_pompa,master_flowmeter');
@@ -989,6 +988,18 @@
             $query = $this->db->get();
 
             return $query->result();
+        }
+
+        public function getDataFlowmeter($tgl_awal = '',$tgl_akhir = '',$id_flow){
+            $this->db->from('master_flowmeter');
+            $this->db->join('pencatatan_flow','id_ref_flowmeter = id_flow','left');
+            $this->db->where('id_flow', $id_flow);
+            $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
+            $this->db->where('status_aktif',1);
+            $this->db->order_by('id_flowmeter','ASC');
+            $query = $this->db->get();
+
+            return $query->row();
         }
 
         public function setFlowAkhir(){

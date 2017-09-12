@@ -56,7 +56,7 @@ if($this->session->userdata('role') == "loket" && $this->session->userdata('sess
                     document.getElementById("table").innerHTML= a;
                 }
             }
-            xmlhttp.open("GET", "<?= base_url("main/tabel_monitoring?id=darat")?>", true);
+            xmlhttp.open("GET", "<?php echo base_url("main/tabel_monitoring?id=darat")?>", true);
             xmlhttp.send();
         </script>
         <body>
@@ -81,7 +81,7 @@ if($this->session->userdata('role') == "loket" && $this->session->userdata('sess
                         },
                         success: function(data) {
                             alert('Transaksi Sudah Dibatalkan');
-                            window.location.replace('<?= base_url('main/view?id=monitoring_darat');?>');
+                            window.location.replace('<?php echo base_url('main/view?id=monitoring_darat');?>');
                         },
                         error: function (jqXHR, textStatus, errorThrown)
                         {
@@ -161,7 +161,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
                 document.getElementById("table").innerHTML = a;
             }
         }
-        xmlhttp.open("GET", "<?= base_url("main/tabel_pembayaran?id=laut")?>", true);
+        xmlhttp.open("GET", "<?php echo base_url("main/tabel_pembayaran?id=laut")?>", true);
         xmlhttp.send();
     </script>
     <body>
@@ -228,7 +228,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
                         document.getElementById("table").innerHTML= a;
                     }
                 }
-                xmlhttp.open("GET", "<?= base_url("main/tabel_monitoring?id=darat")?>", true);
+                xmlhttp.open("GET", "<?php echo base_url("main/tabel_monitoring?id=darat")?>", true);
                 xmlhttp.send();
             </script>
             <body>
@@ -253,7 +253,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
                             },
                             success: function(data) {
                                 alert('Transaksi Sudah Dibatalkan');
-                                window.location.replace('<?= base_url('main');?>');
+                                window.location.replace('<?php echo base_url('main');?>');
                             },
                             error: function (jqXHR, textStatus, errorThrown)
                             {
@@ -272,7 +272,7 @@ else{
     ?>
     <script>
         alert('Maaf Anda Tidak Mempunyai Hak Akses Ke Halaman Ini. Silahkan Login Terlebih Dahulu');
-        window.location.replace('<?= $web?>');
+        window.location.replace('<?php echo $web?>');
     </script>
     <?php
 }

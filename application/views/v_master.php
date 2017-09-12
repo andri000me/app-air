@@ -10,7 +10,7 @@ if(isset($_SESSION['session'])) {
             var alamat = $('#alamat').val();
             var no_telp = $('#no_telp').val();
             var form_data = new FormData();
-            var base_url = '<?= base_url();?>';
+            var base_url = '<?php echo base_url();?>';
             var text_alert;
             form_data.append('id_flow',id_flow);
             form_data.append('nama',nama);
@@ -174,7 +174,7 @@ if(isset($_SESSION['session'])) {
                         {
                             //if success reload ajax table
                             alert("Data Berhasil Dihapus");
-                            window.location = "<?= site_url()?>"+"main/master?id=ruko";
+                            window.location = "<?php echo site_url()?>"+"main/master?id=ruko";
                         },
                         error: function (jqXHR, textStatus, errorThrown)
                         {
@@ -198,7 +198,7 @@ if(isset($_SESSION['session'])) {
                     var pengguna_jasa = $('#pengguna').val();
 
                     var form_data = new FormData();
-                    var base_url = '<?= base_url();?>';
+                    var base_url = '<?php echo base_url();?>';
                     var text_alert;
                     form_data.append('nama',nama);
                     form_data.append('alamat',alamat);
@@ -256,7 +256,7 @@ if(isset($_SESSION['session'])) {
                             <select name="pengguna" id="pengguna" class="form-control">
                                 <option></option>
                                 <?php foreach($pengguna as $rowpengguna){?>
-                                    <option value="<?=$rowpengguna->id_tarif?>"><?=$rowpengguna->tipe_pengguna_jasa?></option>
+                                    <option value="<?php echo$rowpengguna->id_tarif?>"><?php echo$rowpengguna->tipe_pengguna_jasa?></option>
                                 <?php }?>
                             </select>
                         </td>
@@ -364,7 +364,7 @@ if(isset($_SESSION['session'])) {
                         {
                             //if success reload ajax table
                             alert("Data Berhasil Dihapus");
-                            window.location = "<?= site_url()?>"+"main/master?id=darat";
+                            window.location = "<?php echo site_url()?>"+"main/master?id=darat";
                         },
                         error: function (jqXHR, textStatus, errorThrown)
                         {
@@ -387,7 +387,7 @@ if(isset($_SESSION['session'])) {
                     var pengguna_jasa = $('#pengguna').val();
                     var id_agent = $('#id_agent').val();
                     var form_data = new FormData();
-                    var base_url = '<?= base_url();?>';
+                    var base_url = '<?php echo base_url();?>';
                     var text_alert;
                     form_data.append('id_lct',id_lct);
                     form_data.append('nama',nama);
@@ -436,7 +436,7 @@ if(isset($_SESSION['session'])) {
                         document.getElementById("no_telp").value=data.no_telp;
                     }
                 }
-                xmlhttp.open("GET","<?= base_url('main/cari_agent?id=')?>"+str,true);
+                xmlhttp.open("GET","<?php echo base_url('main/cari_agent?id=')?>"+str,true);
                 xmlhttp.send();
             }
         </script>
@@ -472,7 +472,7 @@ if(isset($_SESSION['session'])) {
                             <select name="pengguna" id="pengguna" class="form-control">
                                 <option></option>
                                 <?php foreach($pengguna as $rowpengguna){?>
-                                    <option value="<?=$rowpengguna->id_tarif?>"><?=$rowpengguna->tipe_pengguna_jasa?></option>
+                                    <option value="<?php echo $rowpengguna->id_tarif?>"><?php echo $rowpengguna->tipe_pengguna_jasa?></option>
                                 <?php }?>
                             </select>
                         </td>
@@ -486,7 +486,7 @@ if(isset($_SESSION['session'])) {
                                 <?php
                                     foreach ($agent as $row){
                                         ?>
-                                        <option value="<?= $row->id_agent?>"><?= $row->nama_agent?></option>
+                                        <option value="<?php echo $row->id_agent?>"><?php echo $row->nama_agent?></option>
                                     <?php
                                     }
                                 ?>
@@ -618,7 +618,7 @@ if(isset($_SESSION['session'])) {
                         {
                             //if success reload ajax table
                             alert("Data Berhasil Dihapus");
-                            window.location = "<?= site_url()?>"+"main/master?id=laut";
+                            window.location = "<?php echo site_url()?>"+"main/master?id=laut";
                         },
                         error: function (jqXHR, textStatus, errorThrown)
                         {
@@ -641,7 +641,7 @@ if(isset($_SESSION['session'])) {
                     var no_telp = $('#no_telp').val();
                     var npwp = $('#npwp').val();
                     var form_data = new FormData();
-                    var base_url = '<?= base_url();?>';
+                    var base_url = '<?php echo base_url();?>';
                     var text_alert;
                     form_data.append('nama_perusahaan',nama_perusahaan);
                     form_data.append('alamat',alamat);

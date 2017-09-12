@@ -6,7 +6,7 @@
             var alamat = $('#alamat').val();
             var no_telp = $('#no_telp').val();
             var form_data = new FormData();
-            var base_url = '<?= base_url();?>';
+            var base_url = '<?php echo base_url();?>';
             var text_alert;
 
             form_data.append('id', id);
@@ -48,27 +48,27 @@ if(isset($_SESSION['session'])) {
                 <table class="table">
                     <tr>
                         <td colspan="2"><p id="msg"></p></td>
-                        <td><input name="id" id="id" hidden value="<?= $id ?>"/></td>
+                        <td><input name="id" id="id" hidden value="<?php echo $id ?>"/></td>
                     </tr>
                     <tr>
                         <td><label>ID Flow Meter</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="id_flow" id="id_flow" required value="<?= $isi['id_flowmeter'] ?>"></td>
+                        <td><input class="form-control" type="text" name="id_flow" id="id_flow" required value="<?php echo $isi['id_flowmeter'] ?>"></td>
                     </tr>
                     <tr>
                         <td><label>Nama Ruko</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="nama_ruko" id="nama_ruko" required value="<?= $isi['nama_ruko'] ?>"></td>
+                        <td><input class="form-control" type="text" name="nama_ruko" id="nama_ruko" required value="<?php echo $isi['nama_ruko'] ?>"></td>
                     </tr>
                     <tr>
                         <td><label>Alamat</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="alamat" id="alamat" required value="<?= $isi['alamat'] ?>"></td>
+                        <td><input class="form-control" type="text" name="alamat" id="alamat" required value="<?php echo $isi['alamat'] ?>"></td>
                     </tr>
                     <tr>
                         <td><label>No Telepon</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="no_telp" id="no_telp" required value="<?= $isi['no_telp'] ?>"></td>
+                        <td><input class="form-control" type="text" name="no_telp" id="no_telp" required value="<?php echo $isi['no_telp'] ?>"></td>
                     </tr>
                     <tr>
                         <td colspan="3">

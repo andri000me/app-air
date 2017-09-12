@@ -57,7 +57,7 @@ if($this->session->userdata('role') == "wtp" && $this->session->userdata('sessio
                     document.getElementById("table").innerHTML= a;
                 }
             }
-            xmlhttp.open("GET", "<?= base_url("main/tabel_pengantaran?id=laut")?>", true);
+            xmlhttp.open("GET", "<?php echo base_url("main/tabel_pengantaran?id=laut")?>", true);
             xmlhttp.send();
 
     </script>
@@ -158,6 +158,34 @@ if($this->session->userdata('role') == "wtp" && $this->session->userdata('sessio
                                 </div>
                             </div>
                             <div class="form-group">
+                                <label class="control-label col-md-3">Flow Meter 3 Awal</label>
+                                <div class="col-md-9">
+                                    <input name="flowmeter_awal_3" placeholder="Satuan (Ton)" class="form-control" type="text">
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">Flow Meter 3 Akhir</label>
+                                <div class="col-md-9">
+                                    <input name="flowmeter_akhir_3" placeholder="Satuan (Ton)" class="form-control" type="text">
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">Flow Meter 4 Awal</label>
+                                <div class="col-md-9">
+                                    <input name="flowmeter_awal_4" placeholder="Satuan (Ton)" class="form-control" type="text">
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-3">Flow Meter 4 Akhir</label>
+                                <div class="col-md-9">
+                                    <input name="flowmeter_akhir_4" placeholder="Satuan (Ton)" class="form-control" type="text">
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
                                 <label class="control-label col-md-3">Pengisi</label>
                                 <div class="col-md-9">
                                     <input name="pengisi" placeholder="Penanggung Jawab Pengisi" class="form-control" type="text">
@@ -229,7 +257,7 @@ if($this->session->userdata('role') == "wtp" && $this->session->userdata('sessio
                     {
                         $('#modal_menu').modal('hide');
                         alert('Realisasi Berhasil Disimpan');
-                        window.location.replace('<?= base_url('main/view?id=transaksi_laut')?>');
+                        window.location.replace('<?php echo base_url('main/view?id=transaksi_laut')?>');
                     }
                     else
                     {
@@ -259,7 +287,7 @@ else{
     ?>
     <script>
         alert('Maaf Anda Tidak Mempunyai Hak Akses Ke Halaman Ini. Silahkan Login Terlebih Dahulu');
-        window.location.replace('<?= $web?>');
+        window.location.replace('<?php echo $web?>');
     </script>
 <?php
 }

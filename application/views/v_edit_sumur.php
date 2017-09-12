@@ -6,7 +6,7 @@
             var nama_sumur = $('#nama_sumur').val();
             var lokasi = $('#lokasi').val();
             var form_data = new FormData();
-            var base_url = '<?= base_url();?>';
+            var base_url = '<?php echo base_url();?>';
             var text_alert;
 
             form_data.append('id',id)
@@ -48,22 +48,22 @@ if(isset($_SESSION['session'])) {
                 <table class="table">
                     <tr>
                         <td colspan="2"><p id="msg"></p></td>
-                        <td><input name="id" id="id" hidden value="<?= $id ?>"/></td>
+                        <td><input name="id" id="id" hidden value="<?php echo $id ?>"/></td>
                     </tr>
                     <tr>
                         <td><label>ID Sumur</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="id_sumur" id="id_sumur" required value="<?= $isi['id_sumur'] ?>"></td>
+                        <td><input class="form-control" type="text" name="id_sumur" id="id_sumur" required value="<?php echo $isi['id_sumur'] ?>"></td>
                     </tr>
                     <tr>
                         <td><label>Nama Sumur</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="nama_sumur" id="nama_sumur" required value="<?= $isi['nama_sumur'] ?>"></td>
+                        <td><input class="form-control" type="text" name="nama_sumur" id="nama_sumur" required value="<?php echo $isi['nama_sumur'] ?>"></td>
                     </tr>
                     <tr>
                         <td><label>Lokasi</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="lokasi" id="lokasi" required value="<?= $isi['lokasi'] ?>"></td>
+                        <td><input class="form-control" type="text" name="lokasi" id="lokasi" required value="<?php echo $isi['lokasi'] ?>"></td>
                     </tr>
                     <tr>
                         <td colspan="3">

@@ -11,7 +11,7 @@ if(isset($_SESSION['session'])) {
                     var no_telp= $('#no_telp').val();
                     var id_flowmeter = $('#id_flowmeter').val();
                     var form_data = new FormData();
-                    var base_url = '<?= base_url();?>';
+                    var base_url = '<?php echo base_url();?>';
                     var text_alert;
                     form_data.append('nama_tenant',nama_tenant);
                     form_data.append('penanggung_jawab',penanggung_jawab);
@@ -75,7 +75,7 @@ if(isset($_SESSION['session'])) {
                             <select class="form-control" name="id_flowmeter" id="id_flowmeter">
                                 <?php foreach ($tenant as $row) {
                                     ?>
-                                    <option value="<?= $row->id_flow?>"><?= $row->id_flowmeter?> => <?= $row->nama_flowmeter?></option>
+                                    <option value="<?php echo $row->id_flow?>"><?php echo $row->id_flowmeter?> => <?php echo $row->nama_flowmeter?></option>
                                     <?php
                                 }
                                     ?>
@@ -195,7 +195,7 @@ if(isset($_SESSION['session'])) {
                     var alamat= $('#alamat').val();
                     var id_lumpsum = $('#id_lumpsum').val();
                     var form_data = new FormData();
-                    var base_url = '<?= base_url();?>';
+                    var base_url = '<?php echo base_url();?>';
                     var text_alert;
                     form_data.append('nama_tenant',nama_tenant);
                     form_data.append('penanggung_jawab',penanggung_jawab);
@@ -254,7 +254,7 @@ if(isset($_SESSION['session'])) {
                                 <option value="0">Kosong</option>
                                 <?php foreach ($tenant as $row) {
                                     ?>
-                                    <option value="<?= $row->id_lumpsum?>"><?= $row->no_perjanjian?> => <?= $row->nama_perjanjian?></option>
+                                    <option value="<?php echo $row->id_lumpsum?>"><?php echo $row->no_perjanjian?> => <?php echo $row->nama_perjanjian?></option>
                                     <?php
                                 }
                                 ?>

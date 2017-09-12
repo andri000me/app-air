@@ -10,7 +10,7 @@ if(isset($_SESSION['session'])) {
                     var lokasi= $('#lokasi').val();
                     var id_pompa = $('#id_pompa').val();
                     var form_data = new FormData();
-                    var base_url = '<?= base_url();?>';
+                    var base_url = '<?php echo base_url();?>';
                     var text_alert;
                     form_data.append('id_sumur',id_sumur);
                     form_data.append('nama_sumur',nama_sumur);

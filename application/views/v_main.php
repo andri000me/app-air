@@ -72,7 +72,7 @@ if($this->session->userdata('role') == "loket" && $this->session->userdata('sess
                         document.getElementById("table").innerHTML= a;
                     }
                 }
-                xmlhttp.open("GET", "<?= base_url("main/tabel_pembayaran?id=darat")?>", true);
+                xmlhttp.open("GET", "<?php echo base_url("main/tabel_pembayaran?id=darat")?>", true);
                 xmlhttp.send();
         </script>
         <body>
@@ -97,7 +97,7 @@ if($this->session->userdata('role') == "loket" && $this->session->userdata('sess
                         },
                         success: function(data) {
                             alert('Transaksi Sudah Dibatalkan');
-                            window.location.replace('<?= base_url('main');?>');
+                            window.location.replace('<?php echo base_url('main');?>');
                         },
                         error: function (jqXHR, textStatus, errorThrown)
                         {
@@ -121,7 +121,7 @@ if($this->session->userdata('role') == "loket" && $this->session->userdata('sess
                         },
                         success: function(data) {
                             alert('Kwitansi Sudah Dibatalkan');
-                            window.location.replace('<?= base_url('main');?>');
+                            window.location.replace('<?php echo base_url('main');?>');
                         },
                         error: function (jqXHR, textStatus, errorThrown)
                         {
@@ -191,7 +191,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
                     document.getElementById("table").innerHTML= a;
                 }
             }
-            xmlhttp.open("GET", "<?= base_url("main/tabel_pengantaran?id=darat")?>", true);
+            xmlhttp.open("GET", "<?php echo base_url("main/tabel_pengantaran?id=darat")?>", true);
             xmlhttp.send();
         //}
 
@@ -222,7 +222,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
                     dataType: "JSON",
                     success: function(data) {
                         alert('Mulai Pengantaran');
-                        window.location.replace('<?= base_url('main');?>');
+                        window.location.replace('<?php echo base_url('main');?>');
                     },
                     error: function (jqXHR, textStatus, errorThrown)
                     {
@@ -281,7 +281,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
                     {
                         $('#modal_menu').modal('hide');
                         alert('Realisasi Berhasil Disimpan');
-                        window.location.replace('<?= base_url('main');?>');
+                        window.location.replace('<?php echo base_url('main');?>');
 
                     }
                     else
@@ -438,7 +438,7 @@ else if($this->session->userdata('role') == "perencanaan" && $this->session->use
                     document.getElementById("table").innerHTML = a;
                 }
             }
-            xmlhttp.open("GET", "<?= base_url("main/tabel_pembayaran?id=laut")?>", true);
+            xmlhttp.open("GET", "<?php echo base_url("main/tabel_pembayaran?id=laut")?>", true);
             xmlhttp.send();
     </script>
     <script>
@@ -455,7 +455,7 @@ else if($this->session->userdata('role') == "perencanaan" && $this->session->use
                     },
                     success: function(data) {
                         alert('Transaksi Sudah Dibatalkan');
-                        window.location.replace('<?= base_url('main');?>');
+                        window.location.replace('<?php echo base_url('main');?>');
                     },
                     error: function (jqXHR, textStatus, errorThrown)
                     {
@@ -514,8 +514,8 @@ else if($this->session->userdata('role') == "admin" && $this->session->userdata(
                                         <td>:</td>
                                         <td>
                                             <input id="pass_lama" type="password" class="form-control" required/>
-                                            <input id="pass" value="<?= $this->session->userdata('password') ?>" required hidden/>
-                                            <input id="username" value="<?= $this->session->userdata('username') ?>" required hidden/>
+                                            <input id="pass" value="<?php echo $this->session->userdata('password') ?>" required hidden/>
+                                            <input id="username" value="<?php echo $this->session->userdata('username') ?>" required hidden/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -983,7 +983,7 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
                     document.getElementById("table").innerHTML= a;
                 }
             }
-            xmlhttp.open("GET", "<?= base_url("main/tabel_pembayaran?id=laut")?>", true);
+            xmlhttp.open("GET", "<?php echo base_url("main/tabel_pembayaran?id=laut")?>", true);
             xmlhttp.send();
         //}
 
@@ -1148,7 +1148,7 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
                     {
                         $('#modal_menu').modal('hide');
                         alert('Realisasi Berhasil Disimpan');
-                        window.location.replace('<?= base_url('main')?>');
+                        window.location.replace('<?php echo base_url('main')?>');
                     }
                     else
                     {
@@ -1195,7 +1195,7 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
                     "<th><center>Flow Meter Sebelum Pengisian<center></th>" +
                     "<th><center>Flow Meter Sesudah Pengisian<center></th>" +
                     "<th><center>Realisasi</center></th>";
-                if(role == '<?= $this->session->userdata('role')?>' ){
+                if(role == '<?php echo $this->session->userdata('role')?>' ){
                     a+="<th><center>Aksi</center></th>";
                 }
                 a += "</tr>" +
@@ -1234,7 +1234,7 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
                     "<th><center>Flow Meter Sebelum Pengisian<center></th>" +
                     "<th><center>Flow Meter Sesudah Pengisian<center></th>" +
                     "<th><center>Realisasi</center></th>";
-                if(role == '<?= $this->session->userdata('role')?>' ){
+                if(role == '<?php echo $this->session->userdata('role')?>' ){
                     a+="<th><center>Aksi</center></th>";
                 }
                 a += "</tr>" +
@@ -1242,7 +1242,7 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
                 document.getElementById("table").innerHTML = a;
             }
         }
-        xmlhttp.open("GET", "<?= base_url("main/tabel_pembayaran?id=laut")?>", true);
+        xmlhttp.open("GET", "<?php echo base_url("main/tabel_pembayaran?id=laut")?>", true);
         xmlhttp.send();
     </script>
 
@@ -1268,7 +1268,7 @@ else {
         $message = $_SESSION['message_display'];
         ?>
         <body onload='swal({title: "Berhasil!",
-                text: "<?= $message?>",
+                text: "<?php echo $message?>",
                 timer: 3000,
                 type: "success",
                 showConfirmButton: true });'>
@@ -1281,7 +1281,7 @@ else {
         $error = $_SESSION['error_message'];
         ?>
         <body onload='swal({title: "Gagal!",
-                text: "<?= $error?>",
+                text: "<?php echo $error?>",
                 timer: 3000,
                 type: "error",
                 showConfirmButton: true });'>

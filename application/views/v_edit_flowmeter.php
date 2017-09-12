@@ -11,7 +11,7 @@
             var id_pompa = $('#id_pompa').val();
 
             var form_data = new FormData();
-            var base_url = '<?= base_url();?>';
+            var base_url = '<?php echo base_url();?>';
             var text_alert;
 
             form_data.append('id_flow',id);
@@ -58,17 +58,17 @@ if(isset($_SESSION['session'])) {
                 <table class="table">
                     <tr>
                         <td colspan="2"><p id="msg"></p></td>
-                        <td><input name="id" id="id" hidden value="<?= $id ?>"/></td>
+                        <td><input name="id" id="id" hidden value="<?php echo $id ?>"/></td>
                     </tr>
                     <tr>
                         <td><label>ID Flow Meter</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="id_flowmeter" id="id_flowmeter" required value="<?= $isi['id_flowmeter'] ?>"></td>
+                        <td><input class="form-control" type="text" name="id_flowmeter" id="id_flowmeter" required value="<?php echo $isi['id_flowmeter'] ?>"></td>
                     </tr>
                     <tr>
                         <td><label>Nama Flow Meter</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="nama_flowmeter" id="nama_flowmeter" required value="<?= $isi['nama_flowmeter'] ?>"></td>
+                        <td><input class="form-control" type="text" name="nama_flowmeter" id="nama_flowmeter" required value="<?php echo $isi['nama_flowmeter'] ?>"></td>
                     </tr>
                     <tr>
                         <td><label>Kondisi</label></td>
@@ -149,13 +149,13 @@ if(isset($_SESSION['session'])) {
                                 <?php foreach ($pompa as $row) {
                                     if($row->id_master_pompa == $isi['id_pompa']) {
                                         ?>
-                                        <option selected value="<?= $row->id_master_pompa ?>"><?= $row->id_pompa ?>
-                                            => <?= $row->nama_pompa ?></option>
+                                        <option selected value="<?php echo $row->id_master_pompa ?>"><?php echo $row->id_pompa ?>
+                                            => <?php echo $row->nama_pompa ?></option>
                                         <?php
                                     }else{
                                         ?>
-                                        <option value="<?= $row->id_master_pompa ?>"><?= $row->id_pompa ?>
-                                            => <?= $row->nama_pompa ?></option>
+                                        <option value="<?php echo $row->id_master_pompa ?>"><?php echo $row->id_pompa ?>
+                                            => <?php echo $row->nama_pompa ?></option>
                                         <?php
                                     }
                                 }
@@ -166,12 +166,12 @@ if(isset($_SESSION['session'])) {
                     <tr>
                         <td><label>Flow Meter Awal</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="flowmeter_awal" id="flowmeter_awal" required value="<?= $isi['flowmeter_awal'] ?>"></td>
+                        <td><input class="form-control" type="text" name="flowmeter_awal" id="flowmeter_awal" required value="<?php echo $isi['flowmeter_awal'] ?>"></td>
                     </tr>
                     <tr>
                         <td><label>Flow Meter Akhir</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="flowmeter_akhir" id="flowmeter_akhir" required value="<?= $isi['flowmeter_akhir'] ?>"></td>
+                        <td><input class="form-control" type="text" name="flowmeter_akhir" id="flowmeter_akhir" required value="<?php echo $isi['flowmeter_akhir'] ?>"></td>
                     </tr>
                     <tr>
                         <td colspan="3">

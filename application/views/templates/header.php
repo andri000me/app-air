@@ -81,36 +81,36 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav ">
                     <li>
-                        <a href="<?= base_url('main'); ?>">Beranda</a>
+                        <a href="<?php echo base_url('main'); ?>">Beranda</a>
                     </li>
                     <?php
                     if($this->session->userdata('role') != NULL) {
                         if ($this->session->userdata('role') == "loket") {
                             ?>
                             <li>
-                                <a href="<?= base_url('main/view?id=darat'); ?>">Transaksi Baru</a>
+                                <a href="<?php echo base_url('main/view?id=darat'); ?>">Transaksi Baru</a>
                             </li>
                             <li>
-                                <a href="<?= base_url('main/view?id=monitoring_darat'); ?>">Monitoring Layanan Jasa Air</a>
+                                <a href="<?php echo base_url('main/view?id=monitoring_darat'); ?>">Monitoring Layanan Jasa Air</a>
                             </li>
                             <li>
-                                <a href="<?= base_url('main/master?id=darat'); ?>">Master Pengguna Jasa</a>
+                                <a href="<?php echo base_url('main/master?id=darat'); ?>">Master Pengguna Jasa</a>
                             </li>
                             <li>
-                                <a href="<?= base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
+                                <a href="<?php echo base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
                             </li>
                             <?php
                         }
                         else if ($this->session->userdata('role') == "perencanaan") {
                             ?>
                             <li>
-                                <a href="<?= base_url('main/view?id=laut'); ?>">Permohonan Baru</a>
+                                <a href="<?php echo base_url('main/view?id=laut'); ?>">Permohonan Baru</a>
                             </li>
                             <li>
-                                <a href="<?= base_url('main/master?id=laut'); ?>">Master VESSEL</a>
+                                <a href="<?php echo base_url('main/master?id=laut'); ?>">Master VESSEL</a>
                             </li>
                             <li>
-                                <a href="<?= base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
+                                <a href="<?php echo base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
                             </li>
                             <?php
                         }
@@ -120,26 +120,28 @@
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Laporan</a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="<?= base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
+                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
+                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
                                     </li>
-                                    <li><a href="<?= base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Air Ruko</a></li>
+                                    <li><a href="<?php echo base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Air Ruko</a></li>
                                 </ul>
                             </li>
-                            <li><a href="<?= base_url('main/tarif'); ?>">Penyesuaian Tarif</a></li>
+                            <li>
+                                <a href="<?php echo base_url('main/tarif'); ?>">Penyesuaian Tarif</a>
+                            </li>
                             <li class="dropdown">
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tenant</a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="<?= base_url('main/view?id=lumpsum'); ?>">Master Lumpsum</a>
+                                        <a href="<?php echo base_url('main/view?id=lumpsum'); ?>">Master Lumpsum</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=tagihan'); ?>">Penagihan Ruko</a>
+                                        <a href="<?php echo base_url('main/view?id=tagihan'); ?>">Penagihan Ruko</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=daftar_tagihan'); ?>">Daftar Tagihan</a>
+                                        <a href="<?php echo base_url('main/view?id=daftar_tagihan'); ?>">Daftar Tagihan</a>
                                     </li>
                                 </ul>
                             </li>
@@ -148,16 +150,16 @@
                         else if($this->session->userdata('role') == "wtp"){
                             ?>
                             <li>
-                                <a href="<?= base_url('main/view?id=transaksi_laut'); ?>">Transaksi Air Kapal</a>
+                                <a href="<?php echo base_url('main/view?id=transaksi_laut'); ?>">Transaksi Air Kapal</a>
                             </li>
                             <li>
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Monitoring</a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="<?= base_url('main/view?id=monitoring_darat'); ?>">Monitoring Layanan Jasa Air Darat</a>
+                                        <a href="<?php echo base_url('main/view?id=monitoring_darat'); ?>">Monitoring Layanan Jasa Air Darat</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=monitoring_kapal'); ?>">Monitoring Layanan Jasa Air Kapal</a>
+                                        <a href="<?php echo base_url('main/view?id=monitoring_kapal'); ?>">Monitoring Layanan Jasa Air Kapal</a>
                                     </li>
                                 </ul>
                             </li>
@@ -165,17 +167,17 @@
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Laporan</a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="<?= base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
+                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
+                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
                                     </li>
 
                                     <li>
-                                        <a href="<?= base_url('main/view?id=cetak_laporan_flow'); ?>">Laporan Pencatatan Flow Meter</a>
+                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_flow'); ?>">Laporan Pencatatan Flow Meter</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=cetak_laporan_sumur'); ?>">Laporan Pencatatan Sumur</a>
+                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_sumur'); ?>">Laporan Pencatatan Sumur</a>
                                     </li>
 
                                 </ul>
@@ -185,13 +187,13 @@
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Flow Meter</a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="<?= base_url('main/view?id=flowmeter'); ?>">Master Flow Meter</a>
+                                        <a href="<?php echo base_url('main/view?id=flowmeter'); ?>">Master Flow Meter</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=transaksi_tenant'); ?>">Pencatatan Harian Penggunaan Air</a>
+                                        <a href="<?php echo base_url('main/view?id=transaksi_tenant'); ?>">Pencatatan Harian Penggunaan Air</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=riwayat_pencatatan_flow'); ?>">Riwayat Pencatatan Harian Penggunaan Air</a>
+                                        <a href="<?php echo base_url('main/view?id=riwayat_pencatatan_flow'); ?>">Riwayat Pencatatan Harian Penggunaan Air</a>
                                     </li>
                                 </ul>
                             </li>
@@ -200,16 +202,16 @@
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Sumur</a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="<?= base_url('main/view?id=sumur'); ?>">Master Sumur</a>
+                                        <a href="<?php echo base_url('main/view?id=sumur'); ?>">Master Sumur</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=pompa'); ?>">Master Pompa</a>
+                                        <a href="<?php echo base_url('main/view?id=pompa'); ?>">Master Pompa</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=catat_sumur'); ?>">Pencatatan Harian Sumur</a>
+                                        <a href="<?php echo base_url('main/view?id=catat_sumur'); ?>">Pencatatan Harian Sumur</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=riwayat_pencatatan_sumur'); ?>">Riwayat Pencatatan Harian Sumur</a>
+                                        <a href="<?php echo base_url('main/view?id=riwayat_pencatatan_sumur'); ?>">Riwayat Pencatatan Harian Sumur</a>
                                     </li>
                                 </ul>
                             </li>
@@ -222,33 +224,33 @@
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Pembayaran</a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="<?= base_url('main/view?id=realisasi_pembayaran_darat'); ?>">Realisasi Pembayaran Air Darat</a>
+                                        <a href='<?php echo base_url('main/view?id=realisasi_pembayaran_darat'); ?>'>Realisasi Pembayaran Air Darat</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=validasi_pembayaran_darat'); ?>">Validasi Pembayaran Air Darat</a>
+                                        <a href='<?php echo base_url('main/view?id=validasi_pembayaran_darat'); ?>'>Validasi Pembayaran Air Darat</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=cancel_pembayaran_darat'); ?>">Pembatalan Pembayaran Air Darat</a>
+                                        <a href="<?php echo base_url('main/view?id=cancel_pembayaran_darat'); ?>">Pembatalan Pembayaran Air Darat</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=realisasi_pembayaran_tenant'); ?>">Realisasi Pembayaran Air Tenant</a>
+                                        <a href="<?php echo base_url('main/view?id=realisasi_pembayaran_tenant'); ?>">Realisasi Pembayaran Air Tenant</a>
                                     </li>
                                 </ul>
                             </li>
                             <li>
-                                <a href="<?= base_url('main/agent'); ?>">Master Agent</a>
+                                <a href="<?php echo base_url('main/agent'); ?>">Master Agent</a>
                             </li>
                             <li>
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Laporan</a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="<?= base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
+                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
+                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
                                     </li>
                                     <li>
-                                        <a href="<?= base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Transaksi Air Ruko</a>
+                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Transaksi Air Ruko</a>
                                     </li>
                                 </ul>
                             </li>
@@ -257,13 +259,13 @@
                         else{
                             ?>
                             <li>
-                                <a href="<?= base_url('main/view?id=tenant'); ?>">Master Tenant</a>
+                                <a href="<?php echo base_url('main/view?id=tenant'); ?>">Master Tenant</a>
                             </li>
                             <?php
                         }
                         ?>
                         <li>
-                            <a class="glyphicon glyphicon-log-out" href="<?= base_url('main/logout'); ?>">&nbsp;Logout</a>
+                            <a class="glyphicon glyphicon-log-out" href="<?php echo base_url('main/logout'); ?>">&nbsp;Logout</a>
                         </li>
                     <?php
                     }
@@ -286,7 +288,7 @@
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifAntar").innerHTML = "<a class='btn btn-danger' title='Antar' href='<?= base_url("main/view?id=monitoring_darat")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifAntar").innerHTML = "<a class='btn btn-danger' title='Antar' href='<?php echo base_url("main/view?id=monitoring_darat")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifAntar").innerHTML = '';
                     }
@@ -312,7 +314,7 @@
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Piutang Kapal' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Piutang Kapal' href='<?php echo base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifKapal").innerHTML = '';
                     }
@@ -326,7 +328,7 @@
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifDarat").innerHTML = "<a class='btn btn-danger' title='Realisasi Piutang Darat' href='<?= base_url("main/view?id=realisasi_pembayaran_darat")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifDarat").innerHTML = "<a class='btn btn-danger' title='Realisasi Piutang Darat' href='<?php echo base_url("main/view?id=realisasi_pembayaran_darat")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifDarat").innerHTML = '';
                     }
@@ -339,7 +341,7 @@
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifRuko").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran Ruko' href='<?= base_url("main/view?id=realisasi_pembayaran_tenant")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifRuko").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran Ruko' href='<?php echo base_url("main/view?id=realisasi_pembayaran_tenant")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifRuko").innerHTML = '';
                     }
@@ -365,7 +367,7 @@
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifAntar").innerHTML = "<a class='btn btn-danger' title='Realisasi Pengisisan' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifAntar").innerHTML = "<a class='btn btn-danger' title='Realisasi Pengisisan' href='<?php echo base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifAntar").innerHTML ='';
                     }
@@ -390,7 +392,7 @@
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Kapal' href='<?= base_url("main/view?id=transaksi_laut")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Kapal' href='<?php echo base_url("main/view?id=transaksi_laut")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifKapal").innerHTML = '';
                     }
@@ -404,7 +406,7 @@
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifDarat").innerHTML = "<a class='btn btn-danger' title='Darat' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifDarat").innerHTML = "<a class='btn btn-danger' title='Darat' href='<?php echo base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifDarat").innerHTML = '';
                     }
@@ -430,7 +432,7 @@
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran Kapal' href='<?= base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran Kapal' href='<?php echo base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifKapal").innerHTML = '';
                     }
@@ -443,7 +445,7 @@
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifRuko").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran Ruko' href='<?= base_url("main/view?id=daftar_tagihan")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifRuko").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran Ruko' href='<?php echo base_url("main/view?id=daftar_tagihan")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifRuko").innerHTML = '';
                     }

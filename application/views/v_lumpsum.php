@@ -12,7 +12,7 @@ if(isset($_SESSION['session'])) {
                     var tenant = $('#tenant').val();
 
                     var form_data = new FormData();
-                    var base_url = '<?= base_url();?>';
+                    var base_url = '<?php echo base_url();?>';
                     var text_alert;
                     form_data.append('no_perjanjian',no_perjanjian);
                     form_data.append('nama_perjanjian',nama_perjanjian);
@@ -62,7 +62,7 @@ if(isset($_SESSION['session'])) {
                         document.getElementById("lokasi").value=data.lokasi;
                     }
                 }
-                xmlhttp.open("GET","<?= base_url('main/cari_tenant?id=')?>"+str,true);
+                xmlhttp.open("GET","<?php echo base_url('main/cari_tenant?id=')?>"+str,true);
                 xmlhttp.send();
             }
         </script>
@@ -82,6 +82,22 @@ if(isset($_SESSION['session'])) {
                         <td><label>Perihal</label></td>
                         <td>:</td>
                         <td><input class="form-control" type="text" name="nama_perjanjian" id="nama_perjanjian" required></td>
+                    </tr>
+                    <tr>
+                        <td><label>Nama Tenant</label></td>
+                        <td>:</td>
+                        <td>
+                            <select class="form-control" name="tenant" id="tenant" onchange="showTenant(this.value)">
+                                <option value="">-----</option>
+                                <?php
+                                foreach ($lumpsum as $row){
+                                ?>
+                                    <option value="<?php echo $row->id_tenant?>"><?php echo $row->nama_tenant?></option>
+                                <?php
+                                }
+                                ?>
+                            </select>
+                        </td>
                     </tr>
                     <tr>
                         <td><label>Waktu Kadaluarsa</label></td>
@@ -104,21 +120,6 @@ if(isset($_SESSION['session'])) {
                                     });
                                 });
                             </script>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label>Nama Tenant</label></td>
-                        <td>:</td>
-                        <td>
-                            <select class="form-control" name="tenant" id="tenant" onchange="showTenant(this.value)">
-                                <?php
-                                foreach ($lumpsum as $row){
-                                ?>
-                                    <option value="<?= $row->id_tenant?>"><?= $row->nama_tenant?></option>
-                                <?php
-                                }
-                                ?>
-                            </select>
                         </td>
                     </tr>
                     <tr>

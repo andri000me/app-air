@@ -35,7 +35,7 @@ if($this->session->userdata('role') == 'operasi'){
                 new_div = document.createElement("div"),
                 existingdiv1 = document.getElementById("tabel");
             $.ajax({
-                url: "<?= base_url('main/tagihan_ruko')?>",
+                url: "<?php echo base_url('main/tagihan_ruko')?>",
                 method: "POST",
                 data: {
                     tgl_awal: tgl_awal,

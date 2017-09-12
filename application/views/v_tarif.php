@@ -11,7 +11,7 @@ if(isset($_SESSION['session'])) {
                     var tipe = $('#tipe').val();
                     var diskon = $('#diskon').val();
                     var form_data = new FormData();
-                    var base_url = '<?= base_url();?>';
+                    var base_url = '<?php echo base_url();?>';
                     var text_alert;
                     form_data.append('tipe_pengguna',tipe_pengguna);
                     form_data.append('kawasan',kawasan);
@@ -193,7 +193,7 @@ if(isset($_SESSION['session'])) {
                         {
                             //if success reload ajax table
                             alert("Data Berhasil Dihapus");
-                            window.location = "<?= site_url()?>"+"main/tarif";
+                            window.location = "<?php echo site_url()?>"+"main/tarif";
                         },
                         error: function (jqXHR, textStatus, errorThrown)
                         {

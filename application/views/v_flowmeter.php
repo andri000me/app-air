@@ -11,7 +11,7 @@ if(isset($_SESSION['session'])) {
                     var pompa = $('#id_pompa').val();
 
                     var form_data = new FormData();
-                    var base_url = '<?= base_url();?>';
+                    var base_url = '<?php echo base_url();?>';
                     var text_alert;
                     form_data.append('id_flowmeter',id_flowmeter);
                     form_data.append('nama_flowmeter',nama_flowmeter);
@@ -75,7 +75,7 @@ if(isset($_SESSION['session'])) {
                             <select class="form-control" name="id_pompa" id="id_pompa">
                                 <?php foreach ($tenant as $row) {
                                     ?>
-                                    <option value="<?= $row->id_master_pompa?>"><?= $row->id_pompa?> => <?= $row->nama_pompa?></option>
+                                    <option value="<?php echo $row->id_master_pompa?>"><?php echo $row->id_pompa?> => <?php echo $row->nama_pompa?></option>
                                     <?php
                                 }
                                 ?>

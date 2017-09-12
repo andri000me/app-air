@@ -79,7 +79,7 @@ if($this->session->userdata('role') == "loket" && $this->session->userdata('sess
                                 <select name="pengguna" id="pengguna" class="form-control">
                                     <option></option>
                                     <?php foreach($pengguna as $rowpengguna){?>
-                                        <option value="<?=$rowpengguna->id_tarif?>"><?=$rowpengguna->tipe_pengguna_jasa?></option>
+                                        <option value="<?php echo $rowpengguna->id_tarif?>"><?php echo $rowpengguna->tipe_pengguna_jasa?></option>
                                     <?php }?>
                                 </select>
                             </td>
@@ -156,7 +156,7 @@ else{
     ?>
 <script>
     alert('Anda Tidak Memiliki Hak Akses Ke Halaman Ini. Silahkan Login Terlebih Dahulu');
-    window.location.replace('<?= $web;?>');
+    window.location.replace('<?php echo $web;?>');
 </script>
     <?php
 }

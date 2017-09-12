@@ -11,7 +11,7 @@ if(isset($_SESSION['session'])) {
                     var id_sumur = $('#id_sumur').val();
 
                     var form_data = new FormData();
-                    var base_url = '<?= base_url();?>';
+                    var base_url = '<?php echo base_url();?>';
                     var text_alert;
 
                     form_data.append('id_pompa',id_pompa);
@@ -76,7 +76,7 @@ if(isset($_SESSION['session'])) {
                             <select class="form-control" name="id_sumur" id="id_sumur">
                                 <?php foreach ($tenant as $row) {
                                     ?>
-                                    <option value="<?= $row->id_master_sumur?>"><?= $row->id_sumur?> => <?= $row->nama_sumur?></option>
+                                    <option value="<?php echo $row->id_master_sumur?>"><?php echo $row->id_sumur?> => <?php echo $row->nama_sumur?></option>
                                     <?php
                                 }
                                 ?>

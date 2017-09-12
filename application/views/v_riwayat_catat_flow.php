@@ -19,7 +19,7 @@ if($this->session->userdata('role') == 'wtp'){
                 new_div = document.createElement("div"),
                 existingdiv1 = document.getElementById("tabel");
             $.ajax({
-                url: "<?= base_url('main/riwayat_catat_flow')?>",
+                url: "<?php echo base_url('main/riwayat_catat_flow')?>",
                 method: "POST",
                 data: {
                     tgl_awal: tgl_awal,

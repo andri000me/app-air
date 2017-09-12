@@ -9,7 +9,7 @@
             var status = $('#status_aktif').val();
 
             var form_data = new FormData();
-            var base_url = '<?= base_url();?>';
+            var base_url = '<?php echo base_url();?>';
             var text_alert;
 
             form_data.append('id',id)
@@ -54,17 +54,17 @@ if(isset($_SESSION['session'])) {
                 <table class="table">
                     <tr>
                         <td colspan="2"><p id="msg"></p></td>
-                        <td><input name="id" id="id" hidden value="<?= $id ?>"/></td>
+                        <td><input name="id" id="id" hidden value="<?php echo $id ?>"/></td>
                     </tr>
                     <tr>
                         <td><label>ID Pompa</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="id_pompa" id="id_pompa" required value="<?= $isi['id_pompa'] ?>"></td>
+                        <td><input class="form-control" type="text" name="id_pompa" id="id_pompa" required value="<?php echo $isi['id_pompa'] ?>"></td>
                     </tr>
                     <tr>
                         <td><label>Nama Pompa</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="nama_pompa" id="nama_pompa" required value="<?= $isi['nama_pompa'] ?>"></td>
+                        <td><input class="form-control" type="text" name="nama_pompa" id="nama_pompa" required value="<?php echo $isi['nama_pompa'] ?>"></td>
                     </tr>
                     <tr>
                         <td><label>Kondisi</label></td>
@@ -141,18 +141,18 @@ if(isset($_SESSION['session'])) {
                         <td><label>ID Sumur</label></td>
                         <td>:</td>
                         <td>
-                            <input type="hidden" id="id_sum" name="id_sum" value="<?= $isi['id_sumur']?>"/>
+                            <input type="hidden" id="id_sum" name="id_sum" value="<?php echo $isi['id_sumur']?>"/>
                             <select class="form-control" name="id_sumur" id="id_sumur">
                                 <?php foreach ($pompa as $row) {
                                     if($row->id_master_sumur == $isi['id_sumur']) {
                                         ?>
-                                        <option selected value="<?= $row->id_master_sumur ?>"><?= $row->id_sumur ?>
-                                            => <?= $row->nama_sumur ?></option>
+                                        <option selected value="<?php echo $row->id_master_sumur ?>"><?php echo $row->id_sumur ?>
+                                            => <?php echo $row->nama_sumur ?></option>
                                         <?php
                                     }else{
                                         ?>
-                                        <option value="<?= $row->id_master_sumur ?>"><?= $row->id_sumur ?>
-                                            => <?= $row->nama_sumur ?></option>
+                                        <option value="<?php echo $row->id_master_sumur ?>"><?php echo $row->id_sumur ?>
+                                            => <?php echo $row->nama_sumur ?></option>
                                         <?php
                                     }
                                 }

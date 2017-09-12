@@ -8,7 +8,7 @@
             var tipe = $('#tipe').val();
             var diskon = $('#diskon').val();
             var form_data = new FormData();
-            var base_url = '<?= base_url();?>';
+            var base_url = '<?php echo base_url();?>';
             var text_alert;
 
             form_data.append('id', id);
@@ -52,12 +52,12 @@ if(isset($_SESSION['session'])) {
                 <table class="table">
                     <tr>
                         <td colspan="2"><p id="msg"></p></td>
-                        <td><input name="id" id="id" hidden value="<?= $id ?>"/></td>
+                        <td><input name="id" id="id" hidden value="<?php echo $id ?>"/></td>
                     </tr>
                     <tr>
                         <td><label>Tipe Pengguna Jasa</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="tipe_pengguna" id="tipe_pengguna" required value="<?= $isi['tipe_pengguna_jasa']?>"></td>
+                        <td><input class="form-control" type="text" name="tipe_pengguna" id="tipe_pengguna" required value="<?php echo $isi['tipe_pengguna_jasa']?>"></td>
                     </tr>
                     <tr>
                         <td><label>Kawasan</label></td>
@@ -102,12 +102,12 @@ if(isset($_SESSION['session'])) {
                     <tr>
                         <td><label>Tarif</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="tarif" id="tarif" required value="<?= $isi['tarif']?>"></td>
+                        <td><input class="form-control" type="text" name="tarif" id="tarif" required value="<?php echo $isi['tarif']?>"></td>
                     </tr>
                     <tr>
                         <td><label>Diskon</label></td>
                         <td>:</td>
-                        <td><input class="form-control" type="text" name="diskon" id="diskon" required value="<?= $isi['diskon']?>"></td>
+                        <td><input class="form-control" type="text" name="diskon" id="diskon" required value="<?php echo $isi['diskon']?>"></td>
                     </tr>
                     <tr>
                         <td colspan="3">

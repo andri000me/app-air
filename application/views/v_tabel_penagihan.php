@@ -57,7 +57,7 @@ if($this->session->userdata('session') != NULL && $this->session->userdata('role
                 document.getElementById("table").innerHTML= a;
             }
         }
-        xmlhttp.open("GET", "<?= base_url("main/tabel_tagihan_tenant")?>", true);
+        xmlhttp.open("GET", "<?php echo base_url("main/tabel_tagihan_tenant")?>", true);
         xmlhttp.send();
     </script>
     <script>
@@ -74,7 +74,7 @@ if($this->session->userdata('session') != NULL && $this->session->userdata('role
                     },
                     success: function(data) {
                         alert('Transaksi Sudah Dibatalkan');
-                        window.location.replace('<?= base_url('main/view?id=daftar_tagihan');?>');
+                        window.location.replace('<?php echo base_url('main/view?id=daftar_tagihan');?>');
                     },
                     error: function (jqXHR, textStatus, errorThrown)
                     {
