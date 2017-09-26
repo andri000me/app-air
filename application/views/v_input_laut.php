@@ -1,5 +1,5 @@
 <?php
-if($this->session->userdata('role') == "perencanaan" || $this->session->userdata('session') != NULL) {
+if(($this->session->userdata('role') == "perencanaan" ||$this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL) {
     ?>
     <script>
         $(function () {
@@ -12,6 +12,7 @@ if($this->session->userdata('role') == "perencanaan" || $this->session->userdata
                     $('#id_kapal').val(ui.item.id_kapal);
                     $('#id_kapal1').val(ui.item.id_kapal);
                     $('#pengguna').val(ui.item.pengguna);
+                    $('#tipe_kapal').val(ui.item.pengguna);
                     $('#nama_perusahaan').val(ui.item.nama_perusahaan);
                     $('#alamat').val(ui.item.alamat);
                     $('#no_telp').val(ui.item.no_telp);
@@ -127,6 +128,7 @@ if($this->session->userdata('role') == "perencanaan" || $this->session->userdata
                                         <option value="<?php echo $rowpengguna->id_tarif ?>"><?php echo $rowpengguna->tipe_pengguna_jasa ?></option>
                                     <?php } ?>
                                 </select>
+                                <input type="hidden" name="tipe_kapal" id="tipe_kapal">
                             </td>
                         </div>
                     </tr>

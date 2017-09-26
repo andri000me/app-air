@@ -30,28 +30,64 @@ $this->fpdf->Cell(90, 7, $hasil['tgl_transaksi'], 0, 'L');
 $this->fpdf->Ln(10);
 $this->fpdf->SetFont('Arial', '', 8);
 $this->fpdf->Cell(7, 7, 'No', 1,0, 'C');
-$this->fpdf->Cell(40, 7, 'Jenis Pelayanan', 1,0, 'C');
-$this->fpdf->Cell(15, 7, ' Satuan', 1,0, 'C');
-$this->fpdf->Cell(30, 7, ' Jumlah Permintaan', 1,0, 'C');
-$this->fpdf->Cell(25, 7, ' Flow Meter Awal', 1,0, 'C');
-$this->fpdf->Cell(25, 7, ' Flow Meter Akhir', 1,0, 'C');
+$this->fpdf->Cell(28, 7, 'Jenis Pelayanan', 1,0, 'C');
+$this->fpdf->Cell(11, 7, ' Satuan', 1,0, 'C');
+$this->fpdf->Cell(27, 7, ' Jumlah Permintaan', 1,0, 'C');
+$this->fpdf->Cell(46, 7, ' Flow Meter Awal', 1,0, 'C');
+$this->fpdf->Cell(46, 7, ' Flow Meter Akhir', 1,0, 'C');
 $this->fpdf->Cell(30, 7, ' Realisasi Pengisian', 1,0, 'C');
 $this->fpdf->Ln();
 $this->fpdf->Cell(7, 7, '1', 1,0, 'C');
-$this->fpdf->Cell(40, 7, 'Pengisian Air Bersih', 1,0, 'C');
-$this->fpdf->Cell(15, 7, 'Ton', 1,0, 'C');
-if($hasil['flowmeter_sebelum_2'] != NULL && $hasil['flowmeter_sesudah_2'] != NULL){
-    $this->fpdf->Cell(30, 7, $hasil['total_permintaan'], 1,0, 'C');
-    $this->fpdf->Cell(25, 7, $hasil['flowmeter_sebelum'].' , '.$hasil['flowmeter_sebelum_2'], 1,0, 'C');
-    $this->fpdf->Cell(25, 7, $hasil['flowmeter_sesudah'].' , '.$hasil['flowmeter_sesudah_2'], 1,0, 'C');
-    $this->fpdf->Cell(30, 7, $hasil['realisasi'], 1,0, 'C');
-} else{
-    $this->fpdf->Cell(30, 7, $hasil['total_permintaan'], 1,0, 'C');
-    $this->fpdf->Cell(25, 7, $hasil['flowmeter_sebelum'], 1,0, 'C');
-    $this->fpdf->Cell(25, 7, $hasil['flowmeter_sesudah'], 1,0, 'C');
+$this->fpdf->Cell(28, 7, 'Pengisian Air Bersih', 1,0, 'C');
+$this->fpdf->Cell(11, 7, 'Ton', 1,0, 'C');
+if($hasil['flowmeter_sebelum_4'] != NULL && $hasil['flowmeter_sesudah_4'] != NULL){
+    if($hasil['flowmeter_sebelum_3'] != NULL && $hasil['flowmeter_sesudah_3'] != NULL){
+        if($hasil['flowmeter_sebelum_2'] != NULL && $hasil['flowmeter_sesudah_2'] != NULL){
+            $this->fpdf->Cell(27, 7, $hasil['total_permintaan'], 1,0, 'C');
+            $this->fpdf->Cell(46, 7, $hasil['flowmeter_sebelum'].' , '.$hasil['flowmeter_sebelum_2'].' , '.$hasil['flowmeter_sebelum_3'].' , '.$hasil['flowmeter_sebelum_4'], 1,0, 'C');
+            $this->fpdf->Cell(46, 7, $hasil['flowmeter_sesudah'].' , '.$hasil['flowmeter_sesudah_2'].' , '.$hasil['flowmeter_sesudah_3'].' , '.$hasil['flowmeter_sesudah_4'], 1,0, 'C');
+            $this->fpdf->Cell(30, 7, $hasil['realisasi'], 1,0, 'C');
+        }
+        else{
+            $this->fpdf->Cell(27, 7, $hasil['total_permintaan'], 1,0, 'C');
+            $this->fpdf->Cell(46, 7, $hasil['flowmeter_sebelum'].' , '.$hasil['flowmeter_sebelum_3'].' , '.$hasil['flowmeter_sebelum_4'], 1,0, 'C');
+            $this->fpdf->Cell(46, 7, $hasil['flowmeter_sesudah'].' , '.$hasil['flowmeter_sesudah_3'].' , '.$hasil['flowmeter_sesudah_4'], 1,0, 'C');
+            $this->fpdf->Cell(30, 7, $hasil['realisasi'], 1,0, 'C');
+        }
+    }
+    else{
+        $this->fpdf->Cell(27, 7, $hasil['total_permintaan'], 1,0, 'C');
+        $this->fpdf->Cell(46, 7, $hasil['flowmeter_sebelum'].' , '.$hasil['flowmeter_sebelum_4'], 1,0, 'C');
+        $this->fpdf->Cell(46, 7, $hasil['flowmeter_sesudah'].' , '.$hasil['flowmeter_sesudah_4'], 1,0, 'C');
+        $this->fpdf->Cell(30, 7, $hasil['realisasi'], 1,0, 'C');
+    }
+}
+else if($hasil['flowmeter_sebelum_3'] != NULL && $hasil['flowmeter_sesudah_3'] != NULL){
+    if($hasil['flowmeter_sebelum_2'] != NULL && $hasil['flowmeter_sesudah_2'] != NULL){
+        $this->fpdf->Cell(27, 7, $hasil['total_permintaan'], 1,0, 'C');
+        $this->fpdf->Cell(46, 7, $hasil['flowmeter_sebelum'].' , '.$hasil['flowmeter_sebelum_2'].' , '.$hasil['flowmeter_sebelum_3'], 1,0, 'C');
+        $this->fpdf->Cell(46, 7, $hasil['flowmeter_sesudah'].' , '.$hasil['flowmeter_sesudah_2'].' , '.$hasil['flowmeter_sesudah_3'], 1,0, 'C');
+        $this->fpdf->Cell(30, 7, $hasil['realisasi'], 1,0, 'C');
+    }
+    else{
+        $this->fpdf->Cell(27, 7, $hasil['total_permintaan'], 1,0, 'C');
+        $this->fpdf->Cell(46, 7, $hasil['flowmeter_sebelum'].' , '.$hasil['flowmeter_sebelum_3'], 1,0, 'C');
+        $this->fpdf->Cell(46, 7, $hasil['flowmeter_sesudah'].' , '.$hasil['flowmeter_sesudah_3'], 1,0, 'C');
+        $this->fpdf->Cell(30, 7, $hasil['realisasi'], 1,0, 'C');
+    }
+}
+else if($hasil['flowmeter_sebelum_2'] != NULL && $hasil['flowmeter_sesudah_2'] != NULL){
+    $this->fpdf->Cell(27, 7, $hasil['total_permintaan'], 1,0, 'C');
+    $this->fpdf->Cell(46, 7, $hasil['flowmeter_sebelum'].' , '.$hasil['flowmeter_sebelum_2'], 1,0, 'C');
+    $this->fpdf->Cell(46, 7, $hasil['flowmeter_sesudah'].' , '.$hasil['flowmeter_sesudah_2'], 1,0, 'C');
     $this->fpdf->Cell(30, 7, $hasil['realisasi'], 1,0, 'C');
 }
-
+else{
+    $this->fpdf->Cell(27, 7, $hasil['total_permintaan'], 1,0, 'C');
+    $this->fpdf->Cell(46, 7, $hasil['flowmeter_sebelum'], 1,0, 'C');
+    $this->fpdf->Cell(46, 7, $hasil['flowmeter_sesudah'], 1,0, 'C');
+    $this->fpdf->Cell(30, 7, $hasil['realisasi'], 1,0, 'C');
+}
 $this->fpdf->Ln(12);
 $this->fpdf->Cell(10, 10, '', 0, 'R');
 $this->fpdf->SetFont('Arial', '', 9);
@@ -108,26 +144,63 @@ $this->fpdf->Cell(90, 7, $hasil['tgl_transaksi'], 0, 'L');
 $this->fpdf->Ln(10);
 $this->fpdf->SetFont('Arial', '', 8);
 $this->fpdf->Cell(7, 7, 'No', 1,0, 'C');
-$this->fpdf->Cell(40, 7, 'Jenis Pelayanan', 1,0, 'C');
-$this->fpdf->Cell(15, 7, ' Satuan', 1,0, 'C');
-$this->fpdf->Cell(30, 7, ' Jumlah Permintaan', 1,0, 'C');
-$this->fpdf->Cell(25, 7, ' Flow Meter Awal', 1,0, 'C');
-$this->fpdf->Cell(25, 7, ' Flow Meter Akhir', 1,0, 'C');
+$this->fpdf->Cell(28, 7, 'Jenis Pelayanan', 1,0, 'C');
+$this->fpdf->Cell(11, 7, ' Satuan', 1,0, 'C');
+$this->fpdf->Cell(27, 7, ' Jumlah Permintaan', 1,0, 'C');
+$this->fpdf->Cell(46, 7, ' Flow Meter Awal', 1,0, 'C');
+$this->fpdf->Cell(46, 7, ' Flow Meter Akhir', 1,0, 'C');
 $this->fpdf->Cell(30, 7, ' Realisasi Pengisian', 1,0, 'C');
 $this->fpdf->Ln();
 $this->fpdf->Cell(7, 7, '1', 1,0, 'C');
-$this->fpdf->Cell(40, 7, 'Pengisian Air Bersih', 1,0, 'C');
-$this->fpdf->Cell(15, 7, 'Ton', 1,0, 'C');
+$this->fpdf->Cell(28, 7, 'Pengisian Air Bersih', 1,0, 'C');
+$this->fpdf->Cell(11, 7, 'Ton', 1,0, 'C');
 
-if($hasil['flowmeter_sebelum_2'] != NULL && $hasil['flowmeter_sesudah_2'] != NULL){
-    $this->fpdf->Cell(30, 7, $hasil['total_permintaan'], 1,0, 'C');
-    $this->fpdf->Cell(25, 7, $hasil['flowmeter_sebelum'].' , '.$hasil['flowmeter_sebelum_2'], 1,0, 'C');
-    $this->fpdf->Cell(25, 7, $hasil['flowmeter_sesudah'].' , '.$hasil['flowmeter_sesudah_2'], 1,0, 'C');
+if($hasil['flowmeter_sebelum_4'] != NULL && $hasil['flowmeter_sesudah_4'] != NULL){
+    if($hasil['flowmeter_sebelum_3'] != NULL && $hasil['flowmeter_sesudah_3'] != NULL){
+        if($hasil['flowmeter_sebelum_2'] != NULL && $hasil['flowmeter_sesudah_2'] != NULL){
+            $this->fpdf->Cell(27, 7, $hasil['total_permintaan'], 1,0, 'C');
+            $this->fpdf->Cell(46, 7, $hasil['flowmeter_sebelum'].' , '.$hasil['flowmeter_sebelum_2'].' , '.$hasil['flowmeter_sebelum_3'].' , '.$hasil['flowmeter_sebelum_4'], 1,0, 'C');
+            $this->fpdf->Cell(46, 7, $hasil['flowmeter_sesudah'].' , '.$hasil['flowmeter_sesudah_2'].' , '.$hasil['flowmeter_sesudah_3'].' , '.$hasil['flowmeter_sesudah_4'], 1,0, 'C');
+            $this->fpdf->Cell(30, 7, $hasil['realisasi'], 1,0, 'C');
+        }
+        else{
+            $this->fpdf->Cell(27, 7, $hasil['total_permintaan'], 1,0, 'C');
+            $this->fpdf->Cell(46, 7, $hasil['flowmeter_sebelum'].' , '.$hasil['flowmeter_sebelum_3'].' , '.$hasil['flowmeter_sebelum_4'], 1,0, 'C');
+            $this->fpdf->Cell(46, 7, $hasil['flowmeter_sesudah'].' , '.$hasil['flowmeter_sesudah_3'].' , '.$hasil['flowmeter_sesudah_4'], 1,0, 'C');
+            $this->fpdf->Cell(30, 7, $hasil['realisasi'], 1,0, 'C');
+        }
+    }
+    else{
+        $this->fpdf->Cell(27, 7, $hasil['total_permintaan'], 1,0, 'C');
+        $this->fpdf->Cell(46, 7, $hasil['flowmeter_sebelum'].' , '.$hasil['flowmeter_sebelum_4'], 1,0, 'C');
+        $this->fpdf->Cell(46, 7, $hasil['flowmeter_sesudah'].' , '.$hasil['flowmeter_sesudah_4'], 1,0, 'C');
+        $this->fpdf->Cell(30, 7, $hasil['realisasi'], 1,0, 'C');
+    }
+}
+else if($hasil['flowmeter_sebelum_3'] != NULL && $hasil['flowmeter_sesudah_3'] != NULL){
+    if($hasil['flowmeter_sebelum_2'] != NULL && $hasil['flowmeter_sesudah_2'] != NULL){
+        $this->fpdf->Cell(27, 7, $hasil['total_permintaan'], 1,0, 'C');
+        $this->fpdf->Cell(46, 7, $hasil['flowmeter_sebelum'].' , '.$hasil['flowmeter_sebelum_2'].' , '.$hasil['flowmeter_sebelum_3'], 1,0, 'C');
+        $this->fpdf->Cell(46, 7, $hasil['flowmeter_sesudah'].' , '.$hasil['flowmeter_sesudah_2'].' , '.$hasil['flowmeter_sesudah_3'], 1,0, 'C');
+        $this->fpdf->Cell(30, 7, $hasil['realisasi'], 1,0, 'C');
+    }
+    else{
+        $this->fpdf->Cell(27, 7, $hasil['total_permintaan'], 1,0, 'C');
+        $this->fpdf->Cell(46, 7, $hasil['flowmeter_sebelum'].' , '.$hasil['flowmeter_sebelum_3'], 1,0, 'C');
+        $this->fpdf->Cell(46, 7, $hasil['flowmeter_sesudah'].' , '.$hasil['flowmeter_sesudah_3'], 1,0, 'C');
+        $this->fpdf->Cell(30, 7, $hasil['realisasi'], 1,0, 'C');
+    }
+}
+else if($hasil['flowmeter_sebelum_2'] != NULL && $hasil['flowmeter_sesudah_2'] != NULL){
+    $this->fpdf->Cell(27, 7, $hasil['total_permintaan'], 1,0, 'C');
+    $this->fpdf->Cell(46, 7, $hasil['flowmeter_sebelum'].' , '.$hasil['flowmeter_sebelum_2'], 1,0, 'C');
+    $this->fpdf->Cell(46, 7, $hasil['flowmeter_sesudah'].' , '.$hasil['flowmeter_sesudah_2'], 1,0, 'C');
     $this->fpdf->Cell(30, 7, $hasil['realisasi'], 1,0, 'C');
-} else{
-    $this->fpdf->Cell(30, 7, $hasil['total_permintaan'], 1,0, 'C');
-    $this->fpdf->Cell(25, 7, $hasil['flowmeter_sebelum'], 1,0, 'C');
-    $this->fpdf->Cell(25, 7, $hasil['flowmeter_sesudah'], 1,0, 'C');
+}
+else{
+    $this->fpdf->Cell(27, 7, $hasil['total_permintaan'], 1,0, 'C');
+    $this->fpdf->Cell(46, 7, $hasil['flowmeter_sebelum'], 1,0, 'C');
+    $this->fpdf->Cell(46, 7, $hasil['flowmeter_sesudah'], 1,0, 'C');
     $this->fpdf->Cell(30, 7, $hasil['realisasi'], 1,0, 'C');
 }
 

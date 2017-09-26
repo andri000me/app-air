@@ -43,7 +43,7 @@
 </script>
 <?php
 if(isset($_SESSION['session'])) {
-    if($_SESSION['role'] == "keuangan") {
+    if($_SESSION['role'] == "keuangan" || $_SESSION['role'] == "admin") {
         ?>
         <div class="container" data-role="main" class="ui-content">
             <h3>Form Edit Master Agent</h3>

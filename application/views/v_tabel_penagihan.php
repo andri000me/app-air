@@ -1,5 +1,5 @@
 <?php
-if($this->session->userdata('session') != NULL && $this->session->userdata('role') == "operasi"){
+if($this->session->userdata('session') != NULL && ($this->session->userdata('role') == "operasi" || $this->session->userdata('role') == "admin")){
 ?>
     <script type="text/javascript">
         var xmlhttp = new XMLHttpRequest();
@@ -46,8 +46,8 @@ if($this->session->userdata('session') != NULL && $this->session->userdata('role
                     "<th><center>No Invoice</center></th>" +
                     "<th><center>ID Flow Meter</center></th>" +
                     "<th><center>Nama Tenant</center></th>" +
-                    "<th><center>Tanggal Awal Tagihan</center></th>" +
-                    "<th><center>Tanggal Akhir Tagihan</center></th>" +
+                    "<th><center>Periode Tagihan</center></th>" +
+                    "<th><center>Lokasi</center></th>" +
                     "<th><center>No Perjanjian</center></th>" +
                     "<th><center>Total Pemakaian</center></th>" +
                     "<th><center>Total Pembayaran</center></th>" +

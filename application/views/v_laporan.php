@@ -177,7 +177,7 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
     </body>
 <?php
 }
-else if($this->session->userdata('role') == "operasi" && $this->session->userdata('session') != NULL && $tipe == "ruko"){
+else if(($this->session->userdata('role') == "operasi" || $this->session->userdata('role') == "admin" )&& $this->session->userdata('session') != NULL && $tipe == "ruko"){
 ?>
     <body>
     <script>
@@ -622,7 +622,7 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
     </body>
     <?php
 }
-else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL && $tipe == "laut"){
+else if(($this->session->userdata('role') == "wtp" || $this->session->userdata('role') == "admin")&& $this->session->userdata('session') != NULL && $tipe == "laut"){
 ?>
     <script>
         //ambil data ketika form pencarian memiliki perubahan value
@@ -710,7 +710,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
     </body>
 <?php
 }
-else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL && $tipe == "darat"){
+else if(($this->session->userdata('role') == "wtp" || $this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL && $tipe == "darat"){
     ?>
     <body>
     <script>
@@ -799,7 +799,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
     </body>
     <?php
 }
-else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL && $tipe == "flow"){
+else if(($this->session->userdata('role') == "wtp" || $this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL && $tipe == "flow"){
     ?>
     <body>
 
@@ -1037,7 +1037,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
     </body>
     <?php
 }
-else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL && $tipe == "sumur"){
+else if(($this->session->userdata('role') == "wtp" || $this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL && $tipe == "sumur"){
     ?>
     <body>
     <script>

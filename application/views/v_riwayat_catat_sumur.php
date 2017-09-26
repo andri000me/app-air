@@ -1,5 +1,5 @@
 <?php
-if($this->session->userdata('role') == 'wtp'){
+if($this->session->userdata('role') == 'wtp' || $this->session->userdata('role') == 'admin'){
     ?>
     <script>
         //ambil data ketika form pencarian memiliki perubahan value

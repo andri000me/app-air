@@ -50,7 +50,7 @@
 </script>
 <?php
 if(isset($_SESSION['session'])) {
-    if($_SESSION['role'] == "wtp") {
+    if($_SESSION['role'] == "wtp" || $_SESSION['role'] == "admin") {
         ?>
         <div class="container" data-role="main" class="ui-content">
             <h3>Form Edit Data Flow Meter</h3>

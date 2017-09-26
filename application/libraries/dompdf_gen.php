@@ -22,9 +22,9 @@ class Dompdf_gen {
 		
 	public function __construct() {
 		
-		require_once APPPATH.'third_party/dompdf/dompdf_config.inc.php';
+		require_once APPPATH.'third_party/dompdf/autoload.inc.php';
 		
-		$pdf = new DOMPDF();
+		$pdf = new \Dompdf\Dompdf();
 		
 		$CI =& get_instance();
 		$CI->dompdf = $pdf;

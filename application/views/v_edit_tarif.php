@@ -44,7 +44,7 @@
 </script>
 <?php
 if(isset($_SESSION['session'])) {
-    if($_SESSION['role'] == "operasi") {
+    if($_SESSION['role'] == "operasi" || $_SESSION['role'] == "admin") {
         ?>
         <div class="container" data-role="main" class="ui-content">
             <h3>Form Edit Master Tarif</h3>

@@ -1,5 +1,5 @@
 <?php
-if($this->session->userdata('role') == "keuangan" && $this->session->userdata('session') != NULL){
+if(($this->session->userdata('role') == "keuangan" || $this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL){
 ?>
     <script type="text/javascript">
         //ambil data ketika form pencarian memiliki perubahan value

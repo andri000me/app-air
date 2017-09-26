@@ -1,5 +1,5 @@
 <?php
-if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL ){
+if(($this->session->userdata('role') == "wtp" || $this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL ){
     ?>
     <script type="text/javascript">
             var xmlhttp = new XMLHttpRequest();

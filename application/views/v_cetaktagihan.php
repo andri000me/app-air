@@ -1,5 +1,5 @@
 <?php
-if($this->session->userdata('role') == "operasi" && $this->session->userdata('session') != NULL && $tagihan != NULL){
+if(($this->session->userdata('role') == "operasi" || $this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL){
     ?>
     <!DOCTYPE html>
     <html>
@@ -11,30 +11,18 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
                 width: 100%;
                 margin: 0 auto;
             }
-            table th{
-                border:1px solid #000;
-                padding: 3px;
-                font-weight: bold;
-                text-align: center;
-            }
-            table td{
-                border:1px solid #000;
-                padding: 3px;
-                vertical-align: top;
-            }
         </style>
     </head>
     <body>
     <table border="0">
         <tr>
-            <td><h2>PT Kaltim Kariangau Terminal</h2><br><h2>Terminal Peti Kemas</h2><br></td>
+            <td><h2>PT Kaltim Kariangau Terminal</h2><h2>Terminal Peti Kemas</h2></td>
             <td align="right"><h4>Tanggal Tagihan : <?php echo date("d M Y",time())?></h4></td>
         </tr>
     </table>
-    <br><br><br><br><br><br><br>
     <h3 style="text-align: center"><?php echo $title?></h3>
     <h3 style="text-align: center">No Invoice : <?php echo $detail_tagihan->no_invoice ?></h3>
-    <br><br>
+    <br>
     <table border="0">
         <tr><th align="left">Customer</th></tr>
         <tr>
@@ -43,7 +31,7 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
             <td><?php echo $data_tagihan->nama_tenant ?></td>
         </tr>
         <tr>
-            <th align="left" style="width: 10%">Alamat</th>
+            <th align="left" style="width: 10%">Lokasi</th>
             <td style="width: 2%">:</td>
             <td><?php echo $data_tagihan->lokasi ?></td>
         </tr>
@@ -68,22 +56,20 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
         $i=1;
 
         if($tagihan != NULL){
-            foreach($tagihan as $data) {
-                if($data_tagihan->id_ref_flowmeter == $data->id_flow){
-                    if($i == 1 && $data->flow_hari_ini != NULL){
-                        $ttl_awal = $data->flow_hari_ini;
-                    }else{
-                        if($ttl_awal == 0){
-                            $ttl_awal = $data->flow_hari_ini;
-                        }
-                    }
-                    if($i == count($data) && $data->flow_hari_ini != NULL){
-                        $ttl_akhir = $data->flow_hari_ini;
-                    }
-                    $i++;
+            foreach($tagihan as $row) {
+                if($i == 1 && $row->flow_hari_ini != NULL){
+                    $ttl_awal = $row->flow_hari_ini;
                 }else{
-                    $i=1;
+                    if($ttl_awal == 0){
+                        $ttl_awal = $row->flow_hari_ini;
+                    }
                 }
+
+                if($i == count($tagihan) && $row->flow_hari_ini != NULL){
+                    $ttl_akhir = $row->flow_hari_ini;
+                }
+                $i++;
+                $tes = count($tagihan);
             }
         }
 
@@ -110,7 +96,7 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
             $data_tagihan->tarif = number_format($data_tagihan->tarif,0,'','.').',-';
         }
         ?>
-    <br><br><br><br><br><br><br>
+    <br>
     <table border="1">
         <?php
         if($data_tagihan->id_ref_tenant == NULL){
@@ -127,8 +113,8 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
             <tr>
                 <td align="center">Pemakaian Air</td>
                 <td align="center">Ton/m3</td>
-                <td align="center"><?php echo $ttl_awal?> m3</td>
-                <td align="center"><?php echo $ttl_akhir ?> m3</td>
+                <td align="center"><?php echo $ttl_awal ?></td>
+                <td align="center"><?php echo $ttl_akhir ?></td>
                 <td align="center"><?php echo $ton_total?> m3</td>
                 <td align="center"><?php echo $data_tagihan->tarif?></td>
                 <td align="center"><?php echo $total ?></td>
@@ -142,7 +128,8 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
                 <td align="center">Rp. <?php echo $total ?></td>
             </tr>
             <?php
-        }else{
+        }
+        else{
             ?>
             <tr>
                 <td align="center">Kegiatan</td>
@@ -170,7 +157,7 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
         }
         ?>
     </table>
-    <br><br><br>
+    <br><br>
     <table border="0">
         <tr>
             <td style="width: 80%" align="right" colspan="4">&nbsp;</td>
@@ -181,7 +168,7 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
             <td align="center">Asisten Manager Operasi</td>
         </tr>
     </table>
-    <br><br><br><br><br><br>
+    <br><br><br><br>
     <table border="0">
         <tr>
             <td style="width: 80%" align="right" colspan="4">&nbsp;</td>

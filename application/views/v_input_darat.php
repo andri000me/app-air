@@ -1,5 +1,5 @@
 <?php
-if($this->session->userdata('role') == "loket" && $this->session->userdata('session') != NULL){
+if(($this->session->userdata('role') == "loket" || $this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL){
 ?>
     <script>
     $(function () {

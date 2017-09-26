@@ -179,10 +179,8 @@
                                     <li>
                                         <a href="<?php echo base_url('main/view?id=cetak_laporan_sumur'); ?>">Laporan Pencatatan Sumur</a>
                                     </li>
-
                                 </ul>
                             </li>
-
                             <li>
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Flow Meter</a>
                                 <ul class="dropdown-menu">
@@ -201,9 +199,6 @@
                             <li>
                                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">Sumur</a>
                                 <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=sumur'); ?>">Master Sumur</a>
-                                    </li>
                                     <li>
                                         <a href="<?php echo base_url('main/view?id=pompa'); ?>">Master Pompa</a>
                                     </li>
@@ -259,7 +254,144 @@
                         else{
                             ?>
                             <li>
-                                <a href="<?php echo base_url('main/view?id=tenant'); ?>">Master Tenant</a>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Menu Loket</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=main_loket'); ?>">Daftar Permohonan Pelayanan</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=darat'); ?>">Transaksi Baru</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=monitoring_darat'); ?>">Monitoring Layanan Jasa Air</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Menu Keuangan</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=main_keuangan'); ?>">Realisasi Pembayaran Jasa Air Kapal</a>
+                                    </li>
+                                    <li>
+                                        <a href='<?php echo base_url('main/view?id=realisasi_pembayaran_darat'); ?>'>Realisasi Pembayaran Air Darat</a>
+                                    </li>
+                                    <li>
+                                        <a href='<?php echo base_url('main/view?id=validasi_pembayaran_darat'); ?>'>Validasi Pembayaran Air Darat</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=cancel_pembayaran_darat'); ?>">Pembatalan Pembayaran Air Darat</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=realisasi_pembayaran_tenant'); ?>">Realisasi Pembayaran Air Tenant</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Menu WTP</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=main_wtp'); ?>">Transaksi Air Darat</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=transaksi_laut'); ?>">Transaksi Air Kapal</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=monitoring_darat'); ?>">Monitoring Layanan Jasa Air Darat</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=monitoring_kapal'); ?>">Monitoring Layanan Jasa Air Kapal</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=transaksi_tenant'); ?>">Pencatatan Harian Penggunaan Air</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=riwayat_pencatatan_flow'); ?>">Riwayat Pencatatan Harian Penggunaan Air</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=catat_sumur'); ?>">Pencatatan Harian Sumur</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=riwayat_pencatatan_sumur'); ?>">Riwayat Pencatatan Harian Sumur</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Menu Operasi</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=main_operasi'); ?>">Daftar Tagihan Air Kapal</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/tarif'); ?>">Penyesuaian Tarif</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=tagihan'); ?>">Penagihan Ruko</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=daftar_tagihan'); ?>">Daftar Tagihan</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Menu Perencanaan</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=main_perencanaan'); ?>">Daftar Pelayanan Jasa Air Kapal</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=laut'); ?>">Permohonan Baru</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Laporan</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_flow'); ?>">Laporan Pencatatan Flow Meter</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_sumur'); ?>">Laporan Pencatatan Sumur</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Air Ruko</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Master Data</a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=sumur'); ?>">Master Sumur</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=pompa'); ?>">Master Pompa</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=flowmeter'); ?>">Master Flow Meter</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/master?id=darat'); ?>">Master Pengguna Jasa</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/master?id=laut'); ?>">Master VESSEL</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/agent'); ?>">Master Agent</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=tenant'); ?>">Master Tenant</a>
+                                    </li>
+                                    <li>
+                                        <a href="<?php echo base_url('main/view?id=lumpsum'); ?>">Master Lumpsum</a>
+                                    </li>
+                                </ul>
                             </li>
                             <?php
                         }

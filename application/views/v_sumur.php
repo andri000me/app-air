@@ -1,6 +1,6 @@
 <?php
 if(isset($_SESSION['session'])) {
-    if($_SESSION['role'] == "wtp"){
+    if($_SESSION['role'] == "admin"){
         ?>
         <script type="text/javascript">
             $(document).ready(function (e) {
@@ -8,14 +8,15 @@ if(isset($_SESSION['session'])) {
                     var id_sumur = $('#id_sumur').val();
                     var nama_sumur = $('#nama_sumur').val();
                     var lokasi= $('#lokasi').val();
-                    var id_pompa = $('#id_pompa').val();
+                    var debit_air = $('#debit_air').val();
+
                     var form_data = new FormData();
                     var base_url = '<?php echo base_url();?>';
                     var text_alert;
                     form_data.append('id_sumur',id_sumur);
                     form_data.append('nama_sumur',nama_sumur);
                     form_data.append('lokasi',lokasi);
-                    form_data.append('id_pompa',id_pompa);
+                    form_data.append('debit_air',debit_air);
                     $.ajax({
                         url: base_url +'index.php/main/input_data_sumur', // point to server-side controller method
                         dataType: 'text', // what to expect back from the server
@@ -62,6 +63,11 @@ if(isset($_SESSION['session'])) {
                         <td><input class="form-control" type="text" name="lokasi" id="lokasi" required></td>
                     </tr>
                     <tr>
+                        <td><label>Debit Air (L/Detik)</label></td>
+                        <td>:</td>
+                        <td><input class="form-control" type="text" name="debit_air" id="debit_air" required></td>
+                    </tr>
+                    <tr>
                         <td colspan="3">
                             <button class="btn btn-success" id="upload">Input</button>
                         </td>
@@ -88,6 +94,9 @@ if(isset($_SESSION['session'])) {
                             <center>Lokasi
                         </th>
                         <th>
+                            <center>Debit Air (L/Detik)
+                        </th>
+                        <th>
                             <center>Aksi
                         </th>
                     </tr>
@@ -107,6 +116,9 @@ if(isset($_SESSION['session'])) {
                         </th>
                         <th>
                             <center>Lokasi
+                        </th>
+                        <th>
+                            <center>Debit Air (L/Detik)
                         </th>
                         <th>
                             <center>Aksi

@@ -83,9 +83,9 @@
             }
             else if($tipe == "sumur"){
                 $this->db->like('id_flow', $nama);
-                $this->db->from('master_sumur,master_pompa,master_flowmeter');
-                $this->db->where('id_ref_sumur = id_master_sumur');
-                $this->db->where('id_ref_pompa = id_master_pompa');
+                $this->db->from('master_flowmeter');
+                $this->db->join('master_pompa','id_ref_pompa = id_master_pompa','left');
+                $this->db->join('master_sumur','id_ref_sumur = id_master_sumur','left');
             }
             else{
                 $this->db->like('nama_vessel', $nama);
@@ -471,7 +471,7 @@
             $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
             $this->db->where('status_perekaman',1);
             $this->db->where('master_tenant.id_ref_flowmeter =',$id);
-            $this->db->order_by('flow_hari_ini', 'ASC');
+            $this->db->order_by('waktu_perekaman', 'ASC');
             $query = $this->db->get();
 
             if($query->num_rows() > 0){
@@ -485,11 +485,11 @@
             $this->db->select('*');
             $this->db->from('master_tenant');
             $this->db->join('master_flowmeter','master_tenant.id_ref_flowmeter = id_flow','left');
-            $this->db->join('pencatatan_flow','pencatatan_flow.id_ref_flowmeter = id_flow','left');
+            //$this->db->join('pencatatan_flow','pencatatan_flow.id_ref_flowmeter = id_flow','left');
             $this->db->join('pengguna_jasa','pengguna_jasa_id = id_tarif','left');
             $this->db->join('master_lumpsum','id_ref_tenant = id_tenant','left');
-            $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
-            $this->db->where('status_perekaman',1);
+            //$this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
+            //$this->db->where('status_perekaman',1);
             $this->db->where('id_flow =',$id);
             $query = $this->db->get();
 
@@ -517,11 +517,9 @@
         function getDataLaporan($tgl_awal = '',$tgl_akhir = '', $tipe){
             if($tipe == "darat"){
                 $this->db->select('*');
-                $this->db->from('transaksi_darat , pembeli_darat ,pengguna_jasa');
+                $this->db->from('transaksi_darat , pembeli_darat');
                 $this->db->where('tgl_transaksi BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
-                $this->db->where('pengguna_jasa_id_tarif !=','1');
                 $this->db->where('pembeli_darat_id_pengguna_jasa = id_pengguna_jasa');
-                $this->db->where('pengguna_jasa_id_tarif = id_tarif');
                 $this->db->where('soft_delete =',0);
                 $this->db->order_by('tgl_transaksi','ASC');
             }
@@ -529,10 +527,9 @@
                 $this->db->select('*');
                 $this->db->from('transaksi_darat');
                 $this->db->join('pembeli_darat','pembeli_darat_id_pengguna_jasa = id_pengguna_jasa','left outer');
-                $this->db->join('pengguna_jasa','pengguna_jasa_id_tarif = id_tarif','left outer');
+                //$this->db->join('pengguna_jasa','pengguna_jasa_id_tarif = id_tarif','left outer');
                 $this->db->join('realisasi_transaksi_darat','id_ref_transaksi = id_transaksi','left outer');
                 $this->db->where('tgl_transaksi BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
-                $this->db->where('pengguna_jasa_id_tarif !=','1');
                 $this->db->where('soft_delete =',0);
                 $this->db->order_by('tgl_transaksi','ASC');
             }
@@ -541,7 +538,6 @@
                 $this->db->from('realisasi_transaksi_laut');
                 $this->db->join('transaksi_laut','id_ref_transaksi = id_transaksi','left');
                 $this->db->join('pembeli_laut','pembeli_laut_id_pengguna_jasa = id_pengguna_jasa','left');
-                $this->db->join('pengguna_jasa','pengguna_jasa_id_tarif = id_tarif','left');
                 $this->db->join('master_agent','id_agent = id_agent_master','left');
                 $this->db->where('tgl_transaksi BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
                 $this->db->where('soft_delete =',0);
@@ -549,10 +545,9 @@
             }
             else if($tipe == "laut_operasi"){
                 $this->db->select('*');
-                $this->db->from('transaksi_laut , pembeli_laut ,pengguna_jasa,master_agent');
+                $this->db->from('transaksi_laut , pembeli_laut ,master_agent');
                 $this->db->where('tgl_transaksi BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
                 $this->db->where('pembeli_laut_id_pengguna_jasa = id_pengguna_jasa');
-                $this->db->where('pengguna_jasa_id_tarif = id_tarif');
                 $this->db->where('id_agent = id_agent_master');
                 $this->db->where('soft_delete =',0);
                 $this->db->order_by('tgl_transaksi','ASC');
@@ -566,6 +561,7 @@
                 $this->db->where('status_aktif',1);
             }
             else if($tipe == "sumur"){
+                /*
                 $this->db->select('*');
                 $this->db->from('master_sumur,pencatatan_sumur,master_flowmeter,master_pompa');
                 $this->db->where('id_ref_flowmeter = id_flow');
@@ -574,17 +570,21 @@
                 $this->db->where('waktu_rekam_awal BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
                 $this->db->where('status_pencatatan',1);
                 $this->db->order_by('waktu_rekam_awal','ASC');
+                */
+                $this->db->select('*');
+                $this->db->from('view_pencatatan_sumur');
+                $this->db->where('waktu_rekam_awal BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
+                $this->db->order_by('waktu_rekam_awal','ASC');
             }
-            elseif($tipe == "ruko_keuangan"){
+            else if($tipe == "ruko_keuangan"){
                 $this->db->select('*');
                 $this->db->from('realisasi_transaksi_tenant');
                 $this->db->join('transaksi_tenant','id_ref_transaksi = id_transaksi','left');
                 $this->db->join('master_flowmeter','id_flow = transaksi_tenant.id_ref_flowmeter','left');
                 $this->db->join('master_tenant','id_flow = master_tenant.id_ref_flowmeter','left');
-                $this->db->join('pengguna_jasa','pengguna_jasa_id = id_tarif','left');
                 $this->db->join('master_lumpsum','id_ref_tenant = id_tenant','left');
                 $this->db->where('tgl_transaksi BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
-                $this->db->where('soft_delete',0);
+                //$this->db->where('soft_delete',0);
                 $this->db->order_by('id_realisasi','ASC');
             }
             else{
@@ -592,7 +592,6 @@
                 $this->db->from('transaksi_tenant');
                 $this->db->join('master_flowmeter','id_flow = transaksi_tenant.id_ref_flowmeter','left');
                 $this->db->join('master_tenant','id_flow = master_tenant.id_ref_flowmeter','left');
-                $this->db->join('pengguna_jasa','pengguna_jasa_id = id_tarif','left');
                 $this->db->join('master_lumpsum','id_ref_tenant = id_tenant','left');
                 $this->db->where('tgl_transaksi BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
                 $this->db->where('soft_delete',0);
@@ -635,7 +634,7 @@
             $query = $this->db->get();
 
             if($query->num_rows() > 0){
-                return $query->result();
+                return $query->row();
             } else{
                 return false;
             }
@@ -689,6 +688,8 @@
                 'tgl_akhir' => $data['tgl_akhir'],
                 'id_ref_flowmeter' => $data['id'],
                 'total_pakai' => $data['total_pakai'],
+                'tarif' => $data['tarif'],
+                'diskon' => $data['diskon'],
                 'total_bayar' => $data['total_bayar'],
                 'no_invoice' => $data['no_invoice'],
             );
@@ -1436,6 +1437,33 @@
             return $query->row();
         }
 
+        public function getDataPembeliDarat($id){
+            $query = $this->db->select('*')
+                ->from('pembeli_darat')
+                ->where('id_pengguna_jasa',$id)
+                ->get();
+
+            return $query->row();
+        }
+
+        public function getDataPembeliLaut($id){
+            $query = $this->db->select('*')
+                ->from('pembeli_laut')
+                ->where('id_pengguna_jasa',$id)
+                ->get();
+
+            return $query->row();
+        }
+
+        public function getDataTenant($id){
+            $query = $this->db->select('*')
+                ->from('master_tenant')
+                ->where('id_ref_flowmeter',$id)
+                ->get();
+
+            return $query->row();
+        }
+
         //fungsi database untuk master data laut
         public function get_datatables_laut()
         {
@@ -1735,8 +1763,10 @@
 
         //fungsi database untuk notifikasi
         public function notifDarat(){
+            $where = "(status_pembayaran='1' OR status_invoice='1')";
             $this->db->select("*");
             $this->db->from('transaksi_darat');
+            $this->db->where($where);
             $this->db->where('status_delivery =',0);
             $this->db->where('batal_kwitansi =',0);
             $this->db->where('soft_delete =',0);
@@ -1838,6 +1868,16 @@
             if($this->db->affected_rows() > 0)
                 return TRUE;
 
+        }
+
+        public function cekPengisian($id){
+            $this->db->where('pengisi =',NULL);
+            $this->db->where('id_transaksi',$id);
+            $this->db->from('transaksi_laut');
+            $query = $this->db->get();
+
+            if($query->num_rows())
+                return TRUE;
         }
 
         public function cancelNota($data){

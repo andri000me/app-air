@@ -1,5 +1,5 @@
 <?php
-if($this->session->userdata('role') == 'wtp'){
+if($this->session->userdata('role') == 'wtp' || $this->session->userdata('role') == 'admin'){
     ?>
     <script>
         $(function () {
@@ -20,6 +20,11 @@ if($this->session->userdata('role') == 'wtp'){
                     $('#id_pompa_akhir').val(ui.item.id_pompa);
                     $('#id_flowmeter_akhir').val(ui.item.id_flowmeter);
                     $('#nama_flowmeter_akhir').val(ui.item.nama_flowmeter);
+                    $('#flow_hari_ini_awal').val(ui.item.flowmeter_akhir);
+                    $('#debit_awal_disable').val(ui.item.debit_air);
+                    $('#debit_awal').val(ui.item.debit_air);
+                    $('#debit_akhir_disable').val(ui.item.debit_air);
+                    $('#debit_akhir').val(ui.item.debit_air);
                 }
             });
         });
@@ -148,7 +153,8 @@ if($this->session->userdata('role') == 'wtp'){
                                 </td>
                                 <td>:</td>
                                 <td>
-                                    <input type="number" class="form-control" step=".01" id="debit_awal" name="debit_awal" placeholder="Satuan (L/Detik)"/>
+                                    <input type="number" disabled class="form-control" step=".01" id="debit_awal_disable" name="debit_awal_disable" placeholder="Satuan (L/Detik)"/>
+                                    <input type="hidden" class="form-control" step=".01" id="debit_awal" name="debit_awal" placeholder="Satuan (L/Detik)"/>
                                 </td>
                             </div>
                         </tr>
@@ -272,7 +278,8 @@ if($this->session->userdata('role') == 'wtp'){
                                 </td>
                                 <td>:</td>
                                 <td>
-                                    <input type="number" class="form-control" step=".01" id="debit_akhir" name="debit_akhir" placeholder="Satuan (L/Detik)"/>
+                                    <input type="number" disabled class="form-control" step=".01" id="debit_akhir_disable" name="debit_akhir_disable" placeholder="Satuan (L/Detik)"/>
+                                    <input type="hidden" class="form-control" step=".01" id="debit_akhir" name="debit_akhir" placeholder="Satuan (L/Detik)"/>
                                 </td>
                             </div>
                         </tr>

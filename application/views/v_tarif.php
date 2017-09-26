@@ -1,6 +1,6 @@
 <?php
 if(isset($_SESSION['session'])) {
-    if($_SESSION['role'] == "operasi"){
+    if($_SESSION['role'] == "operasi" || $_SESSION['role'] == "admin"){
 ?>
         <script type="text/javascript">
             $(document).ready(function (e) {

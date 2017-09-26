@@ -282,7 +282,7 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
     </html>
 <?php
 }
-else if($this->session->userdata('role') == "operasi" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "ruko"){
+else if(($this->session->userdata('role') == "operasi" || $this->session->userdata('role') == "admin")&& $this->session->userdata('session') != NULL && $this->input->get('tipe') == "ruko"){
 ?>
     <!DOCTYPE html>
 <html>
@@ -319,6 +319,7 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
         <th align="center">No</th>
         <th align="center">ID FLow Meter</th>
         <th align="center">Nama Tenant</th>
+        <th align="center">No Perjanjian</th>
         <th align="center">Tarif</th>
         <th align="center">Diskon</th>
         <th align="center">Flow Meter Awal</th>
@@ -333,41 +334,51 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
     $no = 0;
     $ton_total = 0;
 
-    foreach ($laporan as $row) {
-        $no++;
-        $data_tagihan = $this->data->getTagihan($tgl_awal, $tgl_akhir, $row->id_flow);
-        $pembayaran = 0;
-        $ttl_akhir = 0;
-        $ttl_awal = 0;
-        $ton = 0;
+    if($laporan != NULL) {
+        foreach ($laporan as $row) {
+            $no++;
+            $data_tagihan = $this->data->getTagihan($tgl_awal, $tgl_akhir, $row->id_flow);
+            $pembayaran = 0;
+            $ttl_akhir = 0;
+            $ttl_awal = 0;
+            $ton = 0;
+            $no_perjanjian = '';
+            $diskon = '';
 
-        $i = 1;
+            $i = 1;
 
-        if ($data_tagihan != NULL) {
-            foreach ($data_tagihan as $data) {
-                if ($data->id_ref_flowmeter == $row->id_flow) {
-                    if ($i == 1 && $data->flow_hari_ini != NULL) {
-                        $ttl_awal = $data->flow_hari_ini;
-                    } else {
-                        if ($ttl_awal == 0) {
+            if ($data_tagihan != NULL) {
+                foreach ($data_tagihan as $data) {
+                    if ($data->id_ref_flowmeter == $row->id_flow) {
+                        if ($i == 1 && $data->flow_hari_ini != NULL) {
                             $ttl_awal = $data->flow_hari_ini;
+                        } else {
+                            if ($ttl_awal == 0) {
+                                $ttl_awal = $data->flow_hari_ini;
+                            }
                         }
-                    }
 
-                    if ($i == count($data_tagihan) && $data->flow_hari_ini != NULL) {
-                        $ttl_akhir = $data->flow_hari_ini;
+                        if ($i == count($data_tagihan) && $data->flow_hari_ini != NULL) {
+                            $ttl_akhir = $data->flow_hari_ini;
+                        }
+                        $i++;
+                    } else {
+                        $i = 1;
                     }
-                    $i++;
-                } else {
-                    $i = 1;
                 }
+
+                $ton_koma = $ttl_akhir - $ttl_awal;
+                $ton = number_format($ton_koma, 2);
+                $ton_total += $ton;
+                $diskon = $row->diskon;
+                $tarif = $row->tarif;
+            } else {
+                $ton = 0;
+                $no_perjanjian = $row->no_perjanjian;
+                $diskon = '';
+                $tarif = $row->nominal;
             }
-
-            $ton_koma = $ttl_akhir - $ttl_awal;
-            $ton = number_format($ton_koma,2);
-            $ton_total += $ton;
-
-            if ($data->id_ref_tenant == NULL) {
+            if ($row->id_ref_tenant == NULL) {
                 if ($row->diskon != NULL) {
                     $pembayaran = ($row->tarif - ($row->tarif * $row->diskon / 100)) * $ton;
                 } else {
@@ -392,27 +403,30 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
             else
                 $pembayaran = number_format($pembayaran, 0, '', '.') . ',-';
 
-            if ($row->tarif == '0')
+            if ($tarif == '0')
                 return '';
-            else if ($row->tarif < 100)
-                $row->tarif .= ',-';
+            else if ($tarif < 100)
+                $tarif .= ',-';
             else
-                $row->tarif = number_format($row->tarif, 0, '', '.') . ',-';
+                $tarif = number_format($tarif, 0, '', '.') . ',-';
             ?>
             <tr>
                 <td align="center"><?php echo $no ?></td>
                 <td align="center"><?php echo $row->id_flowmeter ?></td>
                 <td align="center"><?php echo $row->nama_tenant ?></td>
-                <td align="center"><?php echo $row->tarif ?></td>
-                <td align="center"><?php echo $row->diskon ?></td>
+                <td align="center"><?php echo $no_perjanjian ?></td>
+                <td align="center"><?php echo $tarif ?></td>
+                <td align="center"><?php echo $diskon ?></td>
                 <td align="center"><?php echo $ttl_awal ?></td>
                 <td align="center"><?php echo $ttl_akhir ?></td>
                 <td align="center"><?php echo $ton ?></td>
                 <td align="center"><?php echo $pembayaran ?></td>
             </tr>
             <?php
+
         }
     }
+
     if ($total == '0')
         return '';
     else if ($total < 100)
@@ -422,7 +436,7 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
 
     ?>
     <tr>
-        <td align="center" colspan="7"><b>Total</b></td>
+        <td align="center" colspan="8"><b>Total</b></td>
         <td align="center"><b><?php echo number_format($ton_total,2)?></b></td>
         <td align="center"><b><?php echo $total?></b></td>
     </tr>
@@ -693,7 +707,7 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
     </html>
     <?php
 }
-else if($this->session->userdata('role') == "keuangan" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "laut" ){
+else if(($this->session->userdata('role') == "keuangan" || $this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "laut" ){
     ?>
     <!DOCTYPE html>
     <html>
@@ -868,7 +882,7 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
     </html>
     <?php
 }
-else if($this->session->userdata('role') == "keuangan" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "ruko_keuangan"){
+else if(($this->session->userdata('role') == "keuangan" || $this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "ruko_keuangan"){
     ?>
     <!DOCTYPE html>
     <html>
@@ -907,6 +921,7 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
             <th align="center">No Nota</th>
             <th align="center">No Faktur</th>
             <th align="center">Nama Tenant</th>
+            <th align="center">No Perjanjian</th>
             <th align="center">Alamat</th>
             <th align="center">No. Telepon</th>
             <th align="center">Total Penggunaan</th>
@@ -919,41 +934,46 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
         $no = 0;
         $ton_total = 0;
 
-        foreach ($laporan as $row) {
-            $no++;
-            $data_tagihan = $this->data->getTagihan($tgl_awal, $tgl_akhir, $row->id_flow);
-            $pembayaran = 0;
-            $ttl_akhir = 0;
-            $ttl_awal = 0;
-            $ton = 0;
+        if($laporan != NULL) {
+            foreach ($laporan as $row) {
+                $no++;
+                $data_tagihan = $this->data->getTagihan($tgl_awal, $tgl_akhir, $row->id_flow);
+                $pembayaran = 0;
+                $ttl_akhir = 0;
+                $ttl_awal = 0;
+                $ton = 0;
+                $no_perjanjian = '';
 
-            $i = 1;
+                $i = 1;
 
-            if ($data_tagihan != NULL) {
-                foreach ($data_tagihan as $data) {
-                    if ($data->id_ref_flowmeter == $row->id_flow) {
-                        if ($i == 1 && $data->flow_hari_ini != NULL) {
-                            $ttl_awal = $data->flow_hari_ini;
-                        } else {
-                            if ($ttl_awal == 0) {
+                if ($data_tagihan != NULL) {
+                    foreach ($data_tagihan as $data) {
+                        if ($data->id_ref_flowmeter == $row->id_flow) {
+                            if ($i == 1 && $data->flow_hari_ini != NULL) {
                                 $ttl_awal = $data->flow_hari_ini;
+                            } else {
+                                if ($ttl_awal == 0) {
+                                    $ttl_awal = $data->flow_hari_ini;
+                                }
                             }
-                        }
 
-                        if ($i == count($data_tagihan) && $data->flow_hari_ini != NULL) {
-                            $ttl_akhir = $data->flow_hari_ini;
+                            if ($i == count($data_tagihan) && $data->flow_hari_ini != NULL) {
+                                $ttl_akhir = $data->flow_hari_ini;
+                            }
+                            $i++;
+                        } else {
+                            $i = 1;
                         }
-                        $i++;
-                    } else {
-                        $i = 1;
                     }
+
+                    $ton_koma = $ttl_akhir - $ttl_awal;
+                    $ton_total += $ton_koma;
+                    $ton = number_format($ton_koma, 2);
+                } else {
+                    $ton = 0;
+                    $no_perjanjian = $row->no_perjanjian;
                 }
-
-                $ton_koma = $ttl_akhir - $ttl_awal;
-                $ton_total += $ton_koma;
-                $ton = number_format($ton_koma,2);
-
-                if ($data->id_ref_tenant == NULL) {
+                if ($row->id_ref_tenant == NULL) {
                     if ($row->diskon != NULL) {
                         $pembayaran = ($row->tarif - ($row->tarif * $row->diskon / 100)) * $ton;
                     } else {
@@ -991,6 +1011,7 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
                     <td align="center"><?php echo $row->no_nota ?></td>
                     <td align="center"><?php echo $row->no_faktur ?></td>
                     <td align="center"><?php echo $row->nama_tenant ?></td>
+                    <td align="center"><?php echo $no_perjanjian ?></td>
                     <td align="center"><?php echo $row->lokasi ?></td>
                     <td align="center"><?php echo $row->no_telp ?></td>
                     <td align="center"><?php echo $ton ?></td>
@@ -999,6 +1020,7 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
                 <?php
             }
         }
+
         if ($total == '0')
             return '';
         else if ($total < 100)
@@ -1018,7 +1040,7 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
     </html>
     <?php
 }
-else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "darat"){
+else if(($this->session->userdata('role') == "wtp" || $this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "darat"){
     ?>
     <!DOCTYPE html>
     <html>
@@ -1163,7 +1185,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
     </html>
     <?php
 }
-else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "laut_operasi" ){
+else if(($this->session->userdata('role') == "wtp" || $this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "laut_operasi" ){
     ?>
     <!DOCTYPE html>
     <html>
@@ -1334,7 +1356,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
     </html>
     <?php
 }
-else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "sumur"){
+else if(($this->session->userdata('role') == "wtp" || $this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "sumur"){
     ?>
     <!DOCTYPE html>
     <html>
@@ -1391,22 +1413,15 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
         $no = 1;
 
         foreach($laporan as $row) {
-            $data_tagihan = $this->data->getSumur($tgl_awal, $tgl_akhir, $row->id_flow);
             $ttl_akhir = 0;
             $ttl_awal = 0;
 
-            if($data_tagihan != NULL){
-                foreach ($data_tagihan as $data) {
-                    if ($data->id_ref_flowmeter == $row->id_flow) {
-                        $ttl_akhir = $row->flow_sumur_akhir;
-                        $ttl_awal = $row->flow_sumur_awal;
-                    }
-                }
+            $ttl_akhir = $row->flow_sumur_akhir;
+            $ttl_awal = $row->flow_sumur_awal;
 
-                $issuer = $this->data->getIssuer($row->id_pencatatan);
-                $ton_koma = $ttl_akhir - $ttl_awal;
-                $ton_total += $ton_koma;
-                $ton = number_format($ton_koma,2);
+            $ton_koma = $ttl_akhir - $ttl_awal;
+            $ton_total += $ton_koma;
+            $ton = number_format($ton_koma,2);
 
                 ?>
                 <tr>
@@ -1424,11 +1439,10 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
                     <td align="center"><?php echo $row->debit_air_akhir ?></td>
                     <td align="center"><?php echo $row->flow_sumur_akhir ?></td>
                     <td align="center"><?php echo $ton ?></td>
-                    <td align="center"><?php echo $issuer->issued_by ?></td>
+                    <td align="center"><?php echo $row->issued_by ?></td>
                 </tr>
                 <?php
                 $no++;
-            }
         }
 
         ?>
@@ -1447,7 +1461,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
     </html>
     <?php
 }
-else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "flow"){
+else if(($this->session->userdata('role') == "wtp" || $this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL && $this->input->get('tipe') == "flow"){
     ?>
     <!DOCTYPE html>
     <html>

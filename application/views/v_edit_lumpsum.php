@@ -1,6 +1,6 @@
 <?php
 if(isset($_SESSION['session'])) {
-    if($_SESSION['role'] == "operasi"){
+    if($_SESSION['role'] == "operasi" || $_SESSION['role'] == "admin"){
     ?>
         <script type="text/javascript">
             $(document).ready(function (e) {
@@ -90,29 +90,6 @@ if(isset($_SESSION['session'])) {
                         <td><input class="form-control" type="text" name="nama_perjanjian" id="nama_perjanjian" required value="<?php echo $isi['perihal'] ?>"></td>
                     </tr>
                     <tr>
-                        <td><label>Waktu Kadaluarsa</label></td>
-                        <td>:</td>
-                        <td>
-                            <div class="form-group">
-                                <div class='input-group date' id='datetimepicker2'>
-                                    <input type='text' class="form-control" name="waktu_kadaluarsa" id="waktu_kadaluarsa" value="<?php echo $isi['waktu_kadaluarsa'] ?>"/>
-                                    <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                </div>
-                            </div>
-                            <script type="text/javascript">
-                                $(function () {
-                                    $('#datetimepicker2').datepicker({
-                                        format: "yyyy-mm-dd",
-                                        autoclose: true,
-                                        todayHighlight: true
-                                    });
-                                });
-                            </script>
-                        </td>
-                    </tr>
-                    <tr>
                         <td><label>Nama Tenant</label></td>
                         <td>:</td>
                         <td>
@@ -152,6 +129,29 @@ if(isset($_SESSION['session'])) {
                         <td>:</td>
                         <td>
                             <input class="form-control" type="text" name="nominal" id="nominal" value="<?php echo $isi['nominal'] ?>">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><label>Waktu Kadaluarsa</label></td>
+                        <td>:</td>
+                        <td>
+                            <div class="form-group">
+                                <div class='input-group date' id='datetimepicker2'>
+                                    <input type='text' class="form-control" name="waktu_kadaluarsa" id="waktu_kadaluarsa" value="<?php echo $isi['waktu_kadaluarsa'] ?>"/>
+                                    <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                </div>
+                            </div>
+                            <script type="text/javascript">
+                                $(function () {
+                                    $('#datetimepicker2').datepicker({
+                                        format: "yyyy-mm-dd",
+                                        autoclose: true,
+                                        todayHighlight: true
+                                    });
+                                });
+                            </script>
                         </td>
                     </tr>
                     <tr>

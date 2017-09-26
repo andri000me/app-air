@@ -1,6 +1,6 @@
 <?php
 if(isset($_SESSION['session'])) {
-    if($_SESSION['role'] == "operasi" && $tipe == "ruko") {
+    if(($_SESSION['role'] == "operasi" || $_SESSION['role'] == "admin") && $tipe == "ruko") {
         ?>
 <script type="text/javascript">
     $(document).ready(function (e) {
@@ -187,7 +187,7 @@ if(isset($_SESSION['session'])) {
         </script>
         <?php
     }
-    else if($_SESSION['role'] == "loket" && $tipe == "darat"){
+    else if(($_SESSION['role'] == "loket" || $_SESSION['role'] == "admin") && $tipe == "darat"){
 ?>
         <script type="text/javascript">
             $(document).ready(function (e) {
@@ -377,7 +377,7 @@ if(isset($_SESSION['session'])) {
         </script>
 <?php
     }
-    else if($_SESSION['role'] == "perencanaan" && $tipe == "laut"){
+    else if(($_SESSION['role'] == "perencanaan" || $_SESSION['role'] == "admin") && $tipe == "laut"){
 ?>
         <script type="text/javascript">
             $(document).ready(function (e) {
@@ -631,7 +631,7 @@ if(isset($_SESSION['session'])) {
         </script>
 <?php
     }
-    else if($_SESSION['role'] == "keuangan" && $tipe == "laut"){
+    else if(($_SESSION['role'] == "keuangan" && $tipe == "laut") || ($_SESSION['role'] == "admin" && $tipe == "laut_admin")){
         ?>
         <script type="text/javascript">
             $(document).ready(function (e) {

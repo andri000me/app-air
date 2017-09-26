@@ -45,7 +45,7 @@
 </script>
 <?php
 if(isset($_SESSION['session'])) {
-    if($_SESSION['role'] == "loket") {
+    if($_SESSION['role'] == "loket" || $_SESSION['role'] == "admin") {
         ?>
         <div class="container" data-role="main" class="ui-content">
             <h3>Form Edit Master Pengguna Jasa</h3>
