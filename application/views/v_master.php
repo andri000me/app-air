@@ -481,7 +481,7 @@ if(isset($_SESSION['session'])) {
                         <td><label>Nama Perusahaan</label></td>
                         <td>:</td>
                         <td>
-                            <select name="id_agent" id="id_agent" onchange="showAgent(this.value)">
+                            <select class="form-control" name="id_agent" id="id_agent" onchange="showAgent(this.value)">
                                 <option value=""></option>
                                 <?php
                                     foreach ($agent as $row){

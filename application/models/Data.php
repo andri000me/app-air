@@ -194,7 +194,51 @@
             }
         }
 
-        public function get_tabel_transaksi($tipe){
+        public function get_tabel_transaksi($tipe, $config = ''){
+            if($tipe == "darat"){
+                $this->db->select('*');
+                $this->db->from('transaksi_darat ,pembeli_darat,pengguna_jasa');
+                $this->db->where('pengguna_jasa_id_tarif !=','1');
+                $this->db->where('pembeli_darat_id_pengguna_jasa = id_pengguna_jasa');
+                $this->db->where('pengguna_jasa_id_tarif = id_tarif');
+                $this->db->where('soft_delete = 0');
+                $this->db->order_by('tgl_transaksi', 'DESC');
+            }else if($tipe == "ruko"){
+                $this->db->select('*');
+                $this->db->from('transaksi_tenant');
+                $this->db->join('master_flowmeter','transaksi_tenant.id_ref_flowmeter = id_flow','left');
+                $this->db->join('master_tenant','master_tenant.id_ref_flowmeter = id_flow','left');
+                $this->db->join('pengguna_jasa','pengguna_jasa_id = id_tarif','left');
+                $this->db->join('master_lumpsum','id_ref_tenant = id_tenant','left');
+                $this->db->order_by('nama_tenant','ASC');
+            }
+            else{
+                $this->db->select('*');
+                $this->db->from('transaksi_laut ,pembeli_laut,pengguna_jasa,master_agent');
+                $this->db->where('pembeli_laut_id_pengguna_jasa = id_pengguna_jasa');
+                $this->db->where('pengguna_jasa_id_tarif = id_tarif');
+                $this->db->where('id_agent = id_agent_master');
+                $this->db->where('soft_delete = 0');
+                $this->db->order_by('tgl_transaksi', 'DESC');
+            }
+
+            if($config != NULL)
+                $query = $this->db->get('',$config['per_page'], $this->uri->segment(3));
+            else
+                $query = $this->db->get();
+
+            if($query->num_rows() > 0){
+                return $query->result();
+                /*
+                foreach ($query->result() as $value) {
+                    $data[] = $value;
+                }
+                return $data;
+                */
+            }
+        }
+
+        public function get_num_tabel_transaksi($tipe){
             if($tipe == "darat"){
                 $this->db->select('*');
                 $this->db->from('transaksi_darat ,pembeli_darat,pengguna_jasa');
@@ -220,13 +264,22 @@
                 $this->db->where('id_agent = id_agent_master');
                 $this->db->order_by('tgl_transaksi', 'DESC');
                 $this->db->where('soft_delete = 0');
+                $this->db->where('status_invoice = 1');
             }
 
             $query = $this->db->get();
 
             if($query->num_rows() > 0){
-                return $query->result();
+                return $query->num_rows();
             }
+        }
+
+        public function updatePrint($id){
+            $this->db->set('status_print',1);
+            $this->db->where('id_transaksi', $id);
+            $this->db->update('transaksi_laut');
+
+            return $this->db->affected_rows();
         }
 
         public function get_no_kwitansi(){
@@ -450,10 +503,9 @@
             }
             else {
                 $query = $this->db->select('*')
-                    ->from('transaksi_laut,pengguna_jasa,pembeli_laut,master_agent')
+                    ->from('transaksi_laut,pembeli_laut,master_agent')
                     ->where('id_transaksi', $id)
                     ->where('pembeli_laut_id_pengguna_jasa = id_pengguna_jasa')
-                    ->where('pengguna_jasa_id_tarif = id_tarif')
                     ->where('id_agent = id_agent_master')
                     ->get();
             }

@@ -556,6 +556,7 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
         <div class="row">
             <center><h4>Status Pelayanan Jasa Air Bersih Untuk Kapal</h4></center><br>
             <table class="table table-responsive table-bordered table-striped" id="table"></table>
+
         </div>
     </div>
     </body>
@@ -788,6 +789,7 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
                 myArr = JSON.parse(this.responseText);
                 var role = 'operasi';
                 var i = 0;
+
                 var a = "<thead>" +
                     "<tr>" +
                     "<th><center>No</center></th>" +
@@ -808,7 +810,7 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
                     "</thead>" +
                     "<tbody>";
                 while (i < myArr.length) {
-                    a += "<tr>" +
+                    a += "<tr bgcolor='"+myArr[i]["warna"]+"'>" +
                         "<td align='center'>" + myArr[i]["no"] + "</td>" +
                         "<td align='center'>" + myArr[i]["id_kapal"] + "</td>" +
                         "<td align='center'>" + myArr[i]["voy_no"] + "</td>" +
@@ -851,6 +853,11 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
         xmlhttp.open("GET", "<?php echo base_url("main/tabel_pembayaran?id=laut_operasi")?>", true);
         xmlhttp.send();
     </script>
+    <script>
+        function reload() {
+            location.reload();
+        }
+    </script>
 
     <body>
     <div class="topright" align="right">
@@ -859,7 +866,8 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
     <div class="container container-fluid">
         <div class="row">
             <center><h4>Status Permintaan Pelayanan Jasa Air Bersih Untuk Kapal</h4></center><br>
-            <table class="table table-responsive table-bordered table-striped" id="table"></table>
+            <table class="table table-responsive table-bordered table-condensed" id="table">
+            </table>
         </div>
     </div>
     </body>

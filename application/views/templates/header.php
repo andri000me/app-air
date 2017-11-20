@@ -33,7 +33,6 @@
     <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.form.js')?>"></script>
     <script type="text/javascript" src="<?php echo base_url('assets/js/id.js')?>"></script>
 
-
     <style type="text/css">
         td {
             cursor: pointer;

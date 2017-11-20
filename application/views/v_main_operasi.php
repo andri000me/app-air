@@ -33,7 +33,7 @@ if(($this->session->userdata('role') == "operasi" || $this->session->userdata('r
                     "</thead>" +
                     "<tbody>";
                 while (i < myArr.length) {
-                    a += "<tr>" +
+                    a += "<tr bgcolor='"+myArr[i]["warna"]+"'>" +
                         "<td align='center'>" + myArr[i]["no"] + "</td>" +
                         "<td align='center'>" + myArr[i]["id_kapal"] + "</td>" +
                         "<td align='center'>" + myArr[i]["voy_no"] + "</td>" +
@@ -65,9 +65,7 @@ if(($this->session->userdata('role') == "operasi" || $this->session->userdata('r
                     "<th><center>Flow Meter Sebelum Pengisian<center></th>" +
                     "<th><center>Flow Meter Sesudah Pengisian<center></th>" +
                     "<th><center>Realisasi</center></th>";
-                if (role == '<?php echo $this->session->userdata('role')?>') {
                     a += "<th><center>Aksi</center></th>";
-                }
                 a += "</tr>" +
                     "</tfoot>";
                 document.getElementById("table").innerHTML = a;
@@ -85,7 +83,7 @@ if(($this->session->userdata('role') == "operasi" || $this->session->userdata('r
         <div class="row">
             <center><h4>Status Permintaan Pelayanan Jasa Air Bersih Untuk Kapal</h4></center>
             <br>
-            <table class="table table-responsive table-bordered table-striped" id="table"></table>
+            <table class="table table-responsive table-bordered table-condensed" id="table"></table>
         </div>
     </div>
     </body>

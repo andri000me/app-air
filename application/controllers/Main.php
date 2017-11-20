@@ -5,12 +5,12 @@ date_default_timezone_set('Asia/Makassar');
           parent::__construct();
           $this->load->model('data'); //load model data yang berada di folder model
           $this->load->helper(array('url','form')); //load helper
-          $this->load->library(array('form_validation','session','fpdf','dompdf_gen','Excel/PHPExcel'));
+          $this->load->library(array('form_validation','session','fpdf','dompdf_gen','Excel/PHPExcel','pagination'));
       }
 
       public function index() {
           $data['title']='PT KKT APP-AIR';
-          $this->load->template('v_main',$data);
+          $this->load->template('v_main_bak',$data);
       }
 
       //fungsi untuk pergantian view
@@ -789,7 +789,9 @@ date_default_timezone_set('Asia/Makassar');
           else{
               $result = $this->data->get_tabel_transaksi($tipe);
               $data = array();
+              $baris = array();
               $no = 1;
+              $warna = "";
 
               if($result != NULL){
                   foreach ($result as $row){
@@ -805,24 +807,35 @@ date_default_timezone_set('Asia/Makassar');
 
                       if(($this->session->userdata('role') == "operasi" || $this->session->userdata('role') == "admin") && $tipe == "laut_operasi") {
                           if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL){
-                              $aksi = '<a class="btn btn-primary glyphicon glyphicon-list-alt" target="_blank" href="'.base_url("main/cetakPerhitungan?id=".$row->id_transaksi."").'" title="Cetak Perhitungan"></a>';
-                          } else{
+                              $aksi = '<a class="btn btn-primary glyphicon glyphicon-list-alt" target="_blank" href="'.base_url("main/cetakPerhitungan?id=".$row->id_transaksi."").'" title="Cetak Perhitungan" onclick="reload()"></a>';
+                          }
+                          else{
                               $aksi = '';
                           }
-                      } else if($this->session->userdata('role') == "keuangan") {
+
+                          if($row->status_print == 1){
+                              $warna = "#7FFF00";
+                          }
+                          else{
+                              $warna = "";
+                          }
+                      }
+                      else if($this->session->userdata('role') == "keuangan") {
                           if ($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
                               $aksi = '<a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" href="javascript:void(0)" title="Realisasi Piutang" onclick="realisasi(' . "'" . $row->id_transaksi . "'" . ')"></a>';
                           } else {
                               $aksi = '';
                           }
-                      } else if($this->session->userdata('role') == "wtp" || ($this->session->userdata('role') == "admin" && $tipe == "laut")){
+                      }
+                      else if($this->session->userdata('role') == "wtp" || ($this->session->userdata('role') == "admin" && $tipe == "laut")){
                           if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
                               $aksi = '<a class="btn btn-primary glyphicon glyphicon-list-alt" target="_blank" href="' . base_url("main/cetakPengisian?id=" . $row->id_transaksi . "") . '" title="Cetak Form Pengisian"></a>&nbsp;';
                           }
                           else{
                               $aksi = '';
                           }
-                      } else if($this->session->userdata('role') == "admin" && $tipe == "laut_keuangan_admin"){
+                      }
+                      else if($this->session->userdata('role') == "admin" && $tipe == "laut_keuangan_admin"){
                           if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL){
                               $aksi = '&nbsp;<a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" href="javascript:void(0)" title="Realisasi Piutang" onclick="realisasi(' . "'" . $row->id_transaksi . "'" . ')"></a>';
                           } else{
@@ -957,7 +970,8 @@ date_default_timezone_set('Asia/Makassar');
                       if($row->diskon != NULL || $row->diskon != 0){
                           $total = ($row->tarif * $realisasi) - (($row->diskon / 100) * ($row->tarif * $realisasi));
                           $tarif = $row->tarif - ($row->tarif * ($row->diskon / 100));
-                      }else{
+                      }
+                      else{
                           $tarif = $row->tarif;
                           $total = $row->tarif * $realisasi;
                       }
@@ -967,11 +981,13 @@ date_default_timezone_set('Asia/Makassar');
                           $materai = 3000;
                           $total_bayar = $total + $materai;
                           $total_bayar = $this->Ribuan($total_bayar);
-                      } else if($total > 1000000){
+                      }
+                      else if($total > 1000000){
                           $materai = 6000;
                           $total_bayar = $total + $materai;
                           $total_bayar = $this->Ribuan($total_bayar);
-                      } else {
+                      }
+                      else {
                           $materai = 0;
                           $total_bayar = $total + $materai;
                           $total_bayar = $this->Ribuan($total_bayar);
@@ -994,7 +1010,7 @@ date_default_timezone_set('Asia/Makassar');
                                       'realisasi' => $realisasi." Ton",
                                       'tarif' => $this->Ribuan($tarif),
                                       'pembayaran' => $total_bayar,
-                                      'aksi' => $aksi
+                                      'aksi' => $aksi,
                                   );
                                   $aksi = "";
                                   $no++;
@@ -1016,7 +1032,8 @@ date_default_timezone_set('Asia/Makassar');
                                   'tarif' => $this->Ribuan($tarif),
                                   'pembayaran' => $total_bayar,
                                   'realisasi' => $realisasi." Ton",
-                                  'aksi' => $aksi
+                                  'aksi' => $aksi,
+                                  'warna' => $warna,
                               );
                               $aksi = "";
                               $no++;
@@ -1025,7 +1042,6 @@ date_default_timezone_set('Asia/Makassar');
                   }
               }
           }
-
           echo json_encode($data);
       }
 
@@ -1653,6 +1669,7 @@ date_default_timezone_set('Asia/Makassar');
 
       public function update_realisasi_laut(){
           $this->_validate_realisasi_laut();
+
           $data = array(
               'flowmeter_awal' => $this->input->post('flowmeter_awal'),
               'flowmeter_akhir' => $this->input->post('flowmeter_akhir'),
@@ -4457,7 +4474,7 @@ date_default_timezone_set('Asia/Makassar');
           $query = $this->data->cetakkwitansi("darat",$id);
 
           $tanggal = $this->indonesian_date('d M Y', '','');
-          $tgl_permintaan = $this->indonesian_date('l, d M Y', $query->tgl_transaksi,'');
+          $tgl_permintaan = $this->indonesian_date('l, d M Y', $query->tgl_perm_pengantaran,'');
 
           if($query->diskon != NULL || $query->diskon != 0){
               $tarif = $this->Ribuan($query->tarif - ($query->diskon / 100 * $query->tarif));
@@ -4492,7 +4509,7 @@ date_default_timezone_set('Asia/Makassar');
           $query = $this->data->cetakkwitansi("darat",$id);
 
           $tanggal = $this->indonesian_date('l, d M Y', '','');
-          $tgl_permintaan = date("d M Y", strtotime($query->tgl_transaksi));
+          $tgl_permintaan = date("d M Y", strtotime($query->tgl_perm_pengantaran));
 
           if($query->diskon != NULL || $query->diskon != 0){
               $tarif = $this->Ribuan($query->tarif - ($query->diskon / 100 * $query->tarif));
@@ -4527,10 +4544,42 @@ date_default_timezone_set('Asia/Makassar');
           $query = $this->data->cetakkwitansi("laut",$id);
 
           $tanggal = $this->indonesian_date('d M Y', '','');
-          if($query->flowmeter_akhir_2 != NULL && $query->flowmeter_awal_2 != NULL){
-              $realisasi = $query->flowmeter_akhir - $query->flowmeter_awal;
-              $realisasi += $query->flowmeter_akhir_2 - $query->flowmeter_awal_2;
-          } else{
+
+          if( ($query->flowmeter_akhir_4 != NULL && $query->flowmeter_awal_4 != NULL) || ($query->flowmeter_akhir_4 != 0 && $query->flowmeter_awal_4 != 0) ){
+              $realisasi = $query->flowmeter_akhir_4 - $query->flowmeter_awal_4;
+              if( ($query->flowmeter_akhir_3 != NULL && $query->flowmeter_awal_3 != NULL) || ($query->flowmeter_akhir_3 != 0 && $query->flowmeter_awal_3 != 0) ){
+                  $realisasi += $query->flowmeter_akhir_3 - $query->flowmeter_awal_3;
+
+                  if( ($query->flowmeter_akhir_2 != NULL && $query->flowmeter_awal_2 != NULL) || ($query->flowmeter_akhir_2 != 0 && $query->flowmeter_awal_2 != 0) ){
+                      $realisasi += $query->flowmeter_akhir_2 - $query->flowmeter_awal_2;
+                      $realisasi += $query->flowmeter_akhir - $query->flowmeter_awal;
+                  } else{
+                      $realisasi += $query->flowmeter_akhir - $query->flowmeter_awal;
+                  }
+              }
+              else if( ($query->flowmeter_akhir_2 != NULL && $query->flowmeter_awal_2 != NULL) || ($query->flowmeter_akhir_2 != 0 && $query->flowmeter_awal_2 != 0) ){
+                  $realisasi += $query->flowmeter_akhir_2 - $query->flowmeter_awal_2;
+                  $realisasi += $query->flowmeter_akhir - $query->flowmeter_awal;
+              }
+              else {
+                  $realisasi += $query->flowmeter_akhir - $query->flowmeter_awal;
+              }
+          }
+          else if( ($query->flowmeter_akhir_3 != NULL && $query->flowmeter_awal_3 != NULL) || ($query->flowmeter_akhir_3 != 0 && $query->flowmeter_awal_3 != 0) ){
+              $realisasi = $query->flowmeter_akhir_3 - $query->flowmeter_awal_3;
+              if( ($query->flowmeter_akhir_2 != NULL && $query->flowmeter_awal_2 != NULL) || ($query->flowmeter_akhir_2 != 0 && $query->flowmeter_awal_2 != 0) ){
+                  $realisasi += $query->flowmeter_akhir_2 - $query->flowmeter_awal_2;
+                  $realisasi += $query->flowmeter_akhir - $query->flowmeter_awal;
+              }
+              else {
+                  $realisasi += $query->flowmeter_akhir - $query->flowmeter_awal;
+              }
+          }
+          else if( ($query->flowmeter_akhir_2 != NULL && $query->flowmeter_awal_2 != NULL) || ($query->flowmeter_akhir_2 != 0 && $query->flowmeter_awal_2 != 0) ){
+              $realisasi = $query->flowmeter_akhir_2 - $query->flowmeter_awal_2;
+              $realisasi += $query->flowmeter_akhir - $query->flowmeter_awal;
+          }
+          else{
               $realisasi = $query->flowmeter_akhir - $query->flowmeter_awal;
           }
 
@@ -4565,6 +4614,9 @@ date_default_timezone_set('Asia/Makassar');
               $materai = $this->Ribuan($materai);
           }
 
+          if($this->session->userdata('role') == 'operasi'){
+              $this->data->updatePrint($id);
+          }
 
           $hasil = array(
               'id_lct' => $query->id_vessel,
@@ -5622,9 +5674,9 @@ date_default_timezone_set('Asia/Makassar');
                   }
 
                   if($row->tipe_kapal == 8)
-                      $row->tipe_kapal == "Peti Kemas";
+                      $row->tipe_kapal = "Peti Kemas";
                   else
-                      $row->tipe_kapal == "Tongkang";
+                      $row->tipe_kapal = "Tongkang";
 
                   $total += $total_pembayaran;
                   $ton += $row->total_permintaan;
@@ -5783,9 +5835,9 @@ date_default_timezone_set('Asia/Makassar');
                   }
 
                   if($row->tipe_kapal == 8)
-                      $row->tipe_kapal == "Peti Kemas";
+                      $row->tipe_kapal = "Peti Kemas";
                   else
-                      $row->tipe_kapal == "Tongkang";
+                      $row->tipe_kapal = "Tongkang";
 
                   $total += $total_pembayaran;
                   $ton += $row->total_permintaan;
@@ -6021,9 +6073,9 @@ date_default_timezone_set('Asia/Makassar');
                   }
 
                   if($row->tipe_kapal == 8)
-                      $row->tipe_kapal == "Peti Kemas";
+                      $row->tipe_kapal = "Peti Kemas";
                   else
-                      $row->tipe_kapal == "Tongkang";
+                      $row->tipe_kapal = "Tongkang";
 
                   $total += $total_pembayaran;
                   $ton += $row->total_permintaan;
@@ -7446,7 +7498,6 @@ date_default_timezone_set('Asia/Makassar');
               $list = $this->data->get_datatables_sumur();
               $data = array();
               $no = $_POST['start'];
-              $data_pompa = '';
 
               foreach ($list as $result) {
                   $no++;
