@@ -1,6 +1,6 @@
 <body>
 <?php
-if($this->session->userdata('role') == "loket" && $this->session->userdata('session') != NULL){
+if($this->session->userdata('role') == "loket" && $this->session->userdata('sesi') != NULL){
 ?>
 <div class="container container-fluid">
     <div class="row">
@@ -135,7 +135,7 @@ if($this->session->userdata('role') == "loket" && $this->session->userdata('sess
 </div>
 <?php
 }
-else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL){
+else if($this->session->userdata('role') == "wtp" && $this->session->userdata('sesi') != NULL){
 ?>
     <script type="text/javascript">
         //function getData(){
@@ -372,7 +372,7 @@ else if($this->session->userdata('role') == "wtp" && $this->session->userdata('s
     </div><!-- /.modal -->
 <?php
 }
-else if($this->session->userdata('role') == "perencanaan" && $this->session->userdata('session') != NULL){
+else if($this->session->userdata('role') == "perencanaan" && $this->session->userdata('sesi') != NULL){
 ?>
     <script type="text/javascript">
             var xmlhttp = new XMLHttpRequest();
@@ -481,7 +481,7 @@ else if($this->session->userdata('role') == "perencanaan" && $this->session->use
     </body>
     <?php
 }
-else if($this->session->userdata('role') == "keuangan" && $this->session->userdata('session') != NULL){
+else if($this->session->userdata('role') == "keuangan" && $this->session->userdata('sesi') != NULL){
     ?>
     <script type="text/javascript">
         //function getData(){
@@ -779,7 +779,7 @@ else if($this->session->userdata('role') == "keuangan" && $this->session->userda
     </script>
     <?php
 }
-else if($this->session->userdata('role') == "operasi" && $this->session->userdata('session') != NULL){
+else if($this->session->userdata('role') == "operasi" && $this->session->userdata('sesi') != NULL){
     ?>
     <script type="text/javascript">
         var xmlhttp = new XMLHttpRequest();
@@ -874,7 +874,7 @@ else if($this->session->userdata('role') == "operasi" && $this->session->userdat
 
 <?php
 }
-else if($this->session->userdata('role') == "admin" && $this->session->userdata('session') != NULL){
+else if($this->session->userdata('role') == "admin" && $this->session->userdata('sesi') != NULL){
 ?>
     <div class="container container-fluid">
         <div class="row">

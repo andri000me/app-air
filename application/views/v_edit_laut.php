@@ -65,7 +65,7 @@
     }
 </script>
 <?php
-if(isset($_SESSION['session'])) {
+if(isset($_SESSION['sesi'])) {
     if($_SESSION['role'] == "perencanaan" || $_SESSION['role'] == "admin") {
         ?>
         <div class="container" data-role="main" class="ui-content">

@@ -10,7 +10,7 @@ date_default_timezone_set('Asia/Makassar');
 
       public function index() {
           $data['title']='PT KKT APP-AIR';
-          $this->load->template('v_main_bak',$data);
+          $this->load->template('v_main',$data);
       }
 
       //fungsi untuk pergantian view
@@ -8198,8 +8198,7 @@ date_default_timezone_set('Asia/Makassar');
           else {
               $key = "PTKKT2406";
               $session = md5($this->input->post('username').$key.$this->input->post('password').$key);
-              $user = $this->data->login($session);
-
+              $user = $this->data->login($session);  
               if ($user != NULL) {
                   $session  = $user->session;
                   $username = $user->username;
@@ -8243,7 +8242,7 @@ date_default_timezone_set('Asia/Makassar');
 
       function logout(){
           $sess_array = array(
-              'session',
+              'sesi',
               'username',
               'password',
               'role',
