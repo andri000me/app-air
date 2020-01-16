@@ -3,10 +3,11 @@ if(($this->session->userdata('role') == "perencanaan" ||$this->session->userdata
     ?>
     <script>
         $(function () {
+            var id = $('#nama_lct').val();
             $("#nama_lct").autocomplete({
                 minLength: 1,
                 delay: 0,
-                source: '<?php echo site_url('main/get_pembeli_laut'); ?>',
+                source: '<?php echo site_url('main/get_pembeli_laut/'); ?>' + id,
                 select: function (event, ui) {
                     $('#id_pengguna').val(ui.item.id);
                     $('#id_kapal').val(ui.item.id_kapal);
