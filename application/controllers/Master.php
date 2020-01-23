@@ -1161,7 +1161,7 @@ class Master extends MY_Controller{
             $row[] = "<center>".$result->tarif;
             $row[] = "<center>".$result->diskon;
 
-            $row[] = '<center><a class="btn btn-sm btn-primary" href="editTarif/' . $result->id_tarif . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
+            $row[] = '<center><a class="btn btn-sm btn-primary" href="javascript:void(0)" onclick="edit('."'".$result->id_tarif."'".')" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
             $data[] = $row;
         }
 
@@ -1195,28 +1195,29 @@ class Master extends MY_Controller{
             $query = $this->db->insert('pengguna_jasa',$data_insert);
 
             if($query){
-                $message = "Input Berhasil";
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
             }
             else{
-                $message = "Input Gagal";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
         else{
-            $message = "Inputan Masih Kosong...Harap Diisi";
+            $message = array("status" => FALSE,"info" => "Inputan Masih Kosong");
         }
-        echo $message;
+        echo json_encode($message);
     }
 
     public function editTarif($id){
         //$id = $_GET['id'];
         $data['id'] = $id;
-        $data['title'] = 'Edit Data Tarif';
+        //$data['title'] = 'Edit Data Tarif';
         $this->db->from('pengguna_jasa');
         $this->db->where('id_tarif',$id);
         $query = $this->db->get();
         $result = $query->row();
 
-        $data['isi'] = array(
+        $data = array(
+            'id_tarif' => $id,
             'tipe_pengguna_jasa' => $result->tipe_pengguna_jasa,
             'kawasan' => $result->kawasan,
             'tipe' => $result->tipe,
@@ -1224,11 +1225,12 @@ class Master extends MY_Controller{
             'diskon' => $result->diskon,
         );
 
-        $this->load->template('v_edit_tarif',$data);
+        //$this->load->template('v_edit_tarif',$data);
+        echo json_encode($data);
     }
 
     public function edit_tarif(){
-        $id = $this->input->post('id');
+        $id = $this->input->post('idm');
         $tipe_pengguna = $this->input->post('tipe_pengguna');
         $kawasan = $this->input->post('kawasan');
         $tarif = $this->input->post('tarif');
@@ -1249,15 +1251,15 @@ class Master extends MY_Controller{
             $query = $this->db->update('pengguna_jasa');
 
             if($query){
-                $message = "Edit Berhasil";
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
             }else{
-                $message = "Edit Gagal";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
         else{
-            $message = "Tolong Isi Kolom Pengguna Jasa";
+            $message = array("status" => FALSE,"info" => "Tidak Ada Inputan");
         }
-        echo $message;
+        echo json_encode($message);
     }
 
     //fungsi untuk master data agent
