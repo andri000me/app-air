@@ -67,7 +67,6 @@ class MY_Model extends CI_Model {
 
     public function count_all()
     {
-        $this->db->where('soft_delete',0);
         $this->db->from($this->table);
         return $this->db->count_all_results();
     }
@@ -132,7 +131,7 @@ class MY_Model extends CI_Model {
         return $this->db->affected_rows();
     }
     
-    public function get_by_id($where,$table) {
+    public function get_by_id_($where,$table) {
         $this->db->from($table);
         $this->db->where($where);
         $query = $this->db->get();

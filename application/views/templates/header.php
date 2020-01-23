@@ -1,15 +1,15 @@
 <html>
 <head>
-  <title><?php echo $title ?></title>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
+    <title><?php echo $title ?></title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
 
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap.min.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap-datepicker3.min.css')?>" >
@@ -18,6 +18,7 @@
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/jquery-ui.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/sweetalert.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/jquery.dataTables.min.css')?>" >
+    <link rel="stylesheet" href="<?php echo base_url()?>/assets/select2/dist/css/select2.min.css">
 
     <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.js'); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url('assets/js/jquery-ui.js'); ?>"></script>
@@ -32,6 +33,8 @@
     <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.dataTables.min.js')?>"></script>
     <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.form.js')?>"></script>
     <script type="text/javascript" src="<?php echo base_url('assets/js/id.js')?>"></script>
+    <script type="text/javascript" src="<?php echo base_url()?>/assets/select2/dist/js/select2.full.min.js"></script>
+    <script src="<?php echo base_url()?>/assets/loadingoverlay/loadingoverlay.min.js"></script>
 
     <style type="text/css">
         td {
@@ -61,12 +64,17 @@
         .form-control[disabled] {
             background-color: #4dc027;
         }
+
+        .select2-container {
+            width: 100% !important;
+            padding: 0;
+        }
     </style>
 </head>
 <header>
     <!-- Navigation -->
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
+        <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -83,323 +91,40 @@
                         <a href="<?php echo base_url('main'); ?>">Beranda</a>
                     </li>
                     <?php
-                    if($this->session->userdata('role') != NULL) {
-                        if ($this->session->userdata('role') == "loket") {
-                            ?>
-                            <li>
-                                <a href="<?php echo base_url('main/view?id=darat'); ?>">Transaksi Baru</a>
-                            </li>
-                            <li>
-                                <a href="<?php echo base_url('main/view?id=monitoring_darat'); ?>">Monitoring Layanan Jasa Air</a>
-                            </li>
-                            <li>
-                                <a href="<?php echo base_url('main/master?id=darat'); ?>">Master Pengguna Jasa</a>
-                            </li>
-                            <li>
-                                <a href="<?php echo base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
-                            </li>
-                            <?php
-                        }
-                        else if ($this->session->userdata('role') == "perencanaan") {
-                            ?>
-                            <li>
-                                <a href="<?php echo base_url('main/view?id=laut'); ?>">Permohonan Baru</a>
-                            </li>
-                            <li>
-                                <a href="<?php echo base_url('main/master?id=laut'); ?>">Master VESSEL</a>
-                            </li>
-                            <li>
-                                <a href="<?php echo base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
-                            </li>
-                            <?php
-                        }
-                        else if($this->session->userdata('role') == "operasi"){
-                            ?>
-                            <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Laporan</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
-                                    </li>
-                                    <li><a href="<?php echo base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Air Ruko</a></li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="<?php echo base_url('main/tarif'); ?>">Penyesuaian Tarif</a>
-                            </li>
-                            <li class="dropdown">
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Tenant</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=lumpsum'); ?>">Master Lumpsum</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=tagihan'); ?>">Penagihan Ruko</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=daftar_tagihan'); ?>">Daftar Tagihan</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <?php
-                        }
-                        else if($this->session->userdata('role') == "wtp"){
-                            ?>
-                            <li>
-                                <a href="<?php echo base_url('main/view?id=transaksi_laut'); ?>">Transaksi Air Kapal</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Monitoring</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=monitoring_darat'); ?>">Monitoring Layanan Jasa Air Darat</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=monitoring_kapal'); ?>">Monitoring Layanan Jasa Air Kapal</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Laporan</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
-                                    </li>
-
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_flow'); ?>">Laporan Pencatatan Flow Meter</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_sumur'); ?>">Laporan Pencatatan Sumur</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Flow Meter</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=flowmeter'); ?>">Master Flow Meter</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=transaksi_tenant'); ?>">Pencatatan Harian Penggunaan Air</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=riwayat_pencatatan_flow'); ?>">Riwayat Pencatatan Harian Penggunaan Air</a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            <li>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Sumur</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=pompa'); ?>">Master Pompa</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=catat_sumur'); ?>">Pencatatan Harian Sumur</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=riwayat_pencatatan_sumur'); ?>">Riwayat Pencatatan Harian Sumur</a>
-                                    </li>
-                                </ul>
-                            </li>
-
-                            <?php
-                        }
-                        else if($this->session->userdata('role') == "keuangan"){
-                            ?>
-                            <li>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Pembayaran</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href='<?php echo base_url('main/view?id=realisasi_pembayaran_darat'); ?>'>Realisasi Pembayaran Air Darat</a>
-                                    </li>
-                                    <li>
-                                        <a href='<?php echo base_url('main/view?id=validasi_pembayaran_darat'); ?>'>Validasi Pembayaran Air Darat</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=cancel_pembayaran_darat'); ?>">Pembatalan Pembayaran Air Darat</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=realisasi_pembayaran_tenant'); ?>">Realisasi Pembayaran Air Tenant</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a href="<?php echo base_url('main/agent'); ?>">Master Agent</a>
-                            </li>
-                            <li>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Laporan</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Transaksi Air Ruko</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <?php
-                        }
-                        else{
-                            ?>
-                            <li>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Menu Loket</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=main_loket'); ?>">Daftar Permohonan Pelayanan</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=darat'); ?>">Transaksi Baru</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=monitoring_darat'); ?>">Monitoring Layanan Jasa Air</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Menu Keuangan</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=main_keuangan'); ?>">Realisasi Pembayaran Jasa Air Kapal</a>
-                                    </li>
-                                    <li>
-                                        <a href='<?php echo base_url('main/view?id=realisasi_pembayaran_darat'); ?>'>Realisasi Pembayaran Air Darat</a>
-                                    </li>
-                                    <li>
-                                        <a href='<?php echo base_url('main/view?id=validasi_pembayaran_darat'); ?>'>Validasi Pembayaran Air Darat</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=cancel_pembayaran_darat'); ?>">Pembatalan Pembayaran Air Darat</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=realisasi_pembayaran_tenant'); ?>">Realisasi Pembayaran Air Tenant</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Menu WTP</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=main_wtp'); ?>">Transaksi Air Darat</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=transaksi_laut'); ?>">Transaksi Air Kapal</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=monitoring_darat'); ?>">Monitoring Layanan Jasa Air Darat</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=monitoring_kapal'); ?>">Monitoring Layanan Jasa Air Kapal</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=transaksi_tenant'); ?>">Pencatatan Harian Penggunaan Air</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=riwayat_pencatatan_flow'); ?>">Riwayat Pencatatan Harian Penggunaan Air</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=catat_sumur'); ?>">Pencatatan Harian Sumur</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=riwayat_pencatatan_sumur'); ?>">Riwayat Pencatatan Harian Sumur</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Menu Operasi</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=main_operasi'); ?>">Daftar Tagihan Air Kapal</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/tarif'); ?>">Penyesuaian Tarif</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=tagihan'); ?>">Penagihan Ruko</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=daftar_tagihan'); ?>">Daftar Tagihan</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Menu Perencanaan</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=main_perencanaan'); ?>">Daftar Pelayanan Jasa Air Kapal</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=laut'); ?>">Permohonan Baru</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Laporan</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_laut'); ?>">Laporan Transaksi Air Kapal</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_darat'); ?>">Laporan Transaksi Air Darat</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_flow'); ?>">Laporan Pencatatan Flow Meter</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_sumur'); ?>">Laporan Pencatatan Sumur</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=cetak_laporan_ruko'); ?>">Laporan Air Ruko</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li>
-                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Master Data</a>
-                                <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=sumur'); ?>">Master Sumur</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=pompa'); ?>">Master Pompa</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=flowmeter'); ?>">Master Flow Meter</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/master?id=darat'); ?>">Master Pengguna Jasa</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/master?id=laut'); ?>">Master VESSEL</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/agent'); ?>">Master Agent</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=tenant'); ?>">Master Tenant</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?php echo base_url('main/view?id=lumpsum'); ?>">Master Lumpsum</a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <?php
-                        }
-                        ?>
-                        <li>
-                            <a class="glyphicon glyphicon-log-out" href="<?php echo base_url('main/logout'); ?>">&nbsp;Logout</a>
-                        </li>
+                        if($this->session->status == 'TRUE'){
+                    ?>
                     <?php
-                    }
+                        $role = $this->session->role;
+                        $queryMenu = "SELECT * 
+                                    FROM `vw_user_access_menu`
+                                    WHERE `parent_id` = 0 && `is_active` = 1 AND `id_role` = $role
+                                    ORDER BY menu_id ASC";
+                        $menu = $this->db->query($queryMenu)->result_array();
+                    ?>
+                    <?php foreach($menu as $m) : ?>
+                        <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><?= $m['title']?><span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                        <?php
+                            $role = $this->session->role;
+                            $menuID = $m['menu_id'];
+                            $querySubMenu = "SELECT `url`,`second_uri`,`title`,`parent_id` 
+                                            FROM `vw_user_access_menu`
+                                            WHERE `parent_id` = $menuID && `is_active` = 1 AND `id_role` = $role
+                                            ORDER BY parent_id DESC";
+                            $subMenu = $this->db->query($querySubMenu)->result_array();                    
+                        ?>
+                            <?php foreach($subMenu as $sm) :?>
+                                <li><a href="<?php echo site_url('main/'.$sm['url']);?>"><?php echo $sm['title']?></a></li>
+                            <?php endforeach;?>
+                        </ul>
+                        </li>
+                    <?php endforeach; ?>
+                    <li>
+                        <a href="<?php echo base_url('admin/logout'); ?>">Log Out</a>
+                    </li>
+                    <?php
+                        }
                     ?>
                 </ul>
             </div>
@@ -407,9 +132,9 @@
         </div>
         <!-- /.container -->
     </nav>
-  <br /><br /><br />
+    <br /><br /><br />
     <?php
-    if($this->session->userdata('role') == 'loket'){
+    if($this->session->userdata('role_name') == 'loket'){
     ?>
         <script>
             var myVar = setInterval(showNotifAntar, 3000);
@@ -433,7 +158,7 @@
         </div>
         <?php
     }
-    else if($this->session->userdata('role') == 'keuangan'){
+    else if($this->session->userdata('role_name') == 'keuangan'){
     ?>
         <script>
             var myVar = setInterval(showNotifTransaksiKapal, 3000);
@@ -488,7 +213,7 @@
         </div>
     <?php
     }
-    else if($this->session->userdata('role') == 'perencanaan'){
+    else if($this->session->userdata('role_name') == 'perencanaan'){
     ?>
         <script>
             var myVar = setInterval(showNotifTransaksiKapal, 3000);
@@ -512,7 +237,7 @@
         </div>
         <?php
     }
-    else if($this->session->userdata('role') == 'wtp'){
+    else if($this->session->userdata('role_name') == 'wtp'){
     ?>
         <script>
             var myVar = setInterval(showNotifTransaksiKapal, 3000);
@@ -552,7 +277,7 @@
         </div>
     <?php
     }
-    else if($this->session->userdata('role') == 'operasi'){
+    else if($this->session->userdata('role_name') == 'operasi'){
         ?>
         <script>
             var myVar = setInterval(showNotifRealisasi, 3000);

@@ -6,9 +6,56 @@ class Main extends MY_Controller {
         parent::__construct();
     }
 
-    public function index() {
+    public function index(){
+        $this->ceksesi();
+        //$this->cekAccess();
         $data['title']='PT KKT APP-AIR';
         $this->load->template('v_main',$data);
+    }
+
+    public function master($page){
+        $this->ceksesi();
+        //$this->cekAccess();
+        $title = str_replace('_',' ',$page);
+        $this->navmenu('Data ' . ucwords($title), 'master/v_' . $page, '', '', '');
+    }
+
+    public function darat($page){
+        $this->ceksesi();
+        //$this->cekAccess();
+        $title = str_replace('_',' ',$page);
+        $this->navmenu( 'Data '.ucwords($title),'darat/v_'.$page,'','','');
+    }
+
+    public function kapal($page){
+        $this->ceksesi();
+        //$this->cekAccess();
+        $title = str_replace('_',' ',$page);
+        $this->navmenu('Data '.ucwords($title),'kapal/v_'.$page,'','','');
+    }
+
+    public function tenant($page){
+        $this->ceksesi();
+        //$this->cekAccess();
+        $title = str_replace('_',' ',$page);
+        $this->navmenu('Data '.ucwords($title),'tenant/v_'.$page,'','','');
+    }
+
+    public function manage($page){
+        $this->ceksesi();
+        //$this->cekAccess();
+        $title = str_replace('_',' ',$page);
+        $this->navmenu('Data '.ucwords($title),'manage/v_'.$page,'','','');
+    }
+
+    public function login(){
+        $this->navmenu('APASIH KKT','v_login','','','');
+    }
+
+    public function error(){
+        $data['title']  = 'MyAPPS';
+        $data['title2'] = 'My<b>APPS</b>';
+        $this->load->view('errors/',$data,'');
     }
 
     //fungsi untuk pergantian view
@@ -197,237 +244,6 @@ class Main extends MY_Controller {
     public function cekNotifBayarRuko(){
         $result = $this->data->notifBayarRuko();
         echo json_encode($result);
-    }
-
-    //fungsi manajemen user
-    function login(){
-        $this->form_validation->set_rules('username', 'Username', 'trim|required');
-        $this->form_validation->set_rules('password', 'Password', 'trim|required');
-
-        if ($this->form_validation->run() == FALSE) {
-            $this->data = array(
-                'title' => "PT KKT - APP AIR",
-            );
-            $this->load->template('v_main',$this->data);
-        }
-        else {
-            $key = "PTKKT2406";
-            $session = md5($this->input->post('username').$key.$this->input->post('password').$key);
-            $user = $this->data->login($session);  
-            if ($user != NULL) {
-                $session  = $user->session;
-                $username = $user->username;
-                $role  = $user->role;
-                $password = $user->password;
-
-                $session_data = array(
-                    'sesi' => $session,
-                    'session' => $session,
-                    'username' => $username,
-                    'password' => $password,
-                    'role' => $role,
-                    'nama' => $user->nama
-                );
-
-                // Add user data in session
-                $this->session->set_userdata($session_data);
-                $waktu = date("Y-m-d H:i:s", time());
-
-                $data = array(
-                    'username'   => $username,
-                    'last_login'  => $waktu
-                );
-
-                $this->data->update_login($data);
-                $data = array(
-                    'title' => "PT KKT - APP AIR",
-                );
-
-                $this->load->template('v_main',$data);
-            }
-            else {
-                $data = array(
-                    'title' => "PT KKT - APP AIR",
-                );
-
-                $this->session->set_userdata('error_message','Username atau Password Anda Salah');
-                $this->load->template('v_main', $data);
-            }
-        }
-    }
-
-    function logout(){
-        $sess_array = array(
-            'sesi',
-            'session',
-            'username',
-            'password',
-            'role',
-            'nama'
-        );
-        $this->session->unset_userdata($sess_array);
-
-        $data = array(
-            'title' => "PT KKT - APP AIR"
-        );
-        $this->session->set_userdata('message_display','Anda Telah Berhasil Logout');
-        $this->load->template('v_main', $data);
-    }
-
-    public function ajax_list() {
-        $this->load->helper('url');
-
-        $list = $this->data->get_datatables();
-        $data = array();
-        $no = $_POST['start'];
-        foreach ($list as $person) {
-            $no++;
-            $row = array();
-            $row[] = '<input type="checkbox" class="data-check" value="'.$person->id_user.'">';
-            $row[] = $person->username;
-            $row[] = $person->nama;
-            $row[] = $person->role;
-
-            //add html for action
-            $row[] = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Edit" onclick="edit_person('."'".$person->id_user."'".')"><i class="glyphicon glyphicon-pencil"></i> Ubah</a>
-                <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Hapus" onclick="delete_person('."'".$person->id_user."'".')"><i class="glyphicon glyphicon-trash"></i> Hapus</a>';
-
-            $data[] = $row;
-        }
-
-        $output = array(
-            "draw" => $_POST['draw'],
-            "recordsTotal" => $this->data->count_all(),
-            "recordsFiltered" => $this->data->count_filtered(),
-            "data" => $data,
-        );
-        //output to json format
-        echo json_encode($output);
-    }
-
-    public function ajax_edit($id) {
-        $data = $this->data->get_data_by_id($id);
-        echo json_encode($data);
-    }
-
-    public function ajax_add() {
-        $this->_validate();
-        $key     = "PTKKT2406";
-        $session = md5($this->input->post('username').$key.$this->input->post('pass').$key);
-        $data = array(
-            'username' => $this->input->post('username'),
-            'password' => $this->input->post('pass'),
-            'nama' => $this->input->post('nama'),
-            'role' => $this->input->post('role'),
-            'session' => $session,
-        );
-
-        $insert = $this->data->save($data);
-
-        echo json_encode(array("status" => TRUE));
-    }
-
-    public function ajax_update() {
-        $this->_validate();
-        $key     = "PTKKT2406";
-        $session = md5($this->input->post('username').$key.$this->input->post('pass').$key);
-        $data = array(
-            'username' => $this->input->post('username'),
-            'password' => $this->input->post('pass'),
-            'nama' => $this->input->post('nama'),
-            'role' => $this->input->post('role'),
-            'session' => $session,
-        );
-        $waktu      = date("Y-m-d H:i:s", time());
-        $data_waktu = array(
-            'username'   => $this->input->post('username'),
-            'last_updated'  => $waktu
-        );
-        $this->data->update_data($data_waktu);
-        $this->data->update(array('id_user' => $this->input->post('id')), $data);
-        echo json_encode(array("status" => TRUE));
-    }
-
-    public function ajax_delete($id) {
-        $this->data->delete_by_id($id);
-        echo json_encode(array("status" => TRUE));
-    }
-
-    public function ajax_bulk_delete() {
-        $list_id = $this->input->post('id');
-        foreach ($list_id as $id) {
-            $this->data->delete_by_id($id);
-        }
-        echo json_encode(array("status" => TRUE));
-    }
-
-    private function _validate() {
-        $data = array();
-        $data['error_string'] = array();
-        $data['inputerror'] = array();
-        $data['status'] = TRUE;
-
-        if($this->input->post('username') == NULL)
-        {
-            $data['inputerror'][] = 'username';
-            $data['error_string'][] = 'Nama Akun Masih Kosong';
-            $data['status'] = FALSE;
-        }
-
-        if($this->input->post('pass') == NULL)
-        {
-            $data['inputerror'][] = 'pass';
-            $data['error_string'][] = 'Kata Sandi Masih Kosong';
-            $data['status'] = FALSE;
-        }
-
-        if($this->input->post('role') == NULL)
-        {
-            $data['inputerror'][] = 'role';
-            $data['error_string'][] = 'Hak Akses Masih Belum Dipilih';
-            $data['status'] = FALSE;
-        }
-
-        if($this->input->post('confirm_pass') == NULL)
-        {
-            $data['inputerror'][] = 'confirm_pass';
-            $data['error_string'][] = 'Konfirmasi Kata Sandi Masih Kosong';
-            $data['status'] = FALSE;
-        }
-
-        if($this->input->post('pass') != $this->input->post('confirm_pass'))
-        {
-            $data['inputerror'][] = 'pass';
-            $data['error_string'][] = 'Kata Sandi dan Konfirmasi Kata Sandi Tidak Sama';
-            $data['status'] = FALSE;
-        }
-
-        if($data['status'] === FALSE)
-        {
-            echo json_encode($data);
-            exit();
-        }
-    }
-
-    public function update_pass(){
-        $key     = "PTKKT2406";
-        $session = md5($this->input->post('username').$key.$this->input->post('password').$key);
-        $waktu = date("Y-m-d H:i:s", time());
-
-        $data  = array(
-            'username' => $this->input->post('username'),
-            'password' => $this->input->post('password'),
-            'session' => $session,
-            'last_modified' => $waktu
-        );
-        $this->db->where('username', $data['username']);
-        $update = $this->db->update('users', $data);
-
-        if ($update) {
-            return true;
-        } else {
-            return false;
-        }
     }
 }
 

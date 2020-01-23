@@ -32,6 +32,15 @@ class MY_Controller extends CI_Controller
     public function __construct() {
         parent::__construct();
         $this->load->model('M_data','data'); //load model data yang berada di folder model
+        $this->load->model('M_admin','admin');
+        $this->load->model('M_darat','darat');
+        $this->load->model('M_kapal','kapal');
+        $this->load->model('M_master','master');
+        $this->load->model('M_report','report');
+        $this->load->model('M_tenant','tenant');
+        $this->load->model('M_menu','menu');
+        $this->load->model('M_role','role');
+
         $this->load->helper(array('url','form')); //load helper
         $this->load->library(array('form_validation','fpdf','dompdf_gen','Excel/PHPExcel','pagination'));
     }
@@ -177,19 +186,19 @@ class MY_Controller extends CI_Controller
     }
 
     public function ceksesi(){
-        if($this->session->has_userdata('status','email','password')){
-            $uid    = $_SESSION['email'];
+        if($this->session->has_userdata('status','username','password')){
+            $uid    = $_SESSION['username'];
             $sesi   = $_SESSION['password'];
             $result = $this->_cekUser($uid,$sesi);
             
             if ($result['status'] == FALSE) {
                 $data = array(
                     'status',
+                    'nama',
                     'email',
+                    'username',
                     'password',
-                    'name',
                     'role',
-                    'image',
                     'created_date',
                 );
                 $this->session->unset_userdata($data);
