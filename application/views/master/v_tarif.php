@@ -171,30 +171,6 @@
         table.ajax.reload(null,false);
     }
 
-    function delete_data_tarif(id)
-    {
-        if(confirm('Apakah Anda Yakin Untuk Menghapus Data Ini?'))
-        {
-            // ajax delete data to database
-            $.ajax({
-                url : "<?php echo site_url('master/delete_data_tarif')?>/"+id,
-                type: "POST",
-                dataType: "JSON",
-                success: function(data)
-                {
-                    //if success reload ajax table
-                    alert("Data Berhasil Dihapus");
-                    window.location = "<?php echo site_url()?>"+"main/tarif";
-                },
-                error: function (jqXHR, textStatus, errorThrown)
-                {
-                    alert('Error Ketika Menghapus Data');
-                }
-            });
-
-        }
-    }
-
     function edit(id){
         save_method = 'update';
         $('#frm-modal')[0].reset(); // reset form on modals
@@ -300,4 +276,27 @@
     $('.modal').on('hidden.bs.modal', function () {
         reload_table();
     });
+
+    function delete_data_tarif(id) {
+        if(confirm('Apakah Anda Yakin Untuk Menghapus Data Ini?'))
+        {
+            // ajax delete data to database
+            $.ajax({
+                url : "<?php echo site_url('master/delete_data_tarif')?>/"+id,
+                type: "POST",
+                dataType: "JSON",
+                success: function(data)
+                {
+                    //if success reload ajax table
+                    alert("Data Berhasil Dihapus");
+                    window.location = "<?php echo site_url()?>"+"main/tarif";
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert('Error Ketika Menghapus Data');
+                }
+            });
+
+        }
+    }
 </script>

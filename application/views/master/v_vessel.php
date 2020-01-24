@@ -1,11 +1,19 @@
 <?php
-
+defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
+<style type="text/css">
+    .topright {
+        position: fixed;
+        top: 65px;
+        right: 25px;
+        padding:3px 3px 3px 3px;
+    }
+</style>
 <div class="container" data-role="main" class="ui-content">
-    <h3>Master Data Lump Sum</h3>
+    <h3>Master Data Vessel</h3>
     <div class="row col-md-5">
         <button class="btn btn-primary" onclick="add()"> <span>Tambah Data</span></button>
-        <button class="btn btn-info" onclick="reload_table()"> <span>Refresh Halaman</span></button><br><br> 
+        <button class="btn btn-info" onclick="reload_table()"> <span>Refresh Halaman</span></button><br><br>
     </div>
 </div>
 
@@ -23,57 +31,48 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="agent_name" class="form-label">No Perjanjian</label>
+                                    <label for="agent_name" class="form-label">Nama Vessel</label>
                                     <input hidden id="idm" name="idm">
-                                    <input class="form-control" type="text" name="no_perjanjian" id="no_perjanjian" required>                                    
+                                    <input class="form-control" type="text" name="nama_lct" id="nama_lct" required>
                                     <span class="help-block"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="agent_name" class="form-label">Perihal</label>
-                                    <input class="form-control" type="text" name="nama_perjanjian" id="nama_perjanjian" required>                                    
+                                    <label for="agent_name" class="form-label">ID Vessel</label>
+                                    <input class="form-control" type="text" name="id_lct" id="id_lct" required>                                    
                                     <span class="help-block"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="agent_name" class="form-label">Nama Tenant</label>
-                                    <select class="form-control" name="tenant" id="tenant" onchange="showTenant(this.value)">
-                                        <option value="">-----</option>
-                                    </select>
+                                    <label for="agent_name" class="form-label">Jenis Kapal</label>
+                                    <select name="pengguna_jasa" id="pengguna_jasa" class="form-control">
+                                        <option value="">----</option>
+                                    </select>                                   
                                     <span class="help-block"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="agent_name" class="form-label">Penanggung Jawab</label>
-                                    <input class="form-control" disabled type="text" name="penanggung_jawab" id="penanggung_jawab">                                    
+                                    <label for="agent_name" class="form-label">Nama Perusahaan</label>
+                                    <select class="form-control" name="id_agent" id="id_agent" onchange="showAgent(this.value)">
+                                        <option value="">----</option>
+                                    </select>                                    
                                     <span class="help-block"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="agent_name" class="form-label">Lokasi Tenant</label>
-                                    <input class="form-control" disabled type="text" name="lokasi" id="lokasi">                                    
+                                    <label for="agent_name" class="form-label">Alamat</label>
+                                    <input disabled class="form-control" type="text" name="alamat" id="alamat" required>                                    
                                     <span class="help-block"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="agent_name" class="form-label">Waktu Kadaluarsa</label>
-                                    <div class='input-group date' id='datetimepicker2'>
-                                        <input type='text' class="form-control" name="waktu_kadaluarsa" id="waktu_kadaluarsa"/>
-                                        <span class="input-group-addon">
-                                                <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="agent_name" class="form-label">Nominal</label>
-                                    <input class="form-control" type="text" name="nominal" id="nominal">                                    
+                                    <label for="agent_name" class="form-label">No Telepon</label>
+                                    <input disabled class="form-control" type="text" name="no_telp" id="no_telp" required>                                    
                                     <span class="help-block"></span>
                                 </div>
                             </div>
@@ -93,7 +92,6 @@
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
 <!-- End Bootstrap modal -->
-
 <div class="container">
     <div class="row col-md-12">
         <table id="table" class="table table-striped table-bordered" cellspacing="0" width="70%">
@@ -103,19 +101,22 @@
                     <center>No
                 </th>
                 <th>
-                    <center>No Perjanjian
+                    <center>ID VESSEL
                 </th>
                 <th>
-                    <center>Perihal
+                    <center>Nama VESSEL
                 </th>
                 <th>
-                    <center>Waktu Kadaluarsa
+                    <center>Nama Perusahaan
                 </th>
                 <th>
-                    <center>Nominal
+                    <center>Alamat
                 </th>
                 <th>
-                    <center>Nama Tenant
+                    <center>No Telepon
+                </th>
+                <th>
+                    <center>Jenis Kapal
                 </th>
                 <th>
                     <center>Aksi
@@ -130,19 +131,22 @@
                     <center>No
                 </th>
                 <th>
-                    <center>No Perjanjian
+                    <center>ID VESSEL
                 </th>
                 <th>
-                    <center>Perihal
+                    <center>Nama VESSEL
                 </th>
                 <th>
-                    <center>Waktu Kadaluarsa
+                    <center>Nama Perusahaan
                 </th>
                 <th>
-                    <center>Nominal
+                    <center>Alamat
                 </th>
                 <th>
-                    <center>Nama Tenant
+                    <center>No Telepon
+                </th>
+                <th>
+                    <center>Jenis Kapal
                 </th>
                 <th>
                     <center>Aksi
@@ -152,17 +156,31 @@
         </table>
     </div>
 </div>
-
 <script type="text/javascript">
     var table;
 
-    $(function () {
-        $('#datetimepicker2').datepicker({
-            format: "yyyy-mm-dd",
-            autoclose: true,
-            todayHighlight: true
-        });
-    });
+    function showAgent(str) {
+        if (str=="") {
+            document.getElementById("alamat").innerHTML="";
+            document.getElementById("no_telp").innerHTML="";
+            return;
+        }
+        if (window.XMLHttpRequest) {
+            // code for IE7+, Firefox, Chrome, Opera, Safari
+            xmlhttp=new XMLHttpRequest();
+        } else { // code for IE6, IE5
+            xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange=function() {
+            if (this.readyState==4 && this.status==200) {
+                var data = JSON.parse(this.responseText);
+                document.getElementById("alamat").value= data.alamat;
+                document.getElementById("no_telp").value=data.no_telp;
+            }
+        }
+        xmlhttp.open("GET","<?php echo base_url('master/cari_agent/')?>"+str,true);
+        xmlhttp.send();
+    }
 
     $(document).ready(function() {
         //datatables
@@ -173,7 +191,7 @@
 
             // Load data for the table's content from an Ajax source
             "ajax": {
-                "url": "<?php echo site_url('master/ajax_data_lumpsum')?>",
+                "url": "<?php echo site_url('master/ajax_data_laut')?>",
                 "type": "POST"
             },
 
@@ -187,15 +205,26 @@
         });
 
         $.ajax({
-            url:'<?php echo site_url('master/populateLumpsum')?>',
+            url:'<?php echo site_url('master/populatePenggunaLaut')?>',
             type:'POST',
             dataType: 'json',
             success: function( json ) {
                 $.each(json, function(i, value) {
-                    $('#tenant').append($('<option>').text(value.nama_tenant).attr('value', value.id_tenant));
+                    $('#pengguna_jasa').append($('<option>').text(value.tipe_pengguna_jasa).attr('value', value.id_tarif));
                 });
             }
-        });        
+        });
+
+        $.ajax({
+            url:'<?php echo site_url('master/populateAgent')?>',
+            type:'POST',
+            dataType: 'json',
+            success: function( json ) {
+                $.each(json, function(i, value) {
+                    $('#id_agent').append($('<option>').text(value.nama_agent).attr('value', value.id_agent));
+                });
+            }
+        });
     });
 
     function reload_table() {
@@ -213,20 +242,20 @@
 
         //Ajax Load data from ajax
         $.ajax({
-            url : "<?php echo site_url('master/editLumpsum/')?>" + id,
+            url : "<?php echo site_url('master/editLaut/')?>" + id,
             type: "GET",
             dataType: "JSON",
             success: function(data)
             {		
                 $('#md-form').modal('show'); // show bootstrap modal when complete loaded
-                $('.modal-title').text('Edit Data Lumpsum'); // Set title to Bootstrap modal title
+                $('.modal-title').text('Edit Data Kapal'); // Set title to Bootstrap modal title
 
-                $('#idm').val(data.id_lumpsum);
-                $('#no_perjanjian').val(data.no_perjanjian);
-                $('#nama_perjanjian').val(data.perihal);
-                $('#tenant').val(data.id_tenant).change();
-                $('#waktu_kadaluarsa').val(data.waktu_kadaluarsa);
-                $('#nominal').val(data.nominal);
+                $('#idm').val(data.id_pengguna_jasa);
+                $('#nama_lct').val(data.nama_vessel);
+                $('#id_lct').val(data.id_vessel).change();
+                $('#id_agent').val(data.id_agent).change();
+                $('#alamat').val(data.alamat);
+                $('#pengguna_jasa').val(data.pengguna).change();
             },
             error: function (jqXHR, textStatus, errorThrown)
             {
@@ -241,13 +270,13 @@
         if(save_method == 'add') {
             $('#btnSave').text('Saving...'); //change button text
             $('#btnSave').attr('disabled',true); //set button disable
-            url = "<?php echo site_url('master/input_data_lumpsum');?>"; 
+            url = "<?php echo site_url('master/input_data_laut');?>"; 
         } else {
             $('#btnSave').text('Updating...'); //change button text
             $('#btnSave').attr('disabled',true); //set button disable 
-            url = "<?php echo site_url('master/edit_lumpsum');?>"; 
+            url = "<?php echo site_url('master/edit_laut');?>"; 
         }
-
+        
         formData = new FormData($('#frm-modal')[0]);
         formData.append( 'save_method', save_method );
 
@@ -271,7 +300,7 @@
                         $('[name="'+data.inputerror[i]+'"]').parent().parent().addClass('has-error'); //select parent twice to select div form-group class and add has-error class
                         $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]); //select span help-block class set text error string
                     }
-                    $('#btnSave').attr('disabled',false); //set button enable 
+                    $('#btnSave').attr('disabled',false); //set button enable
                 }
 
                 $('#btnSave').text('Save'); //change button text
@@ -295,7 +324,7 @@
         $('.select2').select2({
         });
         $('#md-form').modal('show'); // show bootstrap modal when complete loaded
-        $('.modal-title').text('Tambah Data Lumpsum'); // Set title to Bootstrap modal title
+        $('.modal-title').text('Tambah Data Kapal'); // Set title to Bootstrap modal title
     }
 
     function batal(){
@@ -309,27 +338,26 @@
         reload_table();
     });
 
-    function showTenant(str) {
-        if (str=="") {
-            document.getElementById("penanggung_jawab").innerHTML="";
-            document.getElementById("lokasi").innerHTML="";
-            return;
+    function delete_data_laut(id){
+        if(confirm('Apakah Anda Yakin Untuk Menghapus Data Ini?'))
+        {
+            // ajax delete data to database
+            $.ajax({
+                url : "<?php echo site_url('main/delete_data_laut')?>/"+id,
+                type: "POST",
+                dataType: "JSON",
+                success: function(data)
+                {
+                    //if success reload ajax table
+                    alert("Data Berhasil Dihapus");
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert('Error Ketika Menghapus Data');
+                }
+            });
+
         }
-        if (window.XMLHttpRequest) {
-            // code for IE7+, Firefox, Chrome, Opera, Safari
-            xmlhttp=new XMLHttpRequest();
-        } else { // code for IE6, IE5
-            xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlhttp.onreadystatechange=function() {
-            if (this.readyState==4 && this.status==200) {
-                var data = JSON.parse(this.responseText);
-                document.getElementById("penanggung_jawab").value= data.penanggung_jawab;
-                document.getElementById("lokasi").value=data.lokasi;
-            }
-        }
-        xmlhttp.open("GET","<?php echo base_url('master/cari_tenant/')?>"+str,true);
-        xmlhttp.send();
     }
 
 </script>

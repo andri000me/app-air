@@ -1,11 +1,73 @@
-<?php
-
-?>
 <div class="container" data-role="main" class="ui-content">
-    <h3>Master Data Lump Sum</h3>
+    <h3>Master Data Tenant</h3>
     <div class="row col-md-5">
         <button class="btn btn-primary" onclick="add()"> <span>Tambah Data</span></button>
-        <button class="btn btn-info" onclick="reload_table()"> <span>Refresh Halaman</span></button><br><br> 
+        <button class="btn btn-info" onclick="reload_table()"> <span>Refresh Halaman</span></button><br><br>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row col-md-12">
+        <table id="table" class="table table-striped table-bordered" cellspacing="0" width="70%">
+            <thead>
+            <tr>
+                <th>
+                    <center>No
+                </th>
+                <th>
+                    <center>Nama Tenant
+                </th>
+                <th>
+                    <center>Penanggung Jawab
+                </th>
+                <th>
+                    <center>Lokasi
+                </th>
+                <th>
+                    <center>No Telepon
+                </th>
+                <th>
+                    <center>Status
+                </th>
+                <th>
+                    <center>ID Flow Meter
+                </th>
+                <th>
+                    <center>Aksi
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            <tr>
+            <th>
+                    <center>No
+                </th>
+                <th>
+                    <center>Nama Tenant
+                </th>
+                <th>
+                    <center>Penanggung Jawab
+                </th>
+                <th>
+                    <center>Lokasi
+                </th>
+                <th>
+                    <center>No Telepon
+                </th>
+                <th>
+                    <center>Status
+                </th>
+                <th>
+                    <center>ID Flow Meter
+                </th>
+                <th>
+                    <center>Aksi
+                </th>
+            </tr>
+            </tfoot>
+        </table>
     </div>
 </div>
 
@@ -21,59 +83,41 @@
                 <div class="form-group">
                     <form id="frm-modal" action="#" enctype="multipart/form-data">
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="agent_name" class="form-label">No Perjanjian</label>
+                                    <label for="agent_name" class="form-label">ID Flow Meter</label>
                                     <input hidden id="idm" name="idm">
-                                    <input class="form-control" type="text" name="no_perjanjian" id="no_perjanjian" required>                                    
-                                    <span class="help-block"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="agent_name" class="form-label">Perihal</label>
-                                    <input class="form-control" type="text" name="nama_perjanjian" id="nama_perjanjian" required>                                    
-                                    <span class="help-block"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="agent_name" class="form-label">Nama Tenant</label>
-                                    <select class="form-control" name="tenant" id="tenant" onchange="showTenant(this.value)">
-                                        <option value="">-----</option>
+                                    <select id="id_flowmeter" name="id_flowmeter" class="form-control">
+                                        <option value="">----</option>
                                     </select>
                                     <span class="help-block"></span>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
+                                    <label for="agent_name" class="form-label">Nama Tenant</label>
+                                    <input class="form-control" type="text" name="nama_tenant" id="nama_tenant" required>                                    
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="agent_name" class="form-label">Alamat</label>
+                                    <input class="form-control" type="text" name="alamat" id="alamat" required>                                    
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
                                     <label for="agent_name" class="form-label">Penanggung Jawab</label>
-                                    <input class="form-control" disabled type="text" name="penanggung_jawab" id="penanggung_jawab">                                    
+                                    <input class="form-control" type="text" name="penanggung_jawab" id="penanggung_jawab" required>                                    
                                     <span class="help-block"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="agent_name" class="form-label">Lokasi Tenant</label>
-                                    <input class="form-control" disabled type="text" name="lokasi" id="lokasi">                                    
-                                    <span class="help-block"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="agent_name" class="form-label">Waktu Kadaluarsa</label>
-                                    <div class='input-group date' id='datetimepicker2'>
-                                        <input type='text' class="form-control" name="waktu_kadaluarsa" id="waktu_kadaluarsa"/>
-                                        <span class="input-group-addon">
-                                                <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="agent_name" class="form-label">Nominal</label>
-                                    <input class="form-control" type="text" name="nominal" id="nominal">                                    
+                                    <label for="agent_name" class="form-label">No Telepon</label>
+                                    <input class="form-control" type="text" name="no_telp" id="no_telp" required>                                    
                                     <span class="help-block"></span>
                                 </div>
                             </div>
@@ -94,86 +138,20 @@
 </div><!-- /.modal-dialog -->
 <!-- End Bootstrap modal -->
 
-<div class="container">
-    <div class="row col-md-12">
-        <table id="table" class="table table-striped table-bordered" cellspacing="0" width="70%">
-            <thead>
-            <tr>
-                <th>
-                    <center>No
-                </th>
-                <th>
-                    <center>No Perjanjian
-                </th>
-                <th>
-                    <center>Perihal
-                </th>
-                <th>
-                    <center>Waktu Kadaluarsa
-                </th>
-                <th>
-                    <center>Nominal
-                </th>
-                <th>
-                    <center>Nama Tenant
-                </th>
-                <th>
-                    <center>Aksi
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            </tbody>
-            <tfoot>
-            <tr>
-                <th>
-                    <center>No
-                </th>
-                <th>
-                    <center>No Perjanjian
-                </th>
-                <th>
-                    <center>Perihal
-                </th>
-                <th>
-                    <center>Waktu Kadaluarsa
-                </th>
-                <th>
-                    <center>Nominal
-                </th>
-                <th>
-                    <center>Nama Tenant
-                </th>
-                <th>
-                    <center>Aksi
-                </th>
-            </tr>
-            </tfoot>
-        </table>
-    </div>
-</div>
-
 <script type="text/javascript">
     var table;
-
-    $(function () {
-        $('#datetimepicker2').datepicker({
-            format: "yyyy-mm-dd",
-            autoclose: true,
-            todayHighlight: true
-        });
-    });
 
     $(document).ready(function() {
         //datatables
         table = $('#table').DataTable({
+
             "processing": true, //Feature control the processing indicator.
             "serverSide": true, //Feature control DataTables' server-side processing mode.
             "order": [], //Initial no order.
 
             // Load data for the table's content from an Ajax source
             "ajax": {
-                "url": "<?php echo site_url('master/ajax_data_lumpsum')?>",
+                "url": "<?php echo site_url('master/ajax_data_tenant')?>",
                 "type": "POST"
             },
 
@@ -187,15 +165,15 @@
         });
 
         $.ajax({
-            url:'<?php echo site_url('master/populateLumpsum')?>',
+            url:'<?php echo site_url('master/populateFlowmeter')?>',
             type:'POST',
             dataType: 'json',
             success: function( json ) {
                 $.each(json, function(i, value) {
-                    $('#tenant').append($('<option>').text(value.nama_tenant).attr('value', value.id_tenant));
+                    $('#id_flowmeter').append($('<option>').text(value.nama_flowmeter).attr('value', value.id_flow));
                 });
             }
-        });        
+        });    
     });
 
     function reload_table() {
@@ -213,20 +191,20 @@
 
         //Ajax Load data from ajax
         $.ajax({
-            url : "<?php echo site_url('master/editLumpsum/')?>" + id,
+            url : "<?php echo site_url('master/editTenant/')?>" + id,
             type: "GET",
             dataType: "JSON",
             success: function(data)
             {		
                 $('#md-form').modal('show'); // show bootstrap modal when complete loaded
-                $('.modal-title').text('Edit Data Lumpsum'); // Set title to Bootstrap modal title
+                $('.modal-title').text('Edit Data Tenant'); // Set title to Bootstrap modal title
 
-                $('#idm').val(data.id_lumpsum);
-                $('#no_perjanjian').val(data.no_perjanjian);
-                $('#nama_perjanjian').val(data.perihal);
-                $('#tenant').val(data.id_tenant).change();
-                $('#waktu_kadaluarsa').val(data.waktu_kadaluarsa);
-                $('#nominal').val(data.nominal);
+                $('#idm').val(data.id_tenant);
+                $('#id_flowmeter').val(data.id_flowmeter).change();
+                $('#nama_tenant').val(data.nama_tenant);
+                $('#alamat').val(data.alamat);
+                $('#penanggung_jawab').val(data.penanggung_jawab);
+                $('#no_telp').val(data.no_telp);
             },
             error: function (jqXHR, textStatus, errorThrown)
             {
@@ -241,13 +219,13 @@
         if(save_method == 'add') {
             $('#btnSave').text('Saving...'); //change button text
             $('#btnSave').attr('disabled',true); //set button disable
-            url = "<?php echo site_url('master/input_data_lumpsum');?>"; 
+            url = "<?php echo site_url('master/input_data_tenant');?>"; 
         } else {
             $('#btnSave').text('Updating...'); //change button text
             $('#btnSave').attr('disabled',true); //set button disable 
-            url = "<?php echo site_url('master/edit_lumpsum');?>"; 
+            url = "<?php echo site_url('master/edit_tenant');?>"; 
         }
-
+        
         formData = new FormData($('#frm-modal')[0]);
         formData.append( 'save_method', save_method );
 
@@ -271,7 +249,7 @@
                         $('[name="'+data.inputerror[i]+'"]').parent().parent().addClass('has-error'); //select parent twice to select div form-group class and add has-error class
                         $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]); //select span help-block class set text error string
                     }
-                    $('#btnSave').attr('disabled',false); //set button enable 
+                    $('#btnSave').attr('disabled',false); //set button enable
                 }
 
                 $('#btnSave').text('Save'); //change button text
@@ -295,7 +273,7 @@
         $('.select2').select2({
         });
         $('#md-form').modal('show'); // show bootstrap modal when complete loaded
-        $('.modal-title').text('Tambah Data Lumpsum'); // Set title to Bootstrap modal title
+        $('.modal-title').text('Tambah Data Tenant'); // Set title to Bootstrap modal title
     }
 
     function batal(){
@@ -309,27 +287,27 @@
         reload_table();
     });
 
-    function showTenant(str) {
-        if (str=="") {
-            document.getElementById("penanggung_jawab").innerHTML="";
-            document.getElementById("lokasi").innerHTML="";
-            return;
+    function delete_data_ruko(id)
+    {
+        if(confirm('Apakah Anda Yakin Untuk Menghapus Data Ini?'))
+        {
+            // ajax delete data to database
+            $.ajax({
+                url : "<?php echo site_url('master/delete_data_ruko')?>/"+id,
+                type: "POST",
+                dataType: "JSON",
+                success: function(data)
+                {
+                    //if success reload ajax table
+                    alert("Data Berhasil Dihapus");
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert('Error Ketika Menghapus Data');
+                }
+            });
+
         }
-        if (window.XMLHttpRequest) {
-            // code for IE7+, Firefox, Chrome, Opera, Safari
-            xmlhttp=new XMLHttpRequest();
-        } else { // code for IE6, IE5
-            xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        xmlhttp.onreadystatechange=function() {
-            if (this.readyState==4 && this.status==200) {
-                var data = JSON.parse(this.responseText);
-                document.getElementById("penanggung_jawab").value= data.penanggung_jawab;
-                document.getElementById("lokasi").value=data.lokasi;
-            }
-        }
-        xmlhttp.open("GET","<?php echo base_url('master/cari_tenant/')?>"+str,true);
-        xmlhttp.send();
     }
 
 </script>

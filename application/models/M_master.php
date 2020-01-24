@@ -3,7 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class M_master extends MY_Model{
     var $tabel_darat            = 'pembeli_darat';
-    var $tabel_laut             = 'pembeli_laut';
     var $tabel_pengguna         = 'pengguna_jasa';
 
     var $column_order_tarif = array(null,'tipe_pengguna_jasa',null,null, null,null); //set column field database for datatable orderable
@@ -13,10 +12,6 @@ class M_master extends MY_Model{
     var $column_order_darat = array(null, 'id_pengguna_jasa','nama_pengguna_jasa',null,null, null); //set column field database for datatable orderable
     var $column_search_darat = array('id_pengguna_jasa','nama_pengguna_jasa'); //set column field database for datatable searchable
     var $order_darat = array('id_pengguna_jasa' => 'desc');
-
-    var $column_order_laut = array(null, 'id_pengguna_jasa','nama_vessel',null,null, null,null,null, null); //set column field database for datatable orderable
-    var $column_search_laut = array('id_pengguna_jasa','id_vessel','nama_vessel'); //set column field database for datatable searchable
-    var $order_laut = array('id_pengguna_jasa' => 'desc');
 
     var $column_order_agent = array(null,'nama_agent',null,null); //set column field database for datatable orderable
     var $column_search_agent = array('nama_agent'); //set column field database for datatable searchable
@@ -125,6 +120,7 @@ class M_master extends MY_Model{
     {
 
         $this->db->from("pengguna_jasa");
+        $this->db->where('soft_delete','0');
         $i = 0;
 
         foreach ($this->column_search_tarif as $item) // loop column
@@ -169,6 +165,7 @@ class M_master extends MY_Model{
     public function count_all_tarif()
     {
         $this->db->from("pengguna_jasa");
+        $this->db->where('soft_delete','0');
         return $this->db->count_all_results();
     }
 
@@ -373,7 +370,8 @@ class M_master extends MY_Model{
         if($tipe == "darat"){
             $this->db->where('id_pengguna_jasa', $id);
             $this->db->delete("pembeli_darat");
-        } else{
+        } 
+        else{
             $this->db->where('id_pengguna_jasa', $id);
             $this->db->delete("pembeli_laut");
         }

@@ -2,15 +2,14 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Master extends MY_Controller{
-
     //fungsi untuk master data ruko
     public function delete_data_ruko($id){
-        $this->data->delete_data("ruko",$id);
+        $this->tenant->delete_data("ruko",$id);
         echo json_encode(array("status" => TRUE));
     }
 
     public function ajax_data_ruko(){
-        $list = $this->data->get_datatables_ruko();
+        $list = $this->master->get_datatables_ruko();
         $data = array();
         $no = $_POST['start'];
 
@@ -30,8 +29,8 @@ class Master extends MY_Controller{
 
         $output = array(
             "draw" => $_POST['draw'],
-            "recordsTotal" => $this->data->count_all_ruko(),
-            "recordsFiltered" => $this->data->count_filtered_ruko(),
+            "recordsTotal" => $this->tenant->count_all_ruko(),
+            "recordsFiltered" => $this->tenant->count_filtered_ruko(),
             "data" => $data,
         );
         //output to json format
@@ -63,20 +62,20 @@ class Master extends MY_Controller{
             $this->db->insert('pembeli_darat',$data_insert2);
 
             if($query){
-                $message = "Input Berhasil";
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
             }
             else{
-                $message = "Input Gagal";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
         else{
-            $message = "Inputan Masih Kosong...Harap Diisi";
+            $message = array("status" => FALSE,"info" => "Simpan data gagal");
         }
-        echo $message;
+        echo json_encode($message);
     }
 
-    public function editRuko(){
-        $id = $_GET['id'];
+    public function editRuko($id){
+        //$id = $_GET['id'];
         $data['id'] = $id;
         $data['title'] = 'Edit Data Ruko';
         $this->db->from('master_flowmeter,pembeli_darat');
@@ -90,12 +89,12 @@ class Master extends MY_Controller{
             'alamat' => $result->alamat,
             'no_telp' => $result->no_telp
         );
-
-        $this->load->template('v_edit_ruko',$data);
+        echo json_encode($data);
+        //$this->load->template('v_edit_ruko',$data);
     }
 
     public function edit_ruko(){
-        $id = $this->input->post('id');
+        $id = $this->input->post('idm');
         $nama = $this->input->post('nama');
         $alamat = $this->input->post('alamat');
         $no_telp = $this->input->post('no_telp');
@@ -121,25 +120,25 @@ class Master extends MY_Controller{
             $this->db->update('pembeli_darat');
 
             if($query){
-                $message = "Edit Berhasil";
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
             }else{
-                $message = "Edit Gagal";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
         else{
-            $message = "Tolong Isi Kolom ID Flow Meter";
+            $message = array("status" => FALSE,"info" => "Simpan data gagal");
         }
-        echo $message;
+        echo json_encode($message);
     }
 
     //fungsi untuk master data darat
     public function delete_data_darat($id){
-        $this->data->delete_data("darat",$id);
+        $this->master->delete_data("darat",$id);
         echo json_encode(array("status" => TRUE));
     }
 
     public function ajax_data_darat(){
-        $list = $this->data->get_datatables_darat();
+        $list = $this->master->get_datatables_darat();
         $data = array();
         $no = $_POST['start'];
 
@@ -160,15 +159,15 @@ class Master extends MY_Controller{
                 $result->pengguna_jasa_id_tarif = "Perusahaan (NON - KIK)";
             }
             $row[] = "<center>".$result->pengguna_jasa_id_tarif;
-            $row[] = '<center><a class="btn btn-sm btn-primary" href="editDarat?id=' . $result->id_pengguna_jasa . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
+            $row[] = '<center><a class="btn btn-sm btn-primary" href="javascript:void(0);" onclick="edit('."'".$result->id_pengguna_jasa."'".')" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
 
             $data[] = $row;
         }
 
         $output = array(
             "draw" => $_POST['draw'],
-            "recordsTotal" => $this->data->count_all_darat(),
-            "recordsFiltered" => $this->data->count_filtered_darat(),
+            "recordsTotal" => $this->master->count_all_darat(),
+            "recordsFiltered" => $this->master->count_filtered_darat(),
             "data" => $data,
         );
         //output to json format
@@ -179,7 +178,7 @@ class Master extends MY_Controller{
         $nama = $this->input->post('nama');
         $alamat = $this->input->post('alamat');
         $no_telp = $this->input->post('no_telp');
-        $pengguna = $this->input->post('pengguna_jasa');
+        $pengguna = $this->input->post('pengguna');
 
         if(isset($nama) && $nama != NULL && $alamat != NULL && $no_telp != NULL && $pengguna != NULL){
             $data_insert = array(
@@ -193,50 +192,45 @@ class Master extends MY_Controller{
             $query = $this->db->insert('pembeli_darat',$data_insert);
 
             if($query){
-                $message = "Input Berhasil";
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
             }
             else{
-                $message = "Input Gagal";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
         else{
-            $message = "Inputan Masih Kosong...Harap Diisi";
+            $message = array("status" => FALSE,"info" => "Simpan data gagal");
         }
-        echo $message;
+        echo json_encode($message);
     }
 
-    public function editDarat(){
-        $id = $_GET['id'];
+    public function editDarat($id){
+        //$id = $_GET['id'];
         $data['id'] = $id;
         $data['title'] = 'Edit Data Darat';
         $this->db->from('pembeli_darat');
         $this->db->where('id_pengguna_jasa',$id);
         $query = $this->db->get();
         $result = $query->row();
-        $data['pengguna'] = $this->data->get_pengguna("darat","darat");
-        if($data['pengguna'] == "2"){
-            $data['nama_pengguna'] = "Perorangan (KIK)";
-        }else if($data['pengguna'] == "3"){
-            $data['nama_pengguna'] = "Perorangan (NON - KIK)";
-        }else if($data['pengguna'] == "4"){
-            $data['nama_pengguna'] = "Perusahaan (KIK)";
-        }else {
-            $data['nama_pengguna'] = "Perusahaan (NON - KIK)";
-        }
-        $data['isi'] = array(
+        
+        $data = array(
             'id_pengguna' => $result->id_pengguna_jasa,
             'nama_pembeli' => $result->nama_pengguna_jasa,
             'alamat' => $result->alamat,
             'no_telp' => $result->no_telp,
             'pengguna' => $result->pengguna_jasa_id_tarif,
-            'nama_pengguna' => $data['nama_pengguna'],
         );
+        echo json_encode($data);
+        //$this->load->template('v_edit_darat',$data);
+    }
 
-        $this->load->template('v_edit_darat',$data);
+    public function populatePenggunaDarat(){
+        $data = $this->master->get_pengguna("darat","darat");
+        echo json_encode($data);
     }
 
     public function edit_darat(){
-        $id = $this->input->post('id');
+        $id = $this->input->post('idm');
         $nama = $this->input->post('nama');
         $alamat = $this->input->post('alamat');
         $no_telp = $this->input->post('no_telp');
@@ -256,25 +250,25 @@ class Master extends MY_Controller{
             $query = $this->db->update('pembeli_darat');
 
             if($query){
-                $message = "Edit Berhasil";
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
             }else{
-                $message = "Edit Gagal";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
         else{
-            $message = "Tolong Isi Kolom Nama Pengguna Jasa";
+            $message = array("status" => FALSE,"info" => "Simpan data gagal");
         }
-        echo $message;
+        echo json_encode($message);
     }
 
     //fungsi untuk master data laut
     public function delete_data_laut($id){
-        $this->data->delete_data("laut",$id);
+        $this->master->delete_data("laut",$id);
         echo json_encode(array("status" => TRUE));
     }
 
     public function ajax_data_laut(){
-        $list = $this->data->get_datatables_laut();
+        $list = $this->kapal->get_datatables_laut();
         $data = array();
         $no = $_POST['start'];
 
@@ -285,25 +279,25 @@ class Master extends MY_Controller{
             $row[] = "<center>".$result->id_vessel;
             $row[] = "<center>".$result->nama_vessel;
 
-            $data_agent = $this->data->getDataAgent($result->id_agent_master);
+            $data_agent = $this->master->getDataAgent($result->id_agent_master);
 
             $row[] = $data_agent->nama_agent;
             $row[] = $data_agent->alamat;
             $row[] = $data_agent->no_telp;
 
-            $data_tarif = $this->data->getDataTarif($result->pengguna_jasa_id_tarif);
+            $data_tarif = $this->master->getDataTarif($result->pengguna_jasa_id_tarif);
 
             $row[] = $data_tarif->tipe_pengguna_jasa;
 
-            $row[] = '<center><a class="btn btn-sm btn-primary" href="editLaut?id=' . $result->id_pengguna_jasa . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
+            $row[] = '<center><a class="btn btn-sm btn-primary" href="javascript:void(0);" onclick="edit('."'".$result->id_pengguna_jasa."'".')" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
 
             $data[] = $row;
         }
 
         $output = array(
             "draw" => $_POST['draw'],
-            "recordsTotal" => $this->data->count_all_laut(),
-            "recordsFiltered" => $this->data->count_filtered_laut(),
+            "recordsTotal" => $this->kapal->count_all_laut(),
+            "recordsFiltered" => $this->kapal->count_filtered_laut(),
             "data" => $data,
         );
         //output to json format
@@ -312,7 +306,7 @@ class Master extends MY_Controller{
 
     public function input_data_laut(){
         $id_lct = $this->input->post('id_lct');
-        $nama = $this->input->post('nama');
+        $nama = $this->input->post('nama_lct');
         $id_agent = $this->input->post('id_agent');
         $pengguna = $this->input->post('pengguna_jasa');
 
@@ -328,32 +322,29 @@ class Master extends MY_Controller{
             $query = $this->db->insert('pembeli_laut',$data_insert);
 
             if($query){
-                $message = "Input Berhasil";
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
             }
             else{
-                $message = "Input Gagal";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
         else{
-            $message = "Inputan Masih Kosong...Harap Diisi";
+            $message = array("status" => FALSE,"info" => "Simpan data error");
         }
-        echo $message;
+        echo json_encode($message);
     }
 
-    public function editLaut(){
-        $id = $_GET['id'];
+    public function editLaut($id){
+        //$id = $_GET['id'];
         $data['id'] = $id;
-        $data['title'] = 'Edit Data Kapal';
         $this->db->from('pembeli_laut,master_agent');
         $this->db->where('id_agent = id_agent_master');
         $this->db->where('id_pengguna_jasa',$id);
         $query = $this->db->get();
-        $result = $query->row();
+        $result = $query->row();        
 
-        $data['pengguna'] = $this->data->get_pengguna("laut","laut");
-        $data['agent'] = $this->data->getAgent();
-
-        $data['isi'] = array(
+        $data = array(
+            'id_pengguna_jasa' =>$result->id_pengguna_jasa,
             'id_vessel' => $result->id_vessel,
             'nama_vessel' => $result->nama_vessel,
             'id_agent' => $result->id_agent_master,
@@ -361,15 +352,25 @@ class Master extends MY_Controller{
             'no_telp' => $result->no_telp,
             'pengguna' => $result->pengguna_jasa_id_tarif,
         );
+        echo json_encode($data);
+        //$this->load->template('v_edit_laut',$data);
+    }
 
-        $this->load->template('v_edit_laut',$data);
+    public function populatePenggunaLaut(){
+        $data = $this->master->get_pengguna("laut","laut");
+        echo json_encode($data);
+    }
+
+    public function populateAgent(){
+        $data = $this->master->getAgent();
+        echo json_encode($data);
     }
 
     public function edit_laut(){
-        $id = $this->input->post('id');
+        $id = $this->input->post('idm');
         $id_lct = $this->input->post('id_lct');
-        $nama = $this->input->post('nama');
-        $nama_perusahaan = $this->input->post('nama_perusahaan');
+        $nama = $this->input->post('nama_lct');
+        $nama_perusahaan = $this->input->post('id_agent');
         $pengguna = $this->input->post('pengguna_jasa');
         $data_edit = array(
             'id_vessel' => $id_lct,
@@ -385,19 +386,19 @@ class Master extends MY_Controller{
             $query = $this->db->update('pembeli_laut');
 
             if($query){
-                $message = "Edit Berhasil";
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
             }else{
-                $message = "Edit Gagal";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
         else{
-            $message = "Masih Ada Yang Harus Di Isi";
+            $message = array("status" => FALSE,"info" => "Simpan data gagal");
         }
-        echo $message;
+        echo json_encode($message);
     }
 
-    public function cari_agent(){
-        $id = $this->input->get('id');
+    public function cari_agent($id){
+        //$id = $this->input->get('id');
         $query = $this->db->from('master_agent')
                         ->where('id_agent',$id)
                         ->get();
@@ -412,13 +413,13 @@ class Master extends MY_Controller{
 
     //fungsi untuk master data tenant
     public function delete_data_tenant($id){
-        $this->data->delete_data("tenant",$id);
+        $this->tenant->delete_data("tenant",$id);
         echo json_encode(array("status" => TRUE));
     }
 
     public function ajax_data_tenant(){
-        if($this->session->userdata('role') == 'admin'){
-            $list = $this->data->get_datatables_tenant();
+        if($this->session->userdata('role_name') == 'admin'){
+            $list = $this->tenant->get_datatables_tenant();
             $data = array();
             $no = $_POST['start'];
 
@@ -435,22 +436,22 @@ class Master extends MY_Controller{
                 else
                     $status = "Tidak Aktif";
                 $row[] = $status;
-                $data_flow = $this->data->getIdFlowmeter($result->id_ref_flowmeter);
+                $data_flow = $this->tenant->getIdFlowmeter($result->id_ref_flowmeter);
                 $row[] = $data_flow->id_flowmeter;
-                $row[] = '<center><a class="btn btn-sm btn-primary" href="editTenant?id=' . $result->id_tenant . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
+                $row[] = '<center><a class="btn btn-sm btn-primary" href="javascript:void(0);" onclick="edit('."'".$result->id_tenant."'".')" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
 
                 $data[] = $row;
             }
 
             $output = array(
                 "draw" => $_POST['draw'],
-                "recordsTotal" => $this->data->count_all_tenant(),
-                "recordsFiltered" => $this->data->count_filtered_tenant(),
+                "recordsTotal" => $this->tenant->count_all_tenant(),
+                "recordsFiltered" => $this->tenant->count_filtered_tenant(),
                 "data" => $data,
             );
         }
         else{
-            $list = $this->data->get_datatables_tenant();
+            $list = $this->tenant->get_datatables_tenant();
             $data = array();
             $no = $_POST['start'];
 
@@ -461,15 +462,23 @@ class Master extends MY_Controller{
                 $row[] = "<center>".$result->nama_tenant;
                 $row[] = "<center>".$result->penanggung_jawab;
                 $row[] = $result->lokasi;
-                $row[] = '<center><a class="btn btn-sm btn-primary" href="editTenant?id=' . $result->id_tenant . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
+                $row[] = $result->no_telp;
+                if($result->status_aktif == 1)
+                    $status = "Aktif";
+                else
+                    $status = "Tidak Aktif";
+                $row[] = $status;
+                $row[] = '';
+                
+                //$row[] = '<center><a class="btn btn-sm btn-primary" href="editTenant?id=' . $result->id_tenant . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
 
                 $data[] = $row;
             }
 
             $output = array(
                 "draw" => $_POST['draw'],
-                "recordsTotal" => $this->data->count_all_tenant(),
-                "recordsFiltered" => $this->data->count_filtered_tenant(),
+                "recordsTotal" => $this->tenant->count_all_tenant(),
+                "recordsFiltered" => $this->tenant->count_filtered_tenant(),
                 "data" => $data,
             );
         }
@@ -479,7 +488,7 @@ class Master extends MY_Controller{
     }
 
     public function input_data_tenant(){
-        if($this->session->userdata('role') == 'admin'){
+        if($this->session->userdata('role_name') == 'admin'){
             $nama_tenant = $this->input->post('nama_tenant');
             $penanggung_jawab = $this->input->post('penanggung_jawab');
             $alamat = $this->input->post('alamat');
@@ -500,23 +509,23 @@ class Master extends MY_Controller{
                 $query = $this->db->insert('master_tenant',$data_insert);
 
                 if($query){
-                    $message = "Input Berhasil";
+                    $message = array("status" => TRUE,"info" => "Simpan data sukses");
                 }
                 else{
-                    $message = $this->db->error();
+                    $message = array("status" => FALSE,"info" => "Simpan data gagal");
                 }
             }
             else{
-                $message = "Inputan Masih Kosong...Harap Diisi";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
 
-        echo $message;
+        echo json_encode($message);
     }
 
-    public function editTenant(){
-        if($this->session->userdata('role') == 'admin'){
-            $id = $_GET['id'];
+    public function editTenant($id){
+        if($this->session->userdata('role_name') == 'admin'){
+            //$id = $_GET['id'];
             $data['id'] = $id;
             $data['title'] = 'Edit Data Tenant';
             $this->db->from('master_tenant');
@@ -524,9 +533,7 @@ class Master extends MY_Controller{
             $query = $this->db->get();
             $result = $query->row();
 
-            $data['tenant'] = $this->data->getFlowmeter();
-
-            $data['isi'] = array(
+            $data = array(
                 'id_tenant' => $result->id_tenant,
                 'nama_tenant' => $result->nama_tenant,
                 'penanggung_jawab' => $result->penanggung_jawab,
@@ -536,12 +543,17 @@ class Master extends MY_Controller{
                 'id_flowmeter' => $result->id_ref_flowmeter,
             );
         }
+        echo json_encode($data);
+        //$this->load->template('v_edit_tenant',$data);
+    }
 
-        $this->load->template('v_edit_tenant',$data);
+    public function populateFlowmeter(){
+        $data = $this->tenant->getFlowmeter();
+        echo json_encode($data);
     }
 
     public function edit_tenant(){
-        if($this->session->userdata('role') == 'admin'){
+        if($this->session->userdata('role_name') == 'admin'){
             $id = $this->input->post('id_tenant');
             $nama_tenant = $this->input->post('nama_tenant');
             $penanggung_jawab = $this->input->post('penanggung_jawab');
@@ -565,36 +577,36 @@ class Master extends MY_Controller{
                 $query = $this->db->update('master_tenant');
 
                 if($query){
-                    $message = "Edit Berhasil";
+                    $message = array("status" => TRUE,"info" => "Simpan data sukses");
                 }else{
-                    $message = "Edit Gagal";
+                    $message = array("status" => FALSE,"info" => "Simpan data gagal");
                 }
             }
             else{
-                $message = "Masih Ada Yang Harus Di Isi";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
 
-        echo $message;
+        echo json_encode($message);
     }
 
-    public function cari_tenant(){
-    $id = $this->input->get('id');
-    $query = $this->db->from('master_tenant')
-        ->where('id_tenant',$id)
-        ->get();
-    $result = $query->row();
-    $data = array(
-        'penanggung_jawab' => $result->penanggung_jawab,
-        'lokasi' => $result->lokasi,
-    );
+    public function cari_tenant($id){
+        //$id = $this->input->get('id');
+        $query = $this->db->from('master_tenant')
+            ->where('id_tenant',$id)
+            ->get();
+        $result = $query->row();
+        $data = array(
+            'penanggung_jawab' => $result->penanggung_jawab,
+            'lokasi' => $result->lokasi,
+        );
 
-    echo json_encode($data);
+        echo json_encode($data);
     }
 
     //fungsi untuk master data lumpsum
     public function ajax_data_lumpsum(){
-        $list = $this->data->get_datatables_lumpsum();
+        $list = $this->master->get_datatables_lumpsum();
         $data = array();
         $no = $_POST['start'];
 
@@ -609,10 +621,10 @@ class Master extends MY_Controller{
             $row[] = "<center>".$result->perihal;
             $row[] = "<center>".$result->waktu_kadaluarsa;
             $row[] = "<center>Rp. ".$this->Ribuan($result->nominal);
-            $nama = $this->data->getTenant($result->id_ref_tenant);
+            $nama = $this->tenant->getTenant($result->id_ref_tenant);
             $row[] = "<center>".$nama->nama_tenant;
             if($date_now < $date_kadaluarsa || $date_now == $date_kadaluarsa){
-                $row[] = '<center><a class="btn btn-sm btn-primary" href="editLumpsum?id=' . $result->id_lumpsum . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
+                $row[] = '<center><a class="btn btn-sm btn-primary" href="javascript:void(0)" onclick="edit('."'".$result->id_lumpsum."'".')" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
             } else{
                 $row[] = '';
             }
@@ -622,8 +634,8 @@ class Master extends MY_Controller{
 
         $output = array(
             "draw" => $_POST['draw'],
-            "recordsTotal" => $this->data->count_all_lumpsum(),
-            "recordsFiltered" => $this->data->count_filtered_lumpsum(),
+            "recordsTotal" => $this->master->count_all_lumpsum(),
+            "recordsFiltered" => $this->master->count_filtered_lumpsum(),
             "data" => $data,
         );
 
@@ -652,47 +664,52 @@ class Master extends MY_Controller{
             $query = $this->db->insert('master_lumpsum',$data_insert);
 
             if($query){
-                $message = "Input Berhasil";
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
             }
             else{
-                $message = "Input Gagal";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
         else{
-            $message = "Inputan Masih Kosong...Harap Diisi";
+            $message = array("status" => FALSE,"info" => "Simpan data gagal");
         }
 
-        echo $message;
+        echo json_encode($message);
     }
 
-    public function editLumpsum(){
-        $id = $_GET['id'];
-        $data['id'] = $id;
-        $data['title'] = 'Edit Data Lumpsum';
+    public function editLumpsum($id){
+        //$id = $_GET['id'];
+        $data['idm'] = $id;
+        //$data['title'] = 'Edit Data Lumpsum';
         $this->db->from('master_lumpsum');
         $this->db->where('id_lumpsum',$id);
         $query = $this->db->get();
         $result = $query->row();
 
-        $data['lumpsum'] = $this->data->getIDTenant();
-        $data['isi'] = array(
+        $data = array(
+            'id_lumpsum' => $result->id_lumpsum,
             'no_perjanjian' => $result->no_perjanjian,
             'perihal' => $result->perihal,
             'waktu_kadaluarsa' => $result->waktu_kadaluarsa,
             'nominal' => $result->nominal,
-            'id_tenant' => $result->id_ref_tenant
+            'id_tenant' => $result->id_ref_tenant,
         );
+        echo json_encode($data);
+        //$this->load->template('v_edit_lumpsum',$data);
+    }
 
-        $this->load->template('v_edit_lumpsum',$data);
+    public function populateLumpsum(){
+        $data = $this->tenant->getIDTenant();
+        echo json_encode($data);
     }
 
     public function edit_lumpsum(){
-        $id = $this->input->post('id_lumpsum');
+        $id = $this->input->post('idm');
         $no_perjanjian = $this->input->post('no_perjanjian');
         $nama_perjanjian = $this->input->post('nama_perjanjian');
         $waktu_kadaluarsa = $this->input->post('waktu_kadaluarsa');
         $nominal = $this->input->post('nominal');
-        $tenant = $this->input->post('id_tenant');
+        $tenant = $this->input->post('tenant');
 
         $data_edit = array(
             'no_perjanjian' => $no_perjanjian,
@@ -710,22 +727,22 @@ class Master extends MY_Controller{
             $query = $this->db->update('master_lumpsum');
 
             if($query){
-                $message = "Edit Berhasil";
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
             }else{
-                $message = "Edit Gagal";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
         else{
-            $message = "Masih Ada Yang Harus Di Isi";
+            $message = array("status" => FALSE,"info" => "Simpan data error");
         }
 
-        echo $message;
+        echo json_encode($message);
     }
 
     //fungsi untuk master data sumur
     public function ajax_data_sumur(){
-        if($this->session->userdata('role') == 'admin'){
-            $list = $this->data->get_datatables_sumur();
+        if($this->session->userdata('role_name') == 'admin'){
+            $list = $this->tenant->get_datatables_sumur();
             $data = array();
             $no = $_POST['start'];
 
@@ -744,8 +761,8 @@ class Master extends MY_Controller{
 
             $output = array(
                 "draw" => $_POST['draw'],
-                "recordsTotal" => $this->data->count_all_sumur(),
-                "recordsFiltered" => $this->data->count_filtered_sumur(),
+                "recordsTotal" => $this->tenant->count_all_sumur(),
+                "recordsFiltered" => $this->tenant->count_filtered_sumur(),
                 "data" => $data,
             );
         }
@@ -758,7 +775,7 @@ class Master extends MY_Controller{
     }
 
     public function input_data_sumur(){
-        if($this->session->userdata('role') == 'admin'){
+        if($this->session->userdata('role_name') == 'admin'){
             $id_sumur = $this->input->post('id_sumur');
             $nama_sumur = $this->input->post('nama_sumur');
             $lokasi = $this->input->post('lokasi');
@@ -776,22 +793,22 @@ class Master extends MY_Controller{
                 $query = $this->db->insert('master_sumur',$data_insert);
 
                 if($query){
-                    $message = "Input Berhasil";
+                    $message = array("status" => TRUE,"info" => "Simpan data sukses");
                 }
                 else{
-                    $message = "Input Gagal";
+                    $message = array("status" => FALSE,"info" => "Simpan data gagal");
                 }
             }
             else{
-                $message = "Inputan Masih Kosong...Harap Diisi";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
 
-        echo $message;
+        echo json_encode($message);
     }
 
-    public function editSumur(){
-        $id = $_GET['id'];
+    public function editSumur($id){
+        //$id = $_GET['id'];
         $data['id'] = $id;
         $data['title'] = 'Edit Data Sumur';
         $this->db->from('master_sumur');
@@ -799,18 +816,18 @@ class Master extends MY_Controller{
         $query = $this->db->get();
         $result = $query->row();
 
-        $data['isi'] = array(
+        $data = array(
             'id_sumur' => $result->id_sumur,
             'nama_sumur' => $result->nama_sumur,
             'lokasi' => $result->lokasi,
             'debit_air' => $result->debit_air,
         );
-
-        $this->load->template('v_edit_sumur',$data);
+        echo json_encode($data);
+        //$this->load->template('v_edit_sumur',$data);
     }
 
     public function edit_sumur(){
-        $id = $this->input->post('id');
+        $id = $this->input->post('idm');
         $id_sumur = $this->input->post('id_sumur');
         $nama_sumur = $this->input->post('nama_sumur');
         $lokasi = $this->input->post('lokasi');
@@ -831,22 +848,22 @@ class Master extends MY_Controller{
             $query = $this->db->update('master_sumur');
 
             if($query){
-                $message = "Edit Berhasil";
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
             }else{
-                $message = "Edit Gagal";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
         else{
-            $message = "Masih Ada Yang Harus Di Isi";
+            $message = array("status" => FALSE,"info" => "Simpan data gagal");
         }
 
-        echo $message;
+        echo json_encode($message);
     }
 
     //fungsi untuk master data pompa
     public function ajax_data_pompa(){
-        if($this->session->userdata('role') == 'wtp' || $this->session->userdata('role') == 'admin'){
-            $list = $this->data->get_datatables_pompa();
+        if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('role_name') == 'admin'){
+            $list = $this->tenant->get_datatables_pompa();
             $data = array();
             $no = $_POST['start'];
 
@@ -871,7 +888,7 @@ class Master extends MY_Controller{
                     $status = "Tidak Aktif";
 
                 $row[] = "<center>".$status;
-                $data_pompa = $this->data->getNamaSumur($result->id_ref_sumur);
+                $data_pompa = $this->tenant->getNamaSumur($result->id_ref_sumur);
                 $row[] = "<center>".$data_pompa->id_sumur;
                 $row[] = '<center><a class="btn btn-sm btn-primary" href="editPompa?id=' . $result->id_master_pompa . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
 
@@ -880,8 +897,8 @@ class Master extends MY_Controller{
 
             $output = array(
                 "draw" => $_POST['draw'],
-                "recordsTotal" => $this->data->count_all_pompa(),
-                "recordsFiltered" => $this->data->count_filtered_pompa(),
+                "recordsTotal" => $this->tenant->count_all_pompa(),
+                "recordsFiltered" => $this->tenant->count_filtered_pompa(),
                 "data" => $data,
             );
         }
@@ -894,7 +911,7 @@ class Master extends MY_Controller{
     }
 
     public function input_data_pompa(){
-        if($this->session->userdata('role') == 'wtp' || $this->session->userdata('role') == 'admin'){
+        if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('role_name') == 'admin'){
             $id_pompa = $this->input->post('id_pompa');
             $nama_pompa = $this->input->post('nama_pompa');
             $kondisi = $this->input->post('kondisi');
@@ -912,22 +929,22 @@ class Master extends MY_Controller{
                 $query = $this->db->insert('master_pompa',$data_insert);
 
                 if($query){
-                    $message = "Input Berhasil";
+                    $message = array("status" => TRUE,"info" => "Simpan data sukses");
                 }
                 else{
-                    $message = "Input Gagal";
+                    $message = array("status" => FALSE,"info" => "Simpan data gagal");
                 }
             }
             else{
-                $message = "Inputan Masih Kosong...Harap Diisi";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
 
-        echo $message;
+        echo json_encode($message);
     }
 
-    public function editPompa(){
-        $id = $_GET['id'];
+    public function editPompa($id){
+        //$id = $_GET['id'];
         $data['id'] = $id;
         $data['title'] = 'Edit Data Pompa';
         $this->db->from('master_pompa');
@@ -935,21 +952,21 @@ class Master extends MY_Controller{
         $query = $this->db->get();
         $result = $query->row();
 
-        $data['pompa'] = $this->data->getIDSumur();
+        $data['pompa'] = $this->tenant->getIDSumur();
 
-        $data['isi'] = array(
+        $data = array(
             'id_pompa' => $result->id_pompa,
             'nama_pompa' => $result->nama_pompa,
             'kondisi' => $result->kondisi,
             'status_aktif' => $result->status_aktif,
             'id_sumur' => $result->id_ref_sumur,
         );
-
-        $this->load->template('v_edit_pompa',$data);
+        echo json_encode($data);
+        //$this->load->template('v_edit_pompa',$data);
     }
 
     public function edit_pompa(){
-        $id = $this->input->post('id');
+        $id = $this->input->post('idm');
         $id_pompa = $this->input->post('id_pompa');
         $nama_pompa = $this->input->post('nama_pompa');
         $kondisi = $this->input->post('kondisi');
@@ -972,21 +989,21 @@ class Master extends MY_Controller{
             $query = $this->db->update('master_pompa');
 
             if($query){
-                $message = "Edit Berhasil";
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
             }else{
-                $message = "Edit Gagal";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
         else{
-            $message = "Masih Ada Yang Harus Di Isi";
+            $message = array("status" => FALSE,"info" => "Simpan data gagal");
         }
 
-        echo $message;
+        echo json_encode($message);
     }
 
     //fungsi untuk master data flowmeter
     public function ajax_data_flowmeter(){
-        if($this->session->userdata('role') == 'wtp' || $this->session->userdata('role') == 'admin'){
+        if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('role_name') == 'admin'){
             $list = $this->data->get_datatables_flowmeter();
             $data = array();
             $no = $_POST['start'];
@@ -1011,7 +1028,7 @@ class Master extends MY_Controller{
                     $status = 'Aktif';
                 else
                     $status = 'Tidak Aktif';
-                $flowmeter = $this->data->getNamaPompa($result->id_flow);
+                $flowmeter = $this->tenant->getNamaPompa($result->id_flow);
                 $row[] = "<center>".$flowmeter->id_pompa;
                 $row[] = $status;
                 $row[] = '<center><a class="btn btn-sm btn-primary" href="editFlowmeter?id=' . $result->id_flow . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
@@ -1021,8 +1038,8 @@ class Master extends MY_Controller{
 
             $output = array(
                 "draw" => $_POST['draw'],
-                "recordsTotal" => $this->data->count_all_flowmeter(),
-                "recordsFiltered" => $this->data->count_filtered_flowmeter(),
+                "recordsTotal" => $this->master->count_all_flowmeter(),
+                "recordsFiltered" => $this->master->count_filtered_flowmeter(),
                 "data" => $data,
             );
         }
@@ -1035,7 +1052,7 @@ class Master extends MY_Controller{
     }
 
     public function input_data_flowmeter(){
-        if($this->session->userdata('role') == 'wtp' || $this->session->userdata('role') == 'admin'){
+        if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('role_name') == 'admin'){
             $id_flowmeter = $this->input->post('id_flowmeter');
             $nama_flowmeter = $this->input->post('nama_flowmeter');
             $kondisi = $this->input->post('kondisi');
@@ -1053,25 +1070,25 @@ class Master extends MY_Controller{
                 $query = $this->db->insert('master_flowmeter',$data_insert);
 
                 if($query){
-                    $message = "Input Berhasil";
+                    $message = array("status" => TRUE,"info" => "Simpan data sukses");
                 }
                 else{
-                    $message = "Input Gagal";
+                    $message = array("status" => FALSE,"info" => "Simpan data gagal");
                 }
             }
             else{
-                $message = "Inputan Masih Kosong...Harap Diisi";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
         else{
 
         }
 
-        echo $message;
+        echo json_encode($message);
     }
 
-    public function editFlowmeter(){
-        $id = $_GET['id'];
+    public function editFlowmeter($id){
+        //$id = $_GET['id'];
         $data['id'] = $id;
         $data['title'] = 'Edit Data Flow Meter';
         $this->db->from('master_flowmeter');
@@ -1079,10 +1096,10 @@ class Master extends MY_Controller{
         $query = $this->db->get();
         $result = $query->row();
 
-        $data['kondisi'] = $this->data->getKondisi();
-        $data['pompa'] = $this->data->getPompa();
+        $data['kondisi'] = $this->tenant->getKondisi();
+        $data['pompa'] = $this->tenant->getPompa();
 
-        $data['isi'] = array(
+        $data = array(
             'id_flowmeter' => $result->id_flowmeter,
             'nama_flowmeter' => $result->nama_flowmeter,
             'status_aktif' => $result->status_aktif,
@@ -1091,8 +1108,8 @@ class Master extends MY_Controller{
             'flowmeter_awal' => $result->flowmeter_awal,
             'flowmeter_akhir' => $result->flowmeter_akhir,
         );
-
-        $this->load->template('v_edit_flowmeter',$data);
+        echo json_encode($data);
+        //$this->load->template('v_edit_flowmeter',$data);
     }
 
     public function edit_flowmeter(){
@@ -1123,24 +1140,19 @@ class Master extends MY_Controller{
             $query = $this->db->update('master_flowmeter');
 
             if($query){
-                $message = "Edit Berhasil";
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
             }else{
-                $message = "Edit Gagal";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
         else{
-            $message = "Masih Ada Yang Harus Di Isi";
+            $message = array("status" => FALSE,"info" => "Simpan data gagal");
         }
 
-        echo $message;
+        echo json_encode($message);
     }
 
     //fungsi untuk master data tarif
-    public function tarif(){
-        $data['title'] = "Penyesuaian Tarif";
-        $this->load->template('v_tarif',$data);
-    }
-
     public function delete_data_tarif($id){
         $this->data->delete_data_tarif($id);
         echo json_encode(array("status" => TRUE));
@@ -1307,7 +1319,7 @@ class Master extends MY_Controller{
             $row[] = "<center>".$result->no_telp;
             $row[] = "<center>".$result->npwp;
 
-            $row[] = '<center><a class="btn btn-sm btn-primary" href="editAgent?id=' . $result->id_agent . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+            $row[] = '<center><a class="btn btn-sm btn-primary" href="javascript:void(0);" onclick="edit('."'".$result->id_agent."'".')" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
                     ';
 
             $data[] = $row;
@@ -1315,8 +1327,8 @@ class Master extends MY_Controller{
 
         $output = array(
             "draw" => $_POST['draw'],
-            "recordsTotal" => $this->data->count_all_agent(),
-            "recordsFiltered" => $this->data->count_filtered_agent(),
+            "recordsTotal" => $this->master->count_all_agent(),
+            "recordsFiltered" => $this->master->count_filtered_agent(),
             "data" => $data,
         );
         //output to json format
@@ -1341,20 +1353,20 @@ class Master extends MY_Controller{
             $query = $this->db->insert('master_agent',$data_insert);
 
             if($query){
-                $message = "Input Berhasil";
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
             }
             else{
-                $message = "Input Gagal";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
         else{
-            $message = "Inputan Masih Kosong...Harap Diisi";
+            $message = array("status" => TRUE,"info" => "Inputan Masih Kosong");
         }
-        echo $message;
+        echo json_encode($message);
     }
 
-    public function editAgent(){
-        $id = $_GET['id'];
+    public function editAgent($id){
+        //$id = $_GET['id'];
         $data['id'] = $id;
         $data['title'] = 'Edit Data Tarif';
         $this->db->from('master_agent');
@@ -1362,19 +1374,19 @@ class Master extends MY_Controller{
         $query = $this->db->get();
         $result = $query->row();
 
-        $data['isi'] = array(
+        $data = array(
             'id_agent' => $result->id_agent,
             'nama_agent' => $result->nama_agent,
             'alamat' => $result->alamat,
             'no_telp' => $result->no_telp,
             'npwp' => $result->npwp,
         );
-
-        $this->load->template('v_edit_agent',$data);
+        echo json_encode($data);
+        //$this->load->template('v_edit_agent',$data);
     }
 
     public function edit_agent(){
-        $id = $this->input->post('id');
+        $id = $this->input->post('idm');
         $nama = $this->input->post('nama_perusahaan');
         $alamat = $this->input->post('alamat');
         $no_telp = $this->input->post('no_telp');
@@ -1395,26 +1407,17 @@ class Master extends MY_Controller{
             $query = $this->db->update('master_agent');
 
             if($query){
-                $message = "Edit Berhasil";
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
             }else{
-                $message = "Edit Gagal";
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
             }
         }
         else{
-            $message = "Tolong Isi Kolom Pengguna Jasa";
+            $message = array("status" => FALSE,"info" => "Simpan data gagal");
         }
-        echo $message;
+        echo json_encode($message);
     }
 
-    public function agent(){
-        $data['title'] = "Master Agent";
-        if($this->session->userdata('role') == 'admin'){
-            $data['tipe'] = 'laut_admin';
-        } else{
-            $data['tipe'] = 'laut';
-        }
-        $this->load->template('v_master',$data);
-    }
 }
 
 ?>

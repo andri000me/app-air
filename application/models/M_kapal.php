@@ -3,6 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class M_kapal extends MY_Model{
     var $tabel_transaksi_laut   = 'transaksi_laut';
+    var $tabel_laut             = 'pembeli_laut';
+
+    var $column_order_laut = array(null, 'id_pengguna_jasa','nama_vessel',null,null, null,null,null, null); //set column field database for datatable orderable
+    var $column_search_laut = array('id_pengguna_jasa','id_vessel','nama_vessel'); //set column field database for datatable searchable
+    var $order_laut = array('id_pengguna_jasa' => 'desc');
 
     //fungsi database untuk master data laut
     public function get_datatables_laut()

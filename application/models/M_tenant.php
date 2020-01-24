@@ -531,8 +531,13 @@ class M_tenant extends MY_Model{
 
     //fungsi database untuk delete data master pada ruko,darat dan laut
     public function delete_data($tipe,$id){
-        $this->db->where('id_flowmeter', $id);
-        $this->db->delete("master_flowmeter");
+        if($tipe == "tenant"){
+            $this->db->where('id_tenant', $id);
+            $this->db->delete("master_tenant");
+        }else{
+            $this->db->where('id_flowmeter', $id);
+            $this->db->delete("master_flowmeter");
+        }
     }
 
     function getFlow($tgl_awal = '',$tgl_akhir = '',$id){
