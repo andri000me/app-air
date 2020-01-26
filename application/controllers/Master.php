@@ -890,7 +890,7 @@ class Master extends MY_Controller{
                 $row[] = "<center>".$status;
                 $data_pompa = $this->tenant->getNamaSumur($result->id_ref_sumur);
                 $row[] = "<center>".$data_pompa->id_sumur;
-                $row[] = '<center><a class="btn btn-sm btn-primary" href="editPompa?id=' . $result->id_master_pompa . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
+                $row[] = '<center><a class="btn btn-sm btn-primary" href="javascript:void(0);" onclick="edit('."'".$result->id_master_pompa."'".')" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
 
                 $data[] = $row;
             }
@@ -946,15 +946,13 @@ class Master extends MY_Controller{
     public function editPompa($id){
         //$id = $_GET['id'];
         $data['id'] = $id;
-        $data['title'] = 'Edit Data Pompa';
         $this->db->from('master_pompa');
         $this->db->where('id_master_pompa',$id);
         $query = $this->db->get();
         $result = $query->row();
 
-        $data['pompa'] = $this->tenant->getIDSumur();
-
         $data = array(
+            'id_master_pompa' => $result->id_master_pompa,
             'id_pompa' => $result->id_pompa,
             'nama_pompa' => $result->nama_pompa,
             'kondisi' => $result->kondisi,
@@ -963,6 +961,11 @@ class Master extends MY_Controller{
         );
         echo json_encode($data);
         //$this->load->template('v_edit_pompa',$data);
+    }
+
+    public function populateSumur(){
+        $data = $this->tenant->getIDSumur();
+        echo json_encode($data);
     }
 
     public function edit_pompa(){
