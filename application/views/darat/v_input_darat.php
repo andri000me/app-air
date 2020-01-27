@@ -1,12 +1,13 @@
 <?php
-if(($this->session->userdata('role') == "loket" || $this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL){
+if(($this->session->userdata('role_name') == "loket" || $this->session->userdata('role_name') == "admin")){
 ?>
-    <script>
+<script>
     $(function () {
+        var id = $('#nama_pembeli').val();
         $("#nama_pembeli").autocomplete({
             minLength:1,
             delay:0,
-            source:'<?php echo site_url('main/get_pembeli_darat'); ?>',
+            source:'<?php echo site_url('darat/get_pembeli_darat/'); ?>' + id,
             select:function(event, ui){
                 $('#id_pengguna').val(ui.item.id);
                 $('#alamat_pembeli').val(ui.item.alamat);
@@ -16,13 +17,28 @@ if(($this->session->userdata('role') == "loket" || $this->session->userdata('rol
             }
         });
     });
-    </script>
+
+    var table;
+
+    $(document).ready(function() {
+        $.ajax({
+            url:'<?php echo site_url('master/populatePenggunaDarat')?>',
+            type:'POST',
+            dataType: 'json',
+            success: function( json ) {
+                $.each(json, function(i, value) {
+                    $('#pengguna').append($('<option>').text(value.tipe_pengguna_jasa).attr('value', value.id_tarif));
+                });
+            }
+        });
+    });
+</script>
 <body>
     <div class="container container-fluid">
         <div class="row col-sm-6">
             <center><h4>Form Permintaan Pelayanan Jasa Air Bersih</h4></center><br>
             <?php echo validation_errors(); ?>
-            <form method="post" action="<?php echo base_url(). 'main/transaksi_darat'; ?>">
+            <form method="post" action="<?php echo base_url(). 'darat/transaksi_darat'; ?>">
                 <table class="table table-striped">
                     <tr>
                         <div class="form-group">
@@ -77,7 +93,7 @@ if(($this->session->userdata('role') == "loket" || $this->session->userdata('rol
                             <td>:</td>
                             <td>
                                 <select name="pengguna" id="pengguna" class="form-control">
-                                    <option></option>
+                                    <option value="">----</option>
                                     <?php foreach($pengguna as $rowpengguna){?>
                                         <option value="<?php echo $rowpengguna->id_tarif?>"><?php echo $rowpengguna->tipe_pengguna_jasa?></option>
                                     <?php }?>

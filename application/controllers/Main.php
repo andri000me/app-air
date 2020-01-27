@@ -48,6 +48,13 @@ class Main extends MY_Controller {
         $this->navmenu('Data '.ucwords($title),'manage/v_'.$page,'','','');
     }
 
+    public function monitoring($page){
+        $this->ceksesi();
+        //$this->cekAccess();
+        $title = str_replace('_',' ',$page);
+        $this->navmenu(''.ucwords($title),'monitoring/v_'.$page,'','','');
+    }
+
     public function login(){
         $this->navmenu('APASIH KKT','v_login','','','');
     }

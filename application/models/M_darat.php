@@ -37,10 +37,11 @@ class M_darat extends MY_Model{
     //fungsi database untuk pembuatan laporan, kwitansi dan tagihan
     function cetakKwitansi($id){
         $query = $this->db->select('*')
-            ->from('transaksi_darat,pengguna_jasa,pembeli_darat')
+            //->from('transaksi_darat,pengguna_jasa,pembeli_darat')
+            ->from('transaksi_darat,pembeli_darat')
             ->where('id_transaksi', $id)
             ->where('pembeli_darat_id_pengguna_jasa = id_pengguna_jasa')
-            ->where('pengguna_jasa_id_tarif = id_tarif')
+            //->where('pengguna_jasa_id_tarif = id_tarif')
             ->get();
 
         return $query->row();
@@ -113,13 +114,13 @@ class M_darat extends MY_Model{
         }
     }
 
-    public function get_tabel_transaksi($tipe, $config = ''){
+    public function get_tabel_transaksi($config = ''){
         $this->db->select('*');
         $this->db->from('transaksi_darat ,pembeli_darat,pengguna_jasa');
         $this->db->where('pengguna_jasa_id_tarif !=','1');
         $this->db->where('pembeli_darat_id_pengguna_jasa = id_pengguna_jasa');
         $this->db->where('pengguna_jasa_id_tarif = id_tarif');
-        $this->db->where('soft_delete = 0');
+        $this->db->where('transaksi_darat.soft_delete = 0');
         $this->db->order_by('tgl_transaksi', 'DESC');
 
         if($config != NULL)

@@ -1,7 +1,7 @@
 <?php
 
 ?>
- <script type="text/javascript">
+<script type="text/javascript">
         //function getData(){
             var xmlhttp = new XMLHttpRequest();
 
@@ -55,7 +55,7 @@
                     document.getElementById("table").innerHTML= a;
                 }
             }
-            xmlhttp.open("GET", "<?php echo base_url("main/tabel_pengantaran?id=darat")?>", true);
+            xmlhttp.open("GET", "<?php echo base_url("main/darat/monitoring_air_darat")?>", true);
             xmlhttp.send();
         //}
 

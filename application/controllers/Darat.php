@@ -4,9 +4,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Darat extends MY_Controller {
     //fungsi untuk transaksi darat
     public function get_pembeli_darat() {
-        $nama = $this->input->post('nama_pembeli',TRUE); //variabel kunci yang di bawa dari input text id kode
+        $nama = $this->input->get('term'); //variabel kunci yang di bawa dari input text id kode
         $tipe = "darat";
-        $query = $this->data->get_pembeli($tipe,$nama); //query model
+        $query = $this->master->get_pembeli($tipe,$nama); //query model
 
         if($query == TRUE){
             $pelanggan = array();
@@ -46,7 +46,7 @@ class Darat extends MY_Controller {
         $tanggal = $this->input->post('tgl_permintaan');
         $tonnase = $this->input->post('tonnase');
         $pelunasan = $this->input->post('pelunasan');
-        $data_tarif = $this->data->getDataTarif($pengguna);
+        $data_tarif = $this->master->getDataTarif($pengguna);
 
         $this->form_validation->set_rules('nama_pembeli', 'Nama Pembeli', 'required');
         $this->form_validation->set_rules('alamat_pembeli', 'Alamat', 'required');
@@ -65,7 +65,7 @@ class Darat extends MY_Controller {
             $this->load->template('v_input_darat',$data);
         }
         else {
-            $cek_result = $this->data->cek_pengguna('darat',$nama_pengguna);
+            $cek_result = $this->master->cek_pengguna('darat',$nama_pengguna);
             $result = FALSE;
 
             if($kwitansi != NULL ){
@@ -78,7 +78,7 @@ class Darat extends MY_Controller {
                 else{
                     $no = 1;
                 }
-                $no_pengguna = $this->data->get_no_pengguna($id_pengguna);
+                $no_pengguna = $this->master->get_no_pengguna($id_pengguna);
                 $no_kwitansi = $no_tahun.sprintf("%02s", $no_pengguna).sprintf("%05s", $no);
                 $this->data->setNoKwitansi($no);
             }
@@ -86,7 +86,7 @@ class Darat extends MY_Controller {
                 $tahun = substr($tgl_tahun, 2, 2);
                 $no_tahun = sprintf("%02s",$tahun);
                 $no = 1;
-                $no_pengguna = $this->data->get_no_pengguna($id_pengguna);
+                $no_pengguna = $this->master->get_no_pengguna($id_pengguna);
                 $no_kwitansi = $no_tahun.sprintf("%02s", $no_pengguna).sprintf("%05s", $no);
                 $this->data->setNoKwitansi($no);
             }
@@ -101,7 +101,7 @@ class Darat extends MY_Controller {
             );
 
             if($cek_result == FALSE){
-                $this->data->input_pengguna("darat",$data_pengguna);
+                $this->master->input_pengguna("darat",$data_pengguna);
             }
             else{
                 if($pelunasan == "cash"){
@@ -134,11 +134,11 @@ class Darat extends MY_Controller {
                         'issued_by' => $this->session->userdata('username')
                     );
                 }
-                $result = $this->data->input_transaksi("darat",$data_transaksi);
+                $result = $this->darat->input_transaksi($data_transaksi);
             }
 
             if($result == FALSE){
-                $id = $this->data->getIDPengguna($nama_pengguna);
+                $id = $this->master->getIDPengguna($nama_pengguna);
 
                 if($kwitansi != NULL ){
                     $tahun = substr($tgl_tahun, 2, 2);
@@ -200,13 +200,13 @@ class Darat extends MY_Controller {
                 $query = $this->db->get();
                 $result = $query->row();
                 $data_transaksi['pembeli_darat_id_pengguna_jasa'] = $result->id_pengguna_jasa;
-                $this->data->input_transaksi("darat",$data_transaksi);
+                $this->darat->input_transaksi($data_transaksi);
             }
         }
 
         if($result == TRUE){
-            if($this->session->userdata('role') == 'admin')
-                $web = base_url('main/view?id=main_loket');
+            if($this->session->userdata('role_name') == 'admin')
+                $web = base_url('darat/input_darat');
             else
                 $web = base_url('main');
             echo "<script type='text/javascript'>
@@ -215,7 +215,7 @@ class Darat extends MY_Controller {
                 </script>";
             //redirect('main/view?id=v_laporan_transaksi_darat');
         }else{
-            $web = base_url('main/view?id=darat');
+            $web = base_url('darat/input_darat');
             echo "<script type='text/javascript'>
                     alert('Permintaan Gagal Di Input ! Coba Lagi')
                     
@@ -275,7 +275,7 @@ class Darat extends MY_Controller {
     public function cancelTransaksiDarat(){
         $data['tipe'] = "darat";
         $data['id'] = $this->input->post('id');
-        $this->data->cancelOrder($data);
+        $this->darat->cancelOrder($data);
     }
 
     public function validasi_pembayaran_darat(){
@@ -543,7 +543,7 @@ class Darat extends MY_Controller {
     public function tabel_pembayaran(){
         $tipe = $this->input->get('id');
 
-        $result = $this->data->get_tabel_transaksi($tipe);
+        $result = $this->darat->get_tabel_transaksi();
         $data = array();
         $no = 1;
 
@@ -557,15 +557,15 @@ class Darat extends MY_Controller {
                 $total_pembayaran = $row->tarif * $row->total_permintaan;
             }
 
-            if($this->session->userdata('role') == 'loket' || $this->session->userdata('role') == 'admin'){
-                $aksi = '<a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Form Permintaan" target="_blank" href="'.base_url("main/cetakFPermintaan?id=".$row->id_transaksi."").'"></a>&nbsp;';
+            if($this->session->userdata('role_name') == 'loket' || $this->session->userdata('role_name') == 'admin'){
+                $aksi = '<a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Form Permintaan" target="_blank" href="'.base_url("darat/cetakFPermintaan/".$row->id_transaksi."").'"></a>&nbsp;';
             }
 
             if($row->batal_nota == 1){
                 $aksi .= '<span class=""><a class="btn btn-danger glyphicon glyphicon-remove" title="batal kwitansi" target="_blank" href="javascript:void(0)" onclick="cancel_kwitansi('."'".$row->id_transaksi."'".');"> </a></span>';
                 $color = '#ff0000';
             } else if($row->waktu_mulai_pengantaran == NULL || $row->waktu_selesai_pengantaran == NULL){
-                $aksi .= '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="cetak kwitansi" target="_blank" href="'.base_url("main/cetakKwitansi?id=".$row->id_transaksi."").'"> </a></span>';
+                $aksi .= '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="cetak kwitansi" target="_blank" href="'.base_url("darat/cetakKwitansi/".$row->id_transaksi."").'"> </a></span>';
                 $aksi .= '&nbsp;<span class=""><a class="btn btn-danger glyphicon glyphicon-remove" title="batal transaksi" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a></span>';
             } else{
                 $aksi = "";
@@ -610,7 +610,7 @@ class Darat extends MY_Controller {
     public function tabel_monitoring(){
         $tipe = $this->input->get('id');
 
-        $result = $this->data->get_tabel_transaksi($tipe);
+        $result = $this->darat->get_tabel_transaksi();
         $data = array();
         $no = 1;
 
@@ -626,8 +626,8 @@ class Darat extends MY_Controller {
 
             if($row->waktu_mulai_pengantaran == NULL || $row->waktu_selesai_pengantaran == NULL){
                 if($row->status_invoice == 1){
-                    $aksi .= '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Perhitungan" target="_blank" href="'.base_url("main/cetakPerhitunganPiutang?id=".$row->id_transaksi."").'"> </a>&nbsp;</span>';
-                    $aksi .= '<a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Form Permintaan" target="_blank" href="'.base_url("main/cetakFPermintaan?id=".$row->id_transaksi."").'"></a>&nbsp;';
+                    $aksi .= '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Perhitungan" target="_blank" href="'.base_url("darat/cetakPerhitunganPiutang/".$row->id_transaksi."").'"> </a>&nbsp;</span>';
+                    $aksi .= '<a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Form Permintaan" target="_blank" href="'.base_url("darat/cetakFPermintaan/".$row->id_transaksi."").'"></a>&nbsp;';
                     $aksi .= '<span class=""><a class="btn btn-danger glyphicon glyphicon-remove" title="Batal Transaksi" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a></span>';
                 }
             } else {
@@ -712,22 +712,38 @@ class Darat extends MY_Controller {
         echo json_encode($data);
     }
 
-    function cetakKwitansi(){
-        $id = $this->input->get('id');
+    function cetakKwitansi($id){
+        //$id = $this->input->get('id');
         define('FPDF_FONTPATH',$this->config->item('fonts_path'));
-        $query = $this->data->cetakkwitansi("darat",$id);
-
+        $query = $this->darat->cetakkwitansi($id);
+        $materai_1 = 3000;
+        $materai_2 = 6000;
         $tanggal = $this->indonesian_date('d M Y', '','');
         $tgl_permintaan = $this->indonesian_date('l, d M Y', $query->tgl_perm_pengantaran,'');
 
         if($query->diskon != NULL || $query->diskon != 0){
+            $t_sementara = (($query->tarif - ($query->diskon / 100 * $query->tarif)) * $query->total_permintaan);
             $tarif = $this->Ribuan($query->tarif - ($query->diskon / 100 * $query->tarif));
-            $total = $this->Ribuan(($query->tarif - ($query->diskon / 100 * $query->tarif)) * $query->total_permintaan);
-            $terbilang = $this->terbilang(($query->tarif - ($query->diskon / 100 * $query->tarif)) * $query->total_permintaan);
+            $total_sementara = $this->Ribuan($t_sementara);
         }else{
+            $t_sementara = ($query->tarif * $query->total_permintaan);
             $tarif = $this->Ribuan($query->tarif);
-            $total = $this->Ribuan($query->tarif * $query->total_permintaan);
-            $terbilang = $this->terbilang($query->tarif * $query->total_permintaan);
+            $total_sementara = $this->Ribuan($t_sementara);
+        }
+
+        if($t_sementara >= 999999){
+            $total = $this->Ribuan($t_sementara + $materai_2);
+            $terbilang = $this->terbilang($t_sementara + $materai_2);
+            $materai = $materai_2;
+        }else if($t_sementara >= 249999 && $t_sementara < 999999){
+            $total = $this->Ribuan($t_sementara + $materai_1);
+            $terbilang = $this->terbilang($t_sementara + $materai_1);
+            $materai = $materai_1;
+        } 
+        else{
+            $total = $this->Ribuan($t_sementara);
+            $terbilang = $this->terbilang($t_sementara);
+            $materai = '';
         }
 
         $hasil = array(
@@ -739,18 +755,20 @@ class Darat extends MY_Controller {
             'total_pengisian' => $query->total_permintaan,
             'tarif' => $tarif,
             'total' => $total,
+            'total_sementara' => $total_sementara,
+            'materai' => $this->Ribuan($materai),
             'loket' => $this->session->userdata('nama'),
             'kwitansi' => $query->no_kwitansi,
             'terbilang' => $terbilang." Rupiah"
         );
         $data['hasil'] = $hasil;
-        $this->load->view('v_kwitansi', $data);
+        $this->load->view('darat/v_kwitansi', $data);
     }
 
-    function cetakPerhitunganPiutang(){
-        $id = $this->input->get('id');
+    function cetakPerhitunganPiutang($id){
+        //$id = $this->input->get('id');
         define('FPDF_FONTPATH',$this->config->item('fonts_path'));
-        $query = $this->data->cetakkwitansi("darat",$id);
+        $query = $this->darat->cetakkwitansi($id);
 
         $tanggal = $this->indonesian_date('l, d M Y', '','');
         $tgl_permintaan = date("d M Y", strtotime($query->tgl_perm_pengantaran));
@@ -779,13 +797,13 @@ class Darat extends MY_Controller {
             'terbilang' => $terbilang." Rupiah"
         );
         $data['hasil'] = $hasil;
-        $this->load->view('v_perhitungan_piutang', $data);
+        $this->load->view('darat/v_perhitungan_piutang', $data);
     }
 
-    function cetakFPermintaan(){
-        $id = $this->input->get('id');
+    function cetakFPermintaan($id){
+        //$id = $this->input->get('id');
         define('FPDF_FONTPATH',$this->config->item('fonts_path'));
-        $query = $this->data->cetakkwitansi("darat",$id);
+        $query = $this->darat->cetakkwitansi($id);
         $tanggal = date('d M Y', strtotime($query->tgl_transaksi ));
         $jam = date('H.i',strtotime($query->tgl_transaksi));
 
@@ -799,7 +817,7 @@ class Darat extends MY_Controller {
             'no_telp' => $query->no_telp
         );
         $data['hasil'] = $hasil;
-        $this->load->view('v_form_permintaan', $data);
+        $this->load->view('darat/v_form_permintaan', $data);
     }
     
 

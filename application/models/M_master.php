@@ -459,16 +459,16 @@ class M_master extends MY_Model{
     public function get_pembeli($tipe, $nama){
         if($tipe == "darat"){
             $tabel = $this->tabel_darat;
-            $this->db->like('nama_pengguna_jasa', $nama);
+            $this->db->like('nama_pengguna_jasa', $nama,'both');
             $this->db->from($tabel);
             $this->db->where('pengguna_jasa_id_tarif !=','1');
         }
         else if($tipe == "agent"){
-            $this->db->like('nama_agent', $nama);
+            $this->db->like('nama_agent', $nama,'both');
             $this->db->from('master_agent');
         }
         else{
-            $this->db->like('nama_vessel', $nama);
+            $this->db->like('nama_vessel', $nama,'both');
             $this->db->from('pembeli_laut,master_agent');
             $this->db->where('id_agent = id_agent_master');
         }

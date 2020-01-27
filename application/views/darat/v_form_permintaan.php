@@ -47,7 +47,7 @@ $this->fpdf->Ln(20);
 $this->fpdf->Cell(80, 7, 'Menyetujui', 0,0, 'C');
 $this->fpdf->Cell(320, 7, 'Balikpapan, '.$hasil['tanggal'], 0,0, 'C');
 $this->fpdf->Ln();
-$this->fpdf->Cell(80, 7, 'AN. Manager Operasi Dan Teknik', 0,0, 'C');
+$this->fpdf->Cell(80, 7, 'AN. Manager Operasi Dan Komersial', 0,0, 'C');
 $this->fpdf->Cell(320, 7, 'Pemakai Jasa', 0,0, 'C');
 $this->fpdf->Ln(25);
 $this->fpdf->Cell(80, 7, '', 0,0, 'C');

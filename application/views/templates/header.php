@@ -144,7 +144,7 @@
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifAntar").innerHTML = "<a class='btn btn-danger' title='Antar' href='<?php echo base_url("main/view?id=monitoring_darat")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifAntar").innerHTML = "<a class='btn btn-danger' title='Antar' href='<?php echo base_url("main/darat/monitoring_air_darat")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifAntar").innerHTML = '';
                     }
