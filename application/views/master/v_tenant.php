@@ -8,7 +8,7 @@
 
 <div class="container">
     <div class="row col-md-12">
-        <table id="table" class="table table-striped table-bordered" cellspacing="0" width="70%">
+        <table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%">
             <thead>
             <tr>
                 <th>
@@ -83,7 +83,7 @@
                 <div class="form-group">
                     <form id="frm-modal" action="#" enctype="multipart/form-data">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="agent_name" class="form-label">ID Flow Meter</label>
                                     <input hidden id="idm" name="idm">
@@ -93,7 +93,7 @@
                                     <span class="help-block"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="agent_name" class="form-label">Nama Tenant</label>
                                     <input class="form-control" type="text" name="nama_tenant" id="nama_tenant" required>                                    
@@ -118,6 +118,16 @@
                                 <div class="form-group">
                                     <label for="agent_name" class="form-label">No Telepon</label>
                                     <input class="form-control" type="text" name="no_telp" id="no_telp" required>                                    
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="agent_name" class="form-label">Status Keaktifan</label>
+                                    <select class="form-control" name="status_aktif" id="status_aktif">
+                                        <option value="1">Aktif</option>
+                                        <option value="0">Tidak Aktif</option>
+                                    </select>
                                     <span class="help-block"></span>
                                 </div>
                             </div>
@@ -205,6 +215,7 @@
                 $('#alamat').val(data.alamat);
                 $('#penanggung_jawab').val(data.penanggung_jawab);
                 $('#no_telp').val(data.no_telp);
+                $('#status_aktif').val(data.status_aktif).change();
             },
             error: function (jqXHR, textStatus, errorThrown)
             {

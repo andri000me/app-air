@@ -1,200 +1,302 @@
-<?php
-if(isset($_SESSION['session'])) {
-    if($_SESSION['role'] == "wtp" || $_SESSION['role'] == "admin"){
-        ?>
-        <script type="text/javascript">
-            $(document).ready(function (e) {
-                $('#upload').on('click', function () {
-                    var id_flowmeter = $('#id_flowmeter').val();
-                    var nama_flowmeter = $('#nama_flowmeter').val();
-                    var kondisi= $('#kondisi').val();
-                    var pompa = $('#id_pompa').val();
+<div class="container" data-role="main" class="ui-content">
+    <h3>Master Data Flow Meter</h3>
+    <div class="row col-md-5">
+        <button class="btn btn-primary" onclick="add()"> <span>Tambah Data</span></button>
+        <button class="btn btn-info" onclick="reload_table()"> <span>Refresh Halaman</span></button><br><br>
+    </div>
+</div>
 
-                    var form_data = new FormData();
-                    var base_url = '<?php echo base_url();?>';
-                    var text_alert;
-                    form_data.append('id_flowmeter',id_flowmeter);
-                    form_data.append('nama_flowmeter',nama_flowmeter);
-                    form_data.append('kondisi',kondisi);
-                    form_data.append('id_pompa',pompa);
-                    $.ajax({
-                        url: base_url +'index.php/main/input_data_flowmeter', // point to server-side controller method
-                        dataType: 'text', // what to expect back from the server
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        data: form_data,
-                        type: 'POST',
-                        success: function (response) {
-                            //$('#msg').html(response); // display success response from the server
-                            text_alert = JSON.stringify(response);
-                            window.alert(text_alert);
-                            window.location = base_url+"main/view?id=flowmeter";
-                        },
-                        error: function (response) {
-                            text_alert = JSON.stringify(response);
-                            window.alert(text_alert);
-                            $('#tahun').val('');
-                        }
-                    });
-                });
-            });
-        </script>
-        <div class="container" data-role="main" class="ui-content">
-            <h3>Form Master Data Flow Meter</h3>
-            <div class="row col-md-5">
-                <table class="table">
-                    <tr>
-                        <td colspan="3"><p id="msg"></p></td>
-                    </tr>
-                    <tr>
-                        <td><label>ID Flow Meter</label></td>
-                        <td>:</td>
-                        <td><input class="form-control" type="text" name="id_flowmeter" id="id_flowmeter" required></td>
-                    </tr>
-                    <tr>
-                        <td><label>Nama Flow Meter</label></td>
-                        <td>:</td>
-                        <td><input class="form-control" type="text" name="nama_flowmeter" id="nama_flowmeter" required></td>
-                    </tr>
-                    <tr>
-                        <td><label>Kondisi</label></td>
-                        <td>:</td>
-                        <td>
-                            <select class="form-control" name="kondisi" id="kondisi">
-                                <option value="baik">Baik</option>
-                                <option value="kurang_baik">Kurang Baik</option>
-                                <option value="rusak">Rusak</option>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><label>ID Pompa</label></td>
-                        <td>:</td>
-                        <td>
-                            <select class="form-control" name="id_pompa" id="id_pompa">
-                                <?php foreach ($tenant as $row) {
-                                    ?>
-                                    <option value="<?php echo $row->id_master_pompa?>"><?php echo $row->id_pompa?> => <?php echo $row->nama_pompa?></option>
-                                    <?php
-                                }
-                                ?>
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="3">
-                            <button class="btn btn-success" id="upload">Input</button>
-                        </td>
-                    </tr>
-                </table>
+<div class="container">
+    <div class="row col-md-12">
+        <table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+            <thead>
+            <tr>
+                <th>
+                    <center>No
+                </th>
+                <th>
+                    <center>ID Flow Meter
+                </th>
+                <th>
+                    <center>Nama Flow Meter
+                </th>
+                <th>
+                    <center>Flow Meter Awal
+                </th>
+                <th>
+                    <center>Flow Meter Akhir
+                </th>
+                <th>
+                    <center>Kondisi
+                </th>
+                <th>
+                    <center>ID Pompa
+                </th>
+                <th>
+                    <center>Status
+                </th>
+                <th>
+                    <center>Aksi
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            <tr>
+                <th>
+                    <center>No
+                </th>
+                <th>
+                    <center>ID Flow Meter
+                </th>
+                <th>
+                    <center>Nama Flow Meter
+                </th>
+                <th>
+                    <center>Flow Meter Awal
+                </th>
+                <th>
+                    <center>Flow Meter Akhir
+                </th>
+                <th>
+                    <center>Kondisi
+                </th>
+                <th>
+                    <center>ID Pompa
+                </th>
+                <th>
+                    <center>Status
+                </th>
+                <th>
+                    <center>Aksi
+                </th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<!-- Bootstrap modal For Datatable-->
+<div class="modal fade" id="md-form" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title">Data Agent</h3>
             </div>
-        </div>
-
-        <div class="container">
-            <div class="row col-md-12">
-                <table id="table" class="table table-striped table-bordered" cellspacing="0" width="70%">
-                    <thead>
-                    <tr>
-                        <th>
-                            <center>No
-                        </th>
-                        <th>
-                            <center>ID Flow Meter
-                        </th>
-                        <th>
-                            <center>Nama Flow Meter
-                        </th>
-                        <th>
-                            <center>Flow Meter Awal
-                        </th>
-                        <th>
-                            <center>Flow Meter Akhir
-                        </th>
-                        <th>
-                            <center>Kondisi
-                        </th>
-                        <th>
-                            <center>ID Pompa
-                        </th>
-                        <th>
-                            <center>Status
-                        </th>
-                        <th>
-                            <center>Aksi
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <th>
-                            <center>No
-                        </th>
-                        <th>
-                            <center>ID Flow Meter
-                        </th>
-                        <th>
-                            <center>Nama Flow Meter
-                        </th>
-                        <th>
-                            <center>Flow Meter Awal
-                        </th>
-                        <th>
-                            <center>Flow Meter Akhir
-                        </th>
-                        <th>
-                            <center>Kondisi
-                        </th>
-                        <th>
-                            <center>ID Pompa
-                        </th>
-                        <th>
-                            <center>Status
-                        </th>
-                        <th>
-                            <center>Aksi
-                        </th>
-                    </tr>
-                    </tfoot>
-                </table>
+            <div class="modal-body form">
+                <div class="form-group">
+                    <form id="frm-modal" action="#" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="agent_name" class="form-label">ID Flow Meter</label>
+                                    <input hidden id="idm" name="idm">
+                                    <input class="form-control" type="text" name="id_flowmeter" id="id_flowmeter" required>                                    
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="agent_name" class="form-label">Nama Flow Meter</label>
+                                    <input class="form-control" type="text" name="nama_flowmeter" id="nama_flowmeter" required>                                    
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="agent_name" class="form-label">Kondisi</label>
+                                    <select class="form-control" name="kondisi" id="kondisi">
+                                        <option value="baik">Baik</option>
+                                        <option value="kurang_baik">Kurang Baik</option>
+                                        <option value="rusak">Rusak</option>
+                                    </select>                                 
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="agent_name" class="form-label">Kondisi</label>
+                                    <select class="form-control" id="status_aktif" name="status_aktif">
+                                        <option value="1">Aktif</option>
+                                        <option value="0">Tidak Aktif</option>
+                                    </select>                              
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="agent_name" class="form-label">ID Pompa</label>
+                                    <select class="form-control" name="id_pompa" id="id_pompa">
+                                        <option value="">----</option>
+                                    </select>                                    
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
+            <div class="modal-footer bg-warning" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <button onclick='save()' id='btnSave' type='button' class='btn btn-primary' >Save</button>
+                        <button onclick='batal()' type='button' class='btn btn-danger' >Cancel</button>
+                    </div>
+                </div>
+			</div>				
         </div>
-        <script type="text/javascript">
-            var table;
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+<!-- End Bootstrap modal -->
 
-            $(document).ready(function() {
-                //datatables
-                table = $('#table').DataTable({
+<script type="text/javascript">
+    var table;
 
-                    "processing": true, //Feature control the processing indicator.
-                    "serverSide": true, //Feature control DataTables' server-side processing mode.
-                    "order": [], //Initial no order.
+    $(document).ready(function() {
+        //datatables
+        table = $('#table').DataTable({
+            "processing": true, //Feature control the processing indicator.
+            "serverSide": true, //Feature control DataTables' server-side processing mode.
+            "order": [], //Initial no order.
 
-                    // Load data for the table's content from an Ajax source
-                    "ajax": {
-                        "url": "<?php echo site_url('main/ajax_data_flowmeter')?>",
-                        "type": "POST"
-                    },
+            // Load data for the table's content from an Ajax source
+            "ajax": {
+                "url": "<?php echo site_url('master/ajax_data_flowmeter')?>",
+                "type": "POST"
+            },
 
-                    //Set column definition initialisation properties.
-                    "columnDefs": [
-                        {
-                            "targets": [ 0 ], //first column / numbering column
-                            "orderable": false, //set not orderable
-                        },
-                    ],
+            //Set column definition initialisation properties.
+            "columnDefs": [
+                {
+                    "targets": [ 0 ], //first column / numbering column
+                    "orderable": false, //set not orderable
+                },
+            ],
+        });
+
+        $.ajax({
+            url:'<?php echo site_url('master/populatePompa')?>',
+            type:'POST',
+            dataType: 'json',
+            success: function( json ) {
+                $.each(json, function(i, value) {
+                    $('#id_pompa').append($('<option>').text(value.id_pompa + " => " + value.nama_pompa).attr('value', value.id_master_pompa));
                 });
-            });
+            }
+        });
+    });
 
-        </script>
-        <?php
+    function reload_table() {
+        table.ajax.reload(null,false);
     }
-    else{
-        redirect('main');
+
+    function edit(id){
+        save_method = 'update';
+        $('#frm-modal')[0].reset(); // reset form on modals
+        $('.form-group').removeClass('has-error'); // clear error class
+        $('.help-block').empty(); // clear error string
+        $('#btnSave').text('Update');
+        $('.select2').select2({
+        });
+
+        //Ajax Load data from ajax
+        $.ajax({
+            url : "<?php echo site_url('master/editFlowmeter/')?>" + id,
+            type: "GET",
+            dataType: "JSON",
+            success: function(data)
+            {		
+                $('#md-form').modal('show'); // show bootstrap modal when complete loaded
+                $('.modal-title').text('Edit Data Kapal'); // Set title to Bootstrap modal title
+
+                $('#idm').val(data.id);
+                $('#id_flowmeter').val(data.id_flowmeter);
+                $('#nama_flowmeter').val(data.nama_flowmeter);
+                $('#kondisi').val(data.kondisi).change();
+                $('#id_pompa').val(data.id_pompa).change();
+                $('#status_aktif').val(data.status_aktif).change();
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert('Error get data from ajax');
+            }
+        });
     }
-}
-else{
-    redirect('main');
-}
+
+    function save(){    
+        var url;
+
+        if(save_method == 'add') {
+            $('#btnSave').text('Saving...'); //change button text
+            $('#btnSave').attr('disabled',true); //set button disable
+            url = "<?php echo site_url('master/input_data_flowmeter');?>"; 
+        } else {
+            $('#btnSave').text('Updating...'); //change button text
+            $('#btnSave').attr('disabled',true); //set button disable 
+            url = "<?php echo site_url('master/edit_flowmeter');?>"; 
+        }
+        
+        formData = new FormData($('#frm-modal')[0]);
+        formData.append( 'save_method', save_method );
+
+        // ajax adding data to database
+        $.ajax({
+            url : url,
+            type: "POST",
+            data: formData,
+            async: false,
+            contentType: false,
+            processData: false,
+            dataType: "JSON",
+            success: function(data){
+                //if success close modal and reload ajax table
+                if(data.status){
+                    reload_table();
+                    $('#frm-modal')[0].reset();
+                }
+                else{
+                    for (var i = 0; i < data.inputerror.length; i++) {
+                        $('[name="'+data.inputerror[i]+'"]').parent().parent().addClass('has-error'); //select parent twice to select div form-group class and add has-error class
+                        $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]); //select span help-block class set text error string
+                    }
+                    $('#btnSave').attr('disabled',false); //set button enable
+                }
+
+                $('#btnSave').text('Save'); //change button text
+                $('#btnSave').attr('disabled',false); //set button enable 
+                $('#md-form').modal('hide');
+            },
+            error: function (jqXHR, textStatus, errorThrown){
+                alert('Error adding data');
+                $('#btnSave').text('Save'); //change button text
+                $('#btnSave').attr('disabled',false); //set button enable 
+            }
+        });
+    }
+
+    function add(){
+        save_method = 'add';
+        $('#frm-modal')[0].reset(); // reset form on modals
+        $('.form-group').removeClass('has-error'); // clear error class
+        $('.help-block').empty(); // clear error string
+        $('#btnSave').text('Save');
+        $('.select2').select2({
+        });
+        $('#md-form').modal('show'); // show bootstrap modal when complete loaded
+        $('.modal-title').text('Tambah Data Flow Meter'); // Set title to Bootstrap modal title
+    }
+
+    function batal(){
+        $('#frm-modal')[0].reset();
+        $('#btnSave').text('Save'); //change button text
+        $('#btnSave').attr('class','btn btn-primary'); //set button disable 
+        $('#md-form').modal('hide');
+    }
+
+    $('.modal').on('hidden.bs.modal', function () {
+        reload_table();
+    });
+
+</script>

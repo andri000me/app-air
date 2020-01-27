@@ -1,166 +1,259 @@
 <?php
-if(isset($_SESSION['session'])) {
-    if($_SESSION['role'] == "admin"){
-        ?>
-        <script type="text/javascript">
-            $(document).ready(function (e) {
-                $('#upload').on('click', function () {
-                    var id_sumur = $('#id_sumur').val();
-                    var nama_sumur = $('#nama_sumur').val();
-                    var lokasi= $('#lokasi').val();
-                    var debit_air = $('#debit_air').val();
 
-                    var form_data = new FormData();
-                    var base_url = '<?php echo base_url();?>';
-                    var text_alert;
-                    form_data.append('id_sumur',id_sumur);
-                    form_data.append('nama_sumur',nama_sumur);
-                    form_data.append('lokasi',lokasi);
-                    form_data.append('debit_air',debit_air);
-                    $.ajax({
-                        url: base_url +'index.php/main/input_data_sumur', // point to server-side controller method
-                        dataType: 'text', // what to expect back from the server
-                        cache: false,
-                        contentType: false,
-                        processData: false,
-                        data: form_data,
-                        type: 'POST',
-                        success: function (response) {
-                            //$('#msg').html(response); // display success response from the server
-                            text_alert = JSON.stringify(response);
-                            window.alert(text_alert);
-                            window.location = base_url+"main/view?id=sumur";
-                        },
-                        error: function (response) {
-                            text_alert = JSON.stringify(response);
-                            window.alert(text_alert);
-                            $('#tahun').val('');
-                        }
-                    });
-                });
-            });
-        </script>
-        <div class="container" data-role="main" class="ui-content">
-            <h3>Form Master Data Sumur</h3>
-            <div class="row col-md-5">
-                <table class="table">
-                    <tr>
-                        <td colspan="3"><p id="msg"></p></td>
-                    </tr>
-                    <tr>
-                        <td><label>ID Sumur</label></td>
-                        <td>:</td>
-                        <td><input class="form-control" type="text" name="id_sumur" id="id_sumur" required></td>
-                    </tr>
-                    <tr>
-                        <td><label>Nama Sumur</label></td>
-                        <td>:</td>
-                        <td><input class="form-control" type="text" name="nama_sumur" id="nama_sumur" required></td>
-                    </tr>
-                    <tr>
-                        <td><label>Lokasi</label></td>
-                        <td>:</td>
-                        <td><input class="form-control" type="text" name="lokasi" id="lokasi" required></td>
-                    </tr>
-                    <tr>
-                        <td><label>Debit Air (L/Detik)</label></td>
-                        <td>:</td>
-                        <td><input class="form-control" type="text" name="debit_air" id="debit_air" required></td>
-                    </tr>
-                    <tr>
-                        <td colspan="3">
-                            <button class="btn btn-success" id="upload">Input</button>
-                        </td>
-                    </tr>
-                </table>
+?>  
+<div class="container" data-role="main" class="ui-content">
+    <h3>Master Data Sumur</h3>
+    <div class="row col-md-5">
+        <button class="btn btn-primary" onclick="add()"> <span>Tambah Data</span></button>
+        <button class="btn btn-info" onclick="reload_table()"> <span>Refresh Halaman</span></button><br><br>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row col-md-12">
+        <table id="table" class="table table-striped table-bordered" cellspacing="0" width="70%">
+            <thead>
+            <tr>
+                <th>
+                    <center>No
+                </th>
+                <th>
+                    <center>ID Sumur
+                </th>
+                <th>
+                    <center>Nama Sumur
+                </th>
+                <th>
+                    <center>Lokasi
+                </th>
+                <th>
+                    <center>Debit Air (L/Detik)
+                </th>
+                <th>
+                    <center>Aksi
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+            </tbody>
+            <tfoot>
+            <tr>
+                <th>
+                    <center>No
+                </th>
+                <th>
+                    <center>ID Sumur
+                </th>
+                <th>
+                    <center>Nama Sumur
+                </th>
+                <th>
+                    <center>Lokasi
+                </th>
+                <th>
+                    <center>Debit Air (L/Detik)
+                </th>
+                <th>
+                    <center>Aksi
+                </th>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<!-- Bootstrap modal For Datatable-->
+<div class="modal fade" id="md-form" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-success">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h3 class="modal-title">Data Agent</h3>
             </div>
-        </div>
-
-        <div class="container">
-            <div class="row col-md-12">
-                <table id="table" class="table table-striped table-bordered" cellspacing="0" width="70%">
-                    <thead>
-                    <tr>
-                        <th>
-                            <center>No
-                        </th>
-                        <th>
-                            <center>ID Sumur
-                        </th>
-                        <th>
-                            <center>Nama Sumur
-                        </th>
-                        <th>
-                            <center>Lokasi
-                        </th>
-                        <th>
-                            <center>Debit Air (L/Detik)
-                        </th>
-                        <th>
-                            <center>Aksi
-                        </th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                    <tfoot>
-                    <tr>
-                        <th>
-                            <center>No
-                        </th>
-                        <th>
-                            <center>ID Sumur
-                        </th>
-                        <th>
-                            <center>Nama Sumur
-                        </th>
-                        <th>
-                            <center>Lokasi
-                        </th>
-                        <th>
-                            <center>Debit Air (L/Detik)
-                        </th>
-                        <th>
-                            <center>Aksi
-                        </th>
-                    </tr>
-                    </tfoot>
-                </table>
+            <div class="modal-body form">
+                <div class="form-group">
+                    <form id="frm-modal" action="#" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="agent_name" class="form-label">ID Sumur</label>
+                                    <input hidden id="idm" name="idm">
+                                    <input class="form-control" type="text" name="id_sumur" id="id_sumur" required>                                    
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="agent_name" class="form-label">Nama Sumur</label>
+                                    <input class="form-control" type="text" name="nama_sumur" id="nama_sumur" required>                                    
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="agent_name" class="form-label">Lokasi</label>
+                                    <input class="form-control" type="text" name="lokasi" id="lokasi" required>                                 
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="agent_name" class="form-label">Debit Air (L/Detik)</label>
+                                    <input class="form-control" type="text" name="debit_air" id="debit_air" required>                              
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
+            <div class="modal-footer bg-warning" >
+                <div class="row">
+                    <div class="col-md-12">
+                        <button onclick='save()' id='btnSave' type='button' class='btn btn-primary' >Save</button>
+                        <button onclick='batal()' type='button' class='btn btn-danger' >Cancel</button>
+                    </div>
+                </div>
+			</div>				
         </div>
-        <script type="text/javascript">
-            var table;
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+<!-- End Bootstrap modal -->
 
-            $(document).ready(function() {
-                //datatables
-                table = $('#table').DataTable({
+<script type="text/javascript">
+    var table;
 
-                    "processing": true, //Feature control the processing indicator.
-                    "serverSide": true, //Feature control DataTables' server-side processing mode.
-                    "order": [], //Initial no order.
+    $(document).ready(function() {
+        //datatables
+        table = $('#table').DataTable({
+            "processing": true, //Feature control the processing indicator.
+            "serverSide": true, //Feature control DataTables' server-side processing mode.
+            "order": [], //Initial no order.
 
-                    // Load data for the table's content from an Ajax source
-                    "ajax": {
-                        "url": "<?php echo site_url('main/ajax_data_sumur')?>",
-                        "type": "POST"
-                    },
+            // Load data for the table's content from an Ajax source
+            "ajax": {
+                "url": "<?php echo site_url('master/ajax_data_sumur')?>",
+                "type": "POST"
+            },
 
-                    //Set column definition initialisation properties.
-                    "columnDefs": [
-                        {
-                            "targets": [ 0 ], //first column / numbering column
-                            "orderable": false, //set not orderable
-                        },
-                    ],
-                });
-            });
+            //Set column definition initialisation properties.
+            "columnDefs": [
+                {
+                    "targets": [ 0 ], //first column / numbering column
+                    "orderable": false, //set not orderable
+                },
+            ],
+        });
+    });
 
-        </script>
-        <?php
+    function reload_table() {
+        table.ajax.reload(null,false);
     }
-    else{
-        redirect('main');
+
+    function edit(id){
+        save_method = 'update';
+        $('#frm-modal')[0].reset(); // reset form on modals
+        $('.form-group').removeClass('has-error'); // clear error class
+        $('.help-block').empty(); // clear error string
+        $('#btnSave').text('Update');
+        $('.select2').select2({
+        });
+
+        //Ajax Load data from ajax
+        $.ajax({
+            url : "<?php echo site_url('master/editSumur/')?>" + id,
+            type: "GET",
+            dataType: "JSON",
+            success: function(data)
+            {		
+                $('#md-form').modal('show'); // show bootstrap modal when complete loaded
+                $('.modal-title').text('Edit Data Sumur'); // Set title to Bootstrap modal title
+
+                $('#idm').val(data.id);
+                $('#id_sumur').val(data.id_sumur);
+                $('#nama_sumur').val(data.nama_sumur);
+                $('#lokasi').val(data.lokasi);
+                $('#debit_air').val(data.debit_air);
+            },
+            error: function (jqXHR, textStatus, errorThrown)
+            {
+                alert('Error get data from ajax');
+            }
+        });
     }
-} else{
-    redirect('main');
-}
+
+    function save(){    
+        var url;
+
+        if(save_method == 'add') {
+            $('#btnSave').text('Saving...'); //change button text
+            $('#btnSave').attr('disabled',true); //set button disable
+            url = "<?php echo site_url('master/input_data_sumur');?>"; 
+        } else {
+            $('#btnSave').text('Updating...'); //change button text
+            $('#btnSave').attr('disabled',true); //set button disable 
+            url = "<?php echo site_url('master/edit_sumur');?>"; 
+        }
+        
+        formData = new FormData($('#frm-modal')[0]);
+        formData.append( 'save_method', save_method );
+
+        // ajax adding data to database
+        $.ajax({
+            url : url,
+            type: "POST",
+            data: formData,
+            async: false,
+            contentType: false,
+            processData: false,
+            dataType: "JSON",
+            success: function(data){
+                //if success close modal and reload ajax table
+                if(data.status){
+                    reload_table();
+                    $('#frm-modal')[0].reset();
+                }
+                else{
+                    for (var i = 0; i < data.inputerror.length; i++) {
+                        $('[name="'+data.inputerror[i]+'"]').parent().parent().addClass('has-error'); //select parent twice to select div form-group class and add has-error class
+                        $('[name="'+data.inputerror[i]+'"]').next().text(data.error_string[i]); //select span help-block class set text error string
+                    }
+                    $('#btnSave').attr('disabled',false); //set button enable
+                }
+
+                $('#btnSave').text('Save'); //change button text
+                $('#btnSave').attr('disabled',false); //set button enable 
+                $('#md-form').modal('hide');
+            },
+            error: function (jqXHR, textStatus, errorThrown){
+                alert('Error adding data');
+                $('#btnSave').text('Save'); //change button text
+                $('#btnSave').attr('disabled',false); //set button enable 
+            }
+        });
+    }
+
+    function add(){
+        save_method = 'add';
+        $('#frm-modal')[0].reset(); // reset form on modals
+        $('.form-group').removeClass('has-error'); // clear error class
+        $('.help-block').empty(); // clear error string
+        $('#btnSave').text('Save');
+        $('.select2').select2({
+        });
+        $('#md-form').modal('show'); // show bootstrap modal when complete loaded
+        $('.modal-title').text('Tambah Data Sumur'); // Set title to Bootstrap modal title
+    }
+
+    function batal(){
+        $('#frm-modal')[0].reset();
+        $('#btnSave').text('Save'); //change button text
+        $('#btnSave').attr('class','btn btn-primary'); //set button disable 
+        $('#md-form').modal('hide');
+    }
+
+    $('.modal').on('hidden.bs.modal', function () {
+        reload_table();
+    });
+
+</script>

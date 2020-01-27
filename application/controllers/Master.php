@@ -431,7 +431,7 @@ class Master extends MY_Controller{
                 $row[] = "<center>".$result->penanggung_jawab;
                 $row[] = $result->lokasi;
                 $row[] = $result->no_telp;
-                if($result->status_aktif == 1)
+                if($result->status_aktif_tenant == 1)
                     $status = "Aktif";
                 else
                     $status = "Tidak Aktif";
@@ -463,7 +463,7 @@ class Master extends MY_Controller{
                 $row[] = "<center>".$result->penanggung_jawab;
                 $row[] = $result->lokasi;
                 $row[] = $result->no_telp;
-                if($result->status_aktif == 1)
+                if($result->status_aktif_tenant == 1)
                     $status = "Aktif";
                 else
                     $status = "Tidak Aktif";
@@ -492,6 +492,7 @@ class Master extends MY_Controller{
             $nama_tenant = $this->input->post('nama_tenant');
             $penanggung_jawab = $this->input->post('penanggung_jawab');
             $alamat = $this->input->post('alamat');
+            $status = $this->input->post('status_aktif');
             $no_telp = $this->input->post('no_telp');
             $id_flowmeter = $this->input->post('id_flowmeter');
 
@@ -501,6 +502,7 @@ class Master extends MY_Controller{
                     'penanggung_jawab' => $penanggung_jawab,
                     'lokasi' => $alamat,
                     'no_telp' => $no_telp,
+                    'status_aktif_tenant' => $status,
                     'id_ref_flowmeter' => $id_flowmeter,
                     'pengguna_jasa_id' => '1',
                     'issued_at' => date("Y-m-d H:i:s",time()),
@@ -516,7 +518,7 @@ class Master extends MY_Controller{
                 }
             }
             else{
-                $message = array("status" => FALSE,"info" => "Simpan data gagal");
+                $message = array("status" => FALSE,"info" => "Simpan data error");
             }
         }
 
@@ -527,7 +529,6 @@ class Master extends MY_Controller{
         if($this->session->userdata('role_name') == 'admin'){
             //$id = $_GET['id'];
             $data['id'] = $id;
-            $data['title'] = 'Edit Data Tenant';
             $this->db->from('master_tenant');
             $this->db->where('id_tenant',$id);
             $query = $this->db->get();
@@ -554,10 +555,11 @@ class Master extends MY_Controller{
 
     public function edit_tenant(){
         if($this->session->userdata('role_name') == 'admin'){
-            $id = $this->input->post('id_tenant');
+            $id = $this->input->post('idm');
             $nama_tenant = $this->input->post('nama_tenant');
             $penanggung_jawab = $this->input->post('penanggung_jawab');
             $alamat = $this->input->post('alamat');
+            $status = $this->input->post('status_aktif');
             $no_telp = $this->input->post('no_telp');
             $id_flowmeter = $this->input->post('id_flowmeter');
 
@@ -566,6 +568,7 @@ class Master extends MY_Controller{
                 'penanggung_jawab' => $penanggung_jawab,
                 'lokasi' => $alamat,
                 'no_telp' => $no_telp,
+                'status_aktif_tenant' => $status,
                 'id_ref_flowmeter' => $id_flowmeter,
                 'modified_at' => date("Y-m-d H:i:s",time()),
                 'modified_by' => $this->session->userdata('nama')
@@ -754,7 +757,7 @@ class Master extends MY_Controller{
                 $row[] = "<center>".$result->nama_sumur;
                 $row[] = "<center>".$result->lokasi;
                 $row[] = "<center>".$result->debit_air;
-                $row[] = '<center><a class="btn btn-sm btn-primary" href="editSumur?id=' . $result->id_master_sumur . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
+                $row[] = '<center><a class="btn btn-sm btn-primary" href="javascript:void(0);" onclick="edit('."'".$result->id_master_sumur."'".')" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
 
                 $data[] = $row;
             }
@@ -809,14 +812,13 @@ class Master extends MY_Controller{
 
     public function editSumur($id){
         //$id = $_GET['id'];
-        $data['id'] = $id;
-        $data['title'] = 'Edit Data Sumur';
         $this->db->from('master_sumur');
         $this->db->where('id_master_sumur',$id);
         $query = $this->db->get();
         $result = $query->row();
 
         $data = array(
+            'id' => $id,
             'id_sumur' => $result->id_sumur,
             'nama_sumur' => $result->nama_sumur,
             'lokasi' => $result->lokasi,
@@ -1007,7 +1009,7 @@ class Master extends MY_Controller{
     //fungsi untuk master data flowmeter
     public function ajax_data_flowmeter(){
         if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('role_name') == 'admin'){
-            $list = $this->data->get_datatables_flowmeter();
+            $list = $this->tenant->get_datatables_flowmeter();
             $data = array();
             $no = $_POST['start'];
 
@@ -1034,15 +1036,15 @@ class Master extends MY_Controller{
                 $flowmeter = $this->tenant->getNamaPompa($result->id_flow);
                 $row[] = "<center>".$flowmeter->id_pompa;
                 $row[] = $status;
-                $row[] = '<center><a class="btn btn-sm btn-primary" href="editFlowmeter?id=' . $result->id_flow . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
+                $row[] = '<center><a class="btn btn-sm btn-primary" href="javascript:void(0);" onclick="edit('."'".$result->id_flow."'".')" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
 
                 $data[] = $row;
             }
 
             $output = array(
                 "draw" => $_POST['draw'],
-                "recordsTotal" => $this->master->count_all_flowmeter(),
-                "recordsFiltered" => $this->master->count_filtered_flowmeter(),
+                "recordsTotal" => $this->tenant->count_all_flowmeter(),
+                "recordsFiltered" => $this->tenant->count_filtered_flowmeter(),
                 "data" => $data,
             );
         }
@@ -1092,17 +1094,14 @@ class Master extends MY_Controller{
 
     public function editFlowmeter($id){
         //$id = $_GET['id'];
-        $data['id'] = $id;
-        $data['title'] = 'Edit Data Flow Meter';
+        //$data['id'] = $id;
         $this->db->from('master_flowmeter');
         $this->db->where('id_flow',$id);
         $query = $this->db->get();
         $result = $query->row();
-
-        $data['kondisi'] = $this->tenant->getKondisi();
-        $data['pompa'] = $this->tenant->getPompa();
-
+        
         $data = array(
+            'id' => $id,
             'id_flowmeter' => $result->id_flowmeter,
             'nama_flowmeter' => $result->nama_flowmeter,
             'status_aktif' => $result->status_aktif,
@@ -1115,8 +1114,13 @@ class Master extends MY_Controller{
         //$this->load->template('v_edit_flowmeter',$data);
     }
 
+    public function populatePompa(){
+        $data = $this->tenant->getPompa();
+        echo json_encode($data);
+    }
+
     public function edit_flowmeter(){
-        $id = $this->input->post('id_flow');
+        $id = $this->input->post('idm');
         $id_flowmeter = $this->input->post('id_flowmeter');
         $nama_flowmeter = $this->input->post('nama_flowmeter');
         $kondisi = $this->input->post('kondisi');
