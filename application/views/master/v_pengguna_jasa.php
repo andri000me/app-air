@@ -11,7 +11,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 <div class="container">
     <div class="row col-md-12">
-        <table id="table" class="table table-striped table-bordered" cellspacing="0" width="70%">
+        <table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%">
             <thead>
             <tr>
                 <th>
@@ -28,6 +28,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </th>
                 <th>
                     <center>Jenis Pengguna Jasa
+                </th>
+                <th>
+                    <center>NPWP
                 </th>
                 <th>
                     <center>Aksi
@@ -52,6 +55,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 </th>
                 <th>
                     <center>Jenis Pengguna Jasa
+                </th>
+                <th>
+                    <center>NPWP
                 </th>
                 <th>
                     <center>Aksi
@@ -89,14 +95,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <span class="help-block"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="agent_name" class="form-label">No Telepon</label>
                                     <input class="form-control" type="text" name="no_telp" id="no_telp" required>                                 
                                     <span class="help-block"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="agent_name" class="form-label">NPWP</label>
+                                    <input class="form-control" type="text" name="npwp" id="npwp" required>                                 
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="agent_name" class="form-label">Jenis Pengguna Jasa</label>
                                     <select name="pengguna" id="pengguna" class="form-control">
@@ -187,6 +200,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 $('#alamat').val(data.alamat);
                 $('#no_telp').val(data.no_telp);
                 $('#pengguna').val(data.pengguna).change();
+                $('#npwp').val(data.npwp);
             },
             error: function (jqXHR, textStatus, errorThrown)
             {

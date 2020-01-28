@@ -159,6 +159,7 @@ class Master extends MY_Controller{
                 $result->pengguna_jasa_id_tarif = "Perusahaan (NON - KIK)";
             }
             $row[] = "<center>".$result->pengguna_jasa_id_tarif;
+            $row[] = "<center>".$result->npwp;
             $row[] = '<center><a class="btn btn-sm btn-primary" href="javascript:void(0);" onclick="edit('."'".$result->id_pengguna_jasa."'".')" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
 
             $data[] = $row;
@@ -179,6 +180,7 @@ class Master extends MY_Controller{
         $alamat = $this->input->post('alamat');
         $no_telp = $this->input->post('no_telp');
         $pengguna = $this->input->post('pengguna');
+        $npwp = $this->input->post('npwp');
 
         if(isset($nama) && $nama != NULL && $alamat != NULL && $no_telp != NULL && $pengguna != NULL){
             $data_insert = array(
@@ -186,6 +188,7 @@ class Master extends MY_Controller{
                 'alamat' => $alamat,
                 'no_telp' => $no_telp,
                 'pengguna_jasa_id_tarif' => $pengguna,
+                'npwp' => $npwp,
                 'issued_at' => date("Y-m-d H:i:s",time()),
                 'issued_by' => $this->session->userdata('username')
             );
@@ -219,6 +222,7 @@ class Master extends MY_Controller{
             'alamat' => $result->alamat,
             'no_telp' => $result->no_telp,
             'pengguna' => $result->pengguna_jasa_id_tarif,
+            'npwp' => $result->npwp,
         );
         echo json_encode($data);
         //$this->load->template('v_edit_darat',$data);
@@ -235,12 +239,14 @@ class Master extends MY_Controller{
         $alamat = $this->input->post('alamat');
         $no_telp = $this->input->post('no_telp');
         $pengguna = $this->input->post('pengguna');
+        $npwp = $this->input->post('npwp');
 
         $data_edit = array(
             'nama_pengguna_jasa' => $nama,
             'alamat' => $alamat,
             'no_telp' => $no_telp,
             'pengguna_jasa_id_tarif' => $pengguna,
+            'npwp' => $npwp,
             'last_modified' => date("Y-m-d H:i:s",time()),
             'modified_by' => $this->session->userdata('username')
         );

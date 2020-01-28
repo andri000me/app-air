@@ -2,8 +2,8 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Report extends MY_Controller{
-     //fungsi untuk pembuatan laporan dan penagihan
-     public function laporan_darat() {
+    //fungsi untuk pembuatan laporan dan penagihan
+    public function laporan_darat() {
         $tgl_awal = $this->input->post('tgl_awal');
         $tgl_akhir = $this->input->post('tgl_akhir');
 
@@ -15,21 +15,21 @@ class Report extends MY_Controller{
             $no = 1;
 
             $tabel = '<center><h4>Laporan Pendapatan Air Darat Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir )).'</h4></center>
-                      <table class="table table-responsive table-condensed table-striped">
-                      <thead>
-                          <tr>
-                              <th align="center">No</th>
-                              <th align="center">No Kwitansi</th>
-                              <th align="center">Nama Pengguna Jasa</th>
-                              <th align="center">Alamat</th>
-                              <th align="center">No Telepon</th>
-                              <th align="center">Tanggal Transaksi</th>
-                              <th align="center">Tarif</th>
-                              <th align="center">Total Permintaan (Ton)</th>
-                              <th align="center">Total Pembayaran (Rp.)</th>
-                          </tr>
-                      </thead>
-                      <tbody>';
+                    <table class="table table-responsive table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th align="center">No</th>
+                            <th align="center">No Kwitansi</th>
+                            <th align="center">Nama Pengguna Jasa</th>
+                            <th align="center">Alamat</th>
+                            <th align="center">No Telepon</th>
+                            <th align="center">Tanggal Transaksi</th>
+                            <th align="center">Tarif</th>
+                            <th align="center">Total Permintaan (Ton)</th>
+                            <th align="center">Total Pembayaran (Rp.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
 
             foreach($result as $row){
                 if($row->diskon != NULL || $row->diskon != 0){
@@ -47,17 +47,17 @@ class Report extends MY_Controller{
                         $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi));
 
                         $tabel .= '<tr>
-                          <td align="center">' . $no . '</td>
-                          <td align="center">' . $row->no_kwitansi . '</td>
-                          <td align="center">' . $row->nama_pengguna_jasa . '</td>
-                          <td align="center">' . $row->alamat . '</td>
-                          <td align="center">' . $row->no_telp . '</td>
-                          <td align="center">' . $format_tgl . '</td>
-                          <td align="center">' . $this->Ribuan($row->tarif) . '</td>
-                          <td align="center">' . $row->total_permintaan . '</td>
-                          <td align="center">' . $this->Ribuan($total_pembayaran) . '</td>
-                      </tr>
-                      ';
+                        <td align="center">' . $no . '</td>
+                        <td align="center">' . $row->no_kwitansi . '</td>
+                        <td align="center">' . $row->nama_pengguna_jasa . '</td>
+                        <td align="center">' . $row->alamat . '</td>
+                        <td align="center">' . $row->no_telp . '</td>
+                        <td align="center">' . $format_tgl . '</td>
+                        <td align="center">' . $this->Ribuan($row->tarif) . '</td>
+                        <td align="center">' . $row->total_permintaan . '</td>
+                        <td align="center">' . $this->Ribuan($total_pembayaran) . '</td>
+                    </tr>
+                    ';
                         $no++;
                     }
                 } else {
@@ -68,45 +68,45 @@ class Report extends MY_Controller{
                         $total += $total_pembayaran;
 
                         $tabel .= '<tr>
-                          <td align="center">' . $no . '</td>
-                          <td align="center">' . $row->no_kwitansi . '</td>
-                          <td align="center">' . $row->nama_pengguna_jasa . '</td>
-                          <td align="center">' . $row->alamat . '</td>
-                          <td align="center">' . $row->no_telp . '</td>
-                          <td align="center">' . $format_tgl . '</td>
-                          <td align="center">' . $this->Ribuan($row->tarif) . '</td>
-                          <td align="center">' . $row->total_permintaan . '</td>
-                          <td align="center">' . $this->Ribuan($total_pembayaran) . '</td>
-                      </tr>';
+                        <td align="center">' . $no . '</td>
+                        <td align="center">' . $row->no_kwitansi . '</td>
+                        <td align="center">' . $row->nama_pengguna_jasa . '</td>
+                        <td align="center">' . $row->alamat . '</td>
+                        <td align="center">' . $row->no_telp . '</td>
+                        <td align="center">' . $format_tgl . '</td>
+                        <td align="center">' . $this->Ribuan($row->tarif) . '</td>
+                        <td align="center">' . $row->total_permintaan . '</td>
+                        <td align="center">' . $this->Ribuan($total_pembayaran) . '</td>
+                    </tr>';
                         $no++;
                     } else{
-                       $total_pembayaran = 'Kwitansi Batal';
+                        $total_pembayaran = 'Kwitansi Batal';
 
                         $tabel .= '<tr style="background-color: #990000">
-                          <td align="center">' . $no . '</td>
-                          <td align="center">' . $row->no_kwitansi . '</td>
-                          <td align="center">' . $row->nama_pengguna_jasa . '</td>
-                          <td align="center">' . $row->alamat . '</td>
-                          <td align="center">' . $row->no_telp . '</td>
-                          <td align="center">' . $format_tgl . '</td>
-                          <td align="center">' . $this->Ribuan($row->tarif) . '</td>
-                          <td align="center">' . $row->total_permintaan . '</td>
-                          <td align="center">' . $total_pembayaran . '</td>
-                      </tr>';
+                        <td align="center">' . $no . '</td>
+                        <td align="center">' . $row->no_kwitansi . '</td>
+                        <td align="center">' . $row->nama_pengguna_jasa . '</td>
+                        <td align="center">' . $row->alamat . '</td>
+                        <td align="center">' . $row->no_telp . '</td>
+                        <td align="center">' . $format_tgl . '</td>
+                        <td align="center">' . $this->Ribuan($row->tarif) . '</td>
+                        <td align="center">' . $row->total_permintaan . '</td>
+                        <td align="center">' . $total_pembayaran . '</td>
+                    </tr>';
                         $no++;
                     }
                 }
             }
 
             $tabel .= '<tr>
-                          <td align="center" colspan="7"><b>Total</b></td>
-                          <td align="center"><b>'.$ton.'</b></td>
-                          <td align="center"><b>'.$this->Ribuan($total).'</b></td>
-                      </tr>
-                  </tbody>
-                  </table>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=darat").'>Cetak PDF</a>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/excelDarat?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>';
+                        <td align="center" colspan="7"><b>Total</b></td>
+                        <td align="center"><b>'.$ton.'</b></td>
+                        <td align="center"><b>'.$this->Ribuan($total).'</b></td>
+                    </tr>
+                </tbody>
+                </table>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/darat").'>Cetak PDF</a>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/excelDarat/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>';
 
             $data = array(
                 'status' => 'success',
@@ -126,32 +126,32 @@ class Report extends MY_Controller{
         $tgl_awal = $this->input->post('tgl_awal');
         $tgl_akhir = $this->input->post('tgl_akhir');
 
-        $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"darat");
+        $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"darat");
 
-        if($this->session->userdata('role') == 'loket'){
+        if($this->session->userdata('role_name') == 'loket'){
             if($result != NULL){
                 $total = 0;
                 $ton = 0;
                 $no = 1;
 
                 $tabel = '<center><h4>Laporan Pendapatan Air Darat Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir )).'</h4></center>
-                      <table class="table table-responsive table-condensed table-striped">
-                      <thead>
-                          <tr>
-                              <th align="center">No</th>
-                              <th align="center">Nama Pengguna Jasa</th>
-                              <th align="center">Alamat</th>
-                              <th align="center">Tanggal Transaksi</th>
-                              <th align="center">Waktu Permintaan Pengantaran</th>
-                              <th align="center">Waktu Mulai Pengantaran</th>
-                              <th align="center">Waktu Selesai Pengantaran</th>
-                              <th align="center">Lama Pengantaran</th>
-                              <th align="center">Tarif (Rp.)</th>
-                              <th align="center">Total Permintaan (Ton)</th>
-                              <th align="center">Total Pembayaran (Rp.)</th>
-                          </tr>
-                      </thead>
-                      <tbody>';
+                    <table class="table table-responsive table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th align="center">No</th>
+                            <th align="center">Nama Pengguna Jasa</th>
+                            <th align="center">Alamat</th>
+                            <th align="center">Tanggal Transaksi</th>
+                            <th align="center">Waktu Permintaan Pengantaran</th>
+                            <th align="center">Waktu Mulai Pengantaran</th>
+                            <th align="center">Waktu Selesai Pengantaran</th>
+                            <th align="center">Lama Pengantaran</th>
+                            <th align="center">Tarif (Rp.)</th>
+                            <th align="center">Total Permintaan (Ton)</th>
+                            <th align="center">Total Pembayaran (Rp.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
 
                 foreach($result as $row){
                     $lama_pengantaran = 0;
@@ -200,49 +200,47 @@ class Report extends MY_Controller{
                         $ton += $row->total_permintaan;
 
                         $tabel .='<tr>
-                          <td align="center">'.$no.'</td>
-                          <td align="center">'.$row->nama_pengguna_jasa.'</td>
-                          <td align="center">'.$row->alamat.'</td>
-                          <td align="center">'.$format_tgl.'</td>
-                          <td align="center">'.$format_tgl_pengantaran.'</td>
-                          <td align="center">'.$format_jam_awal.'</td>
-                          <td align="center">'.$format_jam_akhir.'</td>
-                          <td align="center">'.$lama_pengantaran.'</td>
-                          <td align="center">'.$this->Ribuan($row->tarif).'</td>
-                          <td align="center">'.$row->total_permintaan.'</td>
-                          <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
-                      </tr>
-                      ';
+                        <td align="center">'.$no.'</td>
+                        <td align="center">'.$row->nama_pengguna_jasa.'</td>
+                        <td align="center">'.$row->alamat.'</td>
+                        <td align="center">'.$format_tgl.'</td>
+                        <td align="center">'.$format_tgl_pengantaran.'</td>
+                        <td align="center">'.$format_jam_awal.'</td>
+                        <td align="center">'.$format_jam_akhir.'</td>
+                        <td align="center">'.$lama_pengantaran.'</td>
+                        <td align="center">'.$this->Ribuan($row->tarif).'</td>
+                        <td align="center">'.$row->total_permintaan.'</td>
+                        <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
+                    </tr>';
                         $no++;
                     } else {
                         $total_pembayaran = "Kwitansi Di Batalkan";
                         $tabel .='<tr style="background-color: #990000">
-                          <td align="center">'.$no.'</td>
-                          <td align="center">'.$row->nama_pengguna_jasa.'</td>
-                          <td align="center">'.$row->alamat.'</td>
-                          <td align="center">'.$format_tgl.'</td>
-                          <td align="center">'.$format_tgl_pengantaran.'</td>
-                          <td align="center">'.$format_jam_awal.'</td>
-                          <td align="center">'.$format_jam_akhir.'</td>
-                          <td align="center">'.$lama_pengantaran.'</td>
-                          <td align="center">'.$this->Ribuan($row->tarif).'</td>
-                          <td align="center">'.$row->total_permintaan.'</td>
-                          <td align="center">'.$total_pembayaran.'</td>
-                      </tr>
-                      ';
+                        <td align="center">'.$no.'</td>
+                        <td align="center">'.$row->nama_pengguna_jasa.'</td>
+                        <td align="center">'.$row->alamat.'</td>
+                        <td align="center">'.$format_tgl.'</td>
+                        <td align="center">'.$format_tgl_pengantaran.'</td>
+                        <td align="center">'.$format_jam_awal.'</td>
+                        <td align="center">'.$format_jam_akhir.'</td>
+                        <td align="center">'.$lama_pengantaran.'</td>
+                        <td align="center">'.$this->Ribuan($row->tarif).'</td>
+                        <td align="center">'.$row->total_permintaan.'</td>
+                        <td align="center">'.$total_pembayaran.'</td>
+                    </tr>';
                         $no++;
                     }
                 }
 
                 $tabel .= '<tr>
-                          <td align="center" colspan="9"><b>Total</b></td>
-                          <td align="center"><b>'.$ton.'</b></td>
-                          <td align="center"><b>'.$this->Ribuan($total).'</b></td>
-                      </tr>
-                  </tbody>
-                  </table>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=darat").'>Cetak PDF</a>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/excelDarat?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>';
+                        <td align="center" colspan="9"><b>Total</b></td>
+                        <td align="center"><b>'.$ton.'</b></td>
+                        <td align="center"><b>'.$this->Ribuan($total).'</b></td>
+                    </tr>
+                </tbody>
+                </table>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/darat").'>Cetak PDF</a>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/excelDarat/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>';
 
                 $data = array(
                     'status' => 'success',
@@ -262,22 +260,22 @@ class Report extends MY_Controller{
                 $no = 1;
 
                 $tabel = '<center><h4>Laporan Pendapatan Air Darat Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir )).'</h4></center>
-                      <table class="table table-responsive table-condensed table-striped">
-                      <thead>
-                          <tr>
-                              <th align="center">No</th>
-                              <th align="center">Nama Pengguna Jasa</th>
-                              <th align="center">Alamat</th>
-                              <th align="center">Tanggal Transaksi</th>
-                              <th align="center">Waktu Permintaan Pengantaran</th>
-                              <th align="center">Waktu Mulai Pengantaran</th>
-                              <th align="center">Waktu Selesai Pengantaran</th>
-                              <th align="center">Lama Pengantaran</th>
-                              <th align="center">Total Permintaan (Ton)</th>
-                              <th align="center">Total Pembayaran (Rp.)</th>
-                          </tr>
-                      </thead>
-                      <tbody>';
+                    <table class="table table-responsive table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th align="center">No</th>
+                            <th align="center">Nama Pengguna Jasa</th>
+                            <th align="center">Alamat</th>
+                            <th align="center">Tanggal Transaksi</th>
+                            <th align="center">Waktu Permintaan Pengantaran</th>
+                            <th align="center">Waktu Mulai Pengantaran</th>
+                            <th align="center">Waktu Selesai Pengantaran</th>
+                            <th align="center">Lama Pengantaran</th>
+                            <th align="center">Total Permintaan (Ton)</th>
+                            <th align="center">Total Pembayaran (Rp.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
 
                 foreach($result as $row){
                     $lama_pengantaran = 0;
@@ -327,47 +325,45 @@ class Report extends MY_Controller{
                         $ton += $row->total_permintaan;
 
                         $tabel .='<tr>
-                          <td align="center">'.$no.'</td>
-                          <td align="center">'.$row->nama_pengguna_jasa.'</td>
-                          <td align="center">'.$row->alamat.'</td>
-                          <td align="center">'.$format_tgl.'</td>
-                          <td align="center">'.$format_tgl_pengantaran.'</td>
-                          <td align="center">'.$format_jam_awal.'</td>
-                          <td align="center">'.$format_jam_akhir.'</td>
-                          <td align="center">'.$lama_pengantaran.'</td>
-                          <td align="center">'.$row->total_permintaan.'</td>
-                          <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
-                      </tr>
-                      ';
+                        <td align="center">'.$no.'</td>
+                        <td align="center">'.$row->nama_pengguna_jasa.'</td>
+                        <td align="center">'.$row->alamat.'</td>
+                        <td align="center">'.$format_tgl.'</td>
+                        <td align="center">'.$format_tgl_pengantaran.'</td>
+                        <td align="center">'.$format_jam_awal.'</td>
+                        <td align="center">'.$format_jam_akhir.'</td>
+                        <td align="center">'.$lama_pengantaran.'</td>
+                        <td align="center">'.$row->total_permintaan.'</td>
+                        <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
+                    </tr>';
                         $no++;
                     } else {
                         $total_pembayaran = "Kwitansi Di Batalkan";
                         $tabel .='<tr style="background-color: #990000">
-                          <td align="center">'.$no.'</td>
-                          <td align="center">'.$row->nama_pengguna_jasa.'</td>
-                          <td align="center">'.$row->alamat.'</td>
-                          <td align="center">'.$format_tgl.'</td>
-                          <td align="center">'.$format_tgl_pengantaran.'</td>
-                          <td align="center">'.$format_jam_awal.'</td>
-                          <td align="center">'.$format_jam_akhir.'</td>
-                          <td align="center">'.$lama_pengantaran.'</td>
-                          <td align="center">'.$row->total_permintaan.'</td>
-                          <td align="center">'.$total_pembayaran.'</td>
-                      </tr>
-                      ';
+                        <td align="center">'.$no.'</td>
+                        <td align="center">'.$row->nama_pengguna_jasa.'</td>
+                        <td align="center">'.$row->alamat.'</td>
+                        <td align="center">'.$format_tgl.'</td>
+                        <td align="center">'.$format_tgl_pengantaran.'</td>
+                        <td align="center">'.$format_jam_awal.'</td>
+                        <td align="center">'.$format_jam_akhir.'</td>
+                        <td align="center">'.$lama_pengantaran.'</td>
+                        <td align="center">'.$row->total_permintaan.'</td>
+                        <td align="center">'.$total_pembayaran.'</td>
+                    </tr>';
                         $no++;
                     }
                 }
 
                 $tabel .= '<tr>
-                          <td align="center" colspan="8"><b>Total</b></td>
-                          <td align="center"><b>'.$ton.'</b></td>
-                          <td align="center"><b>'.$this->Ribuan($total).'</b></td>
-                      </tr>
-                  </tbody>
-                  </table>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=darat").'>Cetak PDF</a>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/excelDarat?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>';
+                        <td align="center" colspan="8"><b>Total</b></td>
+                        <td align="center"><b>'.$ton.'</b></td>
+                        <td align="center"><b>'.$this->Ribuan($total).'</b></td>
+                    </tr>
+                </tbody>
+                </table>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/darat").'>Cetak PDF</a>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/excelDarat/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>';
 
                 $data = array(
                     'status' => 'success',
@@ -388,7 +384,7 @@ class Report extends MY_Controller{
         $tgl_awal = $this->input->post('tgl_awal');
         $tgl_akhir = $this->input->post('tgl_akhir');
 
-        if($this->session->userdata('role') == 'keuangan')
+        if($this->session->userdata('role_name') == 'keuangan')
             $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"laut");
         else
             $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"laut_operasi");
@@ -400,73 +396,73 @@ class Report extends MY_Controller{
             $no = 1;
             $ton_realiasi = 0;
 
-            if($this->session->userdata('role') == 'keuangan'){
+            if($this->session->userdata('role_name') == 'keuangan'){
                 $tabel = '<center><h4>Laporan Pendapatan Air Kapal Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir)).'</h4></center>
-                      <table class="table table-responsive table-condensed table-striped">
-                      <thead>
-                          <tr>
-                              <th align="center">No</th>
-                              <th align="center">No Nota</th>
-                              <th align="center">No Faktur</th>
-                              <th align="center">ID VESSEL</th>
-                              <th align="center">Nama VESSEL</th>
-                              <th align="center">Voy No</th>
-                              <th align="center">Tipe Kapal</th>
-                              <th align="center">Nama Perusahaan</th>
-                              <th align="center">Tanggal Transaksi</th>
-                              <th align="center">Tarif (Rp.)</th>
-                              <th align="center">Total Permintaan (Ton)</th>
-                              <th align="center">Realisasi Pengisian (Ton)</th>
-                              <th align="center">Total Pembayaran (Rp.)</th>
-                          </tr>
-                      </thead>
-                      <tbody>';
+                    <table class="table table-responsive table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th align="center">No</th>
+                            <th align="center">No Nota</th>
+                            <th align="center">No Faktur</th>
+                            <th align="center">ID VESSEL</th>
+                            <th align="center">Nama VESSEL</th>
+                            <th align="center">Voy No</th>
+                            <th align="center">Tipe Kapal</th>
+                            <th align="center">Nama Perusahaan</th>
+                            <th align="center">Tanggal Transaksi</th>
+                            <th align="center">Tarif (Rp.)</th>
+                            <th align="center">Total Permintaan (Ton)</th>
+                            <th align="center">Realisasi Pengisian (Ton)</th>
+                            <th align="center">Total Pembayaran (Rp.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
             }
-            else if($this->session->userdata('role') == 'operasi') {
+            else if($this->session->userdata('role_name') == 'operasi') {
                 $tabel = '<center><h4>Laporan Pendapatan Air Kapal Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir)).'</h4></center>
-                      <table class="table table-responsive table-condensed table-striped">
-                      <thead>
-                          <tr>
-                              <th align="center">No</th>
-                              <th align="center">ID VESSEL</th>
-                              <th align="center">Nama VESSEL</th>
-                              <th align="center">Voy No</th>
-                              <th align="center">Tipe Kapal</th>
-                              <th align="center">Nama Perusahaan</th>
-                              <th align="center">Tanggal Transaksi</th>
-                              <th align="center">Tarif (Rp.)</th>
-                              <th align="center">Total Permintaan (Ton)</th>
-                              <th align="center">Realisasi Pengisian (Ton)</th>
-                              <th align="center">Total Pembayaran (Rp.)</th>
-                          </tr>
-                      </thead>
-                      <tbody>';
+                    <table class="table table-responsive table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th align="center">No</th>
+                            <th align="center">ID VESSEL</th>
+                            <th align="center">Nama VESSEL</th>
+                            <th align="center">Voy No</th>
+                            <th align="center">Tipe Kapal</th>
+                            <th align="center">Nama Perusahaan</th>
+                            <th align="center">Tanggal Transaksi</th>
+                            <th align="center">Tarif (Rp.)</th>
+                            <th align="center">Total Permintaan (Ton)</th>
+                            <th align="center">Realisasi Pengisian (Ton)</th>
+                            <th align="center">Total Pembayaran (Rp.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
             }
             else {
                 $tabel = '<center><h4>Laporan Pendapatan Air Kapal Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir)).'</h4></center>
-                      <table class="table table-responsive table-condensed table-striped">
-                      <thead>
-                          <tr>
-                              <th align="center">No</th>
-                              <th align="center">ID VESSEL</th>
-                              <th align="center">Nama VESSEL</th>
-                              <th align="center">Voy No</th>
-                              <th align="center">Tipe Kapal</th>
-                              <th align="center">Nama Perusahaan</th>
-                              <th align="center">Tanggal Transaksi</th>
-                              <th align="center">Flow Meter Awal</th>
-                              <th align="center">Flow Meter Akhir</th>
-                              <th align="center">Total Permintaan (Ton)</th>
-                              <th align="center">Realisasi Pengisian (Ton)</th>
-                              <th align="center">Total Pembayaran (Rp.)</th>
-                          </tr>
-                      </thead>
-                      <tbody>';
+                    <table class="table table-responsive table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th align="center">No</th>
+                            <th align="center">ID VESSEL</th>
+                            <th align="center">Nama VESSEL</th>
+                            <th align="center">Voy No</th>
+                            <th align="center">Tipe Kapal</th>
+                            <th align="center">Nama Perusahaan</th>
+                            <th align="center">Tanggal Transaksi</th>
+                            <th align="center">Flow Meter Awal</th>
+                            <th align="center">Flow Meter Akhir</th>
+                            <th align="center">Total Permintaan (Ton)</th>
+                            <th align="center">Realisasi Pengisian (Ton)</th>
+                            <th align="center">Total Pembayaran (Rp.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
             }
 
             foreach($result as $row){
                 if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL){
-                    if($this->session->userdata('role') == 'keuangan'){
+                    if($this->session->userdata('role_name') == 'keuangan'){
                         if($row->id_ref_transaksi != NULL){
                             if($row->flowmeter_akhir_4 != NULL && $row->flowmeter_awal_4 != NULL){
                                 $realisasi = $row->flowmeter_akhir_4 - $row->flowmeter_awal_4;
@@ -535,25 +531,25 @@ class Report extends MY_Controller{
                             }
 
                             $tabel .='<tr>
-                          <td align="center">'.$no.'</td>
-                          <td align="center">'.$row->no_nota.'</td>
-                          <td align="center">'.$row->no_faktur.'</td>
-                          <td align="center">'.$row->id_vessel.'</td>
-                          <td align="center">'.$row->nama_vessel.'</td>
-                          <td align="center">'.$row->voy_no.'</td>
-                          <td align="center">'.$row->pengguna_jasa_id_tarif.'</td>
-                          <td align="center">'.$row->nama_agent.'</td>
-                          <td align="center">'.$format_tgl.'</td>
-                          <td align="center">'.$this->Ribuan($row->tarif).'</td>
-                          <td align="center">'.$row->total_permintaan.'</td>
-                          <td align="center">'.$realisasi.'</td>
-                          <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
+                        <td align="center">'.$no.'</td>
+                        <td align="center">'.$row->no_nota.'</td>
+                        <td align="center">'.$row->no_faktur.'</td>
+                        <td align="center">'.$row->id_vessel.'</td>
+                        <td align="center">'.$row->nama_vessel.'</td>
+                        <td align="center">'.$row->voy_no.'</td>
+                        <td align="center">'.$row->pengguna_jasa_id_tarif.'</td>
+                        <td align="center">'.$row->nama_agent.'</td>
+                        <td align="center">'.$format_tgl.'</td>
+                        <td align="center">'.$this->Ribuan($row->tarif).'</td>
+                        <td align="center">'.$row->total_permintaan.'</td>
+                        <td align="center">'.$realisasi.'</td>
+                        <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
                       </tr>
                       ';
                             $no++;
                         }
                     }
-                    else if($this->session->userdata('role') == 'wtp' || $this->session->userdata('role') == 'perencanaan'){
+                    else if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('role_name') == 'perencanaan'){
                         if($row->flowmeter_awal == NULL || $row->flowmeter_awal == '0'){
                             $flowmeter_awal = "0";
                         }
@@ -699,18 +695,18 @@ class Report extends MY_Controller{
                         }
 
                         $tabel .='<tr>
-                          <td align="center">'.$no.'</td>
-                          <td align="center">'.$row->id_vessel.'</td>
-                          <td align="center">'.$row->nama_vessel.'</td>
-                          <td align="center">'.$row->voy_no.'</td>
-                          <td align="center">'.$row->tipe_kapal.'</td>
-                          <td align="center">'.$row->nama_agent.'</td>
-                          <td align="center">'.$format_tgl.'</td>
-                          <td align="center">'.$flow_sebelum.'</td>
-                          <td align="center">'.$flow_sesudah.'</td>
-                          <td align="center">'.$row->total_permintaan.'</td>
-                          <td align="center">'.$realisasi.'</td>
-                          <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
+                        <td align="center">'.$no.'</td>
+                        <td align="center">'.$row->id_vessel.'</td>
+                        <td align="center">'.$row->nama_vessel.'</td>
+                        <td align="center">'.$row->voy_no.'</td>
+                        <td align="center">'.$row->tipe_kapal.'</td>
+                        <td align="center">'.$row->nama_agent.'</td>
+                        <td align="center">'.$format_tgl.'</td>
+                        <td align="center">'.$flow_sebelum.'</td>
+                        <td align="center">'.$flow_sesudah.'</td>
+                        <td align="center">'.$row->total_permintaan.'</td>
+                        <td align="center">'.$realisasi.'</td>
+                        <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
                       </tr>
                       ';
                         $no++;
@@ -801,7 +797,7 @@ class Report extends MY_Controller{
                 }
             }
 
-            if($this->session->userdata('role') == 'keuangan' ){
+            if($this->session->userdata('role_name') == 'keuangan' ){
                 $tabel .= '<tr>
                           <td align="center" colspan="10"><b>Total</b></td>
                           <td align="center"><b>'.$ton.'</b></td>
@@ -810,10 +806,10 @@ class Report extends MY_Controller{
                       </tr>
                   </tbody>
                   </table>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=laut").'>Cetak PDF</a>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/excelLaut?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>';
+                  <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/laut").'>Cetak PDF</a>
+                  <a class="btn btn-primary" target="_blank" href='.base_url("report/excelLaut/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>';
             }
-            else if($this->session->userdata('role') == 'operasi'){
+            else if($this->session->userdata('role_name') == 'operasi'){
                 $tabel .= '<tr>
                           <td align="center" colspan="8"><b>Total</b></td>
                           <td align="center"><b>'.$ton.'</b></td>
@@ -822,8 +818,8 @@ class Report extends MY_Controller{
                       </tr>
                   </tbody>
                   </table>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=laut").'>Cetak PDF</a>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/excelLaut?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>';
+                  <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/laut").'>Cetak PDF</a>
+                  <a class="btn btn-primary" target="_blank" href='.base_url("report/excelLaut/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>';
             }
             else {
                 $tabel .= '<tr>
@@ -834,8 +830,8 @@ class Report extends MY_Controller{
                       </tr>
                   </tbody>
                   </table>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=laut").'>Cetak PDF</a>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/excelLaut?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>';
+                  <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/laut").'>Cetak PDF</a>
+                  <a class="btn btn-primary" target="_blank" href='.base_url("report/excelLaut/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>';
             }
 
             $data = array(
@@ -856,7 +852,7 @@ class Report extends MY_Controller{
         $tgl_awal = $this->input->post('tgl_awal');
         $tgl_akhir = $this->input->post('tgl_akhir');
 
-        $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"laut_operasi");
+        $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"laut_operasi");
 
         if($result != NULL){
             $total = 0;
@@ -864,73 +860,73 @@ class Report extends MY_Controller{
             $no = 1;
             $ton_realiasi = 0;
 
-            if($this->session->userdata('role') == 'keuangan'){
+            if($this->session->userdata('role_name') == 'keuangan'){
                 $tabel = '<center><h4>Laporan Pendapatan Air Kapal Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir)).'</h4></center>
-                      <table class="table table-responsive table-condensed table-striped">
-                      <thead>
-                          <tr>
-                              <th align="center">No</th>
-                              <th align="center">No Nota</th>
-                              <th align="center">No Faktur</th>
-                              <th align="center">ID VESSEL</th>
-                              <th align="center">Nama VESSEL</th>
-                              <th align="center">Voy No</th>
-                              <th align="center">Tipe Kapal</th>
-                              <th align="center">Nama Perusahaan</th>
-                              <th align="center">Tanggal Transaksi</th>
-                              <th align="center">Tarif (Rp.)</th>
-                              <th align="center">Total Permintaan (Ton)</th>
-                              <th align="center">Realisasi Pengisian (Ton)</th>
-                              <th align="center">Total Pembayaran (Rp.)</th>
-                          </tr>
-                      </thead>
-                      <tbody>';
+                    <table class="table table-responsive table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th align="center">No</th>
+                            <th align="center">No Nota</th>
+                            <th align="center">No Faktur</th>
+                            <th align="center">ID VESSEL</th>
+                            <th align="center">Nama VESSEL</th>
+                            <th align="center">Voy No</th>
+                            <th align="center">Tipe Kapal</th>
+                            <th align="center">Nama Perusahaan</th>
+                            <th align="center">Tanggal Transaksi</th>
+                            <th align="center">Tarif (Rp.)</th>
+                            <th align="center">Total Permintaan (Ton)</th>
+                            <th align="center">Realisasi Pengisian (Ton)</th>
+                            <th align="center">Total Pembayaran (Rp.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
             }
-            else if($this->session->userdata('role') == 'operasi') {
+            else if($this->session->userdata('role_name') == 'operasi') {
                 $tabel = '<center><h4>Laporan Pendapatan Air Kapal Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir)).'</h4></center>
-                      <table class="table table-responsive table-condensed table-striped">
-                      <thead>
-                          <tr>
-                              <th align="center">No</th>
-                              <th align="center">ID VESSEL</th>
-                              <th align="center">Nama VESSEL</th>
-                              <th align="center">Voy No</th>
-                              <th align="center">Tipe Kapal</th>
-                              <th align="center">Nama Perusahaan</th>
-                              <th align="center">Tanggal Transaksi</th>
-                              <th align="center">Tarif (Rp.)</th>
-                              <th align="center">Total Permintaan (Ton)</th>
-                              <th align="center">Realisasi Pengisian (Ton)</th>
-                              <th align="center">Total Pembayaran (Rp.)</th>
-                          </tr>
-                      </thead>
-                      <tbody>';
+                    <table class="table table-responsive table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th align="center">No</th>
+                            <th align="center">ID VESSEL</th>
+                            <th align="center">Nama VESSEL</th>
+                            <th align="center">Voy No</th>
+                            <th align="center">Tipe Kapal</th>
+                            <th align="center">Nama Perusahaan</th>
+                            <th align="center">Tanggal Transaksi</th>
+                            <th align="center">Tarif (Rp.)</th>
+                            <th align="center">Total Permintaan (Ton)</th>
+                            <th align="center">Realisasi Pengisian (Ton)</th>
+                            <th align="center">Total Pembayaran (Rp.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
             }
             else {
                 $tabel = '<center><h4>Laporan Pendapatan Air Kapal Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir)).'</h4></center>
-                      <table class="table table-responsive table-condensed table-striped">
-                      <thead>
-                          <tr>
-                              <th align="center">No</th>
-                              <th align="center">ID VESSEL</th>
-                              <th align="center">Nama VESSEL</th>
-                              <th align="center">Voy No</th>
-                              <th align="center">Tipe Kapal</th>
-                              <th align="center">Nama Perusahaan</th>
-                              <th align="center">Tanggal Transaksi</th>
-                              <th align="center">Flow Meter Awal</th>
-                              <th align="center">Flow Meter Akhir</th>
-                              <th align="center">Total Permintaan (Ton)</th>
-                              <th align="center">Realisasi Pengisian (Ton)</th>
-                              <th align="center">Total Pembayaran (Rp.)</th>
-                          </tr>
-                      </thead>
-                      <tbody>';
+                    <table class="table table-responsive table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th align="center">No</th>
+                            <th align="center">ID VESSEL</th>
+                            <th align="center">Nama VESSEL</th>
+                            <th align="center">Voy No</th>
+                            <th align="center">Tipe Kapal</th>
+                            <th align="center">Nama Perusahaan</th>
+                            <th align="center">Tanggal Transaksi</th>
+                            <th align="center">Flow Meter Awal</th>
+                            <th align="center">Flow Meter Akhir</th>
+                            <th align="center">Total Permintaan (Ton)</th>
+                            <th align="center">Realisasi Pengisian (Ton)</th>
+                            <th align="center">Total Pembayaran (Rp.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
             }
 
             foreach($result as $row){
                 if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL){
-                    if($this->session->userdata('role') == 'keuangan'){
+                    if($this->session->userdata('role_name') == 'keuangan'){
                         if($row->realisasi_transaksi_laut_id_realisasi != NULL){
                             if($row->flowmeter_akhir_4 != NULL && $row->flowmeter_awal_4 != NULL){
                                 $realisasi = $row->flowmeter_akhir_4 - $row->flowmeter_awal_4;
@@ -1017,7 +1013,7 @@ class Report extends MY_Controller{
                             $no++;
                         }
                     }
-                    else if($this->session->userdata('role') == 'wtp' || $this->session->userdata('role') == 'perencanaan' || $this->session->userdata('role') == 'admin'){
+                    else if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('role_name') == 'perencanaan' || $this->session->userdata('role_name') == 'admin'){
                         if($row->flowmeter_awal == NULL || $row->flowmeter_awal == '0'){
                             $flowmeter_awal = "0";
                         }
@@ -1343,41 +1339,41 @@ class Report extends MY_Controller{
                 }
             }
 
-            if($this->session->userdata('role') == 'keuangan' ){
+            if($this->session->userdata('role_name') == 'keuangan' ){
                 $tabel .= '<tr>
-                          <td align="center" colspan="10"><b>Total</b></td>
-                          <td align="center"><b>'.$ton.'</b></td>
-                          <td align="center"><b>'.$ton_realiasi.'</b></td>
-                          <td align="center"><b>'.$this->Ribuan($total).'</b></td>
-                      </tr>
-                  </tbody>
-                  </table>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=laut").'>Cetak PDF</a>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/excelLaut?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>';
+                        <td align="center" colspan="10"><b>Total</b></td>
+                        <td align="center"><b>'.$ton.'</b></td>
+                        <td align="center"><b>'.$ton_realiasi.'</b></td>
+                        <td align="center"><b>'.$this->Ribuan($total).'</b></td>
+                    </tr>
+                </tbody>
+                </table>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/laut").'>Cetak PDF</a>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/excelLaut/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>';
             }
-            else if($this->session->userdata('role') == 'operasi'){
+            else if($this->session->userdata('role_name') == 'operasi'){
                 $tabel .= '<tr>
-                          <td align="center" colspan="8"><b>Total</b></td>
-                          <td align="center"><b>'.$ton.'</b></td>
-                          <td align="center"><b>'.$ton_realiasi.'</b></td>
-                          <td align="center"><b>'.$this->Ribuan($total).'</b></td>
-                      </tr>
-                  </tbody>
-                  </table>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=laut_operasi").'>Cetak PDF</a>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/excelLaut?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>';
+                        <td align="center" colspan="8"><b>Total</b></td>
+                        <td align="center"><b>'.$ton.'</b></td>
+                        <td align="center"><b>'.$ton_realiasi.'</b></td>
+                        <td align="center"><b>'.$this->Ribuan($total).'</b></td>
+                    </tr>
+                </tbody>
+                </table>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/laut_operasi").'>Cetak PDF</a>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/excelLaut/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>';
             }
             else {
                 $tabel .= '<tr>
-                          <td align="center" colspan="9"><b>Total</b></td>
-                          <td align="center"><b>'.$ton.'</b></td>
-                          <td align="center"><b>'.$ton_realiasi.'</b></td>
-                          <td align="center"><b>'.$this->Ribuan($total).'</b></td>
-                      </tr>
-                  </tbody>
-                  </table>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=laut_operasi").'>Cetak PDF</a>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/excelLaut?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>';
+                        <td align="center" colspan="9"><b>Total</b></td>
+                        <td align="center"><b>'.$ton.'</b></td>
+                        <td align="center"><b>'.$ton_realiasi.'</b></td>
+                        <td align="center"><b>'.$this->Ribuan($total).'</b></td>
+                    </tr>
+                </tbody>
+                </table>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/laut_operasi").'>Cetak PDF</a>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/excelLaut/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>';
             }
 
             $data = array(
@@ -1884,13 +1880,9 @@ class Report extends MY_Controller{
     }
 
 
-    public function excelDarat()
-    {
-        if($this->session->userdata('role') == 'keuangan'){
-            $tgl_awal = $this->input->get('id');
-            $tgl_akhir = $this->input->get('id2');
-
-            $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"darat");
+    public function excelDarat($tgl_awal,$tgl_akhir) {
+        if($this->session->userdata('role_name') == 'keuangan'){
+            $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"darat");
 
             // Create new PHPExcel object
             $object = new PHPExcel();
@@ -2026,11 +2018,8 @@ class Report extends MY_Controller{
             $objWriter = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
             $objWriter->save('php://output');
         }
-        else if($this->session->userdata('role') == 'operasi'){
-            $tgl_awal = $this->input->get('id');
-            $tgl_akhir = $this->input->get('id2');
-
-            $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"darat");
+        else if($this->session->userdata('role_name') == 'operasi'){
+            $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"darat");
 
             // Create new PHPExcel object
             $object = new PHPExcel();
@@ -2163,11 +2152,8 @@ class Report extends MY_Controller{
             $objWriter = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
             $objWriter->save('php://output');
         }
-        else if($this->session->userdata('role') == 'loket'){
-            $tgl_awal = $this->input->get('id');
-            $tgl_akhir = $this->input->get('id2');
-
-            $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"darat");
+        else if($this->session->userdata('role_name') == 'loket'){
+            $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"darat");
 
             // Create new PHPExcel object
             $object = new PHPExcel();
@@ -2346,16 +2332,13 @@ class Report extends MY_Controller{
 
             // Redirect output to a client’s web browser (Excel2007)
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment;filename="Laporan_Transaksi_Darat_periode_'.$_GET['id'].'_'.$_GET['id2'].'.xlsx"');
+            header('Content-Disposition: attachment;filename="Laporan_Transaksi_Darat_periode_'.$tgl_awal.'_'.$tgl_akhir.'.xlsx"');
             header('Cache-Control: max-age=0');
 
             $objWriter = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
             $objWriter->save('php://output');
         }
         else{
-            $tgl_awal = $this->input->get('id');
-            $tgl_akhir = $this->input->get('id2');
-
             $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"darat");
 
             // Create new PHPExcel object
@@ -2539,11 +2522,7 @@ class Report extends MY_Controller{
 
     }
 
-    public function excelLaut()
-    {
-        $tgl_awal = $this->input->get('id');
-        $tgl_akhir = $this->input->get('id2');
-
+    public function excelLaut($tgl_awal,$tgl_akhir) {
         // Create new PHPExcel object
         $object = new PHPExcel();
         $style = array(
@@ -2570,12 +2549,12 @@ class Report extends MY_Controller{
             ->setLastModifiedBy($this->session->userdata('nama'))
             ->setCategory("Approve by ");
         // Add some data
-        if($this->session->userdata('role') == 'keuangan'){
+        if($this->session->userdata('role_name') == 'keuangan'){
             $object->getActiveSheet()->getStyle("A7:M7")->applyFromArray($style);
             $object->getActiveSheet()->getStyle("A7:M7")->applyFromArray($font);
             $object->getActiveSheet()->getStyle("A1:A5")->applyFromArray($font);
             $object->getActiveSheet()->getStyle('A7:M7')->getAlignment()->setWrapText(true);
-            $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"laut");
+            $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"laut");
 
             $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
             $object->getActiveSheet()->getColumnDimension('B')->setWidth(20);
@@ -2737,13 +2716,13 @@ class Report extends MY_Controller{
             $ex->setCellValue("L".$counter,"$total_realisasi");
             $ex->setCellValue("M".$counter,"$total");
         }
-        else if($this->session->userdata('role') == 'operasi'){
+        else if($this->session->userdata('role_name') == 'operasi'){
             $object->getActiveSheet()->getStyle("A7:K7")->applyFromArray($style);
             $object->getActiveSheet()->getStyle("A7:K7")->applyFromArray($font);
             $object->getActiveSheet()->getStyle("A1:A5")->applyFromArray($font);
             $object->getActiveSheet()->getStyle('A7:K7')->getAlignment()->setWrapText(true);
 
-            $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"laut_operasi");
+            $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"laut_operasi");
 
             $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
             $object->getActiveSheet()->getColumnDimension('B')->setWidth(20);
@@ -2901,7 +2880,7 @@ class Report extends MY_Controller{
             $object->getActiveSheet()->getStyle("A1:A5")->applyFromArray($font);
             $object->getActiveSheet()->getStyle('A7:L7')->getAlignment()->setWrapText(true);
 
-            $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"laut_operasi");
+            $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"laut_operasi");
 
             $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
             $object->getActiveSheet()->getColumnDimension('B')->setWidth(20);
@@ -3141,17 +3120,14 @@ class Report extends MY_Controller{
 
         // Redirect output to a client’s web browser (Excel2007)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="Laporan_Transaksi_Kapal_periode_'.$_GET['id'].'_'.$_GET['id2'].'.xlsx"');
+        header('Content-Disposition: attachment;filename="Laporan_Transaksi_Kapal_periode_'.$tgl_awal.'_'.$tgl_akhir.'.xlsx"');
         header('Cache-Control: max-age=0');
 
         $objWriter = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
         $objWriter->save('php://output');
     }
 
-    public function excelRuko()
-    {
-        $tgl_awal = $this->input->get('id');
-        $tgl_akhir = $this->input->get('id2');
+    public function excelRuko($tgl_awal,$tgl_akhir) {
         $ton = "";
         $total_penggunaan = "";
 
@@ -3483,11 +3459,7 @@ class Report extends MY_Controller{
         $objWriter->save('php://output');
     }
 
-    public function excelFlow()
-    {
-        $tgl_awal = $this->input->get('id');
-        $tgl_akhir = $this->input->get('id2');
-
+    public function excelFlow($tgl_awal,$tgl_akhir) {
         // Create new PHPExcel object
         $object = new PHPExcel();
         $style = array(
@@ -3609,11 +3581,7 @@ class Report extends MY_Controller{
         $objWriter->save('php://output');
     }
 
-    public function excelSumur()
-    {
-        $tgl_awal = $this->input->get('id');
-        $tgl_akhir = $this->input->get('id2');
-
+    public function excelSumur($tgl_awal,$tgl_akhir) {
         // Create new PHPExcel object
         $object = new PHPExcel();
         $style = array(
@@ -3769,16 +3737,13 @@ class Report extends MY_Controller{
         $objWriter->save('php://output');
     }
 
-    public function cetakLaporan(){
-        $tgl_awal = $this->input->get('id');
-        $tgl_akhir = $this->input->get('id2');
-        $tipe = $this->input->get("tipe");
+    public function cetakLaporan($tgl_awal,$tgl_akhir,$tipe){
         ini_set('memory_limit', '256M');
         if($tipe == "darat"){
             $data['title'] = 'Laporan Transaksi Air Darat Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
-            $data['laporan'] = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
+            $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
 
-            $this->load->view('v_cetaklaporan', $data);
+            $this->load->view('report/v_cetaklaporan_darat', $data);
 
             $paper_size  = 'A4'; //paper size
             $orientation = 'landscape'; //tipe format kertas
@@ -3792,9 +3757,9 @@ class Report extends MY_Controller{
         }
         else if($tipe == "laut"){
             $data['title'] = 'Laporan Transaksi Air Kapal Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
-            $data['laporan'] = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
+            $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
 
-            $this->load->view('v_cetaklaporan', $data);
+            $this->load->view('report/v_cetaklaporan_kapal', $data);
 
             $paper_size  = 'A4'; //paper size
             $orientation = 'landscape'; //tipe format kertas
@@ -3808,9 +3773,9 @@ class Report extends MY_Controller{
         }
         else if($tipe == "laut_operasi"){
             $data['title'] = 'Laporan Transaksi Air Kapal Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
-            $data['laporan'] = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
+            $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
 
-            $this->load->view('v_cetaklaporan', $data);
+            $this->load->view('report/v_cetaklaporan_kapal', $data);
 
             $paper_size  = 'A4'; //paper size
             $orientation = 'landscape'; //tipe format kertas
@@ -3824,10 +3789,10 @@ class Report extends MY_Controller{
         }
         else if($tipe == "flow"){
             $data['title'] = 'Laporan Pencatatan Flow Meter Per Tanggal '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
-            $data['laporan'] = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
+            $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
-            $this->load->view('v_cetaklaporan', $data);
+            $this->load->view('report/v_cetaklaporan', $data);
 
             $paper_size  = 'A4'; //paper size
             $orientation = 'landscape'; //tipe format kertas
@@ -3841,10 +3806,10 @@ class Report extends MY_Controller{
         }
         else if($tipe == "sumur"){
             $data['title'] = 'Laporan Pencatatan Sumur Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
-            $data['laporan'] = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
+            $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
-            $this->load->view('v_cetaklaporan', $data);
+            $this->load->view('report/v_cetaklaporan', $data);
 
             $paper_size  = 'A4'; //paper size
             $orientation = 'landscape'; //tipe format kertas
@@ -3858,10 +3823,10 @@ class Report extends MY_Controller{
         }
         else if($tipe == "ruko_keuangan"){
             $data['title'] = 'Laporan Transaksi Air Ruko Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
-            $data['laporan'] = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
+            $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
-            $this->load->view('v_cetaklaporan', $data);
+            $this->load->view('report/v_cetaklaporan', $data);
 
             $paper_size  = 'A4'; //paper size
             $orientation = 'landscape'; //tipe format kertas
@@ -3875,10 +3840,10 @@ class Report extends MY_Controller{
         }
         else{
             $data['title'] = 'Laporan Transaksi Air Ruko Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
-            $data['laporan'] = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
+            $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
-            $this->load->view('v_cetaklaporan', $data);
+            $this->load->view('report/v_cetaklaporan', $data);
 
             $paper_size  = 'A4'; //paper size
             $orientation = 'landscape'; //tipe format kertas

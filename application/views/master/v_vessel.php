@@ -94,7 +94,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 <!-- End Bootstrap modal -->
 <div class="container">
     <div class="row col-md-12">
-        <table id="table" class="table table-striped table-bordered" cellspacing="0" width="70%">
+        <table id="table" class="table table-striped table-bordered" cellspacing="0" width="100%">
             <thead>
             <tr>
                 <th>

@@ -1,28 +1,40 @@
 <?php
-if(($this->session->userdata('role') == "perencanaan" ||$this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL) {
+if(($this->session->userdata('role_name') == "perencanaan" ||$this->session->userdata('role_name') == "admin")) {
     ?>
-    <script>
-        $(function () {
-            var id = $('#nama_lct').val();
-            $("#nama_lct").autocomplete({
-                minLength: 1,
-                delay: 0,
-                source: '<?php echo site_url('main/get_pembeli_laut/'); ?>' + id,
-                select: function (event, ui) {
-                    $('#id_pengguna').val(ui.item.id);
-                    $('#id_kapal').val(ui.item.id_kapal);
-                    $('#id_kapal1').val(ui.item.id_kapal);
-                    $('#pengguna').val(ui.item.pengguna);
-                    $('#tipe_kapal').val(ui.item.pengguna);
-                    $('#nama_perusahaan').val(ui.item.nama_perusahaan);
-                    $('#alamat').val(ui.item.alamat);
-                    $('#no_telp').val(ui.item.no_telp);
-                }
-            });
+<script>
+    $(function () {
+        var id = $('#nama_lct').val();
+        $("#nama_lct").autocomplete({
+            minLength: 1,
+            delay: 0,
+            source: '<?php echo site_url('kapal/get_pembeli_laut/'); ?>' + id,
+            select: function (event, ui) {
+                $('#id_pengguna').val(ui.item.id);
+                $('#id_kapal').val(ui.item.id_kapal);
+                $('#id_kapal1').val(ui.item.id_kapal);
+                $('#pengguna').val(ui.item.pengguna);
+                $('#tipe_kapal').val(ui.item.pengguna);
+                $('#nama_perusahaan').val(ui.item.nama_perusahaan);
+                $('#alamat').val(ui.item.alamat);
+                $('#no_telp').val(ui.item.no_telp);
+            }
         });
-    </script>
-    <script>
-        function showAgent(str) {
+    });
+
+    $(document).ready(function() {
+        $.ajax({
+            url:'<?php echo site_url('master/populatePenggunaLaut')?>',
+            type:'POST',
+            dataType: 'json',
+            success: function( json ) {
+                $.each(json, function(i, value) {
+                    $('#pengguna').append($('<option>').text(value.tipe_pengguna_jasa).attr('value', value.id_tarif));
+                });
+            }
+        });
+    });
+
+    function showAgent(str) {
             if (str=="") {
                 document.getElementById("alamat").innerHTML="";
                 document.getElementById("no_telp").innerHTML="";
@@ -41,17 +53,18 @@ if(($this->session->userdata('role') == "perencanaan" ||$this->session->userdata
                     document.getElementById("no_telp").value=data.no_telp;
                 }
             }
-            xmlhttp.open("GET","<?php echo base_url('main/cari_agent?id=')?>"+str,true);
+            xmlhttp.open("GET","<?php echo base_url('master/cari_agent/')?>"+str,true);
             xmlhttp.send();
         }
-    </script>
-    <body>
+</script>
+
+<body>
     <div class="container container-fluid">
         <div class="row col-sm-6">
             <center><h4>Form Permintaan Pelayanan Jasa Air Bersih Untuk Kapal</h4></center>
             <br>
             <?php echo validation_errors(); ?>
-            <form method="post" action="<?php echo base_url() . 'main/transaksi_laut'; ?>">
+            <form method="post" action="<?php echo base_url() . 'kapal/transaksi_laut'; ?>">
                 <table class="table table-striped">
                     <tr>
                         <div class="form-group">
@@ -60,8 +73,7 @@ if(($this->session->userdata('role') == "perencanaan" ||$this->session->userdata
                             </td>
                             <td>:</td>
                             <td>
-                                <input type="text" class="form-control" id="nama_lct" name="nama_lct"
-                                       placeholder="Masukkan Nama VESSEL"/>
+                                <input type="text" class="form-control" id="nama_lct" name="nama_lct" placeholder="Masukkan Nama VESSEL"/>
                                 <input type="hidden" class="form-control" id="id_pengguna" name="id_pengguna"/>
                             </td>
                         </div>
@@ -73,10 +85,8 @@ if(($this->session->userdata('role') == "perencanaan" ||$this->session->userdata
                             </td>
                             <td>:</td>
                             <td>
-                                <input disabled type="text" class="form-control" id="id_kapal" name="id_kapal"
-                                       placeholder="Masukkan ID VESSEL"/>
-                                <input type="hidden" class="form-control" id="id_kapal1" name="id_kapal1"
-                                       placeholder="Masukkan ID VESSEL"/>
+                                <input disabled type="text" class="form-control" id="id_kapal" name="id_kapal" placeholder="Masukkan ID VESSEL"/>
+                                <input type="hidden" class="form-control" id="id_kapal1" name="id_kapal1" placeholder="Masukkan ID VESSEL"/>
                             </td>
                         </div>
                     </tr>
@@ -87,8 +97,7 @@ if(($this->session->userdata('role') == "perencanaan" ||$this->session->userdata
                             </td>
                             <td>:</td>
                             <td>
-                                <input disabled type="text" class="form-control" id="nama_perusahaan" name="nama_perusahaan"
-                                       placeholder="Masukkan Nama Perusahaan"/>
+                                <input disabled type="text" class="form-control" id="nama_perusahaan" name="nama_perusahaan" placeholder="Masukkan Nama Perusahaan"/>
                             </td>
                         </div>
                     </tr>
@@ -99,8 +108,7 @@ if(($this->session->userdata('role') == "perencanaan" ||$this->session->userdata
                             </td>
                             <td>:</td>
                             <td>
-                                <input disabled type="text" class="form-control" id="alamat" name="alamat"
-                                       placeholder="Masukkan Alamat Perusahaan"/>
+                                <input disabled type="text" class="form-control" id="alamat" name="alamat" placeholder="Masukkan Alamat Perusahaan"/>
                             </td>
                         </div>
                     </tr>
@@ -111,8 +119,7 @@ if(($this->session->userdata('role') == "perencanaan" ||$this->session->userdata
                             </td>
                             <td>:</td>
                             <td>
-                                <input disabled type="text" class="form-control" id="no_telp"
-                                       name="no_telp" placeholder="Masukkan No Telp Perusahaan"/>
+                                <input disabled type="text" class="form-control" id="no_telp" name="no_telp" placeholder="Masukkan No Telp Perusahaan"/>
                             </td>
                         </div>
                     </tr>
@@ -124,10 +131,7 @@ if(($this->session->userdata('role') == "perencanaan" ||$this->session->userdata
                             <td>:</td>
                             <td>
                                 <select disabled name="pengguna" id="pengguna" class="form-control">
-                                    <option></option>
-                                    <?php foreach ($pengguna as $rowpengguna) { ?>
-                                        <option value="<?php echo $rowpengguna->id_tarif ?>"><?php echo $rowpengguna->tipe_pengguna_jasa ?></option>
-                                    <?php } ?>
+                                    <option value="">----</option>
                                 </select>
                                 <input type="hidden" name="tipe_kapal" id="tipe_kapal">
                             </td>
@@ -140,8 +144,7 @@ if(($this->session->userdata('role') == "perencanaan" ||$this->session->userdata
                             </td>
                             <td>:</td>
                             <td>
-                                <input type="text" class="form-control" id="voy_no" name="voy_no"
-                                       placeholder="Masukkan Voy No"/>
+                                <input type="text" class="form-control" id="voy_no" name="voy_no" placeholder="Masukkan Voy No"/>
                             </td>
                         </div>
                     </tr>
@@ -152,8 +155,7 @@ if(($this->session->userdata('role') == "perencanaan" ||$this->session->userdata
                             </td>
                             <td>:</td>
                             <td>
-                                <input type="text" class="form-control" id="nama_pemohon" name="nama_pemohon"
-                                       placeholder="Masukkan Nama Pemohon"/>
+                                <input type="text" class="form-control" id="nama_pemohon" name="nama_pemohon" placeholder="Masukkan Nama Pemohon"/>
                             </td>
                         </div>
                     </tr>
@@ -191,8 +193,7 @@ if(($this->session->userdata('role') == "perencanaan" ||$this->session->userdata
                             </td>
                             <td>:</td>
                             <td>
-                                <input type="number" class="form-control" id="tonnase" name="tonnase"
-                                       placeholder="Satuan (Ton)"/>
+                                <input type="number" class="form-control" id="tonnase" name="tonnase" placeholder="Satuan (Ton)"/>
                             </td>
                         </div>
                     </tr>
@@ -207,7 +208,7 @@ if(($this->session->userdata('role') == "perencanaan" ||$this->session->userdata
             </form>
         </div>
     </div>
-    </body>
+</body>
     <?php
 }
 else{

@@ -5,9 +5,9 @@ class Kapal extends MY_Controller{
 
     //fungsi untuk transaksi laut
     public function get_pembeli_laut() {
-        $nama = $this->input->post('nama_lct',TRUE); //variabel kunci yang di bawa dari input text id kode
+        $nama = $this->input->get('term',TRUE); //variabel kunci yang di bawa dari input text id kode
         $tipe = "laut";
-        $query = $this->data->get_pembeli($tipe,$nama); //query model
+        $query = $this->master->get_pembeli($tipe,$nama); //query model
 
         if($query == TRUE){
             $pelanggan = array();
@@ -29,14 +29,14 @@ class Kapal extends MY_Controller{
     }
 
     public function get_agent() {
-        $nama = $this->input->post('nama_perusahaan',TRUE); //variabel kunci yang di bawa dari input text id kode
+        $nama = $this->input->get('term',TRUE); //variabel kunci yang di bawa dari input text id kode
         $tipe = "agent";
-        $query = $this->data->get_pembeli($tipe,$nama); //query model
+        $query = $this->master->get_pembeli($tipe,$nama); //query model
 
         if($query == TRUE){
             $pelanggan = array();
             foreach ($query as $data) {
-                $pelanggan[]     = array(
+                $pelanggan[] = array(
                     'label' => $data->nama_agent, //variabel array yg dibawa ke label ketikan kunci
                     'id_agent' => $data->id_agent,
                     'nama_perusahaan' => $data->nama_agent,
@@ -57,8 +57,8 @@ class Kapal extends MY_Controller{
         $tonnase = $this->input->post('tonnase');
         $tipe_kapal = $this->input->post('tipe_kapal');
 
-        $data_pengguna = $this->data->getDataPembeliLaut($id_pengguna);
-        $data_tarif = $this->data->getDataTarif($data_pengguna->pengguna_jasa_id_tarif);
+        $data_pengguna = $this->master->getDataPembeliLaut($id_pengguna);
+        $data_tarif = $this->master->getDataTarif($data_pengguna->pengguna_jasa_id_tarif);
         $result = FALSE;
 
         $this->form_validation->set_rules('nama_lct', 'Nama VESSEL', 'required');
@@ -82,11 +82,11 @@ class Kapal extends MY_Controller{
 
         if ($this->form_validation->run() == FALSE) {
             $data['title']='Aplikasi Pelayanan Jasa Air Bersih';
-            $data['pengguna'] = $this->data->get_pengguna("laut","laut");
-            $this->load->template('v_input_laut',$data);
+            $data['pengguna'] = $this->master->get_pengguna("laut","laut");
+            $this->load->template('kapal/v_input_laut',$data);
         }
         else {
-            $result = $this->data->input_transaksi("laut",$data_transaksi);
+            $result = $this->kapal->input_transaksi($data_transaksi);
         }
 
         if($result == TRUE){
@@ -105,10 +105,8 @@ class Kapal extends MY_Controller{
     }
 
     //untuk membuat tampilan tabel status pembayaran transaksi kapal,darat dan ruko
-    public function tabel_pembayaran(){
-        $tipe = $this->input->get('id');
-
-        $result = $this->data->get_tabel_transaksi($tipe);
+    public function tabel_pembayaran($tipe = ''){
+        $result = $this->kapal->get_tabel_transaksi();
         $data = array();
         $baris = array();
         $no = 1;
@@ -126,9 +124,9 @@ class Kapal extends MY_Controller{
                     $row->voy_no = "";
                 }
 
-                if(($this->session->userdata('role') == "operasi" || $this->session->userdata('role') == "admin") && $tipe == "laut_operasi") {
+                if(($this->session->userdata('role_name') == "operasi" || $this->session->userdata('role_name') == "admin") && $tipe == "laut_operasi") {
                     if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL){
-                        $aksi = '<a class="btn btn-primary glyphicon glyphicon-list-alt" target="_blank" href="'.base_url("main/cetakPerhitungan?id=".$row->id_transaksi."").'" title="Cetak Perhitungan" onclick="reload()"></a>';
+                        $aksi = '<a class="btn btn-primary glyphicon glyphicon-list-alt" target="_blank" href="'.base_url("kapal/cetakPerhitungan/".$row->id_transaksi."").'" title="Cetak Perhitungan" onclick="reload()"></a>';
                     }
                     else{
                         $aksi = '';
@@ -141,14 +139,14 @@ class Kapal extends MY_Controller{
                         $warna = "";
                     }
                 }
-                else if($this->session->userdata('role') == "keuangan") {
+                else if($this->session->userdata('role_name') == "keuangan") {
                     if ($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
                         $aksi = '<a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" href="javascript:void(0)" title="Realisasi Piutang" onclick="realisasi(' . "'" . $row->id_transaksi . "'" . ')"></a>';
                     } else {
                         $aksi = '';
                     }
                 }
-                else if($this->session->userdata('role') == "wtp" || ($this->session->userdata('role') == "admin" && $tipe == "laut")){
+                else if($this->session->userdata('role_name') == "wtp" || ($this->session->userdata('role_name') == "admin" && $tipe == "laut")){
                     if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
                         $aksi = '<a class="btn btn-primary glyphicon glyphicon-list-alt" target="_blank" href="' . base_url("main/cetakPengisian?id=" . $row->id_transaksi . "") . '" title="Cetak Form Pengisian"></a>&nbsp;';
                     }
@@ -156,18 +154,19 @@ class Kapal extends MY_Controller{
                         $aksi = '';
                     }
                 }
-                else if($this->session->userdata('role') == "admin" && $tipe == "laut_keuangan_admin"){
+                else if($this->session->userdata('role_name') == "admin" && $tipe == "laut_keuangan_admin"){
                     if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL){
                         $aksi = '&nbsp;<a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" href="javascript:void(0)" title="Realisasi Piutang" onclick="realisasi(' . "'" . $row->id_transaksi . "'" . ')"></a>';
                     } else{
                         $aksi = '';
                     }
                 }
-                else if($this->session->userdata('role') == "perencanaan" || ($this->session->userdata('role') == "admin" && $tipe == "laut_perencanaan")){
-                    if($row->flowmeter_awal == NULL && $row->flowmeter_akhir == NULL)
-                        $aksi = '<a class="btn btn-sm btn-danger glyphicon glyphicon-trash" href="javascript:void(0)" title="Batal Transaksi" onclick="batal(' . "'" . $row->id_transaksi . "'" . ')"></a>';
+                else if($this->session->userdata('role_name') == "perencanaan" || ($this->session->userdata('role_name') == "admin" && $tipe == "laut_perencanaan")){
+                    if(($row->flowmeter_awal == NULL && $row->flowmeter_akhir == NULL) && $row->start_work == NULL)
+                        $aksi = '<a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" target="_blank" href="' . base_url("kapal/cetakFormPermintaan/" . $row->id_transaksi . "").'" title="Cetak Form Permintaan"></a>
+                                <br><br><a class="btn btn-sm btn-danger glyphicon glyphicon-trash" href="javascript:void(0)" title="Batal Transaksi" onclick="batal(' . "'" . $row->id_transaksi . "'" . ')"></a>';
                     else
-                        $aksi = "";
+                        $aksi = '<a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" target="_blank" href="' . base_url("kapal/cetakFormPermintaan/" . $row->id_transaksi . "").'" title="Cetak Form Permintaan"></a>';
                 }
 
                 if($row->flowmeter_awal == NULL || $row->flowmeter_awal == '0'){
@@ -313,7 +312,7 @@ class Kapal extends MY_Controller{
                 }
 
                 if($row->status_invoice == 1){
-                    if($this->session->userdata('role') == "keuangan"){
+                    if($this->session->userdata('role_name') == "keuangan"){
                         if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
                             $data[] = array(
                                 'no' => $no,
@@ -365,10 +364,8 @@ class Kapal extends MY_Controller{
     }
 
     //tampilan monitoring
-    public function tabel_monitoring(){
-        $tipe = $this->input->get('id');
-
-        $result = $this->data->get_tabel_transaksi($tipe);
+    public function tabel_monitoring($tipe){
+        $result = $this->kapal->get_tabel_transaksi($tipe);
         $data = array();
         $no = 1;
 
@@ -460,10 +457,10 @@ class Kapal extends MY_Controller{
     public function cancelTransaksiLaut(){
         $data['tipe'] = "laut";
         $data['id'] = $this->input->post('id');
-        $cancel_data = $this->data->cekPengisian($data['id']);
+        $cancel_data = $this->kapal->cekPengisian($data['id']);
 
         if($cancel_data == TRUE ){
-            $this->data->cancelOrder($data);
+            $this->kapal->cancelOrder($data);
             $data = array(
                 'status' => 'sukses'
             );
@@ -654,9 +651,8 @@ class Kapal extends MY_Controller{
     }
 
     //untuk membuat tampilan tabel status pengantaran transaksi darat dan realisasi pengisian air kapal
-    public function tabel_pengantaran(){
-        $tipe = $this->input->get('id');
-
+    public function tabel_pengantaran($tipe){
+        //$tipe = $this->input->get('id');
         if($tipe == "darat"){
             $result = $this->data->get_tabel_transaksi($tipe);
             $data = array();
@@ -915,6 +911,50 @@ class Kapal extends MY_Controller{
         );
         $data['hasil'] = $hasil;
         $this->load->view('v_perhitungan', $data);
+    }
+
+    function cetakFormPermintaan($id){
+        //$id = $this->input->get('id');
+        define('FPDF_FONTPATH',$this->config->item('fonts_path'));
+        $query = $this->kapal->cetakkwitansi($id);
+        $tanggal = $this->indonesian_date('d F Y', strtotime($query->waktu_pelayanan ));
+        $tgl_transaksi = $this->indonesian_date('d F Y', strtotime($query->tgl_transaksi));
+        $jam = date('H.i',strtotime($query->waktu_pelayanan));
+
+        $hasil = array(
+            'nama_agent' => $query->nama_agent,
+            'alamat' => $query->alamat,
+            'nama_vessel' => $query->nama_vessel,
+            'voy_no' => $query->voy_no,
+            'tanggal' => $tanggal,
+            'total_permohonan' => $query->total_permintaan,
+            'jam' => $jam,
+            'tgl_transaksi' => $tgl_transaksi
+        );
+        $data['hasil'] = $hasil;
+        $this->load->view('kapal/v_form_permintaan', $data);
+    }
+
+    function cetakDailyReportKapal($id){
+        //$id = $this->input->get('id');
+        define('FPDF_FONTPATH',$this->config->item('fonts_path'));
+        $query = $this->kapal->cetakkwitansi($id);
+        $tanggal = $this->indonesian_date('d F Y', strtotime($query->waktu_pelayanan ));
+        $tgl_transaksi = $this->indonesian_date('d F Y', strtotime($query->tgl_transaksi));
+        $jam = date('H.i',strtotime($query->waktu_pelayanan));
+
+        $hasil = array(
+            'nama_agent' => $query->nama_agent,
+            'alamat' => $query->alamat,
+            'nama_vessel' => $query->nama_vessel,
+            'voy_no' => $query->voy_no,
+            'tanggal' => $tanggal,
+            'total_permohonan' => $query->total_permintaan,
+            'jam' => $jam,
+            'tgl_transaksi' => $tgl_transaksi
+        );
+        $data['hasil'] = $hasil;
+        $this->load->view('kapal/v_form_permintaan', $data);
     }
 
 }

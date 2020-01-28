@@ -8,7 +8,7 @@ class M_report extends MY_Model{
             $this->db->from('transaksi_darat , pembeli_darat');
             $this->db->where('tgl_transaksi BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
             $this->db->where('pembeli_darat_id_pengguna_jasa = id_pengguna_jasa');
-            $this->db->where('soft_delete =',0);
+            $this->db->where('transaksi_darat.soft_delete =',0);
             $this->db->order_by('tgl_transaksi','ASC');
         }
         else if($tipe == "darat_keuangan"){

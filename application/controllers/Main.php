@@ -41,11 +41,11 @@ class Main extends MY_Controller {
         $this->navmenu('Data '.ucwords($title),'tenant/v_'.$page,'','','');
     }
 
-    public function manage($page){
+    public function report($page){
         $this->ceksesi();
         //$this->cekAccess();
         $title = str_replace('_',' ',$page);
-        $this->navmenu('Data '.ucwords($title),'manage/v_'.$page,'','','');
+        $this->navmenu(''.ucwords($title),'report/v_'.$page,'','','');
     }
 
     public function monitoring($page){

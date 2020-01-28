@@ -147,7 +147,7 @@ class M_kapal extends MY_Model{
         return $this->db->affected_rows();
     }
 
-    public function get_num_tabel_transaksi($tipe){
+    public function get_num_tabel_transaksi(){
         $this->db->select('*');
         $this->db->from('transaksi_laut ,pembeli_laut,pengguna_jasa,master_agent');
         $this->db->where('pembeli_laut_id_pengguna_jasa = id_pengguna_jasa');
@@ -164,13 +164,13 @@ class M_kapal extends MY_Model{
         }
     }
 
-    public function get_tabel_transaksi($tipe, $config = ''){
+    public function get_tabel_transaksi($config = ''){
         $this->db->select('*');
         $this->db->from('transaksi_laut ,pembeli_laut,pengguna_jasa,master_agent');
         $this->db->where('pembeli_laut_id_pengguna_jasa = id_pengguna_jasa');
         $this->db->where('pengguna_jasa_id_tarif = id_tarif');
         $this->db->where('id_agent = id_agent_master');
-        $this->db->where('soft_delete = 0');
+        $this->db->where('transaksi_laut.soft_delete = 0');
         $this->db->order_by('tgl_transaksi', 'DESC');
 
         if($config != NULL)
