@@ -1,7 +1,13 @@
 <div class="container" data-role="main" class="ui-content">
     <h3>Master Data Tenant</h3>
     <div class="row col-md-5">
+        <?php 
+        if($this->session->userdata('role_name') == 'admin'){
+        ?>
         <button class="btn btn-primary" onclick="add()"> <span>Tambah Data</span></button>
+        <?php
+        }
+        ?>
         <button class="btn btn-info" onclick="reload_table()"> <span>Refresh Halaman</span></button><br><br>
     </div>
 </div>

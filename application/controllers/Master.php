@@ -474,8 +474,9 @@ class Master extends MY_Controller{
                 else
                     $status = "Tidak Aktif";
                 $row[] = $status;
+                $data_flow = $this->tenant->getIdFlowmeter($result->id_ref_flowmeter);
+                $row[] = $data_flow->id_flowmeter;
                 $row[] = '';
-                
                 //$row[] = '<center><a class="btn btn-sm btn-primary" href="editTenant?id=' . $result->id_tenant . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
 
                 $data[] = $row;

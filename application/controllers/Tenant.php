@@ -24,7 +24,7 @@ class Tenant extends MY_Controller{
     }
 
     public function get_pembeli_ruko() {
-        $nama = $this->input->post('nama_tenant',TRUE); //variabel kunci yang di bawa dari input text id kode
+        $nama = $this->input->get('term',TRUE); //variabel kunci yang di bawa dari input text id kode
         $tipe = "ruko_tagihan";
         $query = $this->tenant->get_pembeli($tipe,$nama); //query model
 
@@ -237,8 +237,8 @@ class Tenant extends MY_Controller{
 
             foreach ($result as $row){
                 if($this->session->userdata('role_name') == 'operasi' || $this->session->userdata('role_name')== 'admin' || $tipe == "ruko_admin"){
-                    $aksi = '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Tagihan" target="_blank" href="'.base_url("tenant/cetakTagihan/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
-                    $aksi .= '&nbsp;<a class="btn btn-danger glyphicon glyphicon-remove" title="Batal Invoice" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a>';
+                    $aksi = '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Tagihan" target="_blank" href="'.base_url("tenant/cetakTagihan/".$row->id_transaksi."/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
+                    $aksi .= '<br><br><a class="btn btn-danger glyphicon glyphicon-remove" title="Batal Invoice" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a>';
                 } else{
                     $aksi = '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="Realisasi Pembayaran" href="javascript:void(0)" onclick="realisasi('."'".$row->id_transaksi."'".');"> </a></span>';
                 }
@@ -349,7 +349,7 @@ class Tenant extends MY_Controller{
         }
     }
 
-    public function cetakTagihan($id_flowmeter,$tgl_awal,$tgl_akhir){
+    public function cetakTagihan($id_transaksi,$id_flowmeter,$tgl_awal,$tgl_akhir){
         $row = $this->tenant->get_by_id("ruko",$id_flowmeter);
         $data['title'] = 'Tagihan Penggunaan Air Periode '.date('d-M-Y', strtotime($tgl_awal)).' s/d '.date('d-M-Y', strtotime($tgl_akhir)); //judul title
 
@@ -362,7 +362,7 @@ class Tenant extends MY_Controller{
             $data['data_tagihan'] = $this->tenant->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
             $data['detail_tagihan'] = $this->tenant->getDetailTagihan($id_flowmeter);
         }
-        $this->load->view('v_cetaktagihan', $data);
+        $this->load->view('tenant/v_cetaktagihan', $data);
 
         $paper_size  = 'A4'; //paper size
         $orientation = 'landscape'; //tipe format kertas
@@ -572,7 +572,7 @@ class Tenant extends MY_Controller{
         $bulan = date("m",time());
 
         $data_tenant = $this->tenant->getDataTenant($id);
-        $data_tarif = $this->tenant->getDataTarif($data_tenant->pengguna_jasa_id);
+        $data_tarif = $this->master->getDataTarif($data_tenant->pengguna_jasa_id);
 
         if($invoice != NULL ){
             $tahun = substr($tgl_tahun, 2, 2);
@@ -650,7 +650,7 @@ class Tenant extends MY_Controller{
         $result = $this->tenant->tagihanTenant($data);
 
         if($result != NULL){
-            $web = base_url('main/view?id=tagihan');
+            $web = base_url('main/tenant/penagihan_air_tenant');
             echo "<script type='text/javascript'>
                     alert('Tagihan Berhasil Dibuat')
                     window.location.replace('$web')

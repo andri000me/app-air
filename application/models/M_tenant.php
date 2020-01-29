@@ -652,12 +652,13 @@ class M_tenant extends MY_Model{
         $this->db->select('*');
         $this->db->from('master_tenant');
         $this->db->join('master_flowmeter','master_tenant.id_ref_flowmeter = id_flow','left');
+        //$this->db->join('transaksi_tenant','transaksi_tenant.id_ref_flowmeter = id_flow','left');
         //$this->db->join('pencatatan_flow','pencatatan_flow.id_ref_flowmeter = id_flow','left');
         $this->db->join('pengguna_jasa','pengguna_jasa_id = id_tarif','left');
         $this->db->join('master_lumpsum','id_ref_tenant = id_tenant','left');
         //$this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
         //$this->db->where('status_perekaman',1);
-        $this->db->where('id_flow =',$id);
+        $this->db->where('id_ref_flowmeter =',$id);
         $query = $this->db->get();
 
         if($query->num_rows() > 0){
@@ -671,6 +672,7 @@ class M_tenant extends MY_Model{
         $this->db->select('*');
         $this->db->from('master_tenant');
         $this->db->join('master_flowmeter','master_tenant.id_ref_flowmeter = id_flow','left');
+        //$this->db->join('transaksi_tenant','transaksi_tenant.id_ref_flowmeter = id_flow','left');
         $this->db->join('pencatatan_flow','pencatatan_flow.id_ref_flowmeter = id_flow','left');
         $this->db->join('pengguna_jasa','pengguna_jasa_id = id_tarif','left');
         $this->db->join('master_lumpsum','id_ref_tenant = id_tenant','left');
@@ -776,6 +778,7 @@ class M_tenant extends MY_Model{
         $this->db->join('master_tenant','master_tenant.id_ref_flowmeter = id_flow','left');
         $this->db->join('pengguna_jasa','pengguna_jasa_id = id_tarif','left');
         $this->db->join('master_lumpsum','id_ref_tenant = id_tenant','left');
+        $this->db->where('transaksi_tenant.soft_delete','0');
         $this->db->order_by('nama_tenant','ASC');
 
         $query = $this->db->get();
@@ -785,13 +788,14 @@ class M_tenant extends MY_Model{
         }
     }
 
-    public function get_tabel_transaksi($tipe, $config = ''){
+    public function get_tabel_transaksi($config = ''){
         $this->db->select('*');
         $this->db->from('transaksi_tenant');
         $this->db->join('master_flowmeter','transaksi_tenant.id_ref_flowmeter = id_flow','left');
         $this->db->join('master_tenant','master_tenant.id_ref_flowmeter = id_flow','left');
         $this->db->join('pengguna_jasa','pengguna_jasa_id = id_tarif','left');
         $this->db->join('master_lumpsum','id_ref_tenant = id_tenant','left');
+        $this->db->where('transaksi_tenant.soft_delete','0');
         $this->db->order_by('nama_tenant','ASC');
 
         if($config != NULL)

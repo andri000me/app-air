@@ -25,8 +25,8 @@
                                 <div class="form-group">
                                     <label for="agent_name" class="form-label">Kawasan</label>
                                     <select name="kawasan" id="kawasan" class="form-control">
-                                        <option value="KIK">Kawasan Indrusti Kariangau</option>
-                                        <option value="NON-KIK">Kawasan Non Indrusti Kariangau</option>
+                                        <option value="KIK">Kawasan Industri Kariangau</option>
+                                        <option value="NON-KIK">Kawasan Non Industri Kariangau</option>
                                         <option value="">Non</option>
                                     </select>
                                     <span class="help-block"></span>

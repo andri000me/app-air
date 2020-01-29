@@ -7,7 +7,7 @@ class Report extends MY_Controller{
         $tgl_awal = $this->input->post('tgl_awal');
         $tgl_akhir = $this->input->post('tgl_akhir');
 
-        $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"darat_keuangan");
+        $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"darat_keuangan");
 
         if($result != NULL){
             $total = 0;
@@ -1394,7 +1394,7 @@ class Report extends MY_Controller{
         $tgl_awal = $this->input->post('tgl_awal');
         $tgl_akhir = $this->input->post('tgl_akhir');
 
-        $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"ruko");
+        $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"ruko");
 
         if($result != NULL){
             $total_pembayaran =0;
@@ -1422,7 +1422,7 @@ class Report extends MY_Controller{
                       <tbody>';
 
             foreach($result as $row){
-                $data_tagihan = $this->data->getTagihan($tgl_awal,$tgl_akhir,$row->id_flow);
+                $data_tagihan = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$row->id_flow);
 
                 $ttl_akhir = 0;
                 $ttl_awal = 0;
@@ -3851,7 +3851,7 @@ class Report extends MY_Controller{
             $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
-            $this->load->view('report/cetaklaporan/v_cetaklaporan_ruko', $data);
+            $this->load->view('report/cetaklaporan/v_cetaklaporan_ruko_operasi', $data);
 
             $paper_size  = 'A4'; //paper size
             $orientation = 'landscape'; //tipe format kertas

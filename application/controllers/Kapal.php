@@ -124,7 +124,7 @@ class Kapal extends MY_Controller{
                     $row->voy_no = "";
                 }
 
-                if(($this->session->userdata('role_name') == "operasi" || $this->session->userdata('role_name') == "admin") && $tipe == "laut_operasi") {
+                if(($this->session->userdata('role_name') == "operasi" || $this->session->userdata('role_name') == "admin")) {
                     if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL){
                         $aksi = '<a class="btn btn-primary glyphicon glyphicon-list-alt" target="_blank" href="'.base_url("kapal/cetakPerhitungan/".$row->id_transaksi."").'" title="Cetak Perhitungan" onclick="reload()"></a>';
                     }
@@ -146,7 +146,7 @@ class Kapal extends MY_Controller{
                         $aksi = '';
                     }
                 }
-                else if($this->session->userdata('role_name') == "wtp" || ($this->session->userdata('role_name') == "admin" && $tipe == "laut")){
+                else if($this->session->userdata('role_name') == "wtp" || ($this->session->userdata('role_name') == "admin")){
                     if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
                         $aksi = '<a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" target="_blank" href="' . base_url("kapal/cetakFormPermintaan/" . $row->id_transaksi . "").'" title="Cetak Form Permintaan"></a><br><br>
                                 <a class="btn btn-sm btn-warning glyphicon glyphicon-list-alt" target="_blank" href="' . base_url("kapal/cetakDailyReportKapal/" . $row->id_transaksi . "") . '" title="Cetak Daily Report"></a><br><br>
@@ -163,7 +163,7 @@ class Kapal extends MY_Controller{
                         $aksi = '';
                     }
                 }
-                else if($this->session->userdata('role_name') == "perencanaan" || ($this->session->userdata('role_name') == "admin" && $tipe == "laut_perencanaan")){
+                else if($this->session->userdata('role_name') == "perencanaan" || ($this->session->userdata('role_name') == "admin")){
                     if(($row->flowmeter_awal == NULL && $row->flowmeter_akhir == NULL) && $row->start_work == NULL)
                         $aksi = '<a class="btn btn-sm btn-danger glyphicon glyphicon-trash" href="javascript:void(0)" title="Batal Transaksi" onclick="batal(' . "'" . $row->id_transaksi . "'" . ')"></a>';
                     else
@@ -777,10 +777,9 @@ class Kapal extends MY_Controller{
         $this->load->view('kapal/v_pengisian_kapal', $data);
     }
 
-    function cetakPerhitungan(){
-        $id = $this->input->get('id');
+    function cetakPerhitungan($id){
         define('FPDF_FONTPATH',$this->config->item('fonts_path'));
-        $query = $this->data->cetakkwitansi("laut",$id);
+        $query = $this->kapal->cetakkwitansi($id);
 
         $tanggal = $this->indonesian_date('d M Y', '','');
 
@@ -853,8 +852,8 @@ class Kapal extends MY_Controller{
             $materai = $this->Ribuan($materai);
         }
 
-        if($this->session->userdata('role') == 'operasi'){
-            $this->data->updatePrint($id);
+        if($this->session->userdata('role_name') == 'operasi'){
+            $this->kapal->updatePrint($id);
         }
 
         $hasil = array(
@@ -874,7 +873,7 @@ class Kapal extends MY_Controller{
             'terbilang' => $terbilang
         );
         $data['hasil'] = $hasil;
-        $this->load->view('v_perhitungan', $data);
+        $this->load->view('kapal/v_perhitungan', $data);
     }
 
     function cetakFormPermintaan($id){

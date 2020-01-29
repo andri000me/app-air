@@ -1,5 +1,5 @@
 <?php
-if($this->session->userdata('role') == 'operasi' || $this->session->userdata('role') == "admin"){
+if($this->session->userdata('role_name') == 'operasi' || $this->session->userdata('role_name') == "admin"){
 ?>
     <body>
     <script>
@@ -7,7 +7,7 @@ if($this->session->userdata('role') == 'operasi' || $this->session->userdata('ro
             $("#id_flow").autocomplete({
                 minLength:1,
                 delay:0,
-                source:'<?php echo site_url('main/get_pembeli_ruko'); ?>',
+                source:'<?php echo site_url('tenant/get_pembeli_ruko'); ?>',
                 select:function(event, ui){
                     $('#id_flowmeter').val(ui.item.id_flow);
                     $('#nama_tenant').val(ui.item.nama_tenant);
@@ -35,7 +35,7 @@ if($this->session->userdata('role') == 'operasi' || $this->session->userdata('ro
                 new_div = document.createElement("div"),
                 existingdiv1 = document.getElementById("tabel");
             $.ajax({
-                url: "<?php echo base_url('main/tagihan_ruko')?>",
+                url: "<?php echo base_url('tenant/tagihan_ruko')?>",
                 method: "POST",
                 data: {
                     tgl_awal: tgl_awal,

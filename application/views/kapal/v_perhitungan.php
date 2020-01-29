@@ -78,11 +78,11 @@ $this->fpdf->SetFont('Arial', '', 12);
 $this->fpdf->Cell(470, 3, 'BALIKPAPAN , '.$hasil['tanggal'], 0, 0, 'C');
 $this->fpdf->Ln();
 $this->fpdf->Ln(4);
-$this->fpdf->Cell(470, 3, 'ASISTEN MANAGER OPERASI', 0, 0, 'C');
+$this->fpdf->Cell(470, 3, 'ASMAN OPERASI PELAYANAN NON PETI KEMAS', 0, 0, 'C');
 $this->fpdf->Ln(25);
-$this->fpdf->Cell(470, 3, 'SYAFIRUDDIN AK', 0, 0, 'C');
+$this->fpdf->Cell(470, 3, 'BERLY KARDIN SENAPATI', 0, 0, 'C');
 $this->fpdf->Ln(1);
-$this->fpdf->Cell(470, 3, '(..........................................)', 0, 0, 'C');
+$this->fpdf->Cell(470, 3, '(.....................................................)', 0, 0, 'C');
 $this->fpdf->Output("perhitungan-".$hasil['pelayaran'].".pdf","I");
 
 ?>

@@ -1,5 +1,5 @@
 <?php
-if($this->session->userdata('session') != NULL && ($this->session->userdata('role') == "operasi" || $this->session->userdata('role') == "admin")){
+if(($this->session->userdata('role_name') == "operasi" || $this->session->userdata('role_name') == "admin")){
 ?>
     <script type="text/javascript">
         var xmlhttp = new XMLHttpRequest();
@@ -57,14 +57,14 @@ if($this->session->userdata('session') != NULL && ($this->session->userdata('rol
                 document.getElementById("table").innerHTML= a;
             }
         }
-        xmlhttp.open("GET", "<?php echo base_url("main/tabel_tagihan_tenant")?>", true);
+        xmlhttp.open("GET", "<?php echo base_url("tenant/tabel_tagihan_tenant")?>", true);
         xmlhttp.send();
     </script>
     <script>
         function batal(id){
             var url;
             var id = id;
-            url = "<?php echo site_url('main/cancelTransaksiRuko')?>";
+            url = "<?php echo site_url('tenant/cancelTransaksiRuko')?>";
             if (confirm('Batalkan Transaksi ?')) {
                 $.ajax({
                     url : url,
@@ -74,7 +74,7 @@ if($this->session->userdata('session') != NULL && ($this->session->userdata('rol
                     },
                     success: function(data) {
                         alert('Transaksi Sudah Dibatalkan');
-                        window.location.replace('<?php echo base_url('main/view?id=daftar_tagihan');?>');
+                        window.location.replace('<?php echo base_url('main/tenant/tagihan_air_tenant');?>');
                     },
                     error: function (jqXHR, textStatus, errorThrown)
                     {

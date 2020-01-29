@@ -288,7 +288,7 @@
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran Kapal' href='<?php echo base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran Kapal' href='<?php echo base_url("main/monitoring/tagihan_air_kapal")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifKapal").innerHTML = '';
                     }
@@ -301,7 +301,7 @@
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifRuko").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran Ruko' href='<?php echo base_url("main/view?id=daftar_tagihan")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifRuko").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran Ruko' href='<?php echo base_url("main/tenant/tagihan_air_tenant")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifRuko").innerHTML = '';
                     }
