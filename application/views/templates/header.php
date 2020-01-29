@@ -16,9 +16,9 @@
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap-datetimepicker.min.css')?>" >
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap-clockpicker.min.css')?>" >
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/jquery-ui.css'); ?>">
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/sweetalert.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/jquery.dataTables.min.css')?>" >
     <link rel="stylesheet" href="<?php echo base_url()?>/assets/select2/dist/css/select2.min.css">
+    <link rel="stylesheet" href="<?php echo base_url()?>/assets/sweetalert2/dist/sweetalert2.min.css">
 
     <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.js'); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url('assets/js/jquery-ui.js'); ?>"></script>
@@ -29,12 +29,12 @@
     <script type="text/javascript" src="<?php echo base_url('assets/js/bootstrap-datepicker.min.js')?>"></script>
     <script type="text/javascript" src="<?php echo base_url('assets/js/bootstrap-datetimepicker.min.js')?>"></script>
     <script type="text/javascript" src="<?php echo base_url('assets/js/bootstrap-clockpicker.min.js')?>"></script>
-    <script type="text/javascript" src="<?php echo base_url('assets/js/sweetalert.min.js'); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.dataTables.min.js')?>"></script>
     <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.form.js')?>"></script>
     <script type="text/javascript" src="<?php echo base_url('assets/js/id.js')?>"></script>
     <script type="text/javascript" src="<?php echo base_url()?>/assets/select2/dist/js/select2.full.min.js"></script>
     <script src="<?php echo base_url()?>/assets/loadingoverlay/loadingoverlay.min.js"></script>
+    <script src="<?php echo base_url()?>/assets/sweetalert2/dist/sweetalert2.min.js"></script>
 
     <style type="text/css">
         td {

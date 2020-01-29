@@ -7,6 +7,7 @@
                 border-collapse: collapse;
                 width: 100%;
                 margin: 0 auto;
+                page-break-after:auto;
             }
             table th{
                 border:1px solid #000;
@@ -24,12 +25,12 @@
     <body>
     <h3 style="text-align: center"><?php echo $title?></h3>
     <br><br>
-    <table width="100%" style="page-break-after:auto;">
+    <table>
         <thead>
         <tr>
             <th align="center">No</th>
-            <th align="center">ID VESSEL</th>
-            <th align="center">Nama VESSEL</th>
+            <th align="center">ID LCT</th>
+            <th align="center">Nama Kapal</th>
             <th align="center">Voy No</th>
             <th align="center">Tipe Kapal</th>
             <th align="center">Nama Perusahaan</th>
@@ -49,7 +50,6 @@
             foreach($laporan as $row) {
                 if ($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
                     $no++;
-
 
                     if($row->flowmeter_akhir_4 != NULL && $row->flowmeter_awal_4 != NULL){
                         $realisasi = $row->flowmeter_akhir_4 - $row->flowmeter_awal_4;

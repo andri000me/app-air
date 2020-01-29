@@ -7,11 +7,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         if (isset($_SESSION['message_display'])) {
         $message = $_SESSION['message_display'];
         ?>
-        <body onload='swal({title: "Berhasil!",
-                text: "<?php echo $message?>",
-                timer: 3000,
-                type: "success",
-                showConfirmButton: true });'>
+        <body onload='Swal.fire({type: "success",title: "Berhasil",timer: 3000,text: "<?php echo $message?>",});'>
         <?php
         unset($_SESSION['message_display']);
         }
@@ -20,11 +16,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         if(isset($_SESSION['error_message'])) {
         $error = $_SESSION['error_message'];
         ?>
-        <body onload='swal({title: "Gagal!",
-                text: "<?php echo $error?>",
-                timer: 3000,
-                type: "error",
-                showConfirmButton: true });'>
+        <body onload='Swal.fire({type: "error",title: "Gagal",timer: 3000,text: "<?php echo $error?>",});'>
         <?php
         unset($_SESSION['error_message']);
         }

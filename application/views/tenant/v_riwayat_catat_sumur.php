@@ -1,5 +1,5 @@
 <?php
-if($this->session->userdata('role') == 'wtp' || $this->session->userdata('role') == 'admin'){
+if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('role_name') == 'admin'){
     ?>
     <script>
         //ambil data ketika form pencarian memiliki perubahan value
@@ -19,7 +19,7 @@ if($this->session->userdata('role') == 'wtp' || $this->session->userdata('role')
                 new_div = document.createElement("div"),
                 existingdiv1 = document.getElementById("tabel");
             $.ajax({
-                url: "<?php echo base_url('main/riwayat_catat_sumur')?>",
+                url: "<?php echo base_url('tenant/riwayat_catat_sumur')?>",
                 method: "POST",
                 data: {
                     tgl_awal: tgl_awal,

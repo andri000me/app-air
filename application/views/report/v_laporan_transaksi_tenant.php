@@ -1,54 +1,10 @@
 <?php
-if($this->session->userdata('role_name') == "operasi" || $this->session->userdata('role_name') == "keuangan" ){
+if(($this->session->userdata('role_name') == "operasi" || $this->session->userdata('role_name') == "admin" )){
 ?>
 
-<script>
-    //ambil data ketika form pencarian memiliki perubahan value
-    $(document).ready(function(){
-        $("#cari").click(function(){
-            search();
-        });
-        $("#clear").click(function () {
-            $("#laporan").html('');
-        })
-    });
-
-    function search() {
-        var tgl_awal = $('#tgl-awal').val();
-        var tgl_akhir = $('#tgl-akhir').val();
-        var $new_tabel = $("<div id='tabel-laporan'></div>"),
-            new_div = document.createElement("div"),
-            existingdiv1 = document.getElementById("tabel");
-        $.ajax({
-            url: "<?php echo base_url('report/laporan_darat')?>",
-            method: "POST",
-            data: {
-                tgl_awal: tgl_awal,
-                tgl_akhir: tgl_akhir
-            },
-            dataType: 'json',
-            beforeSend: function (e) {
-                if (e && e.overrideMimeType) {
-                    e.overrideMimeType("application/json;charset=UTF-8");
-                }
-            },
-            success: function (response) {
-                if (response.status == "success") {
-                    $("#laporan").html(response.tabel);
-                } else {
-                    alert('Data Tidak Ditemukan');
-                }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.responseText);
-            }
-        });
-    }
-</script>
-
-<body>
+<body> 
     <div class="container container-fluid">
-        <h3>Pembuatan Laporan Pelayanan Air Untuk Rumah Tangga Dan Perusahaan</h3><br><br>
+        <h3>Pembuatan Laporan Pelayanan Air Untuk Ruko</h3><br><br>
         <div class="row col-sm-6">
             <table class="table table-responsive table-condensed">
                 <tr>
@@ -88,58 +44,58 @@ if($this->session->userdata('role_name') == "operasi" || $this->session->userdat
         </div>
     </div>
 </body>
+
+<script>
+    //ambil data ketika form pencarian memiliki perubahan value
+    $(document).ready(function(){
+        $("#cari").click(function(){
+            search();
+        });
+        $("#clear").click(function () {
+            $("#laporan").html('');
+        })
+    });
+
+    function search() {
+        var tgl_awal = $('#tgl-awal').val();
+        var tgl_akhir = $('#tgl-akhir').val();
+        var $new_tabel = $("<div id='tabel-laporan'></div>"),
+            new_div = document.createElement("div"),
+            existingdiv1 = document.getElementById("tabel");
+        $.ajax({
+            url: "<?php echo base_url('report/laporan_ruko')?>",
+            method: "POST",
+            data: {
+                tgl_awal: tgl_awal,
+                tgl_akhir: tgl_akhir
+            },
+            dataType: 'json',
+            beforeSend: function (e) {
+                if (e && e.overrideMimeType) {
+                    e.overrideMimeType("application/json;charset=UTF-8");
+                }
+            },
+            success: function (response) {
+                if (response.status == "success") {
+                    $("#laporan").html(response.tabel);
+                } else {
+                    alert('Data Tidak Ditemukan');
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+            }
+        });
+    }
+</script>
 
 <?php
 } else{
 ?>
 
-<script>
-    //ambil data ketika form pencarian memiliki perubahan value
-    $(document).ready(function(){
-        $("#cari").click(function(){
-            search();
-        });
-        $("#clear").click(function () {
-            $("#laporan").html('');
-        })
-    });
-
-    function search() {
-        var tgl_awal = $('#tgl-awal').val();
-        var tgl_akhir = $('#tgl-akhir').val();
-        var $new_tabel = $("<div id='tabel-laporan'></div>"),
-            new_div = document.createElement("div"),
-            existingdiv1 = document.getElementById("tabel");
-        $.ajax({
-            url: "<?php echo base_url('report/laporanDarat')?>",
-            method: "POST",
-            data: {
-                tgl_awal: tgl_awal,
-                tgl_akhir: tgl_akhir
-            },
-            dataType: 'json',
-            beforeSend: function (e) {
-                if (e && e.overrideMimeType) {
-                    e.overrideMimeType("application/json;charset=UTF-8");
-                }
-            },
-            success: function (response) {
-                if (response.status == "success") {
-                    $("#laporan").html(response.tabel);
-                } else {
-                    alert('Data Tidak Ditemukan');
-                }
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert(xhr.responseText);
-            }
-        });
-    }
-</script>
-
-<body> 
+<body>
     <div class="container container-fluid">
-        <h3>Pembuatan Laporan Pelayanan Air Untuk Rumah Tangga Dan Perusahaan</h3><br><br>
+        <h3>Pembuatan Laporan Pelayanan Air Untuk Ruko</h3><br><br>
         <div class="row col-sm-6">
             <table class="table table-responsive table-condensed">
                 <tr>
@@ -179,6 +135,50 @@ if($this->session->userdata('role_name') == "operasi" || $this->session->userdat
         </div>
     </div>
 </body>
+
+<script>
+    //ambil data ketika form pencarian memiliki perubahan value
+    $(document).ready(function(){
+        $("#cari").click(function(){
+            search();
+        });
+        $("#clear").click(function () {
+            $("#laporan").html('');
+        })
+    });
+
+    function search() {
+        var tgl_awal = $('#tgl-awal').val();
+        var tgl_akhir = $('#tgl-akhir').val();
+        var $new_tabel = $("<div id='tabel-laporan'></div>"),
+            new_div = document.createElement("div"),
+            existingdiv1 = document.getElementById("tabel");
+        $.ajax({
+            url: "<?php echo base_url('report/laporan_ruko_keuangan')?>",
+            method: "POST",
+            data: {
+                tgl_awal: tgl_awal,
+                tgl_akhir: tgl_akhir
+            },
+            dataType: 'json',
+            beforeSend: function (e) {
+                if (e && e.overrideMimeType) {
+                    e.overrideMimeType("application/json;charset=UTF-8");
+                }
+            },
+            success: function (response) {
+                if (response.status == "success") {
+                    $("#laporan").html(response.tabel);
+                } else {
+                    alert('Data Tidak Ditemukan');
+                }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert(xhr.responseText);
+            }
+        });
+    }
+</script>
 
 <?php
 }

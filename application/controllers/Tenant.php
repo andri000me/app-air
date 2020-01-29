@@ -26,7 +26,7 @@ class Tenant extends MY_Controller{
     public function get_pembeli_ruko() {
         $nama = $this->input->post('nama_tenant',TRUE); //variabel kunci yang di bawa dari input text id kode
         $tipe = "ruko_tagihan";
-        $query = $this->data->get_pembeli($tipe,$nama); //query model
+        $query = $this->tenant->get_pembeli($tipe,$nama); //query model
 
         if($query == TRUE){
             $pelanggan = array();
@@ -45,9 +45,9 @@ class Tenant extends MY_Controller{
     }
 
     public function get_nama_flow() {
-        $nama = $this->input->post('nama_tenant',TRUE); //variabel kunci yang di bawa dari input text id kode
+        $nama = $this->input->get('term',TRUE); //variabel kunci yang di bawa dari input text id kode
         $tipe = "ruko";
-        $query = $this->data->get_pembeli($tipe,$nama); //query model
+        $query = $this->tenant->get_pembeli($tipe,$nama); //query model
 
         if($query == TRUE){
             $pelanggan = array();
@@ -176,7 +176,7 @@ class Tenant extends MY_Controller{
         $this->form_validation->set_rules('cuaca_awal', 'Kondisi Cuaca', 'required');
         $this->form_validation->set_rules('cuaca_akhir', 'Kondisi Cuaca', 'required');
 
-        $cekFlow = $this->data->cekFlowAwal($id_flow);
+        $cekFlow = $this->tenant->cekFlowAwal($id_flow);
 
         if($cekFlow == TRUE){
             $data_flow = array(
@@ -202,25 +202,25 @@ class Tenant extends MY_Controller{
 
         if ($this->form_validation->run() == FALSE) {
             $data['title']='Aplikasi Pelayanan Jasa Air Bersih';
-            $this->load->template('v_pencatatan_sumur',$data);
+            $this->load->template('tenant/v_pencatatan_sumur_harian',$data);
         }
         else {
             if($cekFlow == TRUE){
-                $this->data->inputFlowAwal($data_flow);
-                $result = $this->data->input_transaksi("sumur",$data_transaksi);
+                $this->tenant->inputFlowAwal($data_flow);
+                $result = $this->tenant->input_transaksi("sumur",$data_transaksi);
             } else{
-                $result = $this->data->input_transaksi("sumur",$data_transaksi);
+                $result = $this->tenant->input_transaksi("sumur",$data_transaksi);
             }
 
             if($result == TRUE){
-                $web = base_url('main/view?id=catat_sumur');
+                $web = base_url('main/tenant/pencatatan_sumur_harian');
                 echo "<script type='text/javascript'>
                     alert('Permintaan Berhasil Di Input')
                     window.location.replace('$web')
                     </script>";
             }
             else{
-                $web = base_url('main/view?id=catat_sumur');
+                $web = base_url('main/tenant/pencatatan_sumur_harian');
                 echo "<script type='text/javascript'>
                     alert('Permintaan Gagal Di Input ! Coba Lagi')
                     window.location.replace('$web')
@@ -230,14 +230,14 @@ class Tenant extends MY_Controller{
     }
 
     public function tabel_tagihan_tenant(){
-        if($this->session->userdata('role')== 'operasi' || $this->session->userdata('role')== 'admin'){
-            $result = $this->data->get_tabel_transaksi("ruko");
+        if($this->session->userdata('role_name')== 'operasi' || $this->session->userdata('role_name')== 'admin'){
+            $result = $this->tenant->get_tabel_transaksi();
             $data = array();
             $no = 1;
 
             foreach ($result as $row){
-                if($this->session->userdata('role') == 'operasi' || $this->session->userdata('role')== 'admin' || $tipe == "ruko_admin"){
-                    $aksi = '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Tagihan" target="_blank" href="'.base_url("main/cetakTagihan?id=".$row->id_flow."&tgl_awal=".$row->tgl_awal."&tgl_akhir="."$row->tgl_akhir").'"> </a></span>';
+                if($this->session->userdata('role_name') == 'operasi' || $this->session->userdata('role_name')== 'admin' || $tipe == "ruko_admin"){
+                    $aksi = '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Tagihan" target="_blank" href="'.base_url("tenant/cetakTagihan/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
                     $aksi .= '&nbsp;<a class="btn btn-danger glyphicon glyphicon-remove" title="Batal Invoice" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a>';
                 } else{
                     $aksi = '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="Realisasi Pembayaran" href="javascript:void(0)" onclick="realisasi('."'".$row->id_transaksi."'".');"> </a></span>';
@@ -269,7 +269,7 @@ class Tenant extends MY_Controller{
                 }
             }
         } else{
-            $result = $this->data->get_tabel_transaksi("ruko");
+            $result = $this->tenant->get_tabel_transaksi();
             $data = array();
             $no = 1;
 
@@ -313,7 +313,7 @@ class Tenant extends MY_Controller{
             'issued_at' => date("Y-m-d H:i:s",time()),
             'issued_by' => $this->session->userdata('nama')
         );
-        $this->data->update_pembayaran_tenant($this->input->post('id-transaksi'), $data);
+        $this->tenant->update_pembayaran_tenant($this->input->post('id-transaksi'), $data);
         echo json_encode(array("status" => TRUE));
     }
 
@@ -349,21 +349,18 @@ class Tenant extends MY_Controller{
         }
     }
 
-    public function cetakTagihan(){
-        $tgl_awal = $this->input->get('tgl_awal');
-        $tgl_akhir = $this->input->get('tgl_akhir');
-        $id_flowmeter = $this->input->get('id');
-        $row = $this->data->get_by_id("ruko",$id_flowmeter);
+    public function cetakTagihan($id_flowmeter,$tgl_awal,$tgl_akhir){
+        $row = $this->tenant->get_by_id("ruko",$id_flowmeter);
         $data['title'] = 'Tagihan Penggunaan Air Periode '.date('d-M-Y', strtotime($tgl_awal)).' s/d '.date('d-M-Y', strtotime($tgl_akhir)); //judul title
 
         if($row->id_ref_tenant != NULL){
-            $data['tagihan'] = $this->data->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
-            $data['data_tagihan'] = $this->data->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
-            $data['detail_tagihan'] = $this->data->getDetailTagihan($id_flowmeter);
+            $data['tagihan'] = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+            $data['data_tagihan'] = $this->tenant->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+            $data['detail_tagihan'] = $this->tenant->getDetailTagihan($id_flowmeter);
         } else{
-            $data['tagihan'] = $this->data->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
-            $data['data_tagihan'] = $this->data->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
-            $data['detail_tagihan'] = $this->data->getDetailTagihan($id_flowmeter);
+            $data['tagihan'] = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+            $data['data_tagihan'] = $this->tenant->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+            $data['detail_tagihan'] = $this->tenant->getDetailTagihan($id_flowmeter);
         }
         $this->load->view('v_cetaktagihan', $data);
 
@@ -383,9 +380,10 @@ class Tenant extends MY_Controller{
         $tgl_akhir = $this->input->post('tgl_akhir');
         $id_flowmeter = $this->input->post('id');
         $no = 1;
-        $data = $this->data->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
-        $data_tagihan = $this->data->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+        $data = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+        $data_tagihan = $this->tenant->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
         $tabel = '';
+
         if($data != NULL) {
             if ($data_tagihan->id_ref_tenant == NULL) {
                 $tabel = '
@@ -434,7 +432,7 @@ class Tenant extends MY_Controller{
                 $data = array(
                     'status' => 'success',
                     'tabel' => $tabel,
-                    'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('main/buatTagihan?id=') . $id_flowmeter . "&tgl_awal=" . $tgl_awal . "&tgl_akhir=" . $tgl_akhir . '>Buat Tagihan</a>'
+                    'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Buat Tagihan</a>'
                 );
             }
             else {
@@ -490,7 +488,7 @@ class Tenant extends MY_Controller{
                 $data = array(
                     'status' => 'success',
                     'tabel' => $tabel,
-                    'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('main/buatTagihan?id=') . $id_flowmeter . "&tgl_awal=" . $tgl_awal . "&tgl_akhir=" . $tgl_akhir . '>Buat Tagihan</a>'
+                    'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Buat Tagihan</a>'
                 );
             }
         }else {
@@ -546,7 +544,7 @@ class Tenant extends MY_Controller{
             $data = array(
                 'status' => 'success',
                 'tabel' => $tabel,
-                'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('main/buatTagihan?id=') . $id_flowmeter . "&tgl_awal=" . $tgl_awal . "&tgl_akhir=" . $tgl_akhir . '>Buat Tagihan</a>'
+                'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Buat Tagihan</a>'
             );
         }
 
@@ -555,28 +553,26 @@ class Tenant extends MY_Controller{
 
     public function tagihan(){
         $id = $this->input->get('id');
-        $data['data'] = $this->data->get_by_id("ruko",$id);
+        $data['data'] = $this->tenant->get_by_id("ruko",$id);
         $data['title'] = 'Tagihan Penggunaan';
         $this->load->template('v_tagihan',$data);
     }
 
-    public function buatTagihan(){
+    public function buatTagihan($id,$tgl_awal,$tgl_akhir){
         $total = 0;
         $ttl_awal = 0;
         $ttl_akhir = 0;
         $tarif = 0;
         $i = 1;
-        $id = $this->input->get('id');
-        $tgl_awal = $this->input->get('tgl_awal');
-        $tgl_akhir = $this->input->get('tgl_akhir');
-        $tagihan = $this->data->getTagihan($tgl_awal,$tgl_akhir,$id);
-        $data_tagihan = $this->data->getDataTagihan($tgl_awal,$tgl_akhir,$id);
+        
+        $tagihan = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$id);
+        $data_tagihan = $this->tenant->getDataTagihan($tgl_awal,$tgl_akhir,$id);
         $invoice = $this->data->get_no_invoice();
         $tgl_tahun = date("YYYY",time());
         $bulan = date("m",time());
 
-        $data_tenant = $this->data->getDataTenant($id);
-        $data_tarif = $this->data->getDataTarif($data_tenant->pengguna_jasa_id);
+        $data_tenant = $this->tenant->getDataTenant($id);
+        $data_tarif = $this->tenant->getDataTarif($data_tenant->pengguna_jasa_id);
 
         if($invoice != NULL ){
             $tahun = substr($tgl_tahun, 2, 2);
@@ -651,7 +647,7 @@ class Tenant extends MY_Controller{
             'issued_at' => date("Y-m-d H:i:s",time()),
         );
 
-        $result = $this->data->tagihanTenant($data);
+        $result = $this->tenant->tagihanTenant($data);
 
         if($result != NULL){
             $web = base_url('main/view?id=tagihan');
@@ -666,21 +662,21 @@ class Tenant extends MY_Controller{
         $tipe = $this->input->post('action');
 
         if($tipe == 'batal'){
-            $result = $this->data->setPerekaman($tipe);
+            $result = $this->tenant->setPerekaman($tipe);
 
             if($result){	//jika data berhasil dihapus
-                echo '<script language="javascript">alert("Berhasil Membatalkan Data"); document.location="'.base_url("main/view?id=riwayat_pencatatan_flow").'";</script>';
+                echo '<script language="javascript">alert("Berhasil Membatalkan Data"); document.location="'.base_url("main/tenant/riwayat_catat_flow").'";</script>';
             }else{		//jika gagal menghapus data
-                echo '<script language="javascript">alert("Gagal Membatalkan Data"); document.location="'.base_url("main/view?id=riwayat_pencatatan_flow").'";</script>';
+                echo '<script language="javascript">alert("Gagal Membatalkan Data"); document.location="'.base_url("main/tenant/riwayat_catat_flow").'";</script>';
             }
         }
         else{
-            $result = $this->data->setPerekaman($tipe);
+            $result = $this->tenant->setPerekaman($tipe);
 
             if($result){	//jika data berhasil dihapus
-                echo '<script language="javascript">alert("Berhasil Memvalidasi Data"); document.location="'.base_url("main/view?id=riwayat_pencatatan_flow").'";</script>';
+                echo '<script language="javascript">alert("Berhasil Memvalidasi Data"); document.location="'.base_url("main/tenant/riwayat_catat_flow").'";</script>';
             }else{		//jika gagal menghapus data
-                echo '<script language="javascript">alert("Gagal Memvalidasi Data"); document.location="'.base_url("main/view?id=riwayat_pencatatan_flow").'";</script>';
+                echo '<script language="javascript">alert("Gagal Memvalidasi Data"); document.location="'.base_url("main/tenant/riwayat_catat_flow").'";</script>';
             }
         }
     }
@@ -689,21 +685,21 @@ class Tenant extends MY_Controller{
         $tipe = $this->input->post('action');
 
         if($tipe == 'batal'){
-            $result = $this->data->setPencatatan($tipe);
+            $result = $this->tenant->setPencatatan($tipe);
 
             if($result){	//jika data berhasil dihapus
-                echo '<script language="javascript">alert("Berhasil Membatalkan Data"); document.location="'.base_url("main/view?id=riwayat_pencatatan_sumur").'";</script>';
+                echo '<script language="javascript">alert("Berhasil Membatalkan Data"); document.location="'.base_url("main/tenant/riwayat_catat_sumur").'";</script>';
             }else{		//jika gagal menghapus data
-                echo '<script language="javascript">alert("Gagal Membatalkan Data"); document.location="'.base_url("main/view?id=riwayat_pencatatan_sumur").'";</script>';
+                echo '<script language="javascript">alert("Gagal Membatalkan Data"); document.location="'.base_url("main/tenant/riwayat_catat_sumur").'";</script>';
             }
         }
         else{
-            $result = $this->data->setPencatatan($tipe);
+            $result = $this->tenant->setPencatatan($tipe);
 
             if($result){	//jika data berhasil dihapus
-                echo '<script language="javascript">alert("Berhasil Memvalidasi Data"); document.location="'.base_url("main/view?id=riwayat_pencatatan_sumur").'";</script>';
+                echo '<script language="javascript">alert("Berhasil Memvalidasi Data"); document.location="'.base_url("main/tenant/riwayat_catat_sumur").'";</script>';
             }else{		//jika gagal menghapus data
-                echo '<script language="javascript">alert("Gagal Memvalidasi Data"); document.location="'.base_url("main/view?id=riwayat_pencatatan_sumur").'";</script>';
+                echo '<script language="javascript">alert("Gagal Memvalidasi Data"); document.location="'.base_url("main/tenant/riwayat_catat_sumur").'";</script>';
             }
         }
     }
@@ -712,13 +708,13 @@ class Tenant extends MY_Controller{
         $tgl_awal = $this->input->post('tgl_awal');
         $tgl_akhir = $this->input->post('tgl_akhir');
 
-        $result = $this->data->riwayat_flow($tgl_awal,$tgl_akhir);
+        $result = $this->tenant->riwayat_flow($tgl_awal,$tgl_akhir);
 
         if($result != NULL){
             $no = 1;
             $tabel = '
                 <h4>Riwayat Pencatatan Harian Periode '.date('d-m-Y',strtotime($tgl_awal)).' s/d '.date('d-m-Y',strtotime($tgl_akhir)).' </h4>
-                <form action="'.base_url('main/updatePerekaman').'" method="post">
+                <form action="'.base_url('tenant/updatePerekaman').'" method="post">
                 <table class="table table-responsive table-condensed table-striped" id="myTable">
                     <thead>
                         <tr>
@@ -783,13 +779,13 @@ class Tenant extends MY_Controller{
         $tgl_awal = $this->input->post('tgl_awal');
         $tgl_akhir = $this->input->post('tgl_akhir');
 
-        $result = $this->data->riwayat_sumur($tgl_awal,$tgl_akhir);
+        $result = $this->tenant->riwayat_sumur($tgl_awal,$tgl_akhir);
 
         if($result != NULL){
             $no = 1;
             $tabel = '
                 <h4>Riwayat Pencatatan Harian Periode '.date('d-m-Y',strtotime($tgl_awal)).' s/d '.date('d-m-Y',strtotime($tgl_akhir)).' </h4>
-                <form action="'.base_url('main/updatePencatatan').'" method="post">
+                <form action="'.base_url('tenant/updatePencatatan').'" method="post">
                 <table class="table table-responsive table-condensed table-striped" id="myTable">
                     <thead>
                         <tr>

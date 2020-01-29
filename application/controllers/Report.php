@@ -1501,8 +1501,8 @@ class Report extends MY_Controller{
                       </tr>
                   </tbody>
                   </table>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=ruko").'>Cetak PDF</a>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/excelRuko?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>';
+                  <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/ruko").'>Cetak PDF</a>
+                  <a class="btn btn-primary" target="_blank" href='.base_url("report/excelRuko/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>';
 
             $data = array(
                 'status' => 'success',
@@ -1522,7 +1522,7 @@ class Report extends MY_Controller{
         $tgl_awal = $this->input->post('tgl_awal');
         $tgl_akhir = $this->input->post('tgl_akhir');
 
-        $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"ruko_keuangan");
+        $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"ruko_keuangan");
 
         if($result != NULL){
             $total_pembayaran =0;
@@ -1548,7 +1548,7 @@ class Report extends MY_Controller{
                       <tbody>';
 
             foreach($result as $row){
-                $data_tagihan = $this->data->getTagihan($tgl_awal,$tgl_akhir,$row->id_flow);
+                $data_tagihan = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$row->id_flow);
 
                 $ttl_akhir = 0;
                 $ttl_awal = 0;
@@ -1624,8 +1624,8 @@ class Report extends MY_Controller{
                       </tr>
                   </tbody>
                   </table>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=ruko_keuangan").'>Cetak PDF</a>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/excelRuko?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>';
+                  <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/ruko_keuangan").'>Cetak PDF</a>
+                  <a class="btn btn-primary" target="_blank" href='.base_url("report/excelRuko/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>';
 
             $data = array(
                 'status' => 'success',
@@ -1644,7 +1644,7 @@ class Report extends MY_Controller{
     public function laporan_flow() {
         $tgl_awal = $this->input->post('tgl_akhir');
         $tgl_akhir = $this->input->post('tgl_akhir');
-        $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"flow");
+        $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"flow");
 
         if($result != NULL){
             $ton_total = 0;
@@ -1663,7 +1663,7 @@ class Report extends MY_Controller{
                       <tbody>';
 
             foreach($result as $row){
-                $data_tagihan = $this->data->getFlow($tgl_awal,$tgl_akhir,$row->id_flow);
+                $data_tagihan = $this->tenant->getFlow($tgl_awal,$tgl_akhir,$row->id_flow);
                 $ttl_akhir = 0;
                 $ttl_awal = 0;
                 $i = 1;
@@ -1708,10 +1708,10 @@ class Report extends MY_Controller{
             $tabel .= '
                   </tbody>
                   </table>
-                  <!---
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=flow").'>Cetak PDF</a>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/excelFlow?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>
-                   --->
+                  
+                  <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/flow").'>Cetak PDF</a>
+                  <a class="btn btn-primary" target="_blank" href='.base_url("report/excelFlow/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>
+                 
                   ';
 
             $data = array(
@@ -1734,8 +1734,8 @@ class Report extends MY_Controller{
         $id_flow = $this->input->post('id_flow');
 
         $no = 1;
-        $data = $this->data->getFlow($tgl_awal,$tgl_akhir,$id_flow);
-        $data_flow = $this->data->getDataFlowmeter($tgl_awal,$tgl_akhir,$id_flow);
+        $data = $this->tenant->getFlow($tgl_awal,$tgl_akhir,$id_flow);
+        $data_flow = $this->tenant->getDataFlowmeter($tgl_awal,$tgl_akhir,$id_flow);
         $tabel = '';
 
         if($data != NULL){
@@ -1779,7 +1779,7 @@ class Report extends MY_Controller{
             $data = array(
                 'status' => 'success',
                 'tabel' => $tabel,
-                'url' => '<a class="btn btn-primary" target="_self" href='.base_url('main/buatTagihan?id=').$id_flow."&tgl_awal=".$tgl_awal."&tgl_akhir=".$tgl_akhir.'>Buat Tagihan</a>'
+                'url' => '<a class="btn btn-primary" target="_self" href='.base_url('tenant/buatTagihan/').$id_flow."/".$tgl_awal."/".$tgl_akhir.'>Buat Tagihan</a>'
             );
         }
         else{
@@ -1794,7 +1794,7 @@ class Report extends MY_Controller{
     public function laporan_sumur() {
         $tgl_awal = $this->input->post('tgl_awal');
         $tgl_akhir = $this->input->post('tgl_akhir');
-        $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"sumur");
+        $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"sumur");
 
         if($result != NULL){
             $ton_total = 0;
@@ -1862,8 +1862,8 @@ class Report extends MY_Controller{
                       </tr>
                   </tbody>
                   </table>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/cetakLaporan?id=".$tgl_awal."&id2=".$tgl_akhir."&tipe=sumur").'>Cetak PDF</a>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("main/excelSumur?id=".$tgl_awal."&id2=".$tgl_akhir).'>Cetak Excel</a>';
+                  <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/sumur").'>Cetak PDF</a>
+                  <a class="btn btn-primary" target="_blank" href='.base_url("report/excelSumur/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>';
 
             $data = array(
                 'status' => 'success',
@@ -3162,8 +3162,8 @@ class Report extends MY_Controller{
             ->setLastModifiedBy($this->session->userdata('nama'))
             ->setCategory("Approve by ");
         // Add some data
-        if($this->session->userdata('role') == "keuangan"){
-            $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"ruko_keuangan");
+        if($this->session->userdata('role_name') == "keuangan"){
+            $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"ruko_keuangan");
 
             $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
             $object->getActiveSheet()->getColumnDimension('B')->setWidth(20);
@@ -3304,7 +3304,7 @@ class Report extends MY_Controller{
             $ex->setCellValue("J".$counter,"$total_pembayaran");
         }
         else{
-            $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"ruko");
+            $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"ruko");
 
             $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
             $object->getActiveSheet()->getColumnDimension('B')->setWidth(20);
@@ -3452,7 +3452,7 @@ class Report extends MY_Controller{
 
         // Redirect output to a client’s web browser (Excel2007)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="Laporan_Transaksi_Ruko_periode_'.$_GET['id'].'_'.$_GET['id2'].'.xlsx"');
+        header('Content-Disposition: attachment;filename="Laporan_Transaksi_Ruko_periode_'.$tgl_awal.'_'.$tgl_akhir.'.xlsx"');
         header('Cache-Control: max-age=0');
 
         $objWriter = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
@@ -3491,7 +3491,7 @@ class Report extends MY_Controller{
             ->setLastModifiedBy($this->session->userdata('nama'))
             ->setCategory("Approve by ");
         // Add some data
-        $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"flow");
+        $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"flow");
 
         $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
         $object->getActiveSheet()->getColumnDimension('B')->setWidth(20);
@@ -3574,7 +3574,7 @@ class Report extends MY_Controller{
 
         // Redirect output to a client’s web browser (Excel2007)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="Laporan_Transaksi_Flow_periode_'.$_GET['id'].'_'.$_GET['id2'].'.xlsx"');
+        header('Content-Disposition: attachment;filename="Laporan_Transaksi_Flow_periode_'.$tgl_awal.'_'.$tgl_akhir.'.xlsx"');
         header('Cache-Control: max-age=0');
 
         $objWriter = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
@@ -3613,7 +3613,7 @@ class Report extends MY_Controller{
             ->setLastModifiedBy($this->session->userdata('nama'))
             ->setCategory("Approve by ");
         // Add some data
-        $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"sumur");
+        $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"sumur");
 
         $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
         $object->getActiveSheet()->getColumnDimension('B')->setWidth(20);
@@ -3730,7 +3730,7 @@ class Report extends MY_Controller{
 
         // Redirect output to a client’s web browser (Excel2007)
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="Laporan_Transaksi_Sumur_periode_'.$_GET['id'].'_'.$_GET['id2'].'.xlsx"');
+        header('Content-Disposition: attachment;filename="Laporan_Transaksi_Sumur_periode_'.$tgl_awal.'_'.$tgl_akhir.'.xlsx"');
         header('Cache-Control: max-age=0');
 
         $objWriter = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
@@ -3743,7 +3743,12 @@ class Report extends MY_Controller{
             $data['title'] = 'Laporan Transaksi Air Darat Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
             $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
 
-            $this->load->view('report/v_cetaklaporan_darat', $data);
+            if($this->session->userdata('role_name') == "wtp")
+                $this->load->view('report/cetaklaporan/v_cetaklaporan_darat_wtp', $data);
+            elseif($this->session->userdata('role_name') == "operasi")
+                $this->load->view('report/cetaklaporan/v_cetaklaporan_darat_operasi', $data);
+            else
+                $this->load->view('report/cetaklaporan/v_cetaklaporan_darat', $data);
 
             $paper_size  = 'A4'; //paper size
             $orientation = 'landscape'; //tipe format kertas
@@ -3759,7 +3764,7 @@ class Report extends MY_Controller{
             $data['title'] = 'Laporan Transaksi Air Kapal Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
             $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
 
-            $this->load->view('report/v_cetaklaporan_kapal', $data);
+            $this->load->view('report/cetaklaporan/v_cetaklaporan_kapal', $data);
 
             $paper_size  = 'A4'; //paper size
             $orientation = 'landscape'; //tipe format kertas
@@ -3775,8 +3780,11 @@ class Report extends MY_Controller{
             $data['title'] = 'Laporan Transaksi Air Kapal Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
             $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
 
-            $this->load->view('report/v_cetaklaporan_kapal', $data);
-
+            if($this->session->userdata('role_name') == "operasi")
+                $this->load->view('report/cetaklaporan/v_cetaklaporan_kapal_admin_operasi', $data);
+            else
+                $this->load->view('report/cetaklaporan/v_cetaklaporan_kapal_operasi', $data);
+            
             $paper_size  = 'A4'; //paper size
             $orientation = 'landscape'; //tipe format kertas
             $html = $this->output->get_output();
@@ -3792,7 +3800,7 @@ class Report extends MY_Controller{
             $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
-            $this->load->view('report/v_cetaklaporan', $data);
+            $this->load->view('report/v_cetaklaporan_flow', $data);
 
             $paper_size  = 'A4'; //paper size
             $orientation = 'landscape'; //tipe format kertas
@@ -3809,7 +3817,7 @@ class Report extends MY_Controller{
             $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
-            $this->load->view('report/v_cetaklaporan', $data);
+            $this->load->view('report/cetaklaporan/v_cetaklaporan_sumur', $data);
 
             $paper_size  = 'A4'; //paper size
             $orientation = 'landscape'; //tipe format kertas
@@ -3826,7 +3834,7 @@ class Report extends MY_Controller{
             $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
-            $this->load->view('report/v_cetaklaporan', $data);
+            $this->load->view('report/cetaklaporan/v_cetaklaporan_ruko_keuangan', $data);
 
             $paper_size  = 'A4'; //paper size
             $orientation = 'landscape'; //tipe format kertas
@@ -3843,7 +3851,7 @@ class Report extends MY_Controller{
             $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
-            $this->load->view('report/v_cetaklaporan', $data);
+            $this->load->view('report/cetaklaporan/v_cetaklaporan_ruko', $data);
 
             $paper_size  = 'A4'; //paper size
             $orientation = 'landscape'; //tipe format kertas

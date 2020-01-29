@@ -1,12 +1,12 @@
 <?php
-if($this->session->userdata('role') == 'wtp' || $this->session->userdata('role') == 'admin'){
+if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('role_name') == 'admin'){
     ?>
     <script>
         $(function () {
             $("#id_sumur_awal").autocomplete({
                 minLength:1,
                 delay:0,
-                source:'<?php echo site_url('main/get_sumur'); ?>',
+                source:'<?php echo site_url('tenant/get_sumur'); ?>',
                 select:function(event, ui){
                     $('#id_master_sumur_awal').val(ui.item.id_sumur);
                     $('#nama_sumur').val(ui.item.nama_sumur);
@@ -29,12 +29,13 @@ if($this->session->userdata('role') == 'wtp' || $this->session->userdata('role')
             });
         });
     </script>
+
     <body>
     <div class="container container-fluid">
         <div class="row">
             <center><h3 class="header">Form Pencatatan Harian Sumur</h3></center><br>
             <?php echo validation_errors(); ?>
-            <form method="post" action="<?php echo base_url(). 'main/transaksi_sumur'; ?>">
+            <form method="post" action="<?php echo base_url(). 'tenant/transaksi_sumur'; ?>">
                 <div class="col-xs-6">
                     <table class="table table-striped">
                         <tr>
