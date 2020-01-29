@@ -105,12 +105,14 @@ $this->fpdf->Ln(4);
 $this->fpdf->Cell(55, 3, $hasil['kapal'], 0, 0, 'C');
 $this->fpdf->Ln(1);
 $this->fpdf->Cell(55, 3, '(..........................................)', 0, 0, 'C');
-$this->fpdf->Cell(85, 3, 'ASMAN OPERASI', 0, 0, 'C');
+$this->fpdf->Cell(85, 3, 'ASMAN OPERASI PELAYANAN', 0, 0, 'C');
 $this->fpdf->Cell(40, 3, '(..........................................)', 0, 0, 'C');
-$this->fpdf->Ln(12);
-$this->fpdf->Cell(195, 3, 'SYAFIRUDDIN AK', 0, 0, 'C');
+$this->fpdf->Ln(4);
+$this->fpdf->Cell(195, 3, 'NON PETIKEMAS', 0, 0, 'C');
+$this->fpdf->Ln(14);
+$this->fpdf->Cell(195, 3, 'BERLY KARDIN SENAPATI', 0, 0, 'C');
 $this->fpdf->Ln(1);
-$this->fpdf->Cell(195, 3, '(..........................................)', 0, 0, 'C');
+$this->fpdf->Cell(195, 3, '(.................................................)', 0, 0, 'C');
 
 $this->fpdf->Ln(40);
 

@@ -450,17 +450,17 @@ class Darat extends MY_Controller {
         $data['waktu'] = date("Y-m-d H:i:s",time());
         $data['user'] = $this->session->userdata('nama');
 
-        $this->data->ubah_waktu_pengantaran($data);
+        $this->darat->ubah_waktu_pengantaran($data);
         echo json_encode(array("status" => TRUE));
     }
 
     public function realisasi_pengantaran_darat($id) {
-        $data = $this->data->get_by_id("darat", $id);
+        $data = $this->darat->get_by_id($id);
         echo json_encode($data);
     }
 
     public function pembayaran_darat($id) {
-        $data = $this->data->get_by_id("darat", $id);
+        $data = $this->darat->get_by_id("darat", $id);
         echo json_encode($data);
     }
 
@@ -474,7 +474,7 @@ class Darat extends MY_Controller {
             'last_modified' => date("Y-m-d H:i:s",time()),
             'modified_by' => $this->session->userdata('username')
         );
-        $this->data->update_realisasi('darat' ,array('id_transaksi' => $this->input->post('id-transaksi')), $data);
+        $this->darat->update_realisasi(array('id_transaksi' => $this->input->post('id-transaksi')), $data);
         echo json_encode(array("status" => TRUE));
     }
 
@@ -666,9 +666,7 @@ class Darat extends MY_Controller {
 
     //untuk membuat tampilan tabel status pengantaran transaksi darat dan realisasi pengisian air kapal
     public function tabel_pengantaran(){
-        $tipe = $this->input->get('id');
-
-        $result = $this->data->get_tabel_transaksi($tipe);
+        $result = $this->darat->get_tabel_transaksi();
         $data = array();
         $no = 1;
 

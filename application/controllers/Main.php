@@ -222,6 +222,12 @@ class Main extends MY_Controller {
         }
 
     }
+    
+    //fungsi untuk membuat notifikasi
+    public function cekNotifKapal(){
+        $result = $this->data->notifKapal();
+        echo json_encode($result);
+    }
 
     public function cekNotifDarat(){
         $result = $this->data->notifDarat();

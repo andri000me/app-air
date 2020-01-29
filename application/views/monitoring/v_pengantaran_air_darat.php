@@ -55,7 +55,7 @@
                     document.getElementById("table").innerHTML= a;
                 }
             }
-            xmlhttp.open("GET", "<?php echo base_url("main/darat/monitoring_air_darat")?>", true);
+            xmlhttp.open("GET", "<?php echo base_url("darat/tabel_pengantaran")?>", true);
             xmlhttp.send();
         //}
 
@@ -75,7 +75,7 @@
         function pengantaran(id){
             var url;
             var id = id;
-            url = "<?php echo site_url('main/ubah_status_pengantaran')?>";
+            url = "<?php echo site_url('darat/ubah_status_pengantaran')?>";
             if (confirm('Mulai Pengantaran ?')) {
                 $.ajax({
                     url : url,
@@ -86,7 +86,7 @@
                     dataType: "JSON",
                     success: function(data) {
                         alert('Mulai Pengantaran');
-                        window.location.replace('<?php echo base_url('main');?>');
+                        window.location.replace('<?php echo base_url('main/monitoring/pengantaran_air_darat');?>');
                     },
                     error: function (jqXHR, textStatus, errorThrown)
                     {
@@ -103,7 +103,7 @@
 
             //Ajax Load data from ajax
             $.ajax({
-                url : "<?php echo site_url('main/realisasi_pengantaran_darat')?>/" + id,
+                url : "<?php echo site_url('darat/realisasi_pengantaran_darat')?>/" + id,
                 type: "GET",
                 dataType: "JSON",
                 success: function(data)
@@ -129,7 +129,7 @@
             $('#btnSave').attr('disabled',true); //set button disable
             var url;
 
-            url = "<?php echo site_url('main/update_realisasi_darat')?>";
+            url = "<?php echo site_url('darat/update_realisasi_darat')?>";
 
             // ajax adding data to database
             var formData = new FormData($('#form_realisasi')[0]);
@@ -145,8 +145,7 @@
                     {
                         $('#modal_menu').modal('hide');
                         alert('Realisasi Berhasil Disimpan');
-                        window.location.replace('<?php echo base_url('main');?>');
-
+                        window.location.replace('<?php echo base_url('main/monitoring/pengantaran_air_darat');?>');
                     }
                     else
                     {

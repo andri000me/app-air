@@ -139,6 +139,17 @@ class M_kapal extends MY_Model{
         return $query->row();
     }
 
+    public function ubah_waktu_pengisian($data){
+        $this->db->set('start_work',$data['waktu']);
+        $this->db->set('last_modified',$data['waktu']);
+        $this->db->set('modified_by',$data['user']);
+        //$this->db->set('pengantar',$data['user']);
+        $this->db->where('id_transaksi',$data['id']);
+        $this->db->update('transaksi_laut');
+
+        return $this->db->affected_rows();
+    }
+
     public function updatePrint($id){
         $this->db->set('status_print',1);
         $this->db->where('id_transaksi', $id);
