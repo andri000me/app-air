@@ -826,20 +826,22 @@ class M_tenant extends MY_Model{
     //function untuk manajemen data transaksi pada aplikasi
     public function get_pembeli($tipe, $nama){
         if($tipe == "ruko"){
-            $this->db->like('id_flow', $nama);
+            $this->db->like('id_flowmeter', $nama);
+            $this->db->or_like('nama_flowmeter', $nama);
             $this->db->where('id_flow !=',0);
             $this->db->where('status_aktif',1);
             $this->db->from('master_flowmeter');
             $this->db->order_by('id_flowmeter','ASC');
         }
         else if($tipe == "ruko_tagihan"){
-            $this->db->like('id_tenant', $nama);
+            $this->db->like('nama_tenant', $nama);
             $this->db->from('master_tenant,master_flowmeter');
             $this->db->where('id_flow = id_ref_flowmeter');
             $this->db->where('status_aktif_tenant',1);
         }
         else{
-            $this->db->like('id_flow', $nama);
+            $this->db->like('id_flowmeter', $nama);
+            $this->db->or_like('nama_flowmeter', $nama);
             $this->db->from('master_flowmeter');
             $this->db->join('master_pompa','id_ref_pompa = id_master_pompa','left');
             $this->db->join('master_sumur','id_ref_sumur = id_master_sumur','left');

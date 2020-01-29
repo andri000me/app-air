@@ -4,12 +4,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Tenant extends MY_Controller{
     //fungsi untuk transaksi tenant
     public function get_tenant() {
-        $nama = $this->input->post('id_flowmeter',TRUE); //variabel kunci yang di bawa dari input text id kode
+        $nama = $this->input->get('term',TRUE); //variabel kunci yang di bawa dari input text id kode
         $tipe = "ruko";
-        $query = $this->data->get_pembeli($tipe,$nama); //query model
+        $query = $this->tenant->get_pembeli($tipe,$nama); //query model
+        $pelanggan = array();
 
         if($query == TRUE){
-            $pelanggan = array();
             foreach ($query as $data) {
                 $pelanggan[] = array(
                     'id_flow' => $data->id_flow,
@@ -73,7 +73,7 @@ class Tenant extends MY_Controller{
         }
     }
 
-    public function transaksi_ruko() {
+    public function transaksi_tenant() {
         $id_tenant = $this->input->post('id_tenant');
         $id_flow = $this->input->post('id_flow');
         $tanggal = $this->input->post('tanggal');
@@ -82,7 +82,7 @@ class Tenant extends MY_Controller{
         $this->form_validation->set_rules('tanggal', 'Tanggal', 'required');
         $this->form_validation->set_rules('flow_hari_ini', 'Flow Meter Hari Ini', 'required|callback_check_equal_less['.$this->input->post('flowmeter_akhir').']');
 
-        $cekFlow = $this->data->cekFlowAwal($id_flow);
+        $cekFlow = $this->tenant->cekFlowAwal($id_flow);
 
         if($cekFlow == TRUE){
             $data_flow = array(
@@ -101,26 +101,26 @@ class Tenant extends MY_Controller{
         );
 
         if ($this->form_validation->run() == FALSE) {
-            $data['title']='Aplikasi Pelayanan Jasa Air Bersih';
-            $this->load->template('v_input_ruko',$data);
+            $data['title']='APASIH KKT';
+            $this->load->template('tenant/v_pencatatan_flow_harian',$data);
         }
         else {
             if($cekFlow == TRUE){
-                $this->data->inputFlowAwal($data_flow);
-                $result = $this->data->input_transaksi("ruko",$data_transaksi);
+                $this->tenant->inputFlowAwal($data_flow);
+                $result = $this->tenant->input_transaksi("ruko",$data_transaksi);
             } else{
-                $result = $this->data->input_transaksi("ruko",$data_transaksi);
+                $result = $this->tenant->input_transaksi("ruko",$data_transaksi);
             }
 
             if($result == TRUE){
-                $web = base_url('main/view?id=transaksi_tenant');
+                $web = base_url('main/tenant/pencatatan_flow_harian');
                 echo "<script type='text/javascript'>
                     alert('Permintaan Berhasil Di Input')
                     window.location.replace('$web')
                     </script>";
             }
             else{
-                $web = base_url('main/view?id=transaksi_tenant');
+                $web = base_url('main/tenant/pencatatan_flow_harian');
                 echo "<script type='text/javascript'>
                     alert('Permintaan Gagal Di Input ! Coba Lagi')
                     window.location.replace('$web')
@@ -131,12 +131,12 @@ class Tenant extends MY_Controller{
 
     //fungsi untuk pencatatan sumur
     public function get_sumur() {
-        $nama = $this->input->post('id_sumur',TRUE); //variabel kunci yang di bawa dari input text id kode
+        $nama = $this->input->get('term',TRUE); //variabel kunci yang di bawa dari input text id kode
         $tipe = "sumur";
-        $query = $this->data->get_pembeli($tipe,$nama); //query model
+        $query = $this->tenant->get_pembeli($tipe,$nama); //query model
+        $pelanggan = array();
 
         if($query == TRUE){
-            $pelanggan = array();
             foreach ($query as $data) {
                 $pelanggan[] = array(
                     'id_sumur' => $data->id_master_sumur,
@@ -300,7 +300,7 @@ class Tenant extends MY_Controller{
     public function cancelTransaksiRuko(){
         $data['tipe'] = "ruko";
         $data['id'] = $this->input->post('id');
-        $this->data->cancelOrder($data);
+        $this->tenant->cancelOrder($data);
     }
 
     public function realisasi_pembayaran_tenant(){
@@ -318,7 +318,7 @@ class Tenant extends MY_Controller{
     }
 
     public function pembayaran_tenant($id) {
-        $data = $this->data->get_by_id("tenant", $id);
+        $data = $this->tenant->get_by_id("tenant", $id);
         echo json_encode($data);
     }
 
@@ -389,44 +389,44 @@ class Tenant extends MY_Controller{
         if($data != NULL) {
             if ($data_tagihan->id_ref_tenant == NULL) {
                 $tabel = '
-                  <div class="col-sm-7">
-                  <table class="table table-responsive table-condensed table-striped">
-                      <tr>
-                          <td>Nama Tenant</td>
-                          <td>:</td>
-                          <td>' . $data_tagihan->nama_tenant . '</td>
-                      </tr>
-                      <tr>
-                          <td>Lokasi</td>
-                          <td>:</td>
-                          <td>' . $data_tagihan->lokasi . '</td>
-                      </tr>
-                      <tr>
-                          <td>No Telepon</td>
-                          <td>:</td>
-                          <td>' . $data_tagihan->no_telp . '</td>
-                      </tr>
-                      <tr>
-                          <td>Penanggung Jawab</td>
-                          <td>:</td>
-                          <td>' . $data_tagihan->penanggung_jawab . '</td>
-                      </tr>
-                  </table></div>';
+                <div class="col-sm-7">
+                <table class="table table-responsive table-condensed table-striped">
+                    <tr>
+                        <td>Nama Tenant</td>
+                        <td>:</td>
+                        <td>' . $data_tagihan->nama_tenant . '</td>
+                    </tr>
+                    <tr>
+                        <td>Lokasi</td>
+                        <td>:</td>
+                        <td>' . $data_tagihan->lokasi . '</td>
+                    </tr>
+                    <tr>
+                        <td>No Telepon</td>
+                        <td>:</td>
+                        <td>' . $data_tagihan->no_telp . '</td>
+                    </tr>
+                    <tr>
+                        <td>Penanggung Jawab</td>
+                        <td>:</td>
+                        <td>' . $data_tagihan->penanggung_jawab . '</td>
+                    </tr>
+                </table></div>';
                 $tabel .= '
-          <table class="table table-responsive table-condensed table-striped">
-              <thead>
-                  <td>No</td>
-                  <td>Tanggal Pencatatan</td>
-                  <td>Flow Meter</td>
-              </thead>
-              ';
-                foreach ($data as $row) {
-                    $tabel .= '
-            <tr>
-              <td>' . $no . '</td>
-              <td>' . $row->waktu_perekaman . '</td>
-              <td>' . $row->flow_hari_ini . '</td>
-            </tr>';
+            <table class="table table-responsive table-condensed table-striped">
+                <thead>
+                    <td>No</td>
+                    <td>Tanggal Pencatatan</td>
+                    <td>Flow Meter</td>
+                </thead>
+                ';
+                    foreach ($data as $row) {
+                        $tabel .= '
+                <tr>
+                <td>' . $no . '</td>
+                <td>' . $row->waktu_perekaman . '</td>
+                <td>' . $row->flow_hari_ini . '</td>
+                </tr>';
                     $no++;
                 }
                 $tabel .= '</table>';
@@ -439,51 +439,51 @@ class Tenant extends MY_Controller{
             }
             else {
                 $tabel = '
-                  <div class="col-sm-7">
-                  <table class="table table-responsive table-condensed table-striped">
-                      <tr>
-                          <td>Nama Tenant</td>
-                          <td>:</td>
-                          <td>' . $data_tagihan->nama_tenant . '</td>
-                      </tr>
-                      <tr>
-                          <td>Lokasi</td>
-                          <td>:</td>
-                          <td>' . $data_tagihan->lokasi . '</td>
-                      </tr>
-                      <tr>
-                          <td>No Telepon</td>
-                          <td>:</td>
-                          <td>' . $data_tagihan->no_telp . '</td>
-                      </tr>
-                      <tr>
-                          <td>Penanggung Jawab</td>
-                          <td>:</td>
-                          <td>' . $data_tagihan->penanggung_jawab . '</td>
-                      </tr>
-                  </table></div>';
+                <div class="col-sm-7">
+                <table class="table table-responsive table-condensed table-striped">
+                    <tr>
+                        <td>Nama Tenant</td>
+                        <td>:</td>
+                        <td>' . $data_tagihan->nama_tenant . '</td>
+                    </tr>
+                    <tr>
+                        <td>Lokasi</td>
+                        <td>:</td>
+                        <td>' . $data_tagihan->lokasi . '</td>
+                    </tr>
+                    <tr>
+                        <td>No Telepon</td>
+                        <td>:</td>
+                        <td>' . $data_tagihan->no_telp . '</td>
+                    </tr>
+                    <tr>
+                        <td>Penanggung Jawab</td>
+                        <td>:</td>
+                        <td>' . $data_tagihan->penanggung_jawab . '</td>
+                    </tr>
+                </table></div>';
                 $tabel .= '
-          <table class="table table-responsive table-condensed table-striped">
-              <tr>
-                  <td>No Perjanjian</td>
-                  <td>:</td>
-                  <td>' . $data_tagihan->no_perjanjian . '</td>
-              </tr>
-              <tr>    
-                  <td>Perihal</td>
-                  <td>:</td>
-                  <td>' . $data_tagihan->perihal . '</td>
-              </tr>
-              <tr>    
-                  <td>Waktu Kadaluarsa</td>
-                  <td>:</td>
-                  <td>' . $data_tagihan->waktu_kadaluarsa . '</td>
-              </tr>
-               <tr>    
-                  <td>Nominal</td>
-                  <td>:</td>
-                  <td>Rp. ' . $this->Ribuan($data_tagihan->nominal) . '</td>
-              </tr>
+            <table class="table table-responsive table-condensed table-striped">
+                <tr>
+                    <td>No Perjanjian</td>
+                    <td>:</td>
+                    <td>' . $data_tagihan->no_perjanjian . '</td>
+                </tr>
+                <tr>    
+                    <td>Perihal</td>
+                    <td>:</td>
+                    <td>' . $data_tagihan->perihal . '</td>
+                </tr>
+                <tr>    
+                    <td>Waktu Kadaluarsa</td>
+                    <td>:</td>
+                    <td>' . $data_tagihan->waktu_kadaluarsa . '</td>
+                </tr>
+                <tr>    
+                    <td>Nominal</td>
+                    <td>:</td>
+                    <td>Rp. ' . $this->Ribuan($data_tagihan->nominal) . '</td>
+                </tr>
               ';
                 $tabel .= '</table>';
 
@@ -495,52 +495,52 @@ class Tenant extends MY_Controller{
             }
         }else {
             $tabel = '
-                  <div class="col-sm-7">
-                  <table class="table table-responsive table-condensed table-striped">
-                      <tr>
-                          <td>Nama Tenant</td>
-                          <td>:</td>
-                          <td>' . $data_tagihan->nama_tenant . '</td>
-                      </tr>
-                      <tr>
-                          <td>Lokasi</td>
-                          <td>:</td>
-                          <td>' . $data_tagihan->lokasi . '</td>
-                      </tr>
-                      <tr>
-                          <td>No Telepon</td>
-                          <td>:</td>
-                          <td>' . $data_tagihan->no_telp . '</td>
-                      </tr>
-                      <tr>
-                          <td>Penanggung Jawab</td>
-                          <td>:</td>
-                          <td>' . $data_tagihan->penanggung_jawab . '</td>
-                      </tr>
-                  </table></div>';
+                <div class="col-sm-7">
+                <table class="table table-responsive table-condensed table-striped">
+                    <tr>
+                        <td>Nama Tenant</td>
+                        <td>:</td>
+                        <td>' . $data_tagihan->nama_tenant . '</td>
+                    </tr>
+                    <tr>
+                        <td>Lokasi</td>
+                        <td>:</td>
+                        <td>' . $data_tagihan->lokasi . '</td>
+                    </tr>
+                    <tr>
+                        <td>No Telepon</td>
+                        <td>:</td>
+                        <td>' . $data_tagihan->no_telp . '</td>
+                    </tr>
+                    <tr>
+                        <td>Penanggung Jawab</td>
+                        <td>:</td>
+                        <td>' . $data_tagihan->penanggung_jawab . '</td>
+                    </tr>
+                </table></div>';
             $tabel .= '
-          <table class="table table-responsive table-condensed table-striped">
-              <tr>
-                  <td>No Perjanjian</td>
-                  <td>:</td>
-                  <td>' . $data_tagihan->no_perjanjian . '</td>
-              </tr>
-              <tr>    
-                  <td>Perihal</td>
-                  <td>:</td>
-                  <td>' . $data_tagihan->perihal . '</td>
-              </tr>
-              <tr>    
-                  <td>Waktu Kadaluarsa</td>
-                  <td>:</td>
-                  <td>' . $data_tagihan->waktu_kadaluarsa . '</td>
-              </tr>
-               <tr>    
-                  <td>Nominal</td>
-                  <td>:</td>
-                  <td>Rp. ' . $this->Ribuan($data_tagihan->nominal) . '</td>
-              </tr>
-              ';
+            <table class="table table-responsive table-condensed table-striped">
+                <tr>
+                    <td>No Perjanjian</td>
+                    <td>:</td>
+                    <td>' . $data_tagihan->no_perjanjian . '</td>
+                </tr>
+                <tr>    
+                    <td>Perihal</td>
+                    <td>:</td>
+                    <td>' . $data_tagihan->perihal . '</td>
+                </tr>
+                <tr>    
+                    <td>Waktu Kadaluarsa</td>
+                    <td>:</td>
+                    <td>' . $data_tagihan->waktu_kadaluarsa . '</td>
+                </tr>
+                <tr>    
+                    <td>Nominal</td>
+                    <td>:</td>
+                    <td>Rp. ' . $this->Ribuan($data_tagihan->nominal) . '</td>
+                </tr>
+                ';
             $tabel .= '</table>';
 
             $data = array(
@@ -633,8 +633,8 @@ class Tenant extends MY_Controller{
             $diskon = '';
             $date = date('Y-m-d');
             if($date <= $data_tagihan->waktu_kadaluarsa ){
-              $total = $data_tagihan->nominal;
-              $tarif = $total;
+                $total = $data_tagihan->nominal;
+                $tarif = $total;
             }
         }
 
@@ -656,8 +656,8 @@ class Tenant extends MY_Controller{
         if($result != NULL){
             $web = base_url('main/view?id=tagihan');
             echo "<script type='text/javascript'>
-                      alert('Tagihan Berhasil Dibuat')
-                      window.location.replace('$web')
+                    alert('Tagihan Berhasil Dibuat')
+                    window.location.replace('$web')
                     </script>";
         }
     }
@@ -717,56 +717,54 @@ class Tenant extends MY_Controller{
         if($result != NULL){
             $no = 1;
             $tabel = '
-                  <h4>Riwayat Pencatatan Harian Periode '.date('d-m-Y',strtotime($tgl_awal)).' s/d '.date('d-m-Y',strtotime($tgl_akhir)).' </h4>
-                  <form action="'.base_url('main/updatePerekaman').'" method="post">
-                  <table class="table table-responsive table-condensed table-striped" id="myTable">
-                      <thead>
-                          <tr>
-                              <td>
-                                  <select class="form-control" name="action">
-                                      <option value="valid">Validasi</option>
-                                      <option value="batal">Batal</option>
-                                  </select>
-                              </td>
-                              <td><input class="btn btn-info" type="submit" value="Eksekusi"></td>
-                          </tr>
-                          <tr>
-                              <th>No</th>
-                              <th>ID Flow Meter</th>
-                              <th>Nama Flow Meter</th>
-                              <th>Tanggal Perekaman</th>
-                              <th>Flow Meter</th>
-                              <th>Issued By</th>
-                              <th><center>Check Box</center></th>
-                          </tr>      
-                      </thead>
-                      <tbody>
-            ';
+                <h4>Riwayat Pencatatan Harian Periode '.date('d-m-Y',strtotime($tgl_awal)).' s/d '.date('d-m-Y',strtotime($tgl_akhir)).' </h4>
+                <form action="'.base_url('main/updatePerekaman').'" method="post">
+                <table class="table table-responsive table-condensed table-striped" id="myTable">
+                    <thead>
+                        <tr>
+                            <td>
+                                <select class="form-control" name="action">
+                                    <option value="valid">Validasi</option>
+                                    <option value="batal">Batal</option>
+                                </select>
+                            </td>
+                            <td><input class="btn btn-info" type="submit" value="Eksekusi"></td>
+                        </tr>
+                        <tr>
+                            <th>No</th>
+                            <th>ID Flow Meter</th>
+                            <th>Nama Flow Meter</th>
+                            <th>Tanggal Perekaman</th>
+                            <th>Flow Meter</th>
+                            <th>Issued By</th>
+                            <th><center>Check Box</center></th>
+                        </tr>      
+                    </thead>
+                    <tbody>';
 
             foreach ($result as $row){
                 $tabel .= '
-                   <tr>
-                      <td>'.$no.'</td>
-                      <td>'.$row->id_flowmeter.'</td>
-                      <td>'.$row->nama_flowmeter.'</td>
-                      <td>'.$row->waktu_perekaman.'</td>
-                      <td>'.$row->flow_hari_ini.'</td>
-                      <td>'.$row->pembuat.'</td>
-                      <td align="center">
-                          <input type="checkbox" name="cek[]" value="'.$row->id_transaksi.'"/>
-                          <input type="hidden" name="flow[]" value="'.$row->flow_hari_ini.'"/>
-                          <input type="hidden" name="id[]" value="'.$row->id_flow.'"/>
-                      </td>
-                   </tr>
+                    <tr>
+                        <td>'.$no.'</td>
+                        <td>'.$row->id_flowmeter.'</td>
+                        <td>'.$row->nama_flowmeter.'</td>
+                        <td>'.$row->waktu_perekaman.'</td>
+                        <td>'.$row->flow_hari_ini.'</td>
+                        <td>'.$row->pembuat.'</td>
+                        <td align="center">
+                            <input type="checkbox" name="cek[]" value="'.$row->id_transaksi.'"/>
+                            <input type="hidden" name="flow[]" value="'.$row->flow_hari_ini.'"/>
+                            <input type="hidden" name="id[]" value="'.$row->id_flow.'"/>
+                        </td>
+                    </tr>
                 ';
                 $no++;
             }
 
             $tabel .= '
-                          </tbody>
-                      </table>
-                      </form>
-                  ';
+                        </tbody>
+                    </table>
+                    </form>';
 
             $data = array(
                 'status' => 'success',
@@ -790,75 +788,74 @@ class Tenant extends MY_Controller{
         if($result != NULL){
             $no = 1;
             $tabel = '
-                  <h4>Riwayat Pencatatan Harian Periode '.date('d-m-Y',strtotime($tgl_awal)).' s/d '.date('d-m-Y',strtotime($tgl_akhir)).' </h4>
-                  <form action="'.base_url('main/updatePencatatan').'" method="post">
-                  <table class="table table-responsive table-condensed table-striped" id="myTable">
-                      <thead>
-                          <tr>
-                              <td colspan="3">
-                                  <select class="form-control" name="action">
-                                      <option value="valid">Validasi</option>
-                                      <option value="batal">Batal</option>
-                                  </select>
-                              </td>
-                              <td><input class="btn btn-info" type="submit" value="Eksekusi"></td>
-                          </tr>
-                          <tr>
-                              <th>No</th>
-                              <th>ID Sumur</th>
-                              <th>Nama Sumur</th>
-                              <th>Nama Pompa</th>
-                              <th>Nama Flow Meter</th>
-                              <th>Waktu Perekaman Awal</th>
-                              <th>Cuaca</th>
-                              <th>Debit Air</th>
-                              <th>Nilai Flow Awal</th>
-                              <th>Waktu Perekaman Akhir</th>
-                              <th>Cuaca</th>
-                              <th>Debit Air</th>
-                              <th>Nilai Flow Akhir</th>
-                              <th>Total Penggunaan</th>
-                              <th>Issued By</th>
-                              <th><center>Check Box</center></th>
-                          </tr>      
-                      </thead>
-                      <tbody>
-            ';
+                <h4>Riwayat Pencatatan Harian Periode '.date('d-m-Y',strtotime($tgl_awal)).' s/d '.date('d-m-Y',strtotime($tgl_akhir)).' </h4>
+                <form action="'.base_url('main/updatePencatatan').'" method="post">
+                <table class="table table-responsive table-condensed table-striped" id="myTable">
+                    <thead>
+                        <tr>
+                            <td colspan="3">
+                                <select class="form-control" name="action">
+                                    <option value="valid">Validasi</option>
+                                    <option value="batal">Batal</option>
+                                </select>
+                            </td>
+                            <td><input class="btn btn-info" type="submit" value="Eksekusi"></td>
+                        </tr>
+                        <tr>
+                            <th>No</th>
+                            <th>ID Sumur</th>
+                            <th>Nama Sumur</th>
+                            <th>Nama Pompa</th>
+                            <th>Nama Flow Meter</th>
+                            <th>Waktu Perekaman Awal</th>
+                            <th>Cuaca</th>
+                            <th>Debit Air</th>
+                            <th>Nilai Flow Awal</th>
+                            <th>Waktu Perekaman Akhir</th>
+                            <th>Cuaca</th>
+                            <th>Debit Air</th>
+                            <th>Nilai Flow Akhir</th>
+                            <th>Total Penggunaan</th>
+                            <th>Issued By</th>
+                            <th><center>Check Box</center></th>
+                        </tr>      
+                    </thead>
+                    <tbody>';
 
             foreach ($result as $row){
                 $total_penggunaan = $row->flow_sumur_akhir - $row->flow_sumur_awal;
                 $tabel .= '
-                   <tr>
-                      <td>'.$no.'</td>
-                      <td>'.$row->id_sumur.'</td>
-                      <td>'.$row->nama_sumur.'</td>
-                      <td>'.$row->nama_pompa.'</td>
-                      <td>'.$row->nama_flowmeter.'</td>
-                      <td>'.$row->waktu_rekam_awal.'</td>
-                      <td>'.$row->cuaca_awal.'</td>
-                      <td>'.$row->debit_air_awal.'</td>
-                      <td>'.$row->flow_sumur_awal.'</td>
-                      <td>'.$row->waktu_rekam_akhir.'</td>
-                      <td>'.$row->cuaca_akhir.'</td>
-                      <td>'.$row->debit_air_akhir.'</td>
-                      <td>'.$row->flow_sumur_akhir.'</td>
-                      <td>'.$this->Koma($total_penggunaan).'</td>
-                      <td>'.$row->pembuat.'</td>
-                      <td align="center">
-                          <input type="checkbox" name="cek[]" value="'.$row->id_pencatatan.'"/>
-                          <input type="hidden" name="flow[]" value="'.$row->flow_sumur_akhir.'"/>
-                          <input type="hidden" name="id[]" value="'.$row->id_flow.'"/>
-                      </td>
-                   </tr>
-                ';
+                    <tr>
+                        <td>'.$no.'</td>
+                        <td>'.$row->id_sumur.'</td>
+                        <td>'.$row->nama_sumur.'</td>
+                        <td>'.$row->nama_pompa.'</td>
+                        <td>'.$row->nama_flowmeter.'</td>
+                        <td>'.$row->waktu_rekam_awal.'</td>
+                        <td>'.$row->cuaca_awal.'</td>
+                        <td>'.$row->debit_air_awal.'</td>
+                        <td>'.$row->flow_sumur_awal.'</td>
+                        <td>'.$row->waktu_rekam_akhir.'</td>
+                        <td>'.$row->cuaca_akhir.'</td>
+                        <td>'.$row->debit_air_akhir.'</td>
+                        <td>'.$row->flow_sumur_akhir.'</td>
+                        <td>'.$this->Koma($total_penggunaan).'</td>
+                        <td>'.$row->pembuat.'</td>
+                        <td align="center">
+                            <input type="checkbox" name="cek[]" value="'.$row->id_pencatatan.'"/>
+                            <input type="hidden" name="flow[]" value="'.$row->flow_sumur_akhir.'"/>
+                            <input type="hidden" name="id[]" value="'.$row->id_flow.'"/>
+                        </td>
+                    </tr>
+                    ';
                 $no++;
             }
 
             $tabel .= '
-                          </tbody>
-                      </table>
-                      </form>
-                  ';
+                        </tbody>
+                    </table>
+                    </form>
+                ';
 
             $data = array(
                 'status' => 'success',

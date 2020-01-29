@@ -38,7 +38,7 @@ class Main extends MY_Controller {
         $this->ceksesi();
         //$this->cekAccess();
         $title = str_replace('_',' ',$page);
-        $this->navmenu('Data '.ucwords($title),'tenant/v_'.$page,'','','');
+        $this->navmenu(''.ucwords($title),'tenant/v_'.$page,'','','');
     }
 
     public function report($page){

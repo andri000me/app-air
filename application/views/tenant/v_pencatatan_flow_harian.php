@@ -1,12 +1,12 @@
 <?php
-if($this->session->userdata('role') == 'wtp' || $this->session->userdata('role') == 'admin'){
+if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('role_name') == 'admin'){
     ?>
     <script>
         $(function () {
             $("#id_flowmeter").autocomplete({
                 minLength:1,
                 delay:0,
-                source:'<?php echo site_url('main/get_tenant'); ?>',
+                source:'<?php echo site_url('tenant/get_tenant'); ?>',
                 select:function(event, ui){
                     $('#id_flow').val(ui.item.id_flow);
                     $('#nama_flowmeter').val(ui.item.nama_flow);
@@ -21,7 +21,7 @@ if($this->session->userdata('role') == 'wtp' || $this->session->userdata('role')
         <div class="row col-sm-6">
             <center><h4>Form Pencatatan Harian Pelayanan Jasa Air Bersih Untuk Flow Meter</h4></center><br>
             <?php echo validation_errors(); ?>
-            <form method="post" action="<?php echo base_url(). 'main/transaksi_ruko'; ?>">
+            <form method="post" action="<?php echo base_url(). 'tenant/transaksi_tenant'; ?>">
                 <table class="table table-striped">
                     <tr>
                         <div class="form-group">
