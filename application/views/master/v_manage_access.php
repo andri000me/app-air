@@ -179,7 +179,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 
                 $('#idm').val(data.id_role);
                 $('#role').val(data.role);
-                $('#name').val(data.name);
+                $('#name').val(data.nama_role);
             },
             error: function (jqXHR, textStatus, errorThrown)
             {
