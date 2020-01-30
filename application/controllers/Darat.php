@@ -62,7 +62,7 @@ class Darat extends MY_Controller {
         if ($this->form_validation->run() == FALSE) {
             $data['title']='Aplikasi Pelayanan Jasa Air Bersih';
             $data['pengguna'] = $this->data->get_pengguna("darat","darat");
-            $this->load->template('v_input_darat',$data);
+            $this->load->template('darat/v_input_darat',$data);
         }
         else {
             $cek_result = $this->master->cek_pengguna('darat',$nama_pengguna);
@@ -206,7 +206,7 @@ class Darat extends MY_Controller {
 
         if($result == TRUE){
             if($this->session->userdata('role_name') == 'admin')
-                $web = base_url('darat/input_darat');
+                $web = base_url('main/darat/input_darat');
             else
                 $web = base_url('main');
             echo "<script type='text/javascript'>
@@ -215,7 +215,7 @@ class Darat extends MY_Controller {
                 </script>";
             //redirect('main/view?id=v_laporan_transaksi_darat');
         }else{
-            $web = base_url('darat/input_darat');
+            $web = base_url('main/darat/input_darat');
             echo "<script type='text/javascript'>
                     alert('Permintaan Gagal Di Input ! Coba Lagi')
                     
