@@ -221,7 +221,7 @@ class MY_Controller extends CI_Controller
         if($menu == '/'){
             //do nothing
         }else if($access['status'] == FALSE){
-                $_SESSION['access_display'] = 'Tidak Mempunyai Hak Akses';
+                $_SESSION['access_display'] = 'Anda Tidak Mempunyai Hak Akses Untuk Halaman Ini';
                 redirect('main');
         }else{
             //do nothing
