@@ -225,7 +225,7 @@ class Darat extends MY_Controller {
     }
 
     public function tabel_tagihan(){
-        $result = $this->data->get_tabel_transaksi("darat");
+        $result = $this->darat->get_tabel_transaksi();
         $data = array();
         $no = 1;
         $color = '';
@@ -284,7 +284,7 @@ class Darat extends MY_Controller {
 
         if ($this->form_validation->run() == FALSE) {
             $data['title']='Aplikasi Pelayanan Jasa Air Bersih';
-            $this->load->template('v_validasi_pembayaran_darat',$data);
+            $this->load->template('pembayaran/v_pembayaran_darat_cash',$data);
         }else{
             $validasi = $this->data->get_data_kwitansi($id);
 
@@ -297,23 +297,23 @@ class Darat extends MY_Controller {
                 $query = $this->db->update('transaksi_darat');
 
                 if($query){
-                    $web = base_url('main/view?id=validasi_pembayaran_darat');
+                    $web = base_url('main/pembayaran/pembayaran_darat_cash');
                     echo "<script type='text/javascript'>
-                      alert('No Kwitansi Berhasil Di Validasi')
-                      window.location.replace('$web')
+                        alert('No Kwitansi Berhasil Di Validasi')
+                        window.location.replace('$web')
                     </script>";
                 }else{
-                    $web = base_url('main/view?id=validasi_pembayaran_darat');
+                    $web = base_url('main/pembayaran/pembayaran_darat_cash');
                     echo "<script type='text/javascript'>
-                      alert('No Kwitansi Gagal Di Validasi ! Coba Lagi')
-                      window.location.replace('$web')
+                        alert('No Kwitansi Gagal Di Validasi ! Coba Lagi')
+                        window.location.replace('$web')
                     </script>";
                 }
             }else{
-                $web = base_url('main/view?id=validasi_pembayaran_darat');
+                $web = base_url('main/pembayaran/pembayaran_darat_cash');
                 echo "<script type='text/javascript'>
-                      alert('No Kwitansi Ini Sudah Di Validasi')
-                      window.location.replace('$web')
+                        alert('No Kwitansi Ini Sudah Di Validasi')
+                        window.location.replace('$web')
                     </script>";
             }
         }
@@ -322,19 +322,19 @@ class Darat extends MY_Controller {
     public function cancel_pembayaran_darat(){
         $data['tipe'] = "darat";
         $data['id'] = $this->input->post('no_kwitansi');
-        $query = $this->data->cancelNota($data);
+        $query = $this->darat->cancelNota($data);
 
         if($query){
-            $web = base_url('main/view?id=cancel_pembayaran_darat');
+            $web = base_url('main/pembayaran/pembayaran_darat_cash');
             echo "<script type='text/javascript'>
-                      alert('No Kwitansi Berhasil Di Batalkan')
-                      window.location.replace('$web')
+                        alert('No Kwitansi Berhasil Di Batalkan')
+                        window.location.replace('$web')
                     </script>";
         }else{
-            $web = base_url('main/view?id=cancel_pembayaran_darat');
+            $web = base_url('main/pembayaran/pembayaran_darat_cash');
             echo "<script type='text/javascript'>
-                      alert('No Kwitansi Gagal Di Batalkan ! Coba Lagi')
-                      window.location.replace('$web')
+                        alert('No Kwitansi Gagal Di Batalkan ! Coba Lagi')
+                        window.location.replace('$web')
                     </script>";
         }
     }
@@ -342,7 +342,7 @@ class Darat extends MY_Controller {
     public function cancelKwitansi(){
         $data['tipe'] = "darat";
         $data['id'] = $this->input->post('id');
-        $this->data->cancelKwitansi($data);
+        $this->darat->cancelKwitansi($data);
     }
 
     public function realisasi_pembayaran_darat(){
@@ -355,7 +355,7 @@ class Darat extends MY_Controller {
             'issued_at' => date("Y-m-d H:i:s",time()),
             'issued_by' => $this->session->userdata('nama')
         );
-        $this->data->update_pembayaran_darat($this->input->post('id-transaksi'), $data);
+        $this->darat->update_pembayaran_darat($this->input->post('id-transaksi'), $data);
         echo json_encode(array("status" => TRUE));
     }
 
@@ -460,7 +460,7 @@ class Darat extends MY_Controller {
     }
 
     public function pembayaran_darat($id) {
-        $data = $this->darat->get_by_id("darat", $id);
+        $data = $this->darat->get_by_id($id);
         echo json_encode($data);
     }
 
@@ -645,6 +645,12 @@ class Darat extends MY_Controller {
                 $row->tgl_perm_pengantaran = "";
             }
 
+            if($row->status_invoice == "1"){
+                $status_invoice = "Piutang";
+            }else{
+                $status_invoice = "Cash";
+            }
+
             if($row->status_delivery == 0 && $row->batal_nota == 0 && $row->batal_kwitansi == 0){
                 $data[] = array(
                     'no' => $no,
@@ -653,6 +659,7 @@ class Darat extends MY_Controller {
                     'tgl_transaksi' => $row->tgl_transaksi,
                     'tgl_permintaan' => $row->tgl_perm_pengantaran,
                     'total_pengisian' => $row->total_permintaan,
+                    'status_invoice' => $status_invoice,
                     'waktu_mulai_pengantaran' => $row->waktu_mulai_pengantaran,
                     'waktu_selesai_pengantaran' => $row->waktu_selesai_pengantaran,
                     'aksi' => $aksi

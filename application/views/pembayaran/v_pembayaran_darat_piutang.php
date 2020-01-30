@@ -1,5 +1,5 @@
 <?php
-if(($this->session->userdata('role') == "keuangan" || $this->session->userdata('role') == "admin") && $this->session->userdata('session') != NULL){
+if(($this->session->userdata('role_name') == "keuangan" || $this->session->userdata('role_name') == "admin")){
 ?>
 <script type="text/javascript">
     //function getData(){
@@ -13,11 +13,12 @@ if(($this->session->userdata('role') == "keuangan" || $this->session->userdata('
             var a = "<thead>" +
                 "<tr>" +
                 "<th><center>No</center></th>" +
-                "<th><center>No Invoice</center></th>" +
-                "<th><center>Nama Tenant</center></th>" +
+                "<th><center>Nama Pengguna Jasa</center></th>" +
                 "<th><center>Alamat</center></th>" +
                 "<th><center>No Telepon</center></th>" +
-                "<th><center>Waktu Penerbitan Tagihan</center></th>" +
+                "<th><center>Waktu Transaksi</center></th>" +
+                "<th><center>Total Pengisian (Ton)</center></th>" +
+                "<th><center>Tarif</center></th>" +
                 "<th><center>Jumlah Pembayaran</center></th>"+
                 "<th><center>Aksi</center></th>"+
                 "</tr>" +
@@ -26,12 +27,13 @@ if(($this->session->userdata('role') == "keuangan" || $this->session->userdata('
             while (i < myArr.length) {
                 a +="<tr>" +
                     "<td align='center'>"+myArr[i]["no"]+"</td>" +
-                    "<td align='center'>"+myArr[i]["no_invoice"]+"</td>" +
-                    "<td align='center'>"+myArr[i]["nama_tenant"]+"</td>" +
-                    "<td align='center'>"+myArr[i]["lokasi"]+"</td>" +
+                    "<td align='center'>"+myArr[i]["nama_pelanggan"]+"</td>" +
+                    "<td align='center'>"+myArr[i]["alamat"]+"</td>" +
                     "<td align='center'>"+myArr[i]["no_telp"]+"</td>" +
                     "<td align='center'>"+myArr[i]["waktu_transaksi"]+"</td>" +
-                    "<td align='center'>"+myArr[i]["total_bayar"]+"</td>";
+                    "<td align='center'>"+myArr[i]["total_pengisian"]+"</td>" +
+                    "<td align='center'>"+myArr[i]["tarif"]+"</td>" +
+                    "<td align='center'>"+myArr[i]["pembayaran"]+"</td>";
                 if(myArr[i]["aksi"] != null){
                     a += "<td align='center'>"+myArr[i]["aksi"]+"</td>";
                 }
@@ -42,11 +44,12 @@ if(($this->session->userdata('role') == "keuangan" || $this->session->userdata('
                 "<tfoot>" +
                 "<tr>" +
                 "<th><center>No</center></th>" +
-                "<th><center>No Invoice</center></th>" +
-                "<th><center>Nama Tenant</center></th>" +
+                "<th><center>Nama Pengguna Jasa</center></th>" +
                 "<th><center>Alamat</center></th>" +
                 "<th><center>No Telepon</center></th>" +
-                "<th><center>Waktu Penerbitan Tagihan</center></th>" +
+                "<th><center>Waktu Transaksi</center></th>" +
+                "<th><center>Total Pengisian (Ton)</center></th>" +
+                "<th><center>Tarif</center></th>" +
                 "<th><center>Jumlah Pembayaran</center></th>"+
                 "<th><center>Aksi</center></th>"+
                 "</tr>" +
@@ -54,7 +57,7 @@ if(($this->session->userdata('role') == "keuangan" || $this->session->userdata('
             document.getElementById("table").innerHTML= a;
         }
     }
-    xmlhttp.open("GET", "<?php echo base_url("main/tabel_tagihan_tenant")?>", true);
+    xmlhttp.open("GET", "<?php echo base_url("darat/tabel_tagihan")?>", true);
     xmlhttp.send();
     //}
 
@@ -63,7 +66,7 @@ if(($this->session->userdata('role') == "keuangan" || $this->session->userdata('
 <body>
 <div class="container container-fluid">
     <div class="row">
-        <center><h4>Status Pelayanan Jasa Air Bersih Untuk Tenant</h4></center><br>
+        <center><h4>Daftar Tagihan Pelayanan Jasa Air Bersih Untuk Darat (Piutang)</h4></center><br>
         <table class="table table-responsive table-bordered table-striped" id="table"></table>
     </div>
 </div>
@@ -80,16 +83,9 @@ if(($this->session->userdata('role') == "keuangan" || $this->session->userdata('
                     <input type="hidden" value="" name="id-transaksi"/>
                     <div class="form-body">
                         <div class="form-group">
-                            <label class="control-label col-md-3">No Invoice</label>
+                            <label class="control-label col-md-3">Nama Pengguna Jasa</label>
                             <div class="col-md-9">
-                                <input disabled name="no_invoice" id="no_invoice" placeholder="No Invoice" class="form-control" type="text">
-                                <span class="help-block"></span>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="control-label col-md-3">Nama Tenant</label>
-                            <div class="col-md-9">
-                                <input disabled name="nama_tenant" id="nama_tenant" placeholder="Nama Tenant" class="form-control" type="text">
+                                <input disabled name="nama_pelanggan" id="nama_pelanggan" placeholder="Nama Pelanggan" class="form-control" type="text">
                                 <span class="help-block"></span>
                             </div>
                         </div>
@@ -108,16 +104,23 @@ if(($this->session->userdata('role') == "keuangan" || $this->session->userdata('
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3">Waktu Penerbitan Tagihan</label>
+                            <label class="control-label col-md-3">Waktu Transaksi</label>
                             <div class="col-md-9">
                                 <input disabled name="tgl_transaksi" placeholder="Waktu Transaksi" class="form-control" type="text">
                                 <span class="help-block"></span>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3">Total Pembayaran</label>
+                            <label class="control-label col-md-3">Total Pengisian</label>
                             <div class="col-md-9">
-                                <input disabled name="total_pembayaran" placeholder="Total Pembayaran" class="form-control" type="text">
+                                <input disabled name="total_pengisian" placeholder="Total Pengisian" class="form-control" type="text">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Jumlah Pembayaran</label>
+                            <div class="col-md-9">
+                                <input disabled name="pembayaran" placeholder="Rp. " class="form-control" type="text">
                                 <span class="help-block"></span>
                             </div>
                         </div>
@@ -156,20 +159,24 @@ if(($this->session->userdata('role') == "keuangan" || $this->session->userdata('
 
         //Ajax Load data from ajax
         $.ajax({
-            url : "<?php echo site_url('main/pembayaran_tenant')?>/" + id,
+            url : "<?php echo site_url('darat/pembayaran_darat')?>/" + id,
             type: "GET",
             dataType: "JSON",
             success: function(data)
             {
                 $('[name="id-transaksi"]').val(data.id_transaksi);
-                $('[name="no_invoice"]').val(data.no_invoice);
-                $('[name="nama_tenant"]').val(data.nama_tenant);
-                $('[name="alamat"]').val(data.lokasi);
+                $('[name="nama_pelanggan"]').val(data.nama_pengguna_jasa);
+                $('[name="alamat"]').val(data.alamat);
                 $('[name="no_telp"]').val(data.no_telp);
                 $('[name="tgl_transaksi"]').val(data.tgl_transaksi);
-                $('[name="total_pembayaran"]').val(data.total_bayar);
+                $('[name="total_pengisian"]').val(data.realisasi_pengisian);
+                if(data.diskon != null){
+                    $('[name="pembayaran"]').val((data.tarif - (data.tarif * data.diskon/100)) * data.realisasi_pengisian);
+                } else{
+                    $('[name="pembayaran"]').val(data.tarif * data.realisasi_pengisian);
+                }
                 $('#modal_menu').modal('show'); // show bootstrap modal when complete loaded
-                $('.modal-title').text('Realisasi Pengisian'); // Set title to Bootstrap modal title
+                $('.modal-title').text('Realisasi Pembayaran Jasa Air Darat (Piutang)'); // Set title to Bootstrap modal title
             },
             error: function (jqXHR, textStatus, errorThrown)
             {
@@ -183,7 +190,7 @@ if(($this->session->userdata('role') == "keuangan" || $this->session->userdata('
         $('#btnSave').attr('disabled',true); //set button disable
         var url;
 
-        url = "<?php echo site_url('main/realisasi_pembayaran_tenant')?>";
+        url = "<?php echo site_url('darat/realisasi_pembayaran_darat')?>";
 
         // ajax adding data to database
         var formData = new FormData($('#form_realisasi')[0]);
@@ -199,7 +206,7 @@ if(($this->session->userdata('role') == "keuangan" || $this->session->userdata('
                 {
                     $('#modal_menu').modal('hide');
                     alert('Realisasi Berhasil Disimpan');
-                    window.location.replace('<?php echo base_url('main/view?id=realisasi_pembayaran_tenant')?>');
+                    window.location.replace('<?php echo base_url('main/pembayaran/pembayaran_darat_piutang')?>');
                 }
                 else
                 {

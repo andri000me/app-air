@@ -43,6 +43,20 @@ if(($this->session->userdata('role_name') == "loket" || $this->session->userdata
                     <tr>
                         <div class="form-group">
                             <td>
+                                <label for="pelunasan">Pelunasan</label>
+                            </td>
+                            <td>:</td>
+                            <td>
+                                <select name="pelunasan" id="pelunasan" class="form-control">
+                                    <option value="cash">Cash</option>
+                                    <option value="piutang">Piutang</option>
+                                </select>
+                            </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="form-group">
+                            <td>
                                 <label for="nama_pembeli">Nama Pembeli</label>
                             </td>
                             <td>:</td>
@@ -136,20 +150,6 @@ if(($this->session->userdata('role_name') == "loket" || $this->session->userdata
                             <td>:</td>
                             <td>
                                 <input type="number" step=0.01 class="form-control" id="tonnase" name="tonnase" placeholder="Satuan (Ton)"/>
-                            </td>
-                        </div>
-                    </tr>
-                    <tr>
-                        <div class="form-group">
-                            <td>
-                                <label for="pelunasan">Pelunasan</label>
-                            </td>
-                            <td>:</td>
-                            <td>
-                                <select name="pelunasan" id="pelunasan" class="form-control">
-                                    <option value="cash">Cash</option>
-                                    <option value="piutang">Piutang</option>
-                                </select>
                             </td>
                         </div>
                     </tr>

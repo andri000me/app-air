@@ -133,6 +133,9 @@
         <!-- /.container -->
     </nav>
     <br /><br /><br />
+    <?php if(isset($_SESSION['access_display'])){ ?>
+        <body onload='Swal.fire({type: "error",title: "No Access",timer: 3000,text: "<?php echo $_SESSION['access_display'] ?>",});'>
+    <?php unset($_SESSION['access_display']); }?>
     <?php
     if($this->session->userdata('role_name') == 'loket'){
     ?>
@@ -170,7 +173,7 @@
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Piutang Kapal' href='<?php echo base_url("main")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Realisasi Piutang Kapal' href='<?php echo base_url("main/pembayaran/pembayaran_kapal_piutang")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifKapal").innerHTML = '';
                     }
@@ -184,7 +187,7 @@
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifDarat").innerHTML = "<a class='btn btn-danger' title='Realisasi Piutang Darat' href='<?php echo base_url("main/view?id=realisasi_pembayaran_darat")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifDarat").innerHTML = "<a class='btn btn-danger' title='Realisasi Piutang Darat' href='<?php echo base_url("main/pembayaran/pembayaran_darat_piutang")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifDarat").innerHTML = '';
                     }
@@ -197,7 +200,7 @@
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifRuko").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran Ruko' href='<?php echo base_url("main/view?id=realisasi_pembayaran_tenant")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifRuko").innerHTML = "<a class='btn btn-danger' title='Realisasi Pembayaran Ruko' href='<?php echo base_url("main/pembayaran/pembayaran_tenant")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifRuko").innerHTML = '';
                     }

@@ -1404,22 +1404,22 @@ class Report extends MY_Controller{
             $no_perjanjian='';
 
             $tabel = '<center><h4>Laporan Pendapatan Air Ruko Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir )).'</h4></center>
-                      <table class="table table-responsive table-condensed table-striped">
-                      <thead>
-                          <tr>
-                              <th align="center">No</th>
-                              <th align="center">ID Flow Meter</th>
-                              <th align="center">Nama Tenant</th>
-                              <th align="center">No Perjanjian</th>
-                              <th align="center">Tarif</th>
-                              <th align="center">Diskon</th>
-                              <th align="center">Pemakaian Awal</th>
-                              <th align="center">Pemakaian Akhir</th>
-                              <th align="center">Total Penggunaan</th>
-                              <th align="center">Total Pembayaran (Rp.)</th>
-                          </tr>
-                      </thead>
-                      <tbody>';
+                    <table class="table table-responsive table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th align="center">No</th>
+                            <th align="center">ID Flow Meter</th>
+                            <th align="center">Nama Tenant</th>
+                            <th align="center">No Perjanjian</th>
+                            <th align="center">Tarif</th>
+                            <th align="center">Diskon</th>
+                            <th align="center">Pemakaian Awal</th>
+                            <th align="center">Pemakaian Akhir</th>
+                            <th align="center">Total Penggunaan</th>
+                            <th align="center">Total Pembayaran (Rp.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
 
             foreach($result as $row){
                 $data_tagihan = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$row->id_flow);

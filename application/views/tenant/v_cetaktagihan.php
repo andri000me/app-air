@@ -75,7 +75,30 @@ if(($this->session->userdata('role_name') == "operasi" || $this->session->userda
 
         $ton_total = $detail_tagihan->total_pakai;
         $total = $detail_tagihan->total_bayar;
+        $tarif = '';
 
+        if($total >= 250000 && $total <= 1000000){
+            $materai = 3000;
+            $total_bayar = $total + $materai;
+            $total = number_format($total,0,'','.').',-';
+            $total_bayar = number_format($total_bayar,0,'','.').',-';
+            $materai = number_format($materai,0,'','.').',-';
+        } else if($total > 1000000){
+            $materai = 6000;
+            $total_bayar = $total + $materai;
+            $total = number_format($total,0,'','.').',-';
+            $total_bayar = number_format($total_bayar,0,'','.').',-';
+            $materai = number_format($materai,0,'','.').',-';
+        } else {
+            $materai = 0;
+            $total_bayar = $total + $materai;
+            $total = number_format($total,0,'','.').',-';
+            $total_bayar = number_format($total_bayar,0,'','.').',-';
+            $materai = number_format($materai,0,'','.').',-';
+        }
+
+        //$tarif = $data_tagihan->$tarif;        
+        /*
         if($total == '0'){
             return '';
         }
@@ -85,6 +108,7 @@ if(($this->session->userdata('role_name') == "operasi" || $this->session->userda
         else{
             $total = number_format($total,0,'','.').',-';
         }
+        */
 
         if($data_tagihan->tarif == '0'){
             return '';
@@ -95,6 +119,12 @@ if(($this->session->userdata('role_name') == "operasi" || $this->session->userda
         else{
             $data_tagihan->tarif = number_format($data_tagihan->tarif,0,'','.').',-';
         }
+
+        if($data_tagihan->diskon != NULL || $data_tagihan->diskon != '')
+            $diskon = $data_tagihan->diskon." %";
+        else
+            $diskon = '';
+        
         ?>
     <br>
     <table border="1">
@@ -108,6 +138,7 @@ if(($this->session->userdata('role_name') == "operasi" || $this->session->userda
                 <td align="center">Flow Meter Akhir</td>
                 <td align="center">Pemakaian</td>
                 <td align="center">Tarif</td>
+                <td align="center">Diskon</td>
                 <td align="center">Total</td>
             </tr>
             <tr>
@@ -116,16 +147,21 @@ if(($this->session->userdata('role_name') == "operasi" || $this->session->userda
                 <td align="center"><?php echo $ttl_awal ?></td>
                 <td align="center"><?php echo $ttl_akhir ?></td>
                 <td align="center"><?php echo $ton_total?> m3</td>
-                <td align="center"><?php echo $data_tagihan->tarif?></td>
-                <td align="center"><?php echo $total ?></td>
-            </tr>
-            <tr>
-                <td align="right" colspan="6">Sub Total</td>
-                <td align="center"><?php echo $total ?></td>
-            </tr>
-            <tr>
-                <td align="right" colspan="6">Total</td>
+                <td align="center">Rp. <?php echo $data_tagihan->tarif?></td>
+                <td align="center"><?php echo $diskon?></td>
                 <td align="center">Rp. <?php echo $total ?></td>
+            </tr>
+            <tr>
+                <td align="right" colspan="7">Sub Total</td>
+                <td align="center">Rp. <?php echo $total ?></td>
+            </tr>
+            <tr>
+                <td align="right" colspan="7">Materai</td>
+                <td align="center">Rp. <?php echo $materai ?></td>
+            </tr>
+            <tr>
+                <td align="right" colspan="7">Total</td>
+                <td align="center">Rp. <?php echo $total_bayar ?></td>
             </tr>
             <?php
         }
@@ -165,10 +201,10 @@ if(($this->session->userdata('role_name') == "operasi" || $this->session->userda
         </tr>
         <tr>
             <td style="width: 80%" align="right" colspan="4">&nbsp;</td>
-            <td align="center">Asisten Manager Operasi</td>
+            <td align="center">ASMAN OPERASI PELAYANAN NON PETI KEMAS</td>
         </tr>
     </table>
-    <br><br><br><br>
+    <br><br><br>
     <table border="0">
         <tr>
             <td style="width: 80%" align="right" colspan="4">&nbsp;</td>

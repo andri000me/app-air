@@ -36,7 +36,7 @@ class Tenant extends MY_Controller{
                     'id_tenant' => $data->id_tenant,
                     'nama_flow' => $data->nama_flowmeter,
                     'nama_tenant' => $data->nama_tenant,
-                    'label' => $data->id_flowmeter, //variabel array yg dibawa ke label ketikan kunci
+                    'label' => $data->id_flowmeter." => ".$data->nama_tenant, //variabel array yg dibawa ke label ketikan kunci
                 );
             }
         }
@@ -246,6 +246,13 @@ class Tenant extends MY_Controller{
                 if($row->no_perjanjian == NULL){
                     $row->no_perjanjian = "";
                 }
+                $tarif = '';
+
+                if($row->diskon != NULL || $row->diskon != ''){
+                    $tarif = $row->$tarif - ($row->tarif * $row->diskon / 100);
+                } else{
+                    $tarif = $row->$tarif;
+                }
 
                 $tgl_awal = date("d-M-Y",strtotime($row->tgl_awal));
                 $tgl_akhir = date("d-M-Y",strtotime($row->tgl_akhir));
@@ -260,6 +267,7 @@ class Tenant extends MY_Controller{
                         'waktu_transaksi' => $row->tgl_transaksi,
                         'lokasi' => $row->lokasi,
                         'no_telp' => $row->no_telp,
+                        'tarif' => $tarif,
                         'no_perjanjian' => $row->no_perjanjian,
                         'total_pakai' => $row->total_pakai,
                         'total_bayar' => $this->Ribuan($row->total_bayar),
@@ -555,7 +563,7 @@ class Tenant extends MY_Controller{
         $id = $this->input->get('id');
         $data['data'] = $this->tenant->get_by_id("ruko",$id);
         $data['title'] = 'Tagihan Penggunaan';
-        $this->load->template('v_tagihan',$data);
+        $this->load->template('tenant/v_tagihan_air_tenant',$data);
     }
 
     public function buatTagihan($id,$tgl_awal,$tgl_akhir){

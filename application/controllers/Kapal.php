@@ -90,13 +90,13 @@ class Kapal extends MY_Controller{
         }
 
         if($result == TRUE){
-            $web = base_url('main');
+            $web = base_url('main/kapal/input_laut');
             echo "<script type='text/javascript'>
                     alert('Permintaan Berhasil Di Input')
                     window.location.replace('$web')
                     </script>";
         }else{
-            $web = base_url('main/view?id=laut');
+            $web = base_url('main/kapal/input_laut');
             echo "<script type='text/javascript'>
                     alert('Permintaan Gagal Di Input ! Coba Lagi')
                     window.location.replace('$web')
@@ -119,6 +119,7 @@ class Kapal extends MY_Controller{
                 $flow_sesudah = "";
 
                 $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi ));
+                $waktu_selesai_pelayanan = date('d-m-Y H:i', strtotime($row->end_work ));
 
                 if($row->voy_no == NULL){
                     $row->voy_no = "";
@@ -323,6 +324,7 @@ class Kapal extends MY_Controller{
                                 'nama_perusahaan' => $row->nama_agent,
                                 'nama_pemohon' => $row->nama_pemohon,
                                 'tgl_transaksi' => $format_tgl,
+                                'waktu_selesai_pelayanan' => $waktu_selesai_pelayanan,
                                 'total_permintaan' => $row->total_permintaan . " Ton",
                                 'flow_sebelum' => $flow_sebelum,
                                 'flow_sesudah' => $flow_sesudah,
@@ -346,6 +348,7 @@ class Kapal extends MY_Controller{
                             'tgl_transaksi' => $format_tgl,
                             'waktu_pelayanan' => $row->waktu_pelayanan,
                             'total_permintaan' => $row->total_permintaan . " Ton",
+                            'waktu_selesai_pelayanan' => $waktu_selesai_pelayanan,
                             'flow_sebelum' => $flow_sebelum,
                             'flow_sesudah' => $flow_sesudah,
                             'tarif' => $this->Ribuan($tarif),
@@ -375,11 +378,11 @@ class Kapal extends MY_Controller{
             $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi ));
             $realisasi = $row->flowmeter_akhir - $row->flowmeter_awal;
 
-            if($this->session->userdata('role') == "operasi") {
+            if($this->session->userdata('role_name') == "operasi") {
                 if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL){
                     $aksi = '<a class="btn btn-primary" target="_blank" href="'.base_url("kapal/cetakPerhitungan/".$row->id_transaksi."").'">Cetak Perhitungan</a><br><br>';
                 }
-            }else if($this->session->userdata('role') == "keuangan") {
+            }else if($this->session->userdata('role_name') == "keuangan") {
                 if ($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
                     $aksi = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Realisasi" onclick="realisasi(' . "'" . $row->id_transaksi . "'" . ')"> Realisasi <br/> Piutang</a>';
                 }
@@ -409,7 +412,7 @@ class Kapal extends MY_Controller{
             }
 
             if($row->realisasi_transaksi_laut_id_realisasi == NULL){
-                if($this->session->userdata('role') == "keuangan"){
+                if($this->session->userdata('role_name') == "keuangan"){
                     if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
                         $data[] = array(
                             'no' => $no,
@@ -485,7 +488,7 @@ class Kapal extends MY_Controller{
             'issued_at' => date("Y-m-d H:i:s",time()),
             'issued_by' => $this->session->userdata('username')
         );
-        $this->data->update_pembayaran($this->input->post('id-transaksi'), $data);
+        $this->kapal->update_pembayaran($this->input->post('id-transaksi'), $data);
         echo json_encode(array("status" => TRUE));
     }
 

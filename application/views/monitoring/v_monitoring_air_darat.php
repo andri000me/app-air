@@ -22,6 +22,7 @@
                 "<th><center>Alamat</center></th>" +
                 "<th><center>Waktu Permohonan</center></th>" +
                 "<th><center>Waktu Pelayanan</center></th>" +
+                "<th><center>Pembayaran</center></th>" +
                 "<th><center>Vol (Ton)</center></th>" +
                 "<th><center>Waktu Mulai Pengantaran</center></th>" +
                 "<th><center>Waktu Selesai Pengantaran</center></th>" +
@@ -36,6 +37,7 @@
                     "<td align='center'>"+myArr[i]["alamat"]+"</td>" +
                     "<td align='center'>"+myArr[i]["tgl_transaksi"]+"</td>" +
                     "<td align='center'>"+myArr[i]["tgl_permintaan"]+"</td>" +
+                    "<td align='center'>"+myArr[i]["status_invoice"]+"</td>" +
                     "<td align='center'>"+myArr[i]["total_pengisian"]+"</td>" +
                     "<td align='center'>"+myArr[i]["waktu_mulai_pengantaran"]+"</td>" +
                     "<td align='center'>"+myArr[i]["waktu_selesai_pengantaran"]+"</td>" +
@@ -51,6 +53,7 @@
                 "<th><center>Alamat</center></th>" +
                 "<th><center>Waktu Permohonan</center></th>" +
                 "<th><center>Waktu Pelayanan</center></th>" +
+                "<th><center>Pembayaran</center></th>" +
                 "<th><center>Vol (Ton)</center></th>" +
                 "<th><center>Waktu Mulai Pengantaran</center></th>" +
                 "<th><center>Waktu Selesai Pengantaran</center></th>" +

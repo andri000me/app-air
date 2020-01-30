@@ -29,30 +29,37 @@ class Main extends MY_Controller {
 
     public function kapal($page){
         $this->ceksesi();
-        //$this->cekAccess();
+        $this->cekAccess();
         $title = str_replace('_',' ',$page);
         $this->navmenu('Data '.ucwords($title),'kapal/v_'.$page,'','','');
     }
 
     public function tenant($page){
         $this->ceksesi();
-        //$this->cekAccess();
+        $this->cekAccess();
         $title = str_replace('_',' ',$page);
         $this->navmenu(''.ucwords($title),'tenant/v_'.$page,'','','');
     }
 
     public function report($page){
         $this->ceksesi();
-        //$this->cekAccess();
+        $this->cekAccess();
         $title = str_replace('_',' ',$page);
         $this->navmenu(''.ucwords($title),'report/v_'.$page,'','','');
     }
 
     public function monitoring($page){
         $this->ceksesi();
-        //$this->cekAccess();
+        $this->cekAccess();
         $title = str_replace('_',' ',$page);
         $this->navmenu(''.ucwords($title),'monitoring/v_'.$page,'','','');
+    }
+
+    public function pembayaran($page){
+        $this->ceksesi();
+        $this->cekAccess();
+        $title = str_replace('_',' ',$page);
+        $this->navmenu(''.ucwords($title),'pembayaran/v_'.$page,'','','');
     }
 
     public function login(){
