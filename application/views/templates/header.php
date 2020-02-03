@@ -251,7 +251,7 @@
                 xmlhttp.onreadystatechange = function() {
                     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
                         if(xmlhttp.responseText != "0")
-                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Kapal' href='<?php echo base_url("main/monitoring/")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
+                            document.getElementById("notifKapal").innerHTML = "<a class='btn btn-danger' title='Kapal' href='<?php echo base_url("main/monitoring/pelayanan_air_kapal")?>'><span class='glyphicon glyphicon-refresh'> " + xmlhttp.responseText + "</a>";
                         else
                             document.getElementById("notifKapal").innerHTML = '';
                     }

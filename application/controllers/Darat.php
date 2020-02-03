@@ -608,8 +608,7 @@ class Darat extends MY_Controller {
 
     //tampilan monitoring
     public function tabel_monitoring(){
-        $tipe = $this->input->get('id');
-
+        //$tipe = $this->input->get('id');
         $result = $this->darat->get_tabel_transaksi();
         $data = array();
         $no = 1;
@@ -626,9 +625,9 @@ class Darat extends MY_Controller {
 
             if($row->waktu_mulai_pengantaran == NULL || $row->waktu_selesai_pengantaran == NULL){
                 if($row->status_invoice == 1){
-                    $aksi .= '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Perhitungan" target="_blank" href="'.base_url("darat/cetakPerhitunganPiutang/".$row->id_transaksi."").'"> </a>&nbsp;</span>';
-                    $aksi .= '<a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Form Permintaan" target="_blank" href="'.base_url("darat/cetakFPermintaan/".$row->id_transaksi."").'"></a>&nbsp;';
-                    $aksi .= '<span class=""><a class="btn btn-danger glyphicon glyphicon-remove" title="Batal Transaksi" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a></span>';
+                    $aksi .= '<span class=""><a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" title="Cetak Perhitungan" target="_blank" href="'.base_url("darat/cetakPerhitunganPiutang/".$row->id_transaksi."").'"> </a>&nbsp;</span>';
+                    $aksi .= '<a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" title="Cetak Form Permintaan" target="_blank" href="'.base_url("darat/cetakFPermintaan/".$row->id_transaksi."").'"></a>&nbsp;';
+                    $aksi .= '<span class=""><a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="Batal Transaksi" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a></span>';
                 }
             } else {
                 $aksi = "";
