@@ -72,12 +72,24 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                 ],
             });
             
-            $("#cari").click(function(){
-                search();
+            $('#select_all').on('click',function(){
+                if(this.checked){
+                    $('.checkbox').each(function(){
+                        this.checked = true;
+                    });
+                }else{
+                    $('.checkbox').each(function(){
+                        this.checked = false;
+                    });
+                }
             });
-
-            $("#clear").click(function () {
-                $("#laporan").html('');
+            
+            $('.checkbox').on('click',function(){
+                if($('.checkbox:checked').length == $('.checkbox').length){
+                    $('#select_all').prop('checked',true);
+                }else{
+                    $('#select_all').prop('checked',false);
+                }
             });
         });
 
@@ -536,7 +548,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                             <th>Nilai Flow Akhir</th>
                             <th>Total Penggunaan</th>
                             <th>Issued By</th>
-                            <th><center>Check Box</center></th>
+                            <th><input type="checkbox" id="select_all" /></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -558,7 +570,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                             <th>Nilai Flow Akhir</th>
                             <th>Total Penggunaan</th>
                             <th>Issued By</th>
-                            <th><center>Check Box</center></th>
+                            <th></th>
                         </tr>
                     </tfoot>
                 </table>

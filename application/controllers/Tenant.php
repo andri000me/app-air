@@ -74,14 +74,12 @@ class Tenant extends MY_Controller{
     }
 
     public function transaksi_tenant() {
+        $this->_validate_catat_flow();
         $id_tenant = $this->input->post('id_tenant');
         $id_flow = $this->input->post('id_flow');
         $tanggal = $this->input->post('tanggal');
         $tonnase = $this->input->post('flow_hari_ini');
-        $this->form_validation->set_rules('id_flowmeter', 'ID Flowmeter', 'required');
-        $this->form_validation->set_rules('tanggal', 'Tanggal', 'required');
-        $this->form_validation->set_rules('flow_hari_ini', 'Flow Meter Hari Ini', 'required|callback_check_equal_less['.$this->input->post('flowmeter_akhir').']');
-
+        
         $cekFlow = $this->tenant->cekFlowAwal($id_flow);
 
         if($cekFlow == TRUE){
@@ -100,33 +98,55 @@ class Tenant extends MY_Controller{
             'issued_by' => $this->session->userdata('nama')
         );
 
-        if ($this->form_validation->run() == FALSE) {
-            $data['title']='APASIH KKT';
-            $this->load->template('tenant/v_pencatatan_flow_harian',$data);
+        if($cekFlow == TRUE){
+            $this->tenant->inputFlowAwal($data_flow);
+            $result = $this->tenant->input_transaksi("ruko",$data_transaksi);
+        } else{
+            $result = $this->tenant->input_transaksi("ruko",$data_transaksi);
         }
-        else {
-            if($cekFlow == TRUE){
-                $this->tenant->inputFlowAwal($data_flow);
-                $result = $this->tenant->input_transaksi("ruko",$data_transaksi);
-            } else{
-                $result = $this->tenant->input_transaksi("ruko",$data_transaksi);
-            }
 
-            if($result == TRUE){
-                $web = base_url('main/tenant/pencatatan_flow_harian');
-                echo "<script type='text/javascript'>
-                    alert('Permintaan Berhasil Di Input')
-                    window.location.replace('$web')
-                    </script>";
-            }
-            else{
-                $web = base_url('main/tenant/pencatatan_flow_harian');
-                echo "<script type='text/javascript'>
-                    alert('Permintaan Gagal Di Input ! Coba Lagi')
-                    window.location.replace('$web')
-                    </script>";
-            }
+        if($result == TRUE){
+            echo json_encode(array("status" => TRUE,"info" => "Simpan data sukses"));
         }
+        else{
+            echo json_encode(array("status" => FALSE,"info" => "Simpan data gagal"));
+        }        
+    }
+
+    private function _validate_catat_flow(){
+        $data = array();
+        $data['error_string'] = array();
+        $data['inputerror'] = array();
+        $data['status'] = TRUE;
+
+        if($this->input->post('id_flowmeter') == NULL)
+        {
+            $data['inputerror'][] = 'id_flowmeter';
+            $data['error_string'][] = 'ID Flowmeter Tidak Boleh Kosong';
+            $data['status'] = FALSE;
+        }
+
+        if($this->input->post('tanggal') == NULL)
+        {
+            $data['inputerror'][] = 'tanggal';
+            $data['error_string'][] = 'Tanggal Tidak Boleh Kosong';
+            $data['status'] = FALSE;
+        }
+
+        if($this->input->post('flow_hari_ini') == NULL)
+        {
+            $data['inputerror'][] = 'flow_hari_ini';
+            $data['error_string'][] = 'Nilai Flow Hari Ini Tidak Boleh Kosong';
+            $data['status'] = FALSE;
+        }
+
+        if($this->input->post('flow_hari_ini') != NULL && ($this->input->post('flow_hari_ini') <= $this->input->post('flowmeter_akhir')))
+        {
+            $data['inputerror'][] = 'flow_hari_ini';
+            $data['error_string'][] = 'Nilai Flow Hari Ini Tidak Boleh Lebih Kecil Dari Nilai Flow Terakhir';
+            $data['status'] = FALSE;
+        }
+
     }
 
     //fungsi untuk pencatatan sumur
@@ -784,7 +804,7 @@ class Tenant extends MY_Controller{
             $row[] = '<center>'.$r->waktu_perekaman;
             $row[] = '<center>'.$r->flow_hari_ini;
             $row[] = '<center>'.$r->pembuat;
-            $row[] = '<center><input type="checkbox" name="cek[]" value="'.$r->id_transaksi.'"/>
+            $row[] = '<center><input class="checkbox" type="checkbox" name="cek[]" value="'.$r->id_transaksi.'"/>
             <input type="hidden" name="flow[]" value="'.$r->flow_hari_ini.'"/>
             <input type="hidden" name="id[]" value="'.$r->id_flow.'"/>';
             $data[] = $row;
@@ -827,7 +847,7 @@ class Tenant extends MY_Controller{
             $row[] = '<center>'.$r->flow_sumur_akhir;
             $row[] = '<center>'.$this->Koma($total_penggunaan);
             $row[] = '<center>'.$r->pembuat;
-            $row[] = '<center><input type="checkbox" name="cek[]" value="'.$r->id_pencatatan.'"/>
+            $row[] = '<center><input class="checkbox" type="checkbox" name="cek[]" value="'.$r->id_pencatatan.'"/>
                     <input type="hidden" name="flow[]" value="'.$r->flow_sumur_akhir.'"/>
                     <input type="hidden" name="id[]" value="'.$r->id_flow.'"/>';
             $data[] = $row;

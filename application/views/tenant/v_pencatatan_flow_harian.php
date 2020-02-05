@@ -45,7 +45,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                             <th>Tanggal Perekaman</th>
                             <th>Flow Meter</th>
                             <th>Issued By</th>
-                            <th><center>Check Box</center></th>
+                            <th><input type="checkbox" id="select_all" /></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -58,7 +58,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                             <th>Tanggal Perekaman</th>
                             <th>Flow Meter</th>
                             <th>Issued By</th>
-                            <th><center>Check Box</center></th>
+                            <th></th>
                         </tr>
                     </tfoot>
                 </table>
@@ -145,13 +145,6 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                                             </td>
                                         </div>
                                     </tr>
-                                    <tr>
-                                        <div class="form-group">
-                                            <td>
-                                                <input type="submit" class="form-control btn btn-primary" id="input" name="Input" value="Submit" />
-                                            </td>
-                                        </div>
-                                    </tr>
                                 </table>
                             </div>
                         </form>
@@ -213,12 +206,24 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                 ],
             });
             
-            $("#cari").click(function(){
-                search();
+            $('#select_all').on('click',function(){
+                if(this.checked){
+                    $('.checkbox').each(function(){
+                        this.checked = true;
+                    });
+                }else{
+                    $('.checkbox').each(function(){
+                        this.checked = false;
+                    });
+                }
             });
-
-            $("#clear").click(function () {
-                $("#laporan").html('');
+            
+            $('.checkbox').on('click',function(){
+                if($('.checkbox:checked').length == $('.checkbox').length){
+                    $('#select_all').prop('checked',true);
+                }else{
+                    $('#select_all').prop('checked',false);
+                }
             });
         });
 
@@ -256,6 +261,9 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                     if(data.status){
                         reload_table();
                         $('#frm-modal')[0].reset();
+                        $('#btnSave').text('Save'); //change button text
+                        $('#btnSave').attr('disabled',false); //set button enable 
+                        $('#md-form').modal('hide');
                     }
                     else{
                         for (var i = 0; i < data.inputerror.length; i++) {
@@ -265,10 +273,6 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                         alert('Inputan Masih Ada Yang Kosong');
                         $('#btnSave').attr('disabled',false); //set button enable
                     }
-
-                    $('#btnSave').text('Save'); //change button text
-                    $('#btnSave').attr('disabled',false); //set button enable 
-                    $('#md-form').modal('hide');
                 },
                 error: function (jqXHR, textStatus, errorThrown){
                     alert('Error adding data');
