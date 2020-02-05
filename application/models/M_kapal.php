@@ -184,7 +184,7 @@ class M_kapal extends MY_Model{
         $this->db->where('transaksi_laut.soft_delete = 0');
         $this->db->order_by('tgl_transaksi', 'DESC');
 
-        if($config != NULL)
+        if($config != NULL || $config != '')
             $query = $this->db->get('',$config['per_page'], $this->uri->segment(3));
         else
             $query = $this->db->get();

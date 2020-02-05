@@ -200,6 +200,17 @@ if(($this->session->userdata('role_name') == "perencanaan" ||$this->session->use
                     <tr>
                         <div class="form-group">
                             <td>
+                                <label for="total_pengisian">Keterangan</label>
+                            </td>
+                            <td>:</td>
+                            <td>
+                                <input type="text" class="form-control" id="keterangan" name="keterangan" placeholder="Keterangan"/>
+                            </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="form-group">
+                            <td>
                                 <input type="submit" class="form-control btn btn-primary" id="input" name="Input" value="Submit"/>
                             </td>
                         </div>

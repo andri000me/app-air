@@ -26,7 +26,6 @@
                 "<th><center>Vol (Ton)</center></th>" +
                 "<th><center>Waktu Mulai Pengantaran</center></th>" +
                 "<th><center>Waktu Selesai Pengantaran</center></th>" +
-                "<th><center>Aksi</center></th>" +
                 "</tr>" +
                 "</thead>" +
                 "<tbody>";
@@ -41,7 +40,6 @@
                     "<td align='center'>"+myArr[i]["total_pengisian"]+"</td>" +
                     "<td align='center'>"+myArr[i]["waktu_mulai_pengantaran"]+"</td>" +
                     "<td align='center'>"+myArr[i]["waktu_selesai_pengantaran"]+"</td>" +
-                    "<td align='center'>"+myArr[i]["aksi"]+"</td>" +
                     "</tr>";
                 i++;
             }
@@ -57,7 +55,6 @@
                 "<th><center>Vol (Ton)</center></th>" +
                 "<th><center>Waktu Mulai Pengantaran</center></th>" +
                 "<th><center>Waktu Selesai Pengantaran</center></th>" +
-                "<th><center>Aksi</center></th>" +
                 "</tr>" +
                 "</tfoot>";
             document.getElementById("table").innerHTML= a;

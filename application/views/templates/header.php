@@ -33,6 +33,8 @@
     <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.form.js')?>"></script>
     <script type="text/javascript" src="<?php echo base_url('assets/js/id.js')?>"></script>
     <script type="text/javascript" src="<?php echo base_url()?>/assets/select2/dist/js/select2.full.min.js"></script>
+    <script type="text/javascript" src="<?php echo base_url()?>/assets/sweetalert2/dist/sweetalert2.all.min.js"></script>
+
     <script src="<?php echo base_url()?>/assets/loadingoverlay/loadingoverlay.min.js"></script>
     <script src="<?php echo base_url()?>/assets/sweetalert2/dist/sweetalert2.min.js"></script>
 
@@ -86,7 +88,7 @@
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav ">
+                <ul class="nav navbar-nav">
                     <li>
                         <a href="<?php echo base_url('main'); ?>">Beranda</a>
                     </li>
@@ -120,13 +122,16 @@
                         </ul>
                         </li>
                     <?php endforeach; ?>
-                    <li>
-                        <a href="<?php echo base_url('admin/logout'); ?>">Log Out</a>
-                    </li>
                     <?php
                         }
                     ?>
                 </ul>
+                <?php if($this->session->status == 'TRUE'){?>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="<?php echo base_url('main/changePass'); ?>"><span class="glyphicon glyphicon-user"></span> Change Pass</a></li>
+                    <li><a href="<?php echo base_url('admin/logout'); ?>"><span class="glyphicon glyphicon-log-out"></span> Log Out</a></li>
+                </ul>
+                <?php }?>
             </div>
             <!-- /.navbar-collapse -->
         </div>

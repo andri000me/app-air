@@ -156,6 +156,7 @@ class Tenant extends MY_Controller{
     }
 
     public function transaksi_sumur() {
+        $this->_validate_catat_sumur();
         $id_sumur = $this->input->post('id_master_sumur_awal');
         $id_flow = $this->input->post('id_flowmeter');
 
@@ -167,14 +168,6 @@ class Tenant extends MY_Controller{
         $tonnase_akhir = $this->input->post('flow_hari_ini_akhir');
         $debit_awal= $this->input->post('debit_awal');
         $debit_akhir = $this->input->post('debit_akhir');
-
-        $this->form_validation->set_rules('id_master_sumur_awal', 'Nama Sumur', 'required');
-        $this->form_validation->set_rules('tanggal_awal', 'Tanggal', 'required');
-        $this->form_validation->set_rules('flow_hari_ini_awal', 'Flow Meter Awal', 'required');
-        $this->form_validation->set_rules('tanggal_akhir', 'Tanggal', 'required');
-        $this->form_validation->set_rules('flow_hari_ini_akhir', 'Flow Meter Akhir', 'required');
-        $this->form_validation->set_rules('cuaca_awal', 'Kondisi Cuaca', 'required');
-        $this->form_validation->set_rules('cuaca_akhir', 'Kondisi Cuaca', 'required');
 
         $cekFlow = $this->tenant->cekFlowAwal($id_flow);
 
@@ -200,32 +193,80 @@ class Tenant extends MY_Controller{
             'issued_by' => $this->session->userdata('username')
         );
 
-        if ($this->form_validation->run() == FALSE) {
-            $data['title']='Aplikasi Pelayanan Jasa Air Bersih';
-            $this->load->template('tenant/v_pencatatan_sumur_harian',$data);
+        if($cekFlow == TRUE){
+            $this->tenant->inputFlowAwal($data_flow);
+            $result = $this->tenant->input_transaksi("sumur",$data_transaksi);
+        } else{
+            $result = $this->tenant->input_transaksi("sumur",$data_transaksi);
         }
-        else {
-            if($cekFlow == TRUE){
-                $this->tenant->inputFlowAwal($data_flow);
-                $result = $this->tenant->input_transaksi("sumur",$data_transaksi);
-            } else{
-                $result = $this->tenant->input_transaksi("sumur",$data_transaksi);
-            }
 
-            if($result == TRUE){
-                $web = base_url('main/tenant/pencatatan_sumur_harian');
-                echo "<script type='text/javascript'>
-                    alert('Permintaan Berhasil Di Input')
-                    window.location.replace('$web')
-                    </script>";
-            }
-            else{
-                $web = base_url('main/tenant/pencatatan_sumur_harian');
-                echo "<script type='text/javascript'>
-                    alert('Permintaan Gagal Di Input ! Coba Lagi')
-                    window.location.replace('$web')
-                    </script>";
-            }
+        if($result == TRUE){
+            echo json_encode(array("status" => TRUE,"info" => "Simpan data sukses"));
+        }
+        else{
+            echo json_encode(array("status" => FALSE,"info" => "Simpan data gagal"));
+        }
+    }
+
+    private function _validate_catat_sumur(){
+        $data = array();
+        $data['error_string'] = array();
+        $data['inputerror'] = array();
+        $data['status'] = TRUE;
+
+        if($this->input->post('id_master_sumur_awal') == NULL)
+        {
+            $data['inputerror'][] = 'id_master_sumur_awal';
+            $data['error_string'][] = 'ID Flowmeter Tidak Boleh Kosong';
+            $data['status'] = FALSE;
+        }
+
+        if($this->input->post('tanggal_awal') == NULL)
+        {
+            $data['inputerror'][] = 'tanggal_awal';
+            $data['error_string'][] = 'Tanggal Awal Tidak Boleh Kosong';
+            $data['status'] = FALSE;
+        }
+
+        if($this->input->post('flow_hari_ini_awal') == NULL)
+        {
+            $data['inputerror'][] = 'flow_hari_ini_awal';
+            $data['error_string'][] = 'Nilai Flow Awal Hari Ini Tidak Boleh Kosong';
+            $data['status'] = FALSE;
+        }
+
+        if($this->input->post('tanggal_akhir') == NULL)
+        {
+            $data['inputerror'][] = 'tanggal_akhir';
+            $data['error_string'][] = 'Tanggal Akhir Tidak Boleh Kosong';
+            $data['status'] = FALSE;
+        }
+
+        if($this->input->post('flow_hari_ini_akhir') == NULL)
+        {
+            $data['inputerror'][] = 'flow_hari_ini_akhir';
+            $data['error_string'][] = 'Nilai Flow Akhir Hari Ini Tidak Boleh Kosong';
+            $data['status'] = FALSE;
+        }
+
+        if($this->input->post('cuaca_awal') == NULL)
+        {
+            $data['inputerror'][] = 'cuaca_awal';
+            $data['error_string'][] = 'Cuaca Awal Tidak Boleh Kosong';
+            $data['status'] = FALSE;
+        }
+
+        if($this->input->post('cuaca_akhir') == NULL)
+        {
+            $data['inputerror'][] = 'cuaca_akhir';
+            $data['error_string'][] = 'Cuaca Akhir Tidak Boleh Kosong';
+            $data['status'] = FALSE;
+        }
+
+        if($data['status'] === FALSE)
+        {
+            echo json_encode($data);
+            exit();
         }
     }
 
@@ -642,6 +683,17 @@ class Tenant extends MY_Controller{
             }
         }
 
+        if($total >= 249999 && $total < 999999){
+            $materai = 3000;
+            $total = $total + $materai;
+        } else if($total >= 999999){
+            $materai = 6000;
+            $total = $total + $materai;
+        } else {
+            $materai = 0;
+            $total = $total + $materai;
+        }
+
         $data = array(
             'id' => $id,
             'tgl_awal' => $tgl_awal,
@@ -666,211 +718,133 @@ class Tenant extends MY_Controller{
         }
     }
 
-    public function updatePerekaman(){
-        $tipe = $this->input->post('action');
+    public function updatePerekaman($tipe){
+        //$tipe = $this->input->post('action');
 
         if($tipe == 'batal'){
             $result = $this->tenant->setPerekaman($tipe);
 
             if($result){	//jika data berhasil dihapus
-                echo '<script language="javascript">alert("Berhasil Membatalkan Data"); document.location="'.base_url("main/tenant/riwayat_catat_flow").'";</script>';
+                $message = array("status" => TRUE,"info" => "Pembatalan data sukses");
             }else{		//jika gagal menghapus data
-                echo '<script language="javascript">alert("Gagal Membatalkan Data"); document.location="'.base_url("main/tenant/riwayat_catat_flow").'";</script>';
+                $message = array("status" => FALSE,"info" => "Pembatalan data gagal");
             }
         }
         else{
             $result = $this->tenant->setPerekaman($tipe);
 
             if($result){	//jika data berhasil dihapus
-                echo '<script language="javascript">alert("Berhasil Memvalidasi Data"); document.location="'.base_url("main/tenant/riwayat_catat_flow").'";</script>';
+                $message = array("status" => TRUE,"info" => "Validasi data sukses");            
             }else{		//jika gagal menghapus data
-                echo '<script language="javascript">alert("Gagal Memvalidasi Data"); document.location="'.base_url("main/tenant/riwayat_catat_flow").'";</script>';
+                $message = array("status" => FALSE,"info" => "Validasi data gagal");
             }
         }
+
+        echo json_encode($message);
     }
 
-    public function updatePencatatan(){
-        $tipe = $this->input->post('action');
+    public function updatePencatatan($tipe){
+        //$tipe = $this->input->post('action');
 
         if($tipe == 'batal'){
             $result = $this->tenant->setPencatatan($tipe);
 
             if($result){	//jika data berhasil dihapus
-                echo '<script language="javascript">alert("Berhasil Membatalkan Data"); document.location="'.base_url("main/tenant/riwayat_catat_sumur").'";</script>';
+                $message = array("status" => TRUE,"info" => "Pembatalan data sukses");
             }else{		//jika gagal menghapus data
-                echo '<script language="javascript">alert("Gagal Membatalkan Data"); document.location="'.base_url("main/tenant/riwayat_catat_sumur").'";</script>';
+                $message = array("status" => FALSE,"info" => "Pembatalan data gagal");
             }
         }
         else{
             $result = $this->tenant->setPencatatan($tipe);
 
             if($result){	//jika data berhasil dihapus
-                echo '<script language="javascript">alert("Berhasil Memvalidasi Data"); document.location="'.base_url("main/tenant/riwayat_catat_sumur").'";</script>';
+                $message = array("status" => TRUE,"info" => "Validasi data sukses");            
             }else{		//jika gagal menghapus data
-                echo '<script language="javascript">alert("Gagal Memvalidasi Data"); document.location="'.base_url("main/tenant/riwayat_catat_sumur").'";</script>';
+                $message = array("status" => FALSE,"info" => "Validasi data gagal");
             }
         }
+
+        echo json_encode($message);
     }
 
     public function riwayat_catat_flow(){
-        $tgl_awal = $this->input->post('tgl_awal');
-        $tgl_akhir = $this->input->post('tgl_akhir');
-
-        $result = $this->tenant->riwayat_flow($tgl_awal,$tgl_akhir);
-
-        if($result != NULL){
-            $no = 1;
-            $tabel = '
-                <h4>Riwayat Pencatatan Harian Periode '.date('d-m-Y',strtotime($tgl_awal)).' s/d '.date('d-m-Y',strtotime($tgl_akhir)).' </h4>
-                <form action="'.base_url('tenant/updatePerekaman').'" method="post">
-                <table class="table table-responsive table-condensed table-striped" id="myTable">
-                    <thead>
-                        <tr>
-                            <td>
-                                <select class="form-control" name="action">
-                                    <option value="valid">Validasi</option>
-                                    <option value="batal">Batal</option>
-                                </select>
-                            </td>
-                            <td><input class="btn btn-info" type="submit" value="Eksekusi"></td>
-                        </tr>
-                        <tr>
-                            <th>No</th>
-                            <th>ID Flow Meter</th>
-                            <th>Nama Flow Meter</th>
-                            <th>Tanggal Perekaman</th>
-                            <th>Flow Meter</th>
-                            <th>Issued By</th>
-                            <th><center>Check Box</center></th>
-                        </tr>      
-                    </thead>
-                    <tbody>';
-
-            foreach ($result as $row){
-                $tabel .= '
-                    <tr>
-                        <td>'.$no.'</td>
-                        <td>'.$row->id_flowmeter.'</td>
-                        <td>'.$row->nama_flowmeter.'</td>
-                        <td>'.$row->waktu_perekaman.'</td>
-                        <td>'.$row->flow_hari_ini.'</td>
-                        <td>'.$row->pembuat.'</td>
-                        <td align="center">
-                            <input type="checkbox" name="cek[]" value="'.$row->id_transaksi.'"/>
-                            <input type="hidden" name="flow[]" value="'.$row->flow_hari_ini.'"/>
-                            <input type="hidden" name="id[]" value="'.$row->id_flow.'"/>
-                        </td>
-                    </tr>
-                ';
-                $no++;
-            }
-
-            $tabel .= '
-                        </tbody>
-                    </table>
-                    </form>';
-
-            $data = array(
-                'status' => 'success',
-                'tabel' => $tabel,
-            );
-        } else{
-            $data = array(
-                'status' => 'failed'
-            );
+        $data = array();
+        $result = $this->tenant->riwayat_flow()->result();
+        $recordFiltered = $this->tenant->riwayat_flow()->num_rows();
+        $recordTotal = $this->tenant->riwayat_flow()->num_rows();
+        $no = $_POST['start'];
+        
+        foreach ($result as $r){
+            $no++;
+            $row = array();
+            $row[] = '<center>'.$no;
+            $row[] = '<center>'.$r->id_flowmeter;
+            $row[] = '<center>'.$r->nama_flowmeter;
+            $row[] = '<center>'.$r->waktu_perekaman;
+            $row[] = '<center>'.$r->flow_hari_ini;
+            $row[] = '<center>'.$r->pembuat;
+            $row[] = '<center><input type="checkbox" name="cek[]" value="'.$r->id_transaksi.'"/>
+            <input type="hidden" name="flow[]" value="'.$r->flow_hari_ini.'"/>
+            <input type="hidden" name="id[]" value="'.$r->id_flow.'"/>';
+            $data[] = $row;
         }
 
-        echo json_encode($data);
+        $output = array(
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $recordTotal,
+            "recordsFiltered" => $recordFiltered,
+            "data" => $data,
+        );
+
+        echo json_encode($output);
     }
 
     public function riwayat_catat_sumur(){
-        $tgl_awal = $this->input->post('tgl_awal');
-        $tgl_akhir = $this->input->post('tgl_akhir');
+        $data = array();
+        $result = $this->tenant->riwayat_sumur()->result();
+        $recordFiltered = $this->tenant->riwayat_sumur()->num_rows();
+        $recordTotal = $this->tenant->riwayat_sumur()->num_rows();
+        $no = $_POST['start'];
 
-        $result = $this->tenant->riwayat_sumur($tgl_awal,$tgl_akhir);
+        foreach ($result as $r){
+            $no++;
+            $row = array();
+            $total_penggunaan = $r->flow_sumur_akhir - $r->flow_sumur_awal;
 
-        if($result != NULL){
-            $no = 1;
-            $tabel = '
-                <h4>Riwayat Pencatatan Harian Periode '.date('d-m-Y',strtotime($tgl_awal)).' s/d '.date('d-m-Y',strtotime($tgl_akhir)).' </h4>
-                <form action="'.base_url('tenant/updatePencatatan').'" method="post">
-                <table class="table table-responsive table-condensed table-striped" id="myTable">
-                    <thead>
-                        <tr>
-                            <td colspan="3">
-                                <select class="form-control" name="action">
-                                    <option value="valid">Validasi</option>
-                                    <option value="batal">Batal</option>
-                                </select>
-                            </td>
-                            <td><input class="btn btn-info" type="submit" value="Eksekusi"></td>
-                        </tr>
-                        <tr>
-                            <th>No</th>
-                            <th>ID Sumur</th>
-                            <th>Nama Sumur</th>
-                            <th>Nama Pompa</th>
-                            <th>Nama Flow Meter</th>
-                            <th>Waktu Perekaman Awal</th>
-                            <th>Cuaca</th>
-                            <th>Debit Air</th>
-                            <th>Nilai Flow Awal</th>
-                            <th>Waktu Perekaman Akhir</th>
-                            <th>Cuaca</th>
-                            <th>Debit Air</th>
-                            <th>Nilai Flow Akhir</th>
-                            <th>Total Penggunaan</th>
-                            <th>Issued By</th>
-                            <th><center>Check Box</center></th>
-                        </tr>      
-                    </thead>
-                    <tbody>';
-
-            foreach ($result as $row){
-                $total_penggunaan = $row->flow_sumur_akhir - $row->flow_sumur_awal;
-                $tabel .= '
-                    <tr>
-                        <td>'.$no.'</td>
-                        <td>'.$row->id_sumur.'</td>
-                        <td>'.$row->nama_sumur.'</td>
-                        <td>'.$row->nama_pompa.'</td>
-                        <td>'.$row->nama_flowmeter.'</td>
-                        <td>'.$row->waktu_rekam_awal.'</td>
-                        <td>'.$row->cuaca_awal.'</td>
-                        <td>'.$row->debit_air_awal.'</td>
-                        <td>'.$row->flow_sumur_awal.'</td>
-                        <td>'.$row->waktu_rekam_akhir.'</td>
-                        <td>'.$row->cuaca_akhir.'</td>
-                        <td>'.$row->debit_air_akhir.'</td>
-                        <td>'.$row->flow_sumur_akhir.'</td>
-                        <td>'.$this->Koma($total_penggunaan).'</td>
-                        <td>'.$row->pembuat.'</td>
-                        <td align="center">
-                            <input type="checkbox" name="cek[]" value="'.$row->id_pencatatan.'"/>
-                            <input type="hidden" name="flow[]" value="'.$row->flow_sumur_akhir.'"/>
-                            <input type="hidden" name="id[]" value="'.$row->id_flow.'"/>
-                        </td>
-                    </tr>
-                    ';
-                $no++;
-            }
-
-            $tabel .= '
-                        </tbody>
-                    </table>
-                    </form>
-                ';
-
-            $data = array(
-                'status' => 'success',
-                'tabel' => $tabel,
-            );
-        } else{
-            $data = array(
-                'status' => 'failed'
-            );
+            $row[] = '<center>'.$no;
+            $row[] = '<center>'.$r->id_sumur;
+            $row[] = '<center>'.$r->nama_sumur;
+            $row[] = '<center>'.$r->nama_pompa;
+            $row[] = '<center>'.$r->nama_flowmeter;
+            $row[] = '<center>'.$r->waktu_rekam_awal;
+            $row[] = '<center>'.$r->cuaca_awal;
+            $row[] = '<center>'.$r->debit_air_awal;
+            $row[] = '<center>'.$r->flow_sumur_awal;
+            $row[] = '<center>'.$r->waktu_rekam_akhir;
+            $row[] = '<center>'.$r->cuaca_akhir;
+            $row[] = '<center>'.$r->debit_air_akhir;
+            $row[] = '<center>'.$r->flow_sumur_akhir;
+            $row[] = '<center>'.$this->Koma($total_penggunaan);
+            $row[] = '<center>'.$r->pembuat;
+            $row[] = '<center><input type="checkbox" name="cek[]" value="'.$r->id_pencatatan.'"/>
+                    <input type="hidden" name="flow[]" value="'.$r->flow_sumur_akhir.'"/>
+                    <input type="hidden" name="id[]" value="'.$r->id_flow.'"/>';
+            $data[] = $row;
         }
+        
+        $output = array(
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $recordTotal,
+            "recordsFiltered" => $recordFiltered,
+            "data" => $data,
+        );
 
+        echo json_encode($output);
+    }
+
+    public function populateSumur(){
+        $data = $this->tenant->getIdFlowmeter();
         echo json_encode($data);
     }
 }

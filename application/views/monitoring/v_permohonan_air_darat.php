@@ -18,6 +18,7 @@
                         "<th><center>Waktu Permohonan</center></th>" +
                         "<th><center>Waktu Pelayanan</center></th>" +
                         "<th><center>Jenis</center></th>" +
+                        "<th><center>Pembayaran</center></th>" +
                         "<th><center>Tarif (Rp.)</center></th>" +
                         "<th><center>Vol (Ton)</center></th>" +
                         "<th><center>Jumlah Bayar (Rp.)<center></th>" +
@@ -33,6 +34,7 @@
                                 "<td align='center'>"+myArr[i]["tgl_transaksi"]+"</td>" +
                                 "<td align='center'>"+myArr[i]["tgl_permintaan"]+"</td>" +
                                 "<td align='center'>"+myArr[i]["jenis"]+"</td>" +
+                                "<td align='center'>"+myArr[i]["pembayaran"]+"</td>" +
                                 "<td align='center'>"+myArr[i]["tarif"]+"</td>" +
                                 "<td align='center'>"+myArr[i]["total_pengisian"]+"</td>" +
                                 "<td align='center'>"+myArr[i]["total_pembayaran"]+"</td>" +
@@ -46,6 +48,7 @@
                                 "<td align='center'>"+myArr[i]["tgl_transaksi"]+"</td>" +
                                 "<td align='center'>"+myArr[i]["tgl_permintaan"]+"</td>" +
                                 "<td align='center'>"+myArr[i]["jenis"]+"</td>" +
+                                "<td align='center'>"+myArr[i]["pembayaran"]+"</td>" +
                                 "<td align='center'>"+myArr[i]["tarif"]+"</td>" +
                                 "<td align='center'>"+myArr[i]["total_pengisian"]+"</td>" +
                                 "<td align='center'>"+myArr[i]["total_pembayaran"]+"</td>" +
@@ -62,6 +65,7 @@
                         "<th><center>Waktu Permohonan</center></th>" +
                         "<th><center>Waktu Pelayanan</center></th>" +
                         "<th><center>Jenis</center></th>" +
+                        "<th><center>Pembayaran</center></th>" +
                         "<th><center>Tarif (Rp.)</center></th>" +
                         "<th><center>Vol (Ton)</center></th>" +
                         "<th><center>Jumlah Bayar (Rp.)<center></th>" +
@@ -78,7 +82,38 @@
         <div class="container container-fluid">
             <div class="row">
                 <center><h4>Daftar Permohonan Pelayanan Jasa Pengisian Air Bersih</h4></center><br>
-                <table class="table table-responsive table-bordered table-striped" id="table"></table>
+                <table class="table table-responsive table-bordered table-striped" id="table">
+                    <thead>
+                        <tr>
+                            <th><center>No</center></th>
+                            <th><center>Nama Perusahaan / Pemohon</center></th>
+                            <th><center>Waktu Permohonan</center></th>
+                            <th><center>Waktu Pelayanan</center></th>
+                            <th><center>Jenis</center></th>
+                            <th><center>Pembayaran</center></th>
+                            <th><center>Tarif (Rp.)</center></th>
+                            <th><center>Vol (Ton)</center></th>
+                            <th><center>Jumlah Bayar (Rp.)<center></th>
+                            <th><center>Aksi</center></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th><center>No</center></th>
+                            <th><center>Nama Perusahaan / Pemohon</center></th>
+                            <th><center>Waktu Permohonan</center></th>
+                            <th><center>Waktu Pelayanan</center></th>
+                            <th><center>Jenis</center></th>
+                            <th><center>Pembayaran</center></th>
+                            <th><center>Tarif (Rp.)</center></th>
+                            <th><center>Vol (Ton)</center></th>
+                            <th><center>Jumlah Bayar (Rp.)<center></th>
+                            <th><center>Aksi</center></th>
+                        </tr>
+                    </tfoot>
+                </table>
             </div>
         </div>
         </body>

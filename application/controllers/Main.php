@@ -71,6 +71,12 @@ class Main extends MY_Controller {
         $data['title2'] = 'My<b>APPS</b>';
         $this->load->view('errors/',$data,'');
     }
+
+    public function changePass(){
+        $this->ceksesi();
+        //$this->cekAccess();
+        $this->navmenu('Ubah Password','v_changePass','','','');
+    }
     
     //fungsi untuk membuat notifikasi
     public function cekNotifKapal(){

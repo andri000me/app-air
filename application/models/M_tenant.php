@@ -57,12 +57,17 @@ class M_tenant extends MY_Model{
         return $query->affected_rows();
     }
 
-    public function getIdFlowmeter($id){
+    public function getIdFlowmeter($id = ''){
         $this->db->from('master_flowmeter');
-        $this->db->where('id_flow',$id);
+        if($id != ''){
+            $this->db->where('id_flow',$id);
+        }
         $query = $this->db->get();
 
-        return $query->row();
+        if($id != '')
+            return $query->row();
+        else
+            return $query->result();
     }
 
     public function getNamaPompa($id){
@@ -591,13 +596,11 @@ class M_tenant extends MY_Model{
         $this->db->select('id_flow,id_flowmeter,nama_flowmeter,flow_hari_ini,waktu_perekaman,id_transaksi,pencatatan_flow.issued_by as pembuat');
         $this->db->from('pencatatan_flow,master_flowmeter');
         $this->db->where('status_perekaman',NULL);
-        $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
+        //$this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:59")).'"');
         $this->db->where('id_ref_flowmeter = id_flow');
 
         $query = $this->db->get();
-
-        if($query->num_rows() > 0)
-            return $query->result();
+        return $query;
     }
 
     function riwayat_sumur($tgl_awal = '',$tgl_akhir = ''){
@@ -605,15 +608,14 @@ class M_tenant extends MY_Model{
         flow_sumur_awal,flow_sumur_akhir,waktu_rekam_awal,waktu_rekam_akhir,id_pencatatan,pencatatan_sumur.issued_by as pembuat');
         $this->db->from('pencatatan_sumur,master_sumur,master_pompa,master_flowmeter');
         $this->db->where('status_pencatatan',NULL);
-        $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
+        //$this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
         $this->db->where('id_ref_flowmeter = id_flow');
         $this->db->where('id_ref_pompa = id_master_pompa');
         $this->db->where('id_ref_sumur = id_master_sumur');
 
         $query = $this->db->get();
 
-        if($query->num_rows() > 0)
-            return $query->result();
+        return $query;
     }
 
     function tagihanTenant($data){

@@ -8,7 +8,7 @@ if(($this->session->userdata('role_name') == "keuangan" || $this->session->userd
             var kwitansi = $('#no_kwitansi').val();
             if(kwitansi != ""){
                 $.ajax({
-                    url: "<?php echo base_url('main/cari_batal')?>",
+                    url: "<?php echo base_url('darat/cari_batal')?>",
                     method: "POST",
                     data: {kwitansi : kwitansi},
                     dataType: 'json',
@@ -59,7 +59,7 @@ if(($this->session->userdata('role_name') == "keuangan" || $this->session->userd
         <div class="row col-sm-6">
             <center><h4>Form Pembatalan Pembayaran Jasa Air Bersih</h4></center><br>
             <?php echo validation_errors(); ?>
-            <form method="post" action="<?php echo base_url(). 'main/cancel_pembayaran_darat'; ?>">
+            <form method="post" action="<?php echo base_url(). 'darat/cancel_pembayaran_darat'; ?>">
                 <div id="error"></div>
                 <table class="table table-striped">
                     <tr>

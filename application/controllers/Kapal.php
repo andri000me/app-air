@@ -56,6 +56,7 @@ class Kapal extends MY_Controller{
         $tanggal = $this->input->post('tanggal');
         $tonnase = $this->input->post('tonnase');
         $tipe_kapal = $this->input->post('tipe_kapal');
+        $keterangan = $this->input->post('keterangan');
 
         $data_pengguna = $this->master->getDataPembeliLaut($id_pengguna);
         $data_tarif = $this->master->getDataTarif($data_pengguna->pengguna_jasa_id_tarif);
@@ -71,6 +72,7 @@ class Kapal extends MY_Controller{
             'voy_no' => $voy_no,
             'nama_pemohon' => $nama_pemohon,
             'tgl_transaksi' => date("Y-m-d H:i:s",time()),
+            'keterangan' => $keterangan,
             'waktu_pelayanan' => $tanggal,
             'tipe_kapal' => $tipe_kapal,
             'total_permintaan' => $tonnase,
@@ -425,6 +427,7 @@ class Kapal extends MY_Controller{
                             'total_permintaan' => $row->total_permintaan . " Ton",
                             'flow_sebelum' => $flowmeter_awal,
                             'flow_sesudah' => $flowmeter_akhir,
+                            'keterangan' => $row->keterangan,
                             'realisasi' => $realisasi." Ton",
                             'tarif' => $this->Ribuan($tarif),
                             'pembayaran' => $this->Ribuan($tarif * ($flowmeter_akhir - $flowmeter_awal)),
@@ -446,6 +449,7 @@ class Kapal extends MY_Controller{
                         'total_permintaan' => $row->total_permintaan . " Ton",
                         'flow_sebelum' => $flowmeter_awal,
                         'flow_sesudah' => $flowmeter_akhir,
+                        'keterangan' => $row->keterangan,
                         'realisasi' => $realisasi." Ton",
                         'aksi' => $aksi
                     );
@@ -696,6 +700,7 @@ class Kapal extends MY_Controller{
                     'total_permintaan' => $row->total_permintaan." Ton",
                     'flow_sebelum' => "0",
                     'flow_sesudah' => "0",
+                    'keterangan' => $row->keterangan,
                     'status' => $status,
                     'aksi' => $aksi
                 );

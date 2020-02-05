@@ -8,7 +8,7 @@ if(($this->session->userdata('role_name') == "keuangan" || $this->session->userd
             var kwitansi = $('#no_kwitansi').val();
             if(kwitansi != ""){
                 $.ajax({
-                    url: "<?php echo base_url('main/cari')?>",
+                    url: "<?php echo base_url('darat/cari')?>",
                     method: "POST",
                     data: {kwitansi : kwitansi},
                     dataType: 'json',
@@ -58,7 +58,7 @@ if(($this->session->userdata('role_name') == "keuangan" || $this->session->userd
         <div class="row col-sm-6">
             <center><h4>Form Validasi Pembayaran Jasa Air Bersih</h4></center><br>
             <?php echo validation_errors(); ?>
-            <form method="post" action="<?php echo base_url(). 'main/validasi_pembayaran_darat'; ?>">
+            <form method="post" action="<?php echo base_url(). 'darat/validasi_pembayaran_darat'; ?>">
                 <div id="error"></div>
                 <table class="table table-striped">
                     <tr>
@@ -113,10 +113,7 @@ if(($this->session->userdata('role_name') == "keuangan" || $this->session->userd
                             <td>:</td>
                             <td>
                                 <select disabled name="pengguna" id="pengguna" class="form-control">
-                                    <option></option>
-                                    <?php foreach($pengguna as $rowpengguna){?>
-                                        <option value="<?php echo$rowpengguna->id_tarif?>"><?php echo$rowpengguna->tipe_pengguna_jasa?></option>
-                                    <?php }?>
+                                    <option value="">----</option>
                                 </select>
                             </td>
                         </div>
@@ -189,6 +186,20 @@ if(($this->session->userdata('role_name') == "keuangan" || $this->session->userd
         </div>
     </div>
     </body>
+    <script>
+        $(document).ready(function() {
+            $.ajax({
+                url:'<?php echo site_url('master/populatePenggunaDarat')?>',
+                type:'POST',
+                dataType: 'json',
+                success: function( json ) {
+                    $.each(json, function(i, value) {
+                        $('#pengguna').append($('<option>').text(value.tipe_pengguna_jasa).attr('value', value.id_tarif));
+                    });
+                }
+            });
+        });
+    </script>
 
 <?php
 }else

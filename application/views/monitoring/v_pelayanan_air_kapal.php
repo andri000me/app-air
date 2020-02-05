@@ -20,6 +20,7 @@
                 "<th><center>Tanggal Transaksi</center></th>" +
                 "<th><center>Waktu Permintaan Pelayanan</center></th>" +
                 "<th><center>Jumlah Permintaan</center></th>" +
+                "<th><center>Keterangan</center></th>" +
                 "<th><center>Status</center></th>" +
                 "<th><center>Aksi</center></th>" +
                 "</tr>" +
@@ -36,6 +37,7 @@
                     "<td align='center'>"+myArr[i]["tgl_transaksi"]+"</td>" +
                     "<td align='center'>"+myArr[i]["waktu_pelayanan"]+"</td>" +
                     "<td align='center'>"+myArr[i]["total_permintaan"]+"</td>" +
+                    "<td align='center'>"+myArr[i]["keterangan"]+"</td>" +
                     "<td align='center'>"+myArr[i]["status"]+"</td>" +
                     "<td align='center'>"+myArr[i]["aksi"]+"</td>" +
                     "</tr>";
@@ -53,6 +55,7 @@
                 "<th><center>Tanggal Transaksi</center></th>" +
                 "<th><center>Waktu Permintaan Pelayanan</center></th>" +
                 "<th><center>Jumlah Permintaan</center></th>" +
+                "<th><center>Keterangan</center></th>" +
                 "<th><center>Status</center></th>" +
                 "<th><center>Aksi</center></th>" +
                 "</tr>" +

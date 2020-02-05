@@ -123,13 +123,13 @@ class M_darat extends MY_Model{
         $this->db->where('transaksi_darat.soft_delete = 0');
         $this->db->order_by('tgl_transaksi', 'DESC');
 
-        if($config != NULL)
+        if($config != NULL || $config != '')
             $query = $this->db->get('',$config['per_page'], $this->uri->segment(3));
         else
             $query = $this->db->get();
 
         if($query->num_rows() > 0){
-            return $query->result();
+            return $query;
         }
     }
 
