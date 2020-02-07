@@ -443,7 +443,11 @@ class Master extends MY_Controller{
                     $status = "Tidak Aktif";
                 $row[] = $status;
                 $data_flow = $this->tenant->getIdFlowmeter($result->id_ref_flowmeter);
-                $row[] = $data_flow->id_flowmeter;
+                if($data_flow == NULL)
+                    $flowmeter = '';
+                else
+                    $flowmeter = $data_flow->id_flowmeter;
+                $row[] = $flowmeter;
                 $row[] = '<center><a class="btn btn-sm btn-primary" href="javascript:void(0);" onclick="edit('."'".$result->id_tenant."'".')" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
 
                 $data[] = $row;

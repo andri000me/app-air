@@ -66,7 +66,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                 //Set column definition initialisation properties.
                 "columnDefs": [
                     {
-                        "targets": ['all'], //first column / numbering column
+                        "targets": [-1], //first column / numbering column
                         "orderable": false, //set not orderable
                     },
                 ],

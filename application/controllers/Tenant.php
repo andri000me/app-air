@@ -28,17 +28,15 @@ class Tenant extends MY_Controller{
         $tipe = "ruko_tagihan";
         $query = $this->tenant->get_pembeli($tipe,$nama); //query model
 
-        if($query == TRUE){
-            $pelanggan = array();
-            foreach ($query as $data) {
-                $pelanggan[] = array(
-                    'id_flow' => $data->id_flow,
-                    'id_tenant' => $data->id_tenant,
-                    'nama_flow' => $data->nama_flowmeter,
-                    'nama_tenant' => $data->nama_tenant,
-                    'label' => $data->id_flowmeter." => ".$data->nama_tenant, //variabel array yg dibawa ke label ketikan kunci
-                );
-            }
+        $pelanggan = array();
+        foreach ($query as $data) {
+            $pelanggan[] = array(
+                'id_flow' => $data->id_flow,
+                'id_tenant' => $data->id_tenant,
+                'nama_flow' => $data->nama_flowmeter,
+                'nama_tenant' => $data->nama_tenant,
+                'label' => $data->id_flowmeter." => ".$data->nama_tenant, //variabel array yg dibawa ke label ketikan kunci
+            );
         }
 
         echo json_encode($pelanggan);      //data array yang telah kota deklarasikan dibawa menggunakan json
@@ -297,7 +295,7 @@ class Tenant extends MY_Controller{
             $no = 1;
 
             foreach ($result as $row){
-                if($this->session->userdata('role_name') == 'operasi' || $this->session->userdata('role_name')== 'admin' || $tipe == "ruko_admin"){
+                if($this->session->userdata('role_name') == 'operasi' || $this->session->userdata('role_name')== 'admin'){
                     $aksi = '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Tagihan" target="_blank" href="'.base_url("tenant/cetakTagihan/".$row->id_transaksi."/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
                     $aksi .= '<br><br><a class="btn btn-danger glyphicon glyphicon-remove" title="Batal Invoice" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a>';
                 } else{
@@ -310,9 +308,9 @@ class Tenant extends MY_Controller{
                 $tarif = '';
 
                 if($row->diskon != NULL || $row->diskon != ''){
-                    $tarif = $row->$tarif - ($row->tarif * $row->diskon / 100);
+                    $tarif = $row->tarif - ($row->diskon * $row->tarif / 100);
                 } else{
-                    $tarif = $row->$tarif;
+                    $tarif = $row->tarif;
                 }
 
                 $tgl_awal = date("d-M-Y",strtotime($row->tgl_awal));
@@ -453,168 +451,169 @@ class Tenant extends MY_Controller{
         $data_tagihan = $this->tenant->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
         $tabel = '';
 
-        if($data != NULL) {
-            if ($data_tagihan->id_ref_tenant == NULL) {
-                $tabel = '
-                <div class="col-sm-7">
+        if($data_tagihan != NULL){
+            if($data != NULL) {
+                if ($data_tagihan->id_ref_tenant == NULL) {
+                    $tabel = '
+                    <div class="col-sm-7">
+                    <table class="table table-responsive table-condensed table-striped">
+                        <tr>
+                            <td>Nama Tenant</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->nama_tenant . '</td>
+                        </tr>
+                        <tr>
+                            <td>Lokasi</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->lokasi . '</td>
+                        </tr>
+                        <tr>
+                            <td>No Telepon</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->no_telp . '</td>
+                        </tr>
+                        <tr>
+                            <td>Penanggung Jawab</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->penanggung_jawab . '</td>
+                        </tr>
+                    </table></div>';
+                    $tabel .= '
                 <table class="table table-responsive table-condensed table-striped">
+                    <thead>
+                        <td>No</td>
+                        <td>Tanggal Pencatatan</td>
+                        <td>Flow Meter</td>
+                    </thead>
+                    ';
+                        foreach ($data as $row) {
+                            $tabel .= '
                     <tr>
-                        <td>Nama Tenant</td>
-                        <td>:</td>
-                        <td>' . $data_tagihan->nama_tenant . '</td>
-                    </tr>
-                    <tr>
-                        <td>Lokasi</td>
-                        <td>:</td>
-                        <td>' . $data_tagihan->lokasi . '</td>
-                    </tr>
-                    <tr>
-                        <td>No Telepon</td>
-                        <td>:</td>
-                        <td>' . $data_tagihan->no_telp . '</td>
-                    </tr>
-                    <tr>
-                        <td>Penanggung Jawab</td>
-                        <td>:</td>
-                        <td>' . $data_tagihan->penanggung_jawab . '</td>
-                    </tr>
-                </table></div>';
-                $tabel .= '
-            <table class="table table-responsive table-condensed table-striped">
-                <thead>
-                    <td>No</td>
-                    <td>Tanggal Pencatatan</td>
-                    <td>Flow Meter</td>
-                </thead>
-                ';
-                    foreach ($data as $row) {
-                        $tabel .= '
-                <tr>
-                <td>' . $no . '</td>
-                <td>' . $row->waktu_perekaman . '</td>
-                <td>' . $row->flow_hari_ini . '</td>
-                </tr>';
-                    $no++;
+                    <td>' . $no . '</td>
+                    <td>' . $row->waktu_perekaman . '</td>
+                    <td>' . $row->flow_hari_ini . '</td>
+                    </tr>';
+                        $no++;
+                    }
+                    $tabel .= '</table>';
+    
+                    $data = array(
+                        'status' => 'success',
+                        'tabel' => $tabel,
+                        'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Buat Tagihan</a>'
+                    );
                 }
-                $tabel .= '</table>';
-
-                $data = array(
-                    'status' => 'success',
-                    'tabel' => $tabel,
-                    'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Buat Tagihan</a>'
-                );
-            }
-            else {
+                else {
+                    $tabel = '
+                    <div class="col-sm-7">
+                    <table class="table table-responsive table-condensed table-striped">
+                        <tr>
+                            <td>Nama Tenant</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->nama_tenant . '</td>
+                        </tr>
+                        <tr>
+                            <td>Lokasi</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->lokasi . '</td>
+                        </tr>
+                        <tr>
+                            <td>No Telepon</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->no_telp . '</td>
+                        </tr>
+                        <tr>
+                            <td>Penanggung Jawab</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->penanggung_jawab . '</td>
+                        </tr>
+                    </table></div>';
+                    $tabel .= '
+                <table class="table table-responsive table-condensed table-striped">
+                    <tr>
+                        <td>No Perjanjian</td>
+                        <td>:</td>
+                        <td>' . $data_tagihan->no_perjanjian . '</td>
+                    </tr>
+                    <tr>    
+                        <td>Perihal</td>
+                        <td>:</td>
+                        <td>' . $data_tagihan->perihal . '</td>
+                    </tr>
+                    <tr>    
+                        <td>Waktu Kadaluarsa</td>
+                        <td>:</td>
+                        <td>' . $data_tagihan->waktu_kadaluarsa . '</td>
+                    </tr>
+                    <tr>    
+                        <td>Nominal</td>
+                        <td>:</td>
+                        <td>Rp. ' . $this->Ribuan($data_tagihan->nominal) . '</td>
+                    </tr>';
+                    $tabel .= '</table>';
+    
+                    $data = array(
+                        'status' => 'success',
+                        'tabel' => $tabel,
+                        'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Buat Tagihan</a>'
+                    );
+                }
+            }else {
                 $tabel = '
-                <div class="col-sm-7">
+                    <div class="col-sm-7">
+                    <table class="table table-responsive table-condensed table-striped">
+                        <tr>
+                            <td>Nama Tenant</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->nama_tenant . '</td>
+                        </tr>
+                        <tr>
+                            <td>Lokasi</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->lokasi . '</td>
+                        </tr>
+                        <tr>
+                            <td>No Telepon</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->no_telp . '</td>
+                        </tr>
+                        <tr>
+                            <td>Penanggung Jawab</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->penanggung_jawab . '</td>
+                        </tr>
+                    </table></div>';
+                $tabel .= '
                 <table class="table table-responsive table-condensed table-striped">
                     <tr>
-                        <td>Nama Tenant</td>
+                        <td>No Perjanjian</td>
                         <td>:</td>
-                        <td>' . $data_tagihan->nama_tenant . '</td>
+                        <td>' . $data_tagihan->no_perjanjian . '</td>
                     </tr>
-                    <tr>
-                        <td>Lokasi</td>
+                    <tr>    
+                        <td>Perihal</td>
                         <td>:</td>
-                        <td>' . $data_tagihan->lokasi . '</td>
+                        <td>' . $data_tagihan->perihal . '</td>
                     </tr>
-                    <tr>
-                        <td>No Telepon</td>
+                    <tr>    
+                        <td>Waktu Kadaluarsa</td>
                         <td>:</td>
-                        <td>' . $data_tagihan->no_telp . '</td>
+                        <td>' . $data_tagihan->waktu_kadaluarsa . '</td>
                     </tr>
-                    <tr>
-                        <td>Penanggung Jawab</td>
+                    <tr>    
+                        <td>Nominal</td>
                         <td>:</td>
-                        <td>' . $data_tagihan->penanggung_jawab . '</td>
+                        <td>Rp. ' . $this->Ribuan($data_tagihan->nominal) . '</td>
                     </tr>
-                </table></div>';
-                $tabel .= '
-            <table class="table table-responsive table-condensed table-striped">
-                <tr>
-                    <td>No Perjanjian</td>
-                    <td>:</td>
-                    <td>' . $data_tagihan->no_perjanjian . '</td>
-                </tr>
-                <tr>    
-                    <td>Perihal</td>
-                    <td>:</td>
-                    <td>' . $data_tagihan->perihal . '</td>
-                </tr>
-                <tr>    
-                    <td>Waktu Kadaluarsa</td>
-                    <td>:</td>
-                    <td>' . $data_tagihan->waktu_kadaluarsa . '</td>
-                </tr>
-                <tr>    
-                    <td>Nominal</td>
-                    <td>:</td>
-                    <td>Rp. ' . $this->Ribuan($data_tagihan->nominal) . '</td>
-                </tr>
-              ';
+                    ';
                 $tabel .= '</table>';
-
+    
                 $data = array(
                     'status' => 'success',
                     'tabel' => $tabel,
                     'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Buat Tagihan</a>'
                 );
             }
-        }else {
-            $tabel = '
-                <div class="col-sm-7">
-                <table class="table table-responsive table-condensed table-striped">
-                    <tr>
-                        <td>Nama Tenant</td>
-                        <td>:</td>
-                        <td>' . $data_tagihan->nama_tenant . '</td>
-                    </tr>
-                    <tr>
-                        <td>Lokasi</td>
-                        <td>:</td>
-                        <td>' . $data_tagihan->lokasi . '</td>
-                    </tr>
-                    <tr>
-                        <td>No Telepon</td>
-                        <td>:</td>
-                        <td>' . $data_tagihan->no_telp . '</td>
-                    </tr>
-                    <tr>
-                        <td>Penanggung Jawab</td>
-                        <td>:</td>
-                        <td>' . $data_tagihan->penanggung_jawab . '</td>
-                    </tr>
-                </table></div>';
-            $tabel .= '
-            <table class="table table-responsive table-condensed table-striped">
-                <tr>
-                    <td>No Perjanjian</td>
-                    <td>:</td>
-                    <td>' . $data_tagihan->no_perjanjian . '</td>
-                </tr>
-                <tr>    
-                    <td>Perihal</td>
-                    <td>:</td>
-                    <td>' . $data_tagihan->perihal . '</td>
-                </tr>
-                <tr>    
-                    <td>Waktu Kadaluarsa</td>
-                    <td>:</td>
-                    <td>' . $data_tagihan->waktu_kadaluarsa . '</td>
-                </tr>
-                <tr>    
-                    <td>Nominal</td>
-                    <td>:</td>
-                    <td>Rp. ' . $this->Ribuan($data_tagihan->nominal) . '</td>
-                </tr>
-                ';
-            $tabel .= '</table>';
-
-            $data = array(
-                'status' => 'success',
-                'tabel' => $tabel,
-                'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Buat Tagihan</a>'
-            );
         }
 
         echo json_encode($data);

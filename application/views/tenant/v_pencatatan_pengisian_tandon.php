@@ -21,7 +21,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
 
     <body>
         <div class="container" data-role="main" class="ui-content">
-            <h3><center>Riwayat Pencatatan Flow Harian</h3><br>
+            <h3><center>Riwayat Pencatatan Pengisian Tandon (Diluar Transaksi Normal)</h3><br>
             <div class="row col-md-5">
                 <button class="btn btn-primary" onclick="add()"> <span>Tambah Data</span></button>
                 <button class="btn btn-info" onclick="reload_table()"> <span>Refresh Halaman</span></button><br>
@@ -200,8 +200,8 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                 //Set column definition initialisation properties.
                 "columnDefs": [
                     {
-                        "targets": [-1], //first column / numbering column
-                        "orderable": false, //set not orderable
+                        "targets": ['all'], //first column / numbering column
+                        "orderable": true, //set not orderable
                     },
                 ],
             });

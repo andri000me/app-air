@@ -353,7 +353,7 @@ class M_tenant extends MY_Model{
         $this->db->from('master_flowmeter');
         $this->db->join('pencatatan_flow','id_ref_flowmeter = id_flow','left');
         $this->db->where('id_flow', $id_flow);
-        $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
+        $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:59")).'"');
         $this->db->where('status_aktif',1);
         $this->db->order_by('id_flowmeter','ASC');
         $query = $this->db->get();
@@ -398,7 +398,7 @@ class M_tenant extends MY_Model{
     {
 
         $this->db->from("pembeli_darat,master_flowmeter");
-        $this->db->where("master_flowmeter_id_flowmaster = id_flowmeter");
+        $this->db->join('master_flowmeter','master_flowmeter_id_flowmaster = id_flowmeter','left');
 
         $i = 0;
 
@@ -469,8 +469,8 @@ class M_tenant extends MY_Model{
     private function _get_datatables_query_tenant()
     {
 
-        $this->db->from("master_tenant,master_flowmeter");
-        $this->db->where("id_ref_flowmeter = id_flow");
+        $this->db->from("master_tenant");
+        $this->db->join('master_flowmeter','id_ref_flowmeter = id_flow','left');
 
         $i = 0;
 
@@ -548,7 +548,7 @@ class M_tenant extends MY_Model{
     function getFlow($tgl_awal = '',$tgl_akhir = '',$id){
         $this->db->select('*');
         $this->db->from('pencatatan_flow');
-        $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
+        $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:59")).'"');
         $this->db->where('status_perekaman',1);
         $this->db->where('id_ref_flowmeter =',$id);
         $this->db->order_by('flow_hari_ini', 'ASC');
@@ -655,12 +655,12 @@ class M_tenant extends MY_Model{
         $this->db->from('master_tenant');
         $this->db->join('master_flowmeter','master_tenant.id_ref_flowmeter = id_flow','left');
         //$this->db->join('transaksi_tenant','transaksi_tenant.id_ref_flowmeter = id_flow','left');
-        //$this->db->join('pencatatan_flow','pencatatan_flow.id_ref_flowmeter = id_flow','left');
+        $this->db->join('pencatatan_flow','pencatatan_flow.id_ref_flowmeter = id_flow','left');
         $this->db->join('pengguna_jasa','pengguna_jasa_id = id_tarif','left');
         $this->db->join('master_lumpsum','id_ref_tenant = id_tenant','left');
-        //$this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
-        //$this->db->where('status_perekaman',1);
-        $this->db->where('id_ref_flowmeter =',$id);
+        $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:59")).'"');
+        $this->db->where('status_perekaman',1);
+        $this->db->where('master_tenant.id_ref_flowmeter =',$id);
         $query = $this->db->get();
 
         if($query->num_rows() > 0){
@@ -678,7 +678,7 @@ class M_tenant extends MY_Model{
         $this->db->join('pencatatan_flow','pencatatan_flow.id_ref_flowmeter = id_flow','left');
         $this->db->join('pengguna_jasa','pengguna_jasa_id = id_tarif','left');
         $this->db->join('master_lumpsum','id_ref_tenant = id_tenant','left');
-        $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:01:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:00")).'"');
+        $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:59")).'"');
         $this->db->where('status_perekaman',1);
         $this->db->where('master_tenant.id_ref_flowmeter =',$id);
         $this->db->order_by('waktu_perekaman', 'ASC');
@@ -798,7 +798,7 @@ class M_tenant extends MY_Model{
         $this->db->join('pengguna_jasa','pengguna_jasa_id = id_tarif','left');
         $this->db->join('master_lumpsum','id_ref_tenant = id_tenant','left');
         $this->db->where('transaksi_tenant.soft_delete','0');
-        $this->db->order_by('nama_tenant','ASC');
+        $this->db->order_by('id_transaksi','DESC');
 
         if($config != NULL)
             $query = $this->db->get('',$config['per_page'], $this->uri->segment(3));
@@ -841,8 +841,10 @@ class M_tenant extends MY_Model{
         }
         else if($tipe == "ruko_tagihan"){
             $this->db->like('nama_tenant', $nama);
-            $this->db->from('master_tenant,master_flowmeter');
-            $this->db->where('id_flow = id_ref_flowmeter');
+            $this->db->or_like('id_flowmeter', $nama);
+            $this->db->or_like('nama_flowmeter', $nama);
+            $this->db->from('master_tenant');
+            $this->db->join('master_flowmeter','id_flow = id_ref_flowmeter','left');
             $this->db->where('status_aktif_tenant',1);
         }
         else{
