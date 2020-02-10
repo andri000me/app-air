@@ -1,5 +1,5 @@
 <?php
-if($this->session->userdata('role') == "operasi" && $this->session->userdata('session') != NULL){
+if($this->session->userdata('role_name') == "operasi" && $this->session->userdata('session') != NULL){
     ?>
     <script type="text/javascript">
         function getData(){
@@ -77,7 +77,7 @@ if($this->session->userdata('role') == "operasi" && $this->session->userdata('se
     </body>
     <?php
 }
-else if($this->session->userdata('role') == "wtp" && $this->session->userdata('session') != NULL){
+else if($this->session->userdata('role_name') == "wtp" && $this->session->userdata('session') != NULL){
     ?>
     <script type="text/javascript">
         function getData(){

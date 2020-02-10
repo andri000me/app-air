@@ -1,5 +1,5 @@
 <?php
-if(($this->session->userdata('role_name') == "operasi" || $this->session->userdata('role_name') == "admin")){
+if(($this->session->userdata('role_name') == "wtp" || $this->session->userdata('role_name') == "admin")){
     ?>
     <!DOCTYPE html>
     <html>
@@ -21,7 +21,6 @@ if(($this->session->userdata('role_name') == "operasi" || $this->session->userda
         </tr>
     </table>
     <h3 style="text-align: center"><?php echo $title?></h3>
-    <h3 style="text-align: center">No Invoice : <?php echo $detail_tagihan->no_invoice ?></h3>
     <br>
     <table border="0">
         <tr><th align="left">Customer</th></tr>
@@ -128,89 +127,63 @@ if(($this->session->userdata('role_name') == "operasi" || $this->session->userda
         ?>
     <br>
     <table border="1">
-        <?php
-        if($data_tagihan->id_ref_tenant == NULL){
-            ?>
-            <tr>
-                <td align="center">Pembayaran</td>
-                <td align="center">Satuan</td>
-                <td align="center">Flow Meter Awal</td>
-                <td align="center">Flow Meter Akhir</td>
-                <td align="center">Pemakaian</td>
-                <td align="center">Tarif</td>
-                <td align="center">Diskon</td>
-                <td align="center">Total</td>
-            </tr>
-            <tr>
-                <td align="center">Pemakaian Air</td>
-                <td align="center">Ton/m3</td>
-                <td align="center"><?php echo $ttl_awal ?></td>
-                <td align="center"><?php echo $ttl_akhir ?></td>
-                <td align="center"><?php echo $ton_total?> m3</td>
-                <td align="center">Rp. <?php echo $data_tagihan->tarif?></td>
-                <td align="center"><?php echo $diskon?></td>
-                <td align="center">Rp. <?php echo $total ?></td>
-            </tr>
-            <tr>
-                <td align="right" colspan="7">Sub Total</td>
-                <td align="center">Rp. <?php echo $total ?></td>
-            </tr>
-            <tr>
-                <td align="right" colspan="7">Materai</td>
-                <td align="center">Rp. <?php echo $materai ?></td>
-            </tr>
-            <tr>
-                <td align="right" colspan="7">Total</td>
-                <td align="center">Rp. <?php echo $total_bayar ?></td>
-            </tr>
-            <?php
-        }
-        else{
-            ?>
-            <tr>
-                <td align="center">Kegiatan</td>
-                <td align="center">Satuan</td>
-                <td align="center">Pemakaian</td>
-                <td align="center">Tarif</td>
-                <td align="center">Total</td>
-            </tr>
-            <tr>
-                <td align="center">Pemakaian Air</td>
-                <td align="center">Per Bulan</td>
-                <td align="center">1</td>
-                <td align="center"><?php echo $total ?></td>
-                <td align="center"><?php echo $total ?></td>
-            </tr>
-            <tr>
-                <td align="right" colspan="4">Sub Total</td>
-                <td align="center"><?php echo $total ?></td>
-            </tr>
-            <tr>
-                <td align="right" colspan="4">Total</td>
-                <td align="center">Rp. <?php echo $total ?></td>
-            </tr>
-            <?php
-        }
-        ?>
+        <tr>
+            <td align="center">Jasa</td>
+            <td align="center">Satuan</td>
+            <td align="center">Flow Meter Awal</td>
+            <td align="center">Flow Meter Akhir</td>
+            <td align="center">Pemakaian</td>
+        </tr>
+        <tr>
+            <td align="center">Pemakaian Air</td>
+            <td align="center">Ton/m3</td>
+            <td align="center"><?php echo $ttl_awal ?></td>
+            <td align="center"><?php echo $ttl_akhir ?></td>
+            <td align="center"><?php echo $ton_total?> m3</td>
+        </tr>
     </table>
-    <br>
+    <br><br>
     <table border="0">
         <tr>
-            <td style="width: 80%" align="right" colspan="4">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td style="width: 22%" align="right" colspan="4">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td style="width: 40%" align="right" colspan="4">&nbsp;</td>
             <td align="center">Balikpapan, <?php echo date("d M Y",time())?></td>
         </tr>
         <tr>
-            <td><br></td>
+            <td>&nbsp;</td>
+            <td style="width: 22%" align="right" colspan="4">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td style="width: 40%" align="right" colspan="4">&nbsp;</td>
+            <td>&nbsp;</td>
         </tr>
         <tr>
-            <td style="width: 80%" align="right" colspan="4">&nbsp;</td>
+            <td align="center">PENANGGUNG JAWAB TENANT</td>
+            <td style="width: 22%" align="right" colspan="4">&nbsp;</td>
+            <td align="center">PETUGAS WTP</td>
+            <td style="width: 40%" align="right" colspan="4">&nbsp;</td>
             <td align="center">ASMAN OPERASI PELAYANAN NON PETI KEMAS</td>
         </tr>
-    </table>
-    <br><br><br>
-    <table border="0">
         <tr>
-            <td style="width: 80%" align="right" colspan="4">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td style="width: 22%" align="right" colspan="4">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td style="width: 40%" align="right" colspan="4">&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td style="width: 22%" align="right" colspan="4">&nbsp;</td>
+            <td>&nbsp;</td>
+            <td style="width: 40%" align="right" colspan="4">&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td align="center">(..............................................)</td>
+            <td style="width: 22%" align="right" colspan="4">&nbsp;</td>
+            <td align="center">(..............................................)</td>
+            <td style="width: 40%" align="right" colspan="4">&nbsp;</td>
             <td align="center">(..............................................)</td>
         </tr>
     </table>

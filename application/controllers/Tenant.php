@@ -289,17 +289,24 @@ class Tenant extends MY_Controller{
     }
 
     public function tabel_tagihan_tenant(){
-        if($this->session->userdata('role_name')== 'operasi' || $this->session->userdata('role_name')== 'admin'){
+        if($this->session->userdata('role_name')== 'operasi' || $this->session->userdata('role_name')== 'wtp' || $this->session->userdata('role_name')== 'admin'){
             $result = $this->tenant->get_tabel_transaksi();
             $data = array();
             $no = 1;
 
             foreach ($result as $row){
-                if($this->session->userdata('role_name') == 'operasi' || $this->session->userdata('role_name')== 'admin'){
-                    $aksi = '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="Cetak Tagihan" target="_blank" href="'.base_url("tenant/cetakTagihan/".$row->id_transaksi."/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
-                    $aksi .= '<br><br><a class="btn btn-danger glyphicon glyphicon-remove" title="Batal Invoice" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a>';
-                } else{
-                    $aksi = '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="Realisasi Pembayaran" href="javascript:void(0)" onclick="realisasi('."'".$row->id_transaksi."'".');"> </a></span>';
+                if($this->session->userdata('role_name')== 'admin'){
+                    $aksi = '<span class=""><a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" title="Cetak Tagihan" target="_blank" href="'.base_url("tenant/cetakTagihan/".$row->id_transaksi."/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
+                    $aksi .= '&nbsp;<span class=""><a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" title="Cetak Realisasi Pemakaian" target="_blank" href="'.base_url("tenant/cetakRealisasiPemakaian/".$row->id_transaksi."/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
+                    $aksi .= '&nbsp;<a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="Batal Invoice" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a>';
+                }else if($this->session->userdata('role_name') == 'operasi'){
+                    $aksi = '<span class=""><a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" title="Cetak Tagihan" target="_blank" href="'.base_url("tenant/cetakTagihan/".$row->id_transaksi."/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
+                    $aksi .= '&nbsp;<a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="Batal Invoice" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a>';
+                }else if($this->session->userdata('role_name') == 'wtp'){
+                    $aksi = '<span class=""><a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" title="Cetak Realisasi Pemakaian" target="_blank" href="'.base_url("tenant/cetakRealisasiPemakaian/".$row->id_transaksi."/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
+                } 
+                else{
+                    $aksi = '<span class=""><a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" title="Realisasi Pembayaran" href="javascript:void(0)" onclick="realisasi('."'".$row->id_transaksi."'".');"> </a></span>';
                 }
 
                 if($row->no_perjanjian == NULL){
@@ -442,6 +449,32 @@ class Tenant extends MY_Controller{
         $this->dompdf->stream("tagihan.pdf", array('Attachment'=>0));
     }
 
+    public function cetakRealisasiPemakaian($id_transaksi,$id_flowmeter,$tgl_awal,$tgl_akhir){
+        $row = $this->tenant->get_by_id("ruko",$id_flowmeter);
+        $data['title'] = 'Realisasi Penggunaan Air Periode '.date('d-M-Y', strtotime($tgl_awal)).' s/d '.date('d-M-Y', strtotime($tgl_akhir)); //judul title
+
+        if($row->id_ref_tenant != NULL){
+            $data['tagihan'] = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+            $data['data_tagihan'] = $this->tenant->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+            $data['detail_tagihan'] = $this->tenant->getDetailTagihan($id_flowmeter);
+        } else{
+            $data['tagihan'] = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+            $data['data_tagihan'] = $this->tenant->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+            $data['detail_tagihan'] = $this->tenant->getDetailTagihan($id_flowmeter);
+        }
+        $this->load->view('tenant/v_realisasi_pemakaian_tenant', $data);
+
+        $paper_size  = 'A4'; //paper size
+        $orientation = 'landscape'; //tipe format kertas
+        $html = $this->output->get_output();
+
+        $this->dompdf->set_paper($paper_size, $orientation);
+        //Convert to PDF
+        $this->dompdf->load_html($html);
+        $this->dompdf->render();
+        $this->dompdf->stream("tagihan.pdf", array('Attachment'=>0));
+    }
+
     public function tagihan_ruko() {
         $tgl_awal = $this->input->post('tgl_awal');
         $tgl_akhir = $this->input->post('tgl_akhir');
@@ -500,7 +533,7 @@ class Tenant extends MY_Controller{
                     $data = array(
                         'status' => 'success',
                         'tabel' => $tabel,
-                        'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Buat Tagihan</a>'
+                        'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Realisasi Pemakaian</a>'
                     );
                 }
                 else {
@@ -555,7 +588,7 @@ class Tenant extends MY_Controller{
                     $data = array(
                         'status' => 'success',
                         'tabel' => $tabel,
-                        'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Buat Tagihan</a>'
+                        'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Realiasi Pemakaian</a>'
                     );
                 }
             }else {
@@ -611,7 +644,7 @@ class Tenant extends MY_Controller{
                 $data = array(
                     'status' => 'success',
                     'tabel' => $tabel,
-                    'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Buat Tagihan</a>'
+                    'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Realisasi Pemakaian</a>'
                 );
             }
         }

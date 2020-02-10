@@ -63,7 +63,7 @@ if($this->session->userdata('role_name') == 'operasi' || $this->session->userdat
         }
     </script>
     <div class="container container-fluid">
-        <h3>Pembuatan Tagihan Pelayanan Air Untuk Ruko</h3><br><br>
+        <h3>Realisasi Pemakaian Air Untuk Tenant</h3><br><br>
         <div class="row col-sm-6">
             <table class="table table-responsive table-condensed">
                 <tr>
@@ -88,7 +88,7 @@ if($this->session->userdata('role_name') == 'operasi' || $this->session->userdat
                 </tr>
                 <tr>
                     <td>
-                        <span>Tanggal Pembuatan Tagihan</span>
+                        <span>Tanggal Realisasi Pemakaian Air Tenant</span>
                     </td>
                     <td>:</td>
                     <td>

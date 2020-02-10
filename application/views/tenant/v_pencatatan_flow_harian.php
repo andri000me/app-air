@@ -180,7 +180,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                 },
                 // Load data for the table's content from an Ajax source
                 "ajax": {
-                    "url": "<?php echo site_url('tenant/riwayat_catat_tandon')?>",
+                    "url": "<?php echo site_url('tenant/riwayat_catat_flow')?>",
                     "type": "POST"
                 },
 
