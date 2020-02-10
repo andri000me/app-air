@@ -83,12 +83,11 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                                     <tr>
                                         <div class="form-group">
                                             <td>
-                                                <label for="id_flowmeter">ID Flow Meter</label>
+                                                <label for="id_flowmeter">ID Tenant</label>
                                             </td>
                                             <td>:</td>
                                             <td>
-                                                <input type="text" class="form-control" id="id_flowmeter" name="id_flowmeter" placeholder="Masukkan ID Flowmeter"/>
-                                                <input type="hidden" class="form-control" id="id_flow" name="id_flow" />
+                                                <input type="text" class="form-control" id="id_tenant" name="id_tenant" placeholder="Masukkan ID Flowmeter"/>
                                                 <input type="hidden" class="form-control" id="id_tenant" name="id_tenant" />
                                             </td>
                                         </div>
@@ -96,30 +95,18 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                                     <tr>
                                         <div class="form-group">
                                             <td>
-                                                <label for="lokasi">Nama Flow Meter</label>
+                                                <label for="lokasi">Nama Tenant</label>
                                             </td>
                                             <td>:</td>
                                             <td>
-                                                <input type="text" disabled class="form-control" id="nama_flowmeter" name="nama_flowmeter" />
+                                                <input type="text" disabled class="form-control" id="nama_tenant" name="nama_tenant" />
                                             </td>
                                         </div>
                                     </tr>
                                     <tr>
                                         <div class="form-group">
                                             <td>
-                                                <label for="flow_akhir">Flow Akhir</label>
-                                            </td>
-                                            <td>:</td>
-                                            <td>
-                                                <input type="text" disabled class="form-control" id="flow_akhir" name="flow_akhir" />
-                                                <input type="hidden" class="form-control" id="flowmeter_akhir" name="flowmeter_akhir" />
-                                            </td>
-                                        </div>
-                                    </tr>
-                                    <tr>
-                                        <div class="form-group">
-                                            <td>
-                                                <label for="tanggal">Waktu Perekaman</label>
+                                                <label for="tanggal">Waktu Transaksi</label>
                                             </td>
                                             <td>:</td>
                                             <td>
@@ -137,11 +124,11 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                                     <tr>
                                         <div class="form-group">
                                             <td>
-                                                <label for="flow_hari_ini">Flow Meter Hari Ini</label>
+                                                <label for="flow_hari_ini">Total Pengisian</label>
                                             </td>
                                             <td>:</td>
                                             <td>
-                                                <input type="number" class="form-control" id="flow_hari_ini" step=".01" name="flow_hari_ini" placeholder="Satuan (m3)"/>
+                                                <input type="number" class="form-control" id="total_pengisian" step=".01" name="total_pengisian" placeholder="Satuan (m3)"/>
                                             </td>
                                         </div>
                                     </tr>
@@ -168,7 +155,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
             $("#id_flowmeter").autocomplete({
                 minLength:1,
                 delay:0,
-                source:'<?php echo site_url('tenant/get_tenant'); ?>',
+                source:'<?php echo site_url('tenant/get_tenant_lumpsum'); ?>',
                 select:function(event, ui){
                     $('#id_flow').val(ui.item.id_flow);
                     $('#nama_flowmeter').val(ui.item.nama_flow);
@@ -193,7 +180,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                 },
                 // Load data for the table's content from an Ajax source
                 "ajax": {
-                    "url": "<?php echo site_url('tenant/riwayat_catat_flow')?>",
+                    "url": "<?php echo site_url('tenant/riwayat_catat_tandon')?>",
                     "type": "POST"
                 },
 
@@ -237,7 +224,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
             if(save_method == 'add') {
                 $('#btnSave').text('Saving...'); //change button text
                 $('#btnSave').attr('disabled',true); //set button disable
-                url = "<?php echo site_url('tenant/transaksi_tenant');?>"; 
+                url = "<?php echo site_url('tenant/transaksi_pengisian_tandon');?>"; 
             } else {
                 $('#btnSave').text('Updating...'); //change button text
                 $('#btnSave').attr('disabled',true); //set button disable 
@@ -291,7 +278,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
             $('.select2').select2({
             });
             $('#md-form').modal('show'); // show bootstrap modal when complete loaded
-            $('.modal-title').text('Tambah Data Pencatatan Flow Harian'); // Set title to Bootstrap modal title
+            $('.modal-title').text('Tambah Data Realisasi Pengisian Tandon'); // Set title to Bootstrap modal title
         }
 
         function batal(){
@@ -305,7 +292,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
             reload_table();
         });
 
-        function validation(tipe){
+        function validation(){
             swal.fire({
                 title: 'Apakah Anda Yakin ?',
                 text: 'Anda Akan Melakukan Validasi Data !',
@@ -350,7 +337,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                     }
 
                     $.ajax({
-                        url : "<?php echo site_url('tenant/updatePerekaman/')?>"+tipe,
+                        url : "<?php echo site_url('tenant/updatePengisianTandon/')?>",
                         type: "POST",
                         data : formData,
                         dataType: "JSON",
