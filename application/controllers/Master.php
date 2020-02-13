@@ -618,6 +618,115 @@ class Master extends MY_Controller{
         echo json_encode($data);
     }
 
+    //master tandon
+    //fungsi untuk master data tenant
+    public function delete_data_tandon($id){
+        $this->master->delete_data_tandon($id);
+        echo json_encode(array("status" => TRUE));
+    }
+
+    public function ajax_data_tandon(){
+        $list = $this->master->get_datatables_tandon();
+        $data = array();
+        $no = $_POST['start'];
+
+        foreach ($list as $result) {
+            $no++;
+            $row = array();
+            $row[] = "<center>".$no;
+            $row[] = "<center>".$result->nama_tandon;
+            $row[] = "<center>".$result->lokasi;
+
+            $row[] = '<center><a class="btn btn-sm btn-primary" href="javascript:void(0);" onclick="edit('."'".$result->id."'".')" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
+                    &nbsp;<a class="btn btn-sm btn-danger" href="javascript:void(0);" onclick="delete_data('."'".$result->id."'".')" title="Edit"><i class="glyphicon glyphicon-delete"></i> Delete</a>';
+
+            $data[] = $row;
+        }
+
+        $output = array(
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $this->master->count_all_tandon(),
+            "recordsFiltered" => $this->master->count_filtered_tandon(),
+            "data" => $data,
+            );
+
+        //output to json format
+        echo json_encode($output);
+    }
+
+    public function input_data_tandon(){
+        $nama_tandon = $this->input->post('nama_tandon');
+        $lokasi      = $this->input->post('lokasi');
+
+        if($nama_tandon != NULL && $lokasi != NULL){
+            $data_insert = array(
+                'nama_tandon' => $nama_tandon,
+                'lokasi' => $lokasi,
+                'created_at' => date("Y-m-d H:i:s",time()),
+                'created_by' => $this->session->userdata('nama')
+            );
+            $query = $this->db->insert('master_tandon',$data_insert);
+
+            if($query){
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
+            }
+            else{
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
+            }
+        }
+        else{
+            $message = array("status" => FALSE,"info" => "Simpan data error");
+        }
+
+        echo json_encode($message);
+    }
+
+    public function editTandon($id){
+        $data['id'] = $id;
+        $this->db->from('master_tandon');
+        $this->db->where('id',$id);
+        $query = $this->db->get();
+        $result = $query->row();
+
+        $data = array(
+            'idm' => $result->id,
+            'nama_tandon' => $result->nama_tandon,
+            'lokasi' => $result->lokasi,
+        );
+        
+        echo json_encode($data);
+    }
+
+    public function edit_tandon(){
+        $id = $this->input->post('idm');
+        $nama_tandon = $this->input->post('nama_tandon');
+        $lokasi = $this->input->post('lokasi');
+
+        $data_edit = array(
+            'nama_tandon' => $nama_tandon,
+            'lokasi' => $lokasi,
+            'modified_at' => date("Y-m-d H:i:s",time()),
+            'modified_by' => $this->session->userdata('nama')
+        );
+
+        if($id != ""){
+            $this->db->set($data_edit);
+            $this->db->where('id', $id);
+            $query = $this->db->update('master_tandon');
+
+            if($query){
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
+            }else{
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
+            }
+        }
+        else{
+            $message = array("status" => FALSE,"info" => "Simpan data gagal");
+        }
+
+        echo json_encode($message);
+    }
+
     //fungsi untuk master data lumpsum
     public function ajax_data_lumpsum(){
         $list = $this->master->get_datatables_lumpsum();

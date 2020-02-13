@@ -40,10 +40,10 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>ID Flow Meter</th>
-                            <th>Nama Flow Meter</th>
+                            <th>Nama Tandon</th>
+                            <th>Lokasi</th>
                             <th>Tanggal Perekaman</th>
-                            <th>Flow Meter</th>
+                            <th>Banyak Pengisian</th>
                             <th>Issued By</th>
                             <th><input type="checkbox" id="select_all" /></th>
                         </tr>
@@ -53,10 +53,10 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                     <tfoot>
                         <tr>
                             <th>No</th>
-                            <th>ID Flow Meter</th>
-                            <th>Nama Flow Meter</th>
+                            <th>Nama Tandon</th>
+                            <th>Lokasi</th>
                             <th>Tanggal Perekaman</th>
-                            <th>Flow Meter</th>
+                            <th>Banyak Pengisian</th>
                             <th>Issued By</th>
                             <th></th>
                         </tr>
@@ -83,36 +83,34 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                                     <tr>
                                         <div class="form-group">
                                             <td>
-                                                <label for="id_flowmeter">ID Flow Meter</label>
+                                                <label for="id_flowmeter">Nama Tandon</label>
                                             </td>
                                             <td>:</td>
                                             <td>
-                                                <input type="text" class="form-control" id="id_flowmeter" name="id_flowmeter" placeholder="Masukkan ID Flowmeter"/>
-                                                <input type="hidden" class="form-control" id="id_flow" name="id_flow" />
-                                                <input type="hidden" class="form-control" id="id_tenant" name="id_tenant" />
+                                                <input type="text" class="form-control" id="nama_tandon" name="nama_tandon" placeholder="Masukkan Nama Tandon"/>
+                                                <input type="hidden" class="form-control" id="id_tandon" name="id_tandon" />
                                             </td>
                                         </div>
                                     </tr>
                                     <tr>
                                         <div class="form-group">
                                             <td>
-                                                <label for="lokasi">Nama Flow Meter</label>
+                                                <label for="lokasi">Lokasi</label>
                                             </td>
                                             <td>:</td>
                                             <td>
-                                                <input type="text" disabled class="form-control" id="nama_flowmeter" name="nama_flowmeter" />
+                                                <input type="text" disabled class="form-control" id="lokasi" name="lokasi" />
                                             </td>
                                         </div>
                                     </tr>
                                     <tr>
                                         <div class="form-group">
                                             <td>
-                                                <label for="flow_akhir">Flow Akhir</label>
+                                                <label for="flow_akhir">Banyak Pengisian</label>
                                             </td>
                                             <td>:</td>
                                             <td>
-                                                <input type="text" disabled class="form-control" id="flow_akhir" name="flow_akhir" />
-                                                <input type="hidden" class="form-control" id="flowmeter_akhir" name="flowmeter_akhir" />
+                                                <input type="text" class="form-control" id="tonnase" name="tonnase" />
                                             </td>
                                         </div>
                                     </tr>
@@ -131,17 +129,6 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                                                         </span>
                                                     </div>
                                                 </div>
-                                            </td>
-                                        </div>
-                                    </tr>
-                                    <tr>
-                                        <div class="form-group">
-                                            <td>
-                                                <label for="flow_hari_ini">Flow Meter Hari Ini</label>
-                                            </td>
-                                            <td>:</td>
-                                            <td>
-                                                <input type="number" class="form-control" id="flow_hari_ini" step=".01" name="flow_hari_ini" placeholder="Satuan (m3)"/>
                                             </td>
                                         </div>
                                     </tr>
@@ -165,15 +152,14 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
 
     <script>
         $(function () {
-            $("#id_flowmeter").autocomplete({
+            $("#nama_tandon").autocomplete({
                 minLength:1,
                 delay:0,
-                source:'<?php echo site_url('tenant/get_tenant'); ?>',
+                source:'<?php echo site_url('tenant/get_tandon'); ?>',
                 select:function(event, ui){
-                    $('#id_flow').val(ui.item.id_flow);
-                    $('#nama_flowmeter').val(ui.item.nama_flow);
-                    $('#flow_akhir').val(ui.item.flow_akhir);
-                    $('#flowmeter_akhir').val(ui.item.flow_akhir);
+                    $('#nama_tandon').val(ui.item.nama_tandon);
+                    $('#id_tandon').val(ui.item.id_tandon);
+                    $('#lokasi').val(ui.item.lokasi);
                 }
             });
         });
@@ -193,15 +179,15 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                 },
                 // Load data for the table's content from an Ajax source
                 "ajax": {
-                    "url": "<?php echo site_url('tenant/riwayat_catat_flow')?>",
+                    "url": "<?php echo site_url('tenant/riwayat_catat_tandon')?>",
                     "type": "POST"
                 },
 
                 //Set column definition initialisation properties.
                 "columnDefs": [
                     {
-                        "targets": ['all'], //first column / numbering column
-                        "orderable": true, //set not orderable
+                        "targets": [-1], //first column / numbering column
+                        "orderable": false, //set not orderable
                     },
                 ],
             });
@@ -237,7 +223,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
             if(save_method == 'add') {
                 $('#btnSave').text('Saving...'); //change button text
                 $('#btnSave').attr('disabled',true); //set button disable
-                url = "<?php echo site_url('tenant/transaksi_tenant');?>"; 
+                url = "<?php echo site_url('tenant/transaksi_tandon');?>"; 
             } else {
                 $('#btnSave').text('Updating...'); //change button text
                 $('#btnSave').attr('disabled',true); //set button disable 
@@ -291,7 +277,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
             $('.select2').select2({
             });
             $('#md-form').modal('show'); // show bootstrap modal when complete loaded
-            $('.modal-title').text('Tambah Data Pencatatan Flow Harian'); // Set title to Bootstrap modal title
+            $('.modal-title').text('Tambah Data Pencatatan Pengisian Tandon'); // Set title to Bootstrap modal title
         }
 
         function batal(){
@@ -316,16 +302,10 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                 reverseButtons: true
             }).then((willConfirm) => {
                 if (willConfirm.value) {
-                    var flow = [];
                     var cek  = [];
                     var id   = [];
                     var temp_id = [];
-                    var temp_flow = [];
                     var i = 0;  
-
-                    $("input[name*='flow['").each(function(){
-                        temp_flow.push($(this).val());
-                    });
 
                     $("input[name*='id['").each(function(){
                         temp_id.push($(this).val());
@@ -336,21 +316,18 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                             console.log(i);
                             cek.push($(this).val());
                             var id_value = temp_id[i];
-                            var flow_value = temp_flow[i];
                             id.push(id_value);
-                            flow.push(flow_value);
                         }
                         i++;
                     });
                     
                     formData = {
                         id : id,
-                        flow : flow,
                         cek : cek,
                     }
 
                     $.ajax({
-                        url : "<?php echo site_url('tenant/updatePerekaman/')?>"+tipe,
+                        url : "<?php echo site_url('tenant/updatePencatatanTandon/')?>"+tipe,
                         type: "POST",
                         data : formData,
                         dataType: "JSON",

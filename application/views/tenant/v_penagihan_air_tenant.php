@@ -1,5 +1,5 @@
 <?php
-if($this->session->userdata('role_name') == 'operasi' || $this->session->userdata('role_name') == "admin"){
+if($this->session->userdata('role_name') == 'operasi' || $this->session->userdata('role_name') == 'wtp' || $this->session->userdata('role_name') == "admin"){
 ?>
     <body>
     <script>
@@ -14,8 +14,16 @@ if($this->session->userdata('role_name') == 'operasi' || $this->session->userdat
                 }
             });
         });
-    </script>
-    <script>
+
+        $(function () {
+            $('#datepicker').datepicker({
+                clearBtn: true,
+                autoclose: true,
+                format: "yyyy-mm-dd",
+                todayHighlight : true,
+                todayBtn: true,
+            });
+        });
         //ambil data ketika form pencarian memiliki perubahan value
         $(document).ready(function(){
             $("#cari").click(function(){
@@ -97,15 +105,6 @@ if($this->session->userdata('role_name') == 'operasi' || $this->session->userdat
                             <span class="input-group-addon">to</span>
                             <input type="text" class="input-sm form-control" name="tgl-akhir" id="tgl-akhir" />
                         </div>
-                        <script type="text/javascript">
-                            $(function () {
-                                $('#datepicker').datepicker({
-                                    clearBtn: true,
-                                    autoclose: true,
-                                    format: "yyyy-mm-dd"
-                                });
-                            });
-                        </script>
                     </td>
                 </tr>
                 <tr>

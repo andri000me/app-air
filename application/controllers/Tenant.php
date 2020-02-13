@@ -111,6 +111,30 @@ class Tenant extends MY_Controller{
         }        
     }
 
+    public function transaksi_tandon() {
+        $this->_validate_catat_tandon();
+        $id_tenant = $this->input->post('id_tandon');
+        $tanggal = $this->input->post('tanggal');
+        $tonnase = $this->input->post('tonnase');
+
+        $data_transaksi = array(
+            'id_ref_tandon' => $id_tenant,
+            'waktu_perekaman' => $tanggal,
+            'total_pengisian' => $tonnase,
+            'issued_at' => date("Y-m-d H:i:s",time()),
+            'issued_by' => $this->session->userdata('nama')
+        );
+
+        $result = $this->tenant->input_transaksi("tandon",$data_transaksi);
+
+        if($result == TRUE){
+            echo json_encode(array("status" => TRUE,"info" => "Simpan data sukses"));
+        }
+        else{
+            echo json_encode(array("status" => FALSE,"info" => "Simpan data gagal"));
+        }        
+    }
+
     private function _validate_catat_flow(){
         $data = array();
         $data['error_string'] = array();
@@ -145,6 +169,54 @@ class Tenant extends MY_Controller{
             $data['status'] = FALSE;
         }
 
+    }
+
+    private function _validate_catat_tandon(){
+        $data = array();
+        $data['error_string'] = array();
+        $data['inputerror'] = array();
+        $data['status'] = TRUE;
+
+        if($this->input->post('id_tandon') == NULL)
+        {
+            $data['inputerror'][] = 'id_tandon';
+            $data['error_string'][] = 'Nama Tandon Tidak Boleh Kosong';
+            $data['status'] = FALSE;
+        }
+
+        if($this->input->post('tanggal') == NULL)
+        {
+            $data['inputerror'][] = 'tanggal';
+            $data['error_string'][] = 'Tanggal Tidak Boleh Kosong';
+            $data['status'] = FALSE;
+        }
+
+        if($this->input->post('tonnase') == NULL)
+        {
+            $data['inputerror'][] = 'flow_hari_ini';
+            $data['error_string'][] = 'Nilai Pengisian Tidak Boleh Kosong';
+            $data['status'] = FALSE;
+        }
+
+    }
+
+    public function get_tandon() {
+        $nama = $this->input->get('term',TRUE); //variabel kunci yang di bawa dari input text id kode
+        $query = $this->tenant->get_tandon($nama); //query model
+        $pelanggan = array();
+
+        if($query == TRUE){
+            foreach ($query as $data) {
+                $pelanggan[] = array(
+                    'id_tandon' => $data->id,
+                    'label' => $data->nama_tandon, //variabel array yg dibawa ke label ketikan kunci
+                    'nama_tandon' => $data->nama_tandon , //variabel yg dibawa ke id nama
+                    'lokasi' => $data->lokasi,
+                );
+            }
+        }
+
+        echo json_encode($pelanggan);      //data array yang telah kota deklarasikan dibawa menggunakan json
     }
 
     //fungsi untuk pencatatan sumur
@@ -453,6 +525,8 @@ class Tenant extends MY_Controller{
         $row = $this->tenant->get_by_id("ruko",$id_flowmeter);
         $data['title'] = 'Realisasi Penggunaan Air Periode '.date('d-M-Y', strtotime($tgl_awal)).' s/d '.date('d-M-Y', strtotime($tgl_akhir)); //judul title
 
+        $data['tanggal'] = $this->indonesian_date("l, d F Y",time());
+        $data['tgl'] = $this->indonesian_date("d F Y",time());
         if($row->id_ref_tenant != NULL){
             $data['tagihan'] = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
             $data['data_tagihan'] = $this->tenant->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
@@ -820,6 +894,31 @@ class Tenant extends MY_Controller{
         echo json_encode($message);
     }
 
+    public function updatePencatatanTandon($tipe){
+        //$tipe = $this->input->post('action');
+
+        if($tipe == 'batal'){
+            $result = $this->tenant->setPencatatanTandon($tipe);
+
+            if($result){	//jika data berhasil dihapus
+                $message = array("status" => TRUE,"info" => "Pembatalan data sukses");
+            }else{		//jika gagal menghapus data
+                $message = array("status" => FALSE,"info" => "Pembatalan data gagal");
+            }
+        }
+        else{
+            $result = $this->tenant->setPencatatanTandon($tipe);
+
+            if($result){	//jika data berhasil dihapus
+                $message = array("status" => TRUE,"info" => "Validasi data sukses");            
+            }else{		//jika gagal menghapus data
+                $message = array("status" => FALSE,"info" => "Validasi data gagal");
+            }
+        }
+
+        echo json_encode($message);
+    }
+
     public function riwayat_catat_flow(){
         $data = array();
         $result = $this->tenant->riwayat_flow()->result();
@@ -839,6 +938,36 @@ class Tenant extends MY_Controller{
             $row[] = '<center><input class="checkbox" type="checkbox" name="cek[]" value="'.$r->id_transaksi.'"/>
             <input type="hidden" name="flow[]" value="'.$r->flow_hari_ini.'"/>
             <input type="hidden" name="id[]" value="'.$r->id_flow.'"/>';
+            $data[] = $row;
+        }
+
+        $output = array(
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $recordTotal,
+            "recordsFiltered" => $recordFiltered,
+            "data" => $data,
+        );
+
+        echo json_encode($output);
+    }
+
+    public function riwayat_catat_tandon(){
+        $data = array();
+        $result = $this->tenant->riwayat_tandon()->result();
+        $recordFiltered = $this->tenant->riwayat_tandon()->num_rows();
+        $recordTotal = $this->tenant->riwayat_tandon()->num_rows();
+        $no = $_POST['start'];
+        
+        foreach ($result as $r){
+            $no++;
+            $row = array();
+            $row[] = '<center>'.$no;
+            $row[] = '<center>'.$r->nama_tandon;
+            $row[] = '<center>'.$r->lokasi;
+            $row[] = '<center>'.$r->waktu_perekaman;
+            $row[] = '<center>'.$r->total_pengisian;
+            $row[] = '<center>'.$r->issued_by;
+            $row[] = '<center><input class="checkbox" type="checkbox" name="cek[]" value="'.$r->id_transaksi.'"/>';
             $data[] = $row;
         }
 

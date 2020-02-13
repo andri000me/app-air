@@ -603,6 +603,13 @@ class M_tenant extends MY_Model{
         return $query;
     }
 
+    function riwayat_tandon($tgl_awal = '',$tgl_akhir = ''){
+        $this->db->from('vw_transaksi_tandon');
+        $this->db->where('status_pencatatan',NULL);
+        $query = $this->db->get();
+        return $query;
+    }
+
     function riwayat_sumur($tgl_awal = '',$tgl_akhir = ''){
         $this->db->select('id_flow,id_master_sumur,id_sumur,nama_pompa,nama_flowmeter,nama_sumur,cuaca_awal,cuaca_akhir,debit_air_awal,debit_air_akhir,
         flow_sumur_awal,flow_sumur_akhir,waktu_rekam_awal,waktu_rekam_akhir,id_pencatatan,pencatatan_sumur.issued_by as pembuat');
@@ -718,6 +725,28 @@ class M_tenant extends MY_Model{
         return $this->db->affected_rows();
     }
 
+    public function setPencatatanTandon($tipe){
+        $data = $this->input->post('cek');
+        $id = $this->input->post('id');
+        $jumlah = count($data);
+
+        if($tipe == 'batal'){
+            for($i=0;$i<$jumlah;$i++){
+                $this->db->set('status_pencatatan',0);
+                $this->db->where('id_transaksi',$data[$i]);
+                $this->db->update('transaksi_tandon');
+            }
+        } else{
+            for($i=0;$i<$jumlah;$i++){
+                $this->db->set('status_pencatatan',1);
+                $this->db->where('id_transaksi',$data[$i]);
+                $this->db->update('transaksi_tandon');
+            }
+        }
+
+        return $this->db->affected_rows();
+    }
+
     public function setPerekaman($tipe){
         $data = $this->input->post('cek');
         $flow = $this->input->post('flow');
@@ -820,6 +849,8 @@ class M_tenant extends MY_Model{
                 'issued_by' => $data['issued_by'],
             );
             $query = $this->db->insert($this->tabel_transaksi_ruko, $insert_data);
+        } else if($tipe == "tandon"){
+            $query = $this->db->insert('transaksi_tandon', $data);
         } else {
             $query = $this->db->insert('pencatatan_sumur', $data);
         } 
@@ -854,6 +885,19 @@ class M_tenant extends MY_Model{
             $this->db->join('master_pompa','id_ref_pompa = id_master_pompa','left');
             $this->db->join('master_sumur','id_ref_sumur = id_master_sumur','left');
         }
+
+        $query = $this->db->get();
+
+        if ($query->num_rows() > 0) { //jika ada maka jalankan
+            return $query->result();
+        }
+    }
+
+    public function get_tandon($nama){
+        $this->db->like('nama_tandon', $nama);
+        $this->db->where('soft_delete',0);
+        $this->db->from('master_tandon');
+        $this->db->order_by('id','ASC');
 
         $query = $this->db->get();
 

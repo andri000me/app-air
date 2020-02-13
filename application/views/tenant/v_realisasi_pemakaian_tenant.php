@@ -11,28 +11,24 @@ if(($this->session->userdata('role_name') == "wtp" || $this->session->userdata('
                 width: 100%;
                 margin: 0 auto;
             }
+            .underline {
+                text-decoration: underline;
+            }
         </style>
     </head>
     <body>
+    <img src="logo_kkt.png" width="100" height="50">
     <table border="0">
-        <tr>
-            <td><h2>PT Kaltim Kariangau Terminal</h2><h2>Terminal Peti Kemas</h2></td>
-            <td align="right"><h4>Tanggal Tagihan : <?php echo date("d M Y",time())?></h4></td>
-        </tr>
+        <tr><td><center><strong style="font-style: Bold">PT KALTIM KARIANGAU TERMINAL</strong></tr>
+        <tr><td>&nbsp;</td></tr>
+        <tr><td><center><b>FORM PENGISIAN AIR BERSIH DI TPK KARIANGAU</b></td></tr>
     </table>
-    <h3 style="text-align: center"><?php echo $title?></h3>
     <br>
     <table border="0">
-        <tr><th align="left">Customer</th></tr>
         <tr>
             <th align="left" style="width: 15%">Nama</th>
             <td style="width: 2%">:</td>
             <td><?php echo $data_tagihan->nama_tenant ?></td>
-        </tr>
-        <tr>
-            <th align="left" style="width: 10%">Lokasi</th>
-            <td style="width: 2%">:</td>
-            <td><?php echo $data_tagihan->lokasi ?></td>
         </tr>
         <tr>
             <th align="left" style="width: 10%">Kota</th>
@@ -40,9 +36,9 @@ if(($this->session->userdata('role_name') == "wtp" || $this->session->userdata('
             <td>Balikpapan</td>
         </tr>
         <tr>
-            <th align="left" style="width: 10%">No Telepon</th>
+            <th align="left" style="width: 10%">Tanggal</th>
             <td style="width: 2%">:</td>
-            <td><?php echo $data_tagihan->no_telp ?></td>
+            <td><?php echo $tanggal ?></td>
         </tr>
     </table>
         <?php
@@ -73,70 +69,22 @@ if(($this->session->userdata('role_name') == "wtp" || $this->session->userdata('
         }
 
         $ton_total = $detail_tagihan->total_pakai;
-        $total = $detail_tagihan->total_bayar;
-        $tarif = '';
-
-        if($total >= 250000 && $total <= 1000000){
-            $materai = 3000;
-            $total_bayar = $total + $materai;
-            $total = number_format($total,0,'','.').',-';
-            $total_bayar = number_format($total_bayar,0,'','.').',-';
-            $materai = number_format($materai,0,'','.').',-';
-        } else if($total > 1000000){
-            $materai = 6000;
-            $total_bayar = $total + $materai;
-            $total = number_format($total,0,'','.').',-';
-            $total_bayar = number_format($total_bayar,0,'','.').',-';
-            $materai = number_format($materai,0,'','.').',-';
-        } else {
-            $materai = 0;
-            $total_bayar = $total + $materai;
-            $total = number_format($total,0,'','.').',-';
-            $total_bayar = number_format($total_bayar,0,'','.').',-';
-            $materai = number_format($materai,0,'','.').',-';
-        }
-
-        //$tarif = $data_tagihan->$tarif;        
-        /*
-        if($total == '0'){
-            return '';
-        }
-        elseif($total < 100){
-            $total.= ',-';
-        }
-        else{
-            $total = number_format($total,0,'','.').',-';
-        }
-        */
-
-        if($data_tagihan->tarif == '0'){
-            return '';
-        }
-        elseif($data_tagihan->tarif < 100){
-            $data_tagihan->tarif.= ',-';
-        }
-        else{
-            $data_tagihan->tarif = number_format($data_tagihan->tarif,0,'','.').',-';
-        }
-
-        if($data_tagihan->diskon != NULL || $data_tagihan->diskon != '')
-            $diskon = $data_tagihan->diskon." %";
-        else
-            $diskon = '';
         
         ?>
     <br>
     <table border="1">
         <tr>
-            <td align="center">Jasa</td>
-            <td align="center">Satuan</td>
-            <td align="center">Flow Meter Awal</td>
-            <td align="center">Flow Meter Akhir</td>
-            <td align="center">Pemakaian</td>
+            <td align="center">NO</td>
+            <td align="center">JENIS PELAYANAN</td>
+            <td align="center">SATUAN</td>
+            <td align="center">METERAN AWAL BULAN</td>
+            <td align="center">METERAN AKHIR BULAN</td>
+            <td align="center">TOTAL PEMAKAIAN</td>
         </tr>
         <tr>
-            <td align="center">Pemakaian Air</td>
-            <td align="center">Ton/m3</td>
+            <td align="center">1</td>
+            <td align="center">PENGISIAN AIR BERSIH</td>
+            <td align="center">TON</td>
             <td align="center"><?php echo $ttl_awal ?></td>
             <td align="center"><?php echo $ttl_akhir ?></td>
             <td align="center"><?php echo $ton_total?> m3</td>
@@ -146,45 +94,80 @@ if(($this->session->userdata('role_name') == "wtp" || $this->session->userdata('
     <table border="0">
         <tr>
             <td>&nbsp;</td>
-            <td style="width: 22%" align="right" colspan="4">&nbsp;</td>
             <td>&nbsp;</td>
-            <td style="width: 40%" align="right" colspan="4">&nbsp;</td>
-            <td align="center">Balikpapan, <?php echo date("d M Y",time())?></td>
+            <td align="center">Balikpapan, <?php echo $tgl ?></td>
         </tr>
         <tr>
             <td>&nbsp;</td>
-            <td style="width: 22%" align="right" colspan="4">&nbsp;</td>
             <td>&nbsp;</td>
-            <td style="width: 40%" align="right" colspan="4">&nbsp;</td>
             <td>&nbsp;</td>
         </tr>
         <tr>
-            <td align="center">PENANGGUNG JAWAB TENANT</td>
-            <td style="width: 22%" align="right" colspan="4">&nbsp;</td>
-            <td align="center">PETUGAS WTP</td>
-            <td style="width: 40%" align="right" colspan="4">&nbsp;</td>
-            <td align="center">ASMAN OPERASI PELAYANAN NON PETI KEMAS</td>
+            <td align="center"><?php echo $data_tagihan->nama_tenant ?></td>
+            <td>&nbsp;</td>
+            <td align="center">KOORDINATOR PENGISIAN AIR BERSIH</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
-            <td style="width: 22%" align="right" colspan="4">&nbsp;</td>
             <td>&nbsp;</td>
-            <td style="width: 40%" align="right" colspan="4">&nbsp;</td>
             <td>&nbsp;</td>
         </tr>
         <tr>
             <td>&nbsp;</td>
-            <td style="width: 22%" align="right" colspan="4">&nbsp;</td>
             <td>&nbsp;</td>
-            <td style="width: 40%" align="right" colspan="4">&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
             <td>&nbsp;</td>
         </tr>
         <tr>
             <td align="center">(..............................................)</td>
-            <td style="width: 22%" align="right" colspan="4">&nbsp;</td>
+            <td style="width: 10%">&emsp;</td>
             <td align="center">(..............................................)</td>
-            <td style="width: 40%" align="right" colspan="4">&nbsp;</td>
-            <td align="center">(..............................................)</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+    </table>
+    <table>
+        <tr>
+            <td>&nbsp;</td>
+            <td align="center">PT. KALTIM KARIANGAU TERMINAL <br> ASMAN OPERASI PELAYANAN NON PETIKEMAS</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td align="center" class="underline">BERLY KARDIN SENAPATI</td>
+            <td>&nbsp;</td>
         </tr>
     </table>
     </body>
@@ -196,6 +179,6 @@ else{
     echo "<script type='text/javascript'>
                         alert('Data Yang Ingin Ditampilkan Tidak Ada ! Coba Lagi')
                         window.location.replace('$web')
-                      </script>";
+            </script>";
 }
 ?>
