@@ -206,7 +206,10 @@ class M_admin extends MY_Model{
             if ($password == $pass) {
                 $data = array(
                     'status'       => TRUE,
-                    'nama'         => $result->nama,
+                    'first_name'   => $result->first_name,
+                    'last_name'    => $result->last_name,
+                    'gender'       => $result->last_name,
+                    'user_image'   => $result->picture,
                     'email'        => $result->email,
                     'username'     => $result->username,
                     'password'     => $result->password,
@@ -221,6 +224,19 @@ class M_admin extends MY_Model{
         }
 
         return $data;
+    }
+
+    public function cekEmail($email){
+        $this->db->where('email',$email);
+        $query = $this->db->get($this->table);
+
+        if($query->num_rows() === 1){
+            $status = TRUE;
+        }else{
+            $status = FALSE;
+        }
+
+        return $status;
     }
 
     public function cekUserAccess($role,$menu){

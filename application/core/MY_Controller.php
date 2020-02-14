@@ -1,6 +1,9 @@
 <?php
 //error_reporting(0);
 //ini_set('display_errors', 0);
+// Start session
+session_start();
+
 if (isset($_SERVER["HTTP_ORIGIN"]) === true) {
 	$origin = $_SERVER["HTTP_ORIGIN"];
 	$allowed_origins = array(

@@ -19,6 +19,7 @@
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/jquery.dataTables.min.css')?>" >
     <link rel="stylesheet" href="<?php echo base_url()?>/assets/select2/dist/css/select2.min.css">
     <link rel="stylesheet" href="<?php echo base_url()?>/assets/sweetalert2/dist/sweetalert2.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro|Open+Sans+Condensed:300|Raleway' rel='stylesheet' type='text/css'>
 
     <script type="text/javascript" src="<?php echo base_url('assets/js/jquery.js'); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url('assets/js/jquery-ui.js'); ?>"></script>

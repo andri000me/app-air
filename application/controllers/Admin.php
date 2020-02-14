@@ -11,7 +11,7 @@ class Admin extends MY_Controller{
             $this->navmenu('APASIH KKT','v_login','','','');
         }
         else {
-            $username = $this->input->post('username');
+            $username = strtolower($this->input->post('username'));
             $password = $this->input->post('password');
             $user = $this->admin->login($username,$password);  
             if ($user['status'] == TRUE) {
@@ -29,7 +29,6 @@ class Admin extends MY_Controller{
                     'title' => "PT KKT - APP AIR",
                 );
 
-                //$this->load->template('v_main',$data);
                 redirect('main');
             }
             else {
@@ -38,7 +37,6 @@ class Admin extends MY_Controller{
                 );
 
                 $this->session->set_userdata('error_message','Username atau Password Anda Salah');
-                //$this->load->template('v_main', $data);
                 redirect('main');
             }
         }
@@ -47,13 +45,17 @@ class Admin extends MY_Controller{
     function logout(){
         $data = array(
             'status',
-            'nama',
+            'first_name',
+            'last_name',
+            'gender',
+            'user_image',
             'email',
             'username',
             'password',
             'role',
             'role_name',
             'created_date',
+            'access_token',
         );
         $this->session->unset_userdata($data);
 
@@ -74,7 +76,7 @@ class Admin extends MY_Controller{
             $row = array();
             $row[] = '<input type="checkbox" class="data-check" value="'.$person->id_user.'">';
             $row[] = $person->username;
-            $row[] = $person->nama;
+            $row[] = $person->first_name." ".$person->last_name;
             $row[] = $person->nama_role;
 
             //add html for action
@@ -102,10 +104,11 @@ class Admin extends MY_Controller{
     public function ajax_add() {
         $this->_validate_add();
         $data = array(
-            'username' => $this->input->post('username'),
+            'username' => strtolower($this->input->post('username')),
             'password' => password_hash($this->input->post('pass'), PASSWORD_DEFAULT),
-            'nama'     => $this->input->post('nama'),
-            'role'     => $this->input->post('role'),
+            'first_name' => $this->input->post('nama_depan'),
+            'last_name' => $this->input->post('nama_belakang'),
+            'role' => $this->input->post('role'),
         );
 
         $insert = $this->admin->save($data);
@@ -126,15 +129,17 @@ class Admin extends MY_Controller{
 
         if($pass == '' || $pass == NULL){
             $data = array(
-                'username' => $this->input->post('username'),
-                'nama' => $this->input->post('nama'),
+                'username' => strtolower($this->input->post('username')),
+                'first_name' => $this->input->post('nama_depan'),
+                'last_name' => $this->input->post('nama_belakang'),
                 'role' => $this->input->post('role'),
             );
         }else{
             $data = array(
-                'username' => $this->input->post('username'),
+                'username' => strtolower($this->input->post('username')),
                 'password' => password_hash($this->input->post('pass'), PASSWORD_DEFAULT),
-                'nama' => $this->input->post('nama'),
+                'first_name' => $this->input->post('nama_depan'),
+                'last_name' => $this->input->post('nama_belakang'),
                 'role' => $this->input->post('role'),
             );
         }

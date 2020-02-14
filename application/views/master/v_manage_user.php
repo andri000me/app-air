@@ -92,7 +92,8 @@
         $('.form-group').removeClass('has-error'); // clear error class
         $('.help-block').empty(); // clear error string
         $('#username').attr('type','text');
-        $('#nama').attr('type','text');
+        $('#nama_depan').attr('type','text');
+        $('#nama_belakang').attr('type','text');
         $('#password').attr('type','password');
         $('#confirm_password').attr('type','password');
         $('#modal_form').modal('show'); // show bootstrap modal
@@ -114,7 +115,8 @@
             {
                 $('[name="id"]').val(data.id_user);
                 $('[name="username"]').val(data.username);
-                $('[name="nama"]').val(data.nama);
+                $('[name="nama_depan"]').val(data.first_name);
+                $('[name="nama_belakang"]').val(data.last_name);
                 $('[name="role"]').val(data.role).change();
                 $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
                 $('.modal-title').text('Ubah Data Akun'); // Set title to Bootstrap modal title
@@ -264,9 +266,16 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-3">Nama Pengguna</label>
+                            <label class="control-label col-md-3">Nama Depan</label>
                             <div class="col-md-9">
-                                <input name="nama" id="nama" placeholder="Nama Pengguna" class="form-control" type="text">
+                                <input name="nama_depan" id="nama_depan" placeholder="Nama Pengguna" class="form-control" type="text">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Nama Belakang</label>
+                            <div class="col-md-9">
+                                <input name="nama_belakang" id="nama_belakang" placeholder="Nama Pengguna" class="form-control" type="text">
                                 <span class="help-block"></span>
                             </div>
                         </div>
