@@ -1,5 +1,5 @@
 <?php
-if(($this->session->userdata('role_name') == "operasi" || $this->session->userdata('role_name') == "admin")){
+if(($this->session->userdata('role_name') == "operasi" || $this->session->userdata('role_name') == "wtp" || $this->session->userdata('role_name') == "admin")){
 ?>
     <script type="text/javascript">
         var xmlhttp = new XMLHttpRequest();
