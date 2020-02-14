@@ -126,7 +126,7 @@ class MY_Controller extends CI_Controller
 
     function terbilang($x){
         if($x<0){
-            $hasil = "Minus ".trim($this->konversi(x));
+            $hasil = "Minus ".trim($this->konversi($x));
         }else{
             $poin = trim($this->tkoma($x));
             $hasil = trim($this->konversi($x));
