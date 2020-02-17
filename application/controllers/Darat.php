@@ -353,7 +353,7 @@ class Darat extends MY_Controller {
             'no_faktur' => $this->input->post('no_faktur'),
             'tgl_pembayaran' => date('Y-m-d H:i:s', time()),
             'issued_at' => date("Y-m-d H:i:s",time()),
-            'issued_by' => $this->session->userdata('nama')
+            'issued_by' => $this->session->userdata('username')
         );
         $this->darat->update_pembayaran_darat($this->input->post('id-transaksi'), $data);
         echo json_encode(array("status" => TRUE));

@@ -1693,13 +1693,13 @@ class Report extends MY_Controller{
 
                     if($status_rekam == 1){
                         $tabel .='<tr>
-                          <td align="center">'.$no.'</td>
-                          <td align="center">'.$row->id_flowmeter.'</td>
-                          <td align="center">'.$row->nama_flowmeter.'</td>
-                          <td align="center">'.$ttl_akhir.'</td>
-                          <td align="center">'.$issuer.'</td>
-                      </tr>
-                      ';
+                            <td align="center">'.$no.'</td>
+                            <td align="center">'.$row->id_flowmeter.'</td>
+                            <td align="center">'.$row->nama_flowmeter.'</td>
+                            <td align="center">'.$ttl_akhir.'</td>
+                            <td align="center">'.$issuer.'</td>
+                        </tr>
+                        ';
                         $no++;
                     }
                 }
@@ -1740,42 +1740,42 @@ class Report extends MY_Controller{
 
         if($data != NULL){
                 $tabel = '
-                  <div class="col-sm-7">
-                  <table class="table table-responsive table-condensed table-striped">
-                      <tr>
-                          <td>ID Flow Meter</td>
-                          <td>:</td>
-                          <td>'.$data_flow->id_flowmeter.'</td>
-                      </tr>
-                      <tr>
-                          <td>Nama Flow Meter</td>
-                          <td>:</td>
-                          <td>'.$data_flow->nama_flowmeter.'</td>
-                      </tr>
-                  </table>
-                  </div>';
+                <div class="col-sm-7">
+                <table class="table table-responsive table-condensed table-striped">
+                    <tr>
+                        <td>ID Flow Meter</td>
+                        <td>:</td>
+                        <td>'.$data_flow->id_flowmeter.'</td>
+                    </tr>
+                    <tr>
+                        <td>Nama Flow Meter</td>
+                        <td>:</td>
+                        <td>'.$data_flow->nama_flowmeter.'</td>
+                    </tr>
+                </table>
+                </div>';
                 $tabel .='
-                  <table class="table table-responsive table-condensed table-striped">
-                      <thead>
-                          <td>No</td>
-                          <td>Tanggal Pencatatan</td>
-                          <td>Nilai Flow</td>
-                          <td>Issuer</td>
-                      </thead>
-              ';
+                <table class="table table-responsive table-condensed table-striped">
+                    <thead>
+                        <td>No</td>
+                        <td>Tanggal Pencatatan</td>
+                        <td>Nilai Flow</td>
+                        <td>Issuer</td>
+                    </thead>
+            ';
                 foreach ($data as $row){
                     $tabel .= '
-                      <tr>
-                          <td>'.$no.'</td>
-                          <td>'.$row->waktu_perekaman.'</td>
-                          <td>'.$row->flow_hari_ini.'</td>
-                          <td>'.$row->issued_by.'</td>
-                      </tr>';
+                    <tr>
+                        <td>'.$no.'</td>
+                        <td>'.$row->waktu_perekaman.'</td>
+                        <td>'.$row->flow_hari_ini.'</td>
+                        <td>'.$row->issued_by.'</td>
+                    </tr>';
                     $no++;
                 }
                 $tabel .= '</table>
                     <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/per_flow"."/".$id_flow).'>Cetak PDF</a>
-                  <a class="btn btn-primary" target="_blank" href='.base_url("report/excelPerFlow/".$tgl_awal."/".$tgl_akhir."/".$id_flow).'>Cetak Excel</a>
+                    <a class="btn btn-primary" target="_blank" href='.base_url("report/excelPerFlow/".$tgl_awal."/".$tgl_akhir."/".$id_flow).'>Cetak Excel</a>
                 ';
 
 
@@ -1867,6 +1867,69 @@ class Report extends MY_Controller{
                   </table>
                   <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/sumur").'>Cetak PDF</a>
                   <a class="btn btn-primary" target="_blank" href='.base_url("report/excelSumur/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>';
+
+            $data = array(
+                'status' => 'success',
+                'tabel' => $tabel
+            );
+        }
+        else{
+            $data = array(
+                'status' => 'failed'
+            );
+        }
+
+        echo json_encode($data);
+    }
+
+    public function laporan_tandon() {
+        $tgl_awal = $this->input->post('tgl_awal');
+        $tgl_akhir = $this->input->post('tgl_akhir');
+        $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"tandon");
+
+        if($result != NULL){
+            $ton_total = 0;
+            $no = 1;
+            $tabel = '<center><h4>Laporan Pencatatan Sumur Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir )).'</h4></center>
+                    <table class="table table-responsive table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th align="center"><center>No</th>
+                            <th align="center"><center>Nama Tandon</th>
+                            <th align="center"><center>Lokasi</th>
+                            <th align="center"><center>Waktu Perekaman</th>
+                            <th align="center"><center>Issued By</th>
+                            <th align="center"><center>Total Pengisian (m3)</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+
+            foreach($result as $row){
+                $ton_total += $row->total_pengisian;
+                $ton = $this->Koma($row->total_pengisian);
+
+                $tabel .='<tr>
+                        <td align="center">'.$no.'</td>
+                        <td align="center">'.$row->nama_tandon.'</td>
+                        <td align="center">'.$row->lokasi.'</td>
+                        <td align="center">'.$row->waktu_perekaman.'</td>
+                        <td align="center">'.$row->issued_by.'</td>
+                        <td align="center">'.$ton.'</td>
+                    </tr>
+                    ';
+                $no++;
+
+            }
+
+            $tabel .= '<tr>
+                        <td align="center" colspan="13"><b>Total</b></td>
+                        <td align="center"><b>'.$this->Koma($ton_total).'</b></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </tbody>
+                </table>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/tandon").'>Cetak PDF</a>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/excelTandon/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>';
 
             $data = array(
                 'status' => 'success',

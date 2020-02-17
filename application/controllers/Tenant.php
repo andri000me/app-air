@@ -93,7 +93,7 @@ class Tenant extends MY_Controller{
             'waktu_perekaman' => $tanggal,
             'flow_hari_ini' => $tonnase,
             'issued_at' => date("Y-m-d H:i:s",time()),
-            'issued_by' => $this->session->userdata('nama')
+            'issued_by' => $this->session->userdata('username')
         );
 
         if($cekFlow == TRUE){
@@ -122,7 +122,7 @@ class Tenant extends MY_Controller{
             'waktu_perekaman' => $tanggal,
             'total_pengisian' => $tonnase,
             'issued_at' => date("Y-m-d H:i:s",time()),
-            'issued_by' => $this->session->userdata('nama')
+            'issued_by' => $this->session->userdata('username')
         );
 
         $result = $this->tenant->input_transaksi("tandon",$data_transaksi);
@@ -457,7 +457,7 @@ class Tenant extends MY_Controller{
             'no_faktur' => $this->input->post('no_faktur'),
             'tgl_pembayaran' => date('Y-m-d H:i:s', time()),
             'issued_at' => date("Y-m-d H:i:s",time()),
-            'issued_by' => $this->session->userdata('nama')
+            'issued_by' => $this->session->userdata('username')
         );
         $this->tenant->update_pembayaran_tenant($this->input->post('id-transaksi'), $data);
         echo json_encode(array("status" => TRUE));
@@ -829,7 +829,7 @@ class Tenant extends MY_Controller{
             'diskon' => $diskon,
             'total_bayar' => $total,
             'no_invoice' => $no_invoice,
-            'issued_by' => $this->session->userdata('nama'),
+            'issued_by' => $this->session->userdata('username'),
             'issued_at' => date("Y-m-d H:i:s",time()),
         );
 

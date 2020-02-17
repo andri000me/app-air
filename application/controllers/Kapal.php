@@ -79,7 +79,7 @@ class Kapal extends MY_Controller{
             'tarif' => $data_tarif->tarif,
             'diskon' => $data_tarif->diskon,
             'issued_at' => date("Y-m-d H:i:s",time()),
-            'issued_by' => $this->session->userdata('nama')
+            'issued_by' => $this->session->userdata('username')
         );
 
         if ($this->form_validation->run() == FALSE) {

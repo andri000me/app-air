@@ -517,7 +517,7 @@ class Master extends MY_Controller{
                     'id_ref_flowmeter' => $id_flowmeter,
                     'pengguna_jasa_id' => '1',
                     'issued_at' => date("Y-m-d H:i:s",time()),
-                    'issued_by' => $this->session->userdata('nama')
+                    'issued_by' => $this->session->userdata('username')
                 );
                 $query = $this->db->insert('master_tenant',$data_insert);
 
@@ -782,7 +782,7 @@ class Master extends MY_Controller{
                 'nominal' => $nominal,
                 'id_ref_tenant' => $tenant,
                 'issued_at' => date("Y-m-d H:i:s",time()),
-                'issued_by' => $this->session->userdata('nama')
+                'issued_by' => $this->session->userdata('username')
             );
             $query = $this->db->insert('master_lumpsum',$data_insert);
 
@@ -911,7 +911,7 @@ class Master extends MY_Controller{
                     'lokasi' => $lokasi,
                     'debit_air' => $debit,
                     'issued_at' => date("Y-m-d H:i:s",time()),
-                    'issued_by' => $this->session->userdata('nama')
+                    'issued_by' => $this->session->userdata('username')
                 );
                 $query = $this->db->insert('master_sumur',$data_insert);
 
@@ -1046,7 +1046,7 @@ class Master extends MY_Controller{
                     'kondisi' => $kondisi,
                     'id_ref_sumur' => $id_sumur,
                     'issued_at' => date("Y-m-d H:i:s",time()),
-                    'issued_by' => $this->session->userdata('nama')
+                    'issued_by' => $this->session->userdata('username')
                 );
                 $query = $this->db->insert('master_pompa',$data_insert);
 

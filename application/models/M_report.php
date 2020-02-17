@@ -74,6 +74,14 @@ class M_report extends MY_Model{
             $this->db->where('waktu_rekam_awal BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:59")).'"');
             $this->db->order_by('waktu_rekam_awal','ASC');
         }
+        else if($tipe == "tandon"){
+            $this->db->select('*');
+            $this->db->from('vw_transaksi_tandon');
+            $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:59")).'"');
+            $this->db->where('status_pencatatan','1');
+            $this->db->where('soft_delete','0');
+            $this->db->order_by('waktu_perekaman','ASC');
+        }
         else if($tipe == "ruko_keuangan"){
             $this->db->select('*');
             $this->db->from('realisasi_transaksi_tenant');
