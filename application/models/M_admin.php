@@ -19,13 +19,15 @@ class M_admin extends MY_Model{
             if (password_verify($pass,$password)) {
                 $data = array(
                     'status'       => TRUE,
-                    'nama'         => $result->nama,
+                    'first_name'   => $result->first_name,
+                    'last_name'    => $result->last_name,
                     'email'        => $result->email,
                     'username'     => $result->username,
                     'password'     => $result->password,
                     'role'         => $result->role,
                     'role_name'    => $result->nama_role,
                     'created_date' => $result->date_created,
+                    'user_image'   => $result->picture,
                 );
             } else {
                 $data['status'] = FALSE;
@@ -103,20 +105,17 @@ class M_admin extends MY_Model{
         return $query->row();
     }
 
-    public function save($data)
-    {
+    public function save($data) {
         $this->db->insert($this->table, $data);
         return $this->db->insert_id();
     }
 
-    public function update($where, $data)
-    {
+    public function update($where, $data){
         $this->db->update($this->table, $data, $where);
         return $this->db->affected_rows();
     }
 
-    public function delete_by_id($id)
-    {
+    public function delete_by_id($id){
         $this->db->where('id_user', $id);
         $this->db->delete($this->table);
     }

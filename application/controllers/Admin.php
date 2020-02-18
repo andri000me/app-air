@@ -56,6 +56,7 @@ class Admin extends MY_Controller{
             'role_name',
             'created_date',
             'access_token',
+            'link'
         );
         $this->session->unset_userdata($data);
 
@@ -279,5 +280,57 @@ class Admin extends MY_Controller{
             return false;
         }
     }
+
+    public function oauth2callback(){
+        $google_data = $this->google->validate();
+        
+        // browse user from table m_user
+        $data = $this->admin->checkEmail($google_data['email']);
+        if ($data == TRUE){
+            // update table m_user
+            $data = array(
+                'oauth_id' => $google_data['oauth_id'],
+                'first_name' => $google_data['first_name'],
+                'last_name' => $google_data['last_name'],
+                'link' => $google_data['link'],
+                'picture' =>  $google_data['profile_pic'],
+                'modified_date' => date("Y-m-d H:i:s"),
+            );
+
+            $where = array( "email" => $google_data['email']);
+            $this->admin->update($where, $data);
+
+        }else{
+            // add new user to table m_user
+            $data = array(
+                'username' => strtolower($google_data['first_name']),
+                'oauth_id' => $google_data['id'],
+                'first_name' => $google_data['first_name'],
+                'last_name' => $google_data['last_name'],
+                'link' => $google_data['link'],
+                'picture' =>  $google_data['profile_pic'],
+                'created_date' => date("Y-m-d H:i:s"),
+            );
+
+            $this->admin->save($data);
+        }
+
+		$session_data=array(
+            'status'        => TRUE,
+            'username'      => '',
+            'password'      => '',
+            'role'          => 0,
+            'role_name'     => 'viewer',
+            'created_date'  => '',
+            'first_name'    => $google_data['first_name'],
+            'last_name'     => $google_data['last_name'],
+            'email'         => $google_data['email'],
+            'source'        => 'google',
+            'user_image'    => $google_data['profile_pic'],
+            'link'          => $google_data['link'],
+		);
+		$this->session->set_userdata($session_data);
+        redirect(base_url());
+	}
 }
 ?>

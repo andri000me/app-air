@@ -63,7 +63,8 @@ class Main extends MY_Controller {
     }
 
     public function login(){
-        $this->navmenu('APASIH KKT','v_login','','','');
+        $data['google_login_url'] = $this->google->get_login_url();
+        $this->navmenu('APASIH KKT','v_login','','',$data);
     }
 
     public function error(){

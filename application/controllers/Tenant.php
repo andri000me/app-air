@@ -162,7 +162,7 @@ class Tenant extends MY_Controller{
             $data['status'] = FALSE;
         }
 
-        if($this->input->post('flow_hari_ini') != NULL && ($this->input->post('flow_hari_ini') <= $this->input->post('flowmeter_akhir')))
+        if($this->input->post('flow_hari_ini') != NULL && ($this->input->post('flow_hari_ini') < $this->input->post('flow_akhir')))
         {
             $data['inputerror'][] = 'flow_hari_ini';
             $data['error_string'][] = 'Nilai Flow Hari Ini Tidak Boleh Lebih Kecil Dari Nilai Flow Terakhir';

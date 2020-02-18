@@ -43,9 +43,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
             </table>
             <?php echo form_close(); ?>
         </div>
-        <!----
+        
         <div class="col-md-12">
-            <a href="<?php if(isset($authUrl)) echo $authUrl ?>"><img id="google_signin" src="<?php echo base_url(); ?>assets/images/web/1x/btn_google_signin_dark_normal_web.png" width="15%" ></a></<a>
+            <a href="<?php echo $attr['google_login_url']; ?>"><img id="google_signin" src="<?php echo base_url(); ?>assets/images/web/1x/btn_google_signin_dark_normal_web.png" width="15%" ></a></<a>
         </div>
-        ---->
+        
+    
     </div>
