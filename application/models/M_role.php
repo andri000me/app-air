@@ -67,7 +67,8 @@ class M_role extends MY_Model {
 
     public function getData($id = ''){
         $this->db->from($this->table);
-
+        $this->db->where('soft_delete','0');
+        
         if($id != '')
             $this->db->where('id_role',$id);
         

@@ -304,7 +304,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
             reload_table();
         });
 
-        function validation(){
+        function validation(tipe){
             swal.fire({
                 title: 'Apakah Anda Yakin ?',
                 text: 'Anda Akan Melakukan Validasi Data !',
@@ -349,7 +349,7 @@ if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('r
                     }
 
                     $.ajax({
-                        url : "<?php echo site_url('tenant/updatePengisian/')?>",
+                        url : "<?php echo site_url('tenant/updatePerekaman/')?>"+tipe,
                         type: "POST",
                         data : formData,
                         dataType: "JSON",

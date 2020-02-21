@@ -51,7 +51,7 @@
         if($laporan != NULL) {
             foreach ($laporan as $row) {
                 $no++;
-                $data_tagihan = $this->data->getTagihan($tgl_awal, $tgl_akhir, $row->id_flow);
+                $data_tagihan = $this->tenant->getTagihan($tgl_awal, $tgl_akhir, $row->id_flow);
                 $pembayaran = 0;
                 $ttl_akhir = 0;
                 $ttl_awal = 0;
@@ -144,7 +144,7 @@
 
         ?>
         <tr>
-            <td align="center" colspan="7"><b>Total</b></td>
+            <td align="center" colspan="8"><b>Total</b></td>
             <td align="center"><b><?php echo number_format($ton_total,2)?></b></td>
             <td align="center"><b><?php echo $total?></b></td>
         </tr>

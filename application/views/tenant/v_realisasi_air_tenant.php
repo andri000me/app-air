@@ -1,5 +1,5 @@
 <?php
-if($this->session->userdata('role_name') == 'operasi' || $this->session->userdata('role_name') == "admin"){
+if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('role_name') == "admin"){
 ?>
     <body>
     <script>
@@ -43,7 +43,7 @@ if($this->session->userdata('role_name') == 'operasi' || $this->session->userdat
                 new_div = document.createElement("div"),
                 existingdiv1 = document.getElementById("tabel");
             $.ajax({
-                url: "<?php echo base_url('tenant/tagihan_ruko')?>",
+                url: "<?php echo base_url('tenant/realisasiTenant')?>",
                 method: "POST",
                 data: {
                     tgl_awal: tgl_awal,
@@ -71,7 +71,7 @@ if($this->session->userdata('role_name') == 'operasi' || $this->session->userdat
         }
     </script>
     <div class="container container-fluid">
-        <h3>Pembuatan Tagihan Air Untuk Tenant</h3><br><br>
+        <h3>Realisasi Pemakaian Air Untuk Tenant</h3><br><br>
         <div class="row col-sm-6">
             <table class="table table-responsive table-condensed">
                 <tr>

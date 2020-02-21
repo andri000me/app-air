@@ -24,6 +24,7 @@ class Report extends MY_Controller{
                             <th align="center">Alamat</th>
                             <th align="center">No Telepon</th>
                             <th align="center">Tanggal Transaksi</th>
+                            <th align="center">Status Pembayaran</th>
                             <th align="center">Tarif</th>
                             <th align="center">Total Permintaan (Ton)</th>
                             <th align="center">Total Pembayaran (Rp.)</th>
@@ -40,7 +41,12 @@ class Report extends MY_Controller{
                     $total_pembayaran = $row->tarif * $row->total_permintaan;
                 }
 
-                if($this->session->userdata('role') == 'keuangan'){
+                if($row->status_invoice == '1')
+                    $status_pembayaran = "Piutang";
+                else
+                    $status_pembayaran = "Cash";
+
+                if($this->session->userdata('role_name') == 'keuangan'){
                     if($row->status_pembayaran == 1 && $row->status_invoice == 0) {
                         $total += $total_pembayaran;
                         $ton += $row->total_permintaan;
@@ -53,6 +59,7 @@ class Report extends MY_Controller{
                         <td align="center">' . $row->alamat . '</td>
                         <td align="center">' . $row->no_telp . '</td>
                         <td align="center">' . $format_tgl . '</td>
+                        <td align="center">' . $status_pembayaran . '</td>
                         <td align="center">' . $this->Ribuan($row->tarif) . '</td>
                         <td align="center">' . $row->total_permintaan . '</td>
                         <td align="center">' . $this->Ribuan($total_pembayaran) . '</td>
@@ -74,6 +81,7 @@ class Report extends MY_Controller{
                         <td align="center">' . $row->alamat . '</td>
                         <td align="center">' . $row->no_telp . '</td>
                         <td align="center">' . $format_tgl . '</td>
+                        <td align="center">' . $status_pembayaran . '</td>
                         <td align="center">' . $this->Ribuan($row->tarif) . '</td>
                         <td align="center">' . $row->total_permintaan . '</td>
                         <td align="center">' . $this->Ribuan($total_pembayaran) . '</td>
@@ -89,6 +97,7 @@ class Report extends MY_Controller{
                         <td align="center">' . $row->alamat . '</td>
                         <td align="center">' . $row->no_telp . '</td>
                         <td align="center">' . $format_tgl . '</td>
+                        <td align="center">' . $status_pembayaran . '</td>
                         <td align="center">' . $this->Ribuan($row->tarif) . '</td>
                         <td align="center">' . $row->total_permintaan . '</td>
                         <td align="center">' . $total_pembayaran . '</td>
@@ -99,7 +108,7 @@ class Report extends MY_Controller{
             }
 
             $tabel .= '<tr>
-                        <td align="center" colspan="7"><b>Total</b></td>
+                        <td align="center" colspan="8"><b>Total</b></td>
                         <td align="center"><b>'.$ton.'</b></td>
                         <td align="center"><b>'.$this->Ribuan($total).'</b></td>
                     </tr>
@@ -146,6 +155,7 @@ class Report extends MY_Controller{
                             <th align="center">Waktu Mulai Pengantaran</th>
                             <th align="center">Waktu Selesai Pengantaran</th>
                             <th align="center">Lama Pengantaran</th>
+                            <th align="center">Status Pembayaran</th>
                             <th align="center">Tarif (Rp.)</th>
                             <th align="center">Total Permintaan (Ton)</th>
                             <th align="center">Total Pembayaran (Rp.)</th>
@@ -196,6 +206,11 @@ class Report extends MY_Controller{
 
                     $total += $total_pembayaran;
 
+                    if($row->status_invoice == '1')
+                        $status_pembayaran = "Piutang";
+                    else
+                        $status_pembayaran = "Cash";
+
                     if($row->batal_kwitansi == 0){
                         $ton += $row->total_permintaan;
 
@@ -208,6 +223,7 @@ class Report extends MY_Controller{
                         <td align="center">'.$format_jam_awal.'</td>
                         <td align="center">'.$format_jam_akhir.'</td>
                         <td align="center">'.$lama_pengantaran.'</td>
+                        <td align="center">'.$status_pembayaran.'</td>
                         <td align="center">'.$this->Ribuan($row->tarif).'</td>
                         <td align="center">'.$row->total_permintaan.'</td>
                         <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
@@ -224,6 +240,7 @@ class Report extends MY_Controller{
                         <td align="center">'.$format_jam_awal.'</td>
                         <td align="center">'.$format_jam_akhir.'</td>
                         <td align="center">'.$lama_pengantaran.'</td>
+                        <td align="center">'.$status_pembayaran.'</td>
                         <td align="center">'.$this->Ribuan($row->tarif).'</td>
                         <td align="center">'.$row->total_permintaan.'</td>
                         <td align="center">'.$total_pembayaran.'</td>
@@ -233,7 +250,7 @@ class Report extends MY_Controller{
                 }
 
                 $tabel .= '<tr>
-                        <td align="center" colspan="9"><b>Total</b></td>
+                        <td align="center" colspan="10"><b>Total</b></td>
                         <td align="center"><b>'.$ton.'</b></td>
                         <td align="center"><b>'.$this->Ribuan($total).'</b></td>
                     </tr>
@@ -271,6 +288,7 @@ class Report extends MY_Controller{
                             <th align="center">Waktu Mulai Pengantaran</th>
                             <th align="center">Waktu Selesai Pengantaran</th>
                             <th align="center">Lama Pengantaran</th>
+                            <th align="center">Status Pembayaran</th>
                             <th align="center">Total Permintaan (Ton)</th>
                             <th align="center">Total Pembayaran (Rp.)</th>
                         </tr>
@@ -321,6 +339,11 @@ class Report extends MY_Controller{
 
                     $total += $total_pembayaran;
 
+                    if($row->status_invoice == '1')
+                        $status_pembayaran = "Piutang";
+                    else
+                        $status_pembayaran = "Cash";
+
                     if($row->batal_kwitansi == 0){
                         $ton += $row->total_permintaan;
 
@@ -333,6 +356,7 @@ class Report extends MY_Controller{
                         <td align="center">'.$format_jam_awal.'</td>
                         <td align="center">'.$format_jam_akhir.'</td>
                         <td align="center">'.$lama_pengantaran.'</td>
+                        <td align="center">'.$status_pembayaran.'</td>
                         <td align="center">'.$row->total_permintaan.'</td>
                         <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
                     </tr>';
@@ -348,6 +372,7 @@ class Report extends MY_Controller{
                         <td align="center">'.$format_jam_awal.'</td>
                         <td align="center">'.$format_jam_akhir.'</td>
                         <td align="center">'.$lama_pengantaran.'</td>
+                        <td align="center">'.$status_pembayaran.'</td>
                         <td align="center">'.$row->total_permintaan.'</td>
                         <td align="center">'.$total_pembayaran.'</td>
                     </tr>';
@@ -356,7 +381,7 @@ class Report extends MY_Controller{
                 }
 
                 $tabel .= '<tr>
-                        <td align="center" colspan="8"><b>Total</b></td>
+                        <td align="center" colspan="9"><b>Total</b></td>
                         <td align="center"><b>'.$ton.'</b></td>
                         <td align="center"><b>'.$this->Ribuan($total).'</b></td>
                     </tr>
@@ -385,9 +410,9 @@ class Report extends MY_Controller{
         $tgl_akhir = $this->input->post('tgl_akhir');
 
         if($this->session->userdata('role_name') == 'keuangan')
-            $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"laut");
+            $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"laut");
         else
-            $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"laut_operasi");
+            $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"laut_operasi");
 
 
         if($result != NULL){
@@ -924,49 +949,214 @@ class Report extends MY_Controller{
                     <tbody>';
             }
 
-            foreach($result as $row){
-                if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL){
-                    if($this->session->userdata('role_name') == 'keuangan'){
-                        if($row->realisasi_transaksi_laut_id_realisasi != NULL){
-                            if($row->flowmeter_akhir_4 != NULL && $row->flowmeter_awal_4 != NULL){
-                                $realisasi = $row->flowmeter_akhir_4 - $row->flowmeter_awal_4;
-
-                                if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
-                                    $realisasi += $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
-
+            if($result != NULL ){
+                foreach($result as $row){
+                    if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL){
+                        if($this->session->userdata('role_name') == 'keuangan'){
+                            if($row->realisasi_transaksi_laut_id_realisasi != NULL){
+                                if($row->flowmeter_akhir_4 != NULL && $row->flowmeter_awal_4 != NULL){
+                                    $realisasi = $row->flowmeter_akhir_4 - $row->flowmeter_awal_4;
+    
+                                    if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
+                                        $realisasi += $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
+    
+                                        if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                                            $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                                            $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                        } else{
+                                            $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                        }
+                                    }
+                                    else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                                        $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                                        $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                    }
+                                    else {
+                                        $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                    }
+                                }
+                                else if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
+                                    $realisasi = $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
+    
                                     if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
                                         $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
                                         $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                    } else {
+                                        $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                    }
+                                }
+                                else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                                    $realisasi = $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                                    $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                }
+                                else{
+                                    $realisasi = $row->flowmeter_akhir - $row->flowmeter_awal;
+                                }
+    
+                                if($row->diskon != NULL || $row->diskon != 0){
+                                    $row->tarif -= $row->tarif * $row->diskon/100;
+                                    $total_pembayaran = $row->tarif  * $realisasi;
+                                }
+                                else{
+                                    $total_pembayaran = $row->tarif * $realisasi;
+                                }
+    
+                                if($total_pembayaran >= 250000 && $total_pembayaran <= 1000000){
+                                    $total_pembayaran += 3000;
+                                } else if($total_pembayaran > 1000000){
+                                    $total_pembayaran += 6000;
+                                } else{
+                                    $total_pembayaran += 0;
+                                }
+    
+                                $total += $total_pembayaran;
+                                $ton += $row->total_permintaan;
+                                $ton_realiasi += $realisasi;
+                                $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi ));
+    
+                                if($row->pengguna_jasa_id_tarif == 6){
+                                    $row->pengguna_jasa_id_tarif = "Peti Kemas";
+                                }else{
+                                    $row->pengguna_jasa_id_tarif = "Tongkang";
+                                }
+    
+                                $tabel .='<tr>
+                              <td align="center">'.$no.'</td>
+                              <td align="center">'.$row->no_nota.'</td>
+                              <td align="center">'.$row->no_faktur.'</td>
+                              <td align="center">'.$row->id_vessel.'</td>
+                              <td align="center">'.$row->nama_vessel.'</td>
+                              <td align="center">'.$row->voy_no.'</td>
+                              <td align="center">'.$row->pengguna_jasa_id_tarif.'</td>
+                              <td align="center">'.$row->nama_agent.'</td>
+                              <td align="center">'.$format_tgl.'</td>
+                              <td align="center">'.$this->Ribuan($row->tarif).'</td>
+                              <td align="center">'.$row->total_permintaan.'</td>
+                              <td align="center">'.$realisasi.'</td>
+                              <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
+                          </tr>
+                          ';
+                                $no++;
+                            }
+                        }
+                        else if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('role_name') == 'perencanaan' || $this->session->userdata('role_name') == 'admin'){
+                            if($row->flowmeter_awal == NULL || $row->flowmeter_awal == '0'){
+                                $flowmeter_awal = "0";
+                            }
+                            else{
+                                $flowmeter_awal = $row->flowmeter_awal;
+                            }
+    
+                            if($row->flowmeter_akhir == NULL || $row->flowmeter_akhir == '0'){
+                                $flowmeter_akhir = "0";
+                            }
+                            else{
+                                $flowmeter_akhir = $row->flowmeter_akhir;
+                            }
+    
+                            if($row->flowmeter_awal_2 == NULL || $row->flowmeter_awal_2 == '0'){
+                                $flowmeter_awal_2 = "0";
+                            }
+                            else{
+                                $flowmeter_awal_2 = $row->flowmeter_awal_2;
+                            }
+    
+                            if($row->flowmeter_akhir_2 == NULL || $row->flowmeter_akhir_2 == '0'){
+                                $flowmeter_akhir_2 = "0";
+                            }
+                            else{
+                                $flowmeter_akhir_2 = $row->flowmeter_akhir_2;
+                            }
+    
+                            if($row->flowmeter_awal_3 == NULL || $row->flowmeter_awal_3 == '0'){
+                                $flowmeter_awal_3 = "0";
+                            }
+                            else{
+                                $flowmeter_awal_3 = $row->flowmeter_awal_3;
+                            }
+    
+                            if($row->flowmeter_akhir_3 == NULL || $row->flowmeter_akhir_3 == '0'){
+                                $flowmeter_akhir_3 = "0";
+                            }
+                            else{
+                                $flowmeter_akhir_3 = $row->flowmeter_akhir_3;
+                            }
+    
+                            if($row->flowmeter_awal_4 == NULL || $row->flowmeter_awal_4 == '0'){
+                                $flowmeter_awal_4 = "0";
+                            }
+                            else{
+                                $flowmeter_awal_4 = $row->flowmeter_awal_4;
+                            }
+    
+                            if($row->flowmeter_akhir_4 == NULL || $row->flowmeter_akhir_4 == '0'){
+                                $flowmeter_akhir_4 = "0";
+                            }
+                            else{
+                                $flowmeter_akhir_4 = $row->flowmeter_akhir_4;
+                            }
+    
+                            if($row->flowmeter_akhir_4 != NULL && $row->flowmeter_awal_4 != NULL){
+                                $realisasi = $row->flowmeter_akhir_4 - $row->flowmeter_awal_4;
+                                $flow_sebelum = $flowmeter_awal_4;
+                                $flow_sesudah = $flowmeter_akhir_4;
+    
+                                if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
+                                    $realisasi += $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
+                                    $flow_sebelum .= " , ".$flowmeter_awal_3;
+                                    $flow_sesudah .= " , ".$flowmeter_akhir_3;
+    
+                                    if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                                        $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                                        $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                        $flow_sebelum .= " , ".$flowmeter_awal_2." , ".$flowmeter_awal;
+                                        $flow_sesudah .= " , ".$flowmeter_akhir_2." , ".$flowmeter_akhir;
                                     } else{
                                         $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                        $flow_sebelum .= " , ".$flowmeter_awal;
+                                        $flow_sesudah .= " , ".$flowmeter_akhir;
                                     }
                                 }
                                 else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
                                     $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
                                     $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                    $flow_sebelum .= " , ".$flowmeter_awal_2." , ".$flowmeter_awal;
+                                    $flow_sesudah .= " , ".$flowmeter_akhir_2." , ".$flowmeter_akhir;
                                 }
                                 else {
                                     $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                    $flow_sebelum .= " , ".$flowmeter_awal;
+                                    $flow_sesudah .= " , ".$flowmeter_akhir;
                                 }
                             }
                             else if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
                                 $realisasi = $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
-
+                                $flow_sebelum = $flowmeter_awal_3;
+                                $flow_sesudah = $flowmeter_akhir_3;
+    
                                 if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
                                     $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
                                     $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                    $flow_sebelum .= " , ".$flowmeter_awal_2." , ".$flowmeter_awal;
+                                    $flow_sesudah .= " , ".$flowmeter_akhir_2." , ".$flowmeter_akhir;
                                 } else {
                                     $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                    $flow_sebelum .= " , ".$flowmeter_awal;
+                                    $flow_sesudah .= " , ".$flowmeter_akhir;
                                 }
                             }
                             else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
                                 $realisasi = $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
                                 $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                $flow_sebelum = $flowmeter_awal_2." , ".$flowmeter_awal;
+                                $flow_sesudah = $flowmeter_akhir_2." , ".$flowmeter_akhir;
                             }
                             else{
                                 $realisasi = $row->flowmeter_akhir - $row->flowmeter_awal;
+                                $flow_sebelum = $flowmeter_awal;
+                                $flow_sesudah = $flowmeter_akhir;
                             }
-
+    
                             if($row->diskon != NULL || $row->diskon != 0){
                                 $row->tarif -= $row->tarif * $row->diskon/100;
                                 $total_pembayaran = $row->tarif  * $realisasi;
@@ -974,7 +1164,7 @@ class Report extends MY_Controller{
                             else{
                                 $total_pembayaran = $row->tarif * $realisasi;
                             }
-
+    
                             if($total_pembayaran >= 250000 && $total_pembayaran <= 1000000){
                                 $total_pembayaran += 3000;
                             } else if($total_pembayaran > 1000000){
@@ -982,363 +1172,200 @@ class Report extends MY_Controller{
                             } else{
                                 $total_pembayaran += 0;
                             }
-
+    
                             $total += $total_pembayaran;
                             $ton += $row->total_permintaan;
                             $ton_realiasi += $realisasi;
                             $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi ));
-
-                            if($row->pengguna_jasa_id_tarif == 6){
+    
+                            if($row->tipe_kapal == 8){
+                                $row->tipe_kapal = "Peti Kemas";
+                            }else{
+                                $row->tipe_kapal = "Tongkang";
+                            }
+    
+                            $tabel .='<tr>
+                              <td align="center">'.$no.'</td>
+                              <td align="center">'.$row->id_vessel.'</td>
+                              <td align="center">'.$row->nama_vessel.'</td>
+                              <td align="center">'.$row->voy_no.'</td>
+                              <td align="center">'.$row->tipe_kapal.'</td>
+                              <td align="center">'.$row->nama_agent.'</td>
+                              <td align="center">'.$format_tgl.'</td>
+                              <td align="center">'.$flow_sebelum.'</td>
+                              <td align="center">'.$flow_sesudah.'</td>
+                              <td align="center">'.$row->total_permintaan.'</td>
+                              <td align="center">'.$realisasi.'</td>
+                              <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
+                          </tr>
+                          ';
+                            $no++;
+                        }
+                        else {
+                            if($row->flowmeter_awal == NULL || $row->flowmeter_awal == '0'){
+                                $flowmeter_awal = "0";
+                            }
+                            else{
+                                $flowmeter_awal = $row->flowmeter_awal;
+                            }
+    
+                            if($row->flowmeter_akhir == NULL || $row->flowmeter_akhir == '0'){
+                                $flowmeter_akhir = "0";
+                            }
+                            else{
+                                $flowmeter_akhir = $row->flowmeter_akhir;
+                            }
+    
+                            if($row->flowmeter_awal_2 == NULL || $row->flowmeter_awal_2 == '0'){
+                                $flowmeter_awal_2 = "0";
+                            }
+                            else{
+                                $flowmeter_awal_2 = $row->flowmeter_awal_2;
+                            }
+    
+                            if($row->flowmeter_akhir_2 == NULL || $row->flowmeter_akhir_2 == '0'){
+                                $flowmeter_akhir_2 = "0";
+                            }
+                            else{
+                                $flowmeter_akhir_2 = $row->flowmeter_akhir_2;
+                            }
+    
+                            if($row->flowmeter_awal_3 == NULL || $row->flowmeter_awal_3 == '0'){
+                                $flowmeter_awal_3 = "0";
+                            }
+                            else{
+                                $flowmeter_awal_3 = $row->flowmeter_awal_3;
+                            }
+    
+                            if($row->flowmeter_akhir_3 == NULL || $row->flowmeter_akhir_3 == '0'){
+                                $flowmeter_akhir_3 = "0";
+                            }
+                            else{
+                                $flowmeter_akhir_3 = $row->flowmeter_akhir_3;
+                            }
+    
+                            if($row->flowmeter_awal_4 == NULL || $row->flowmeter_awal_4 == '0'){
+                                $flowmeter_awal_4 = "0";
+                            }
+                            else{
+                                $flowmeter_awal_4 = $row->flowmeter_awal_4;
+                            }
+    
+                            if($row->flowmeter_akhir_4 == NULL || $row->flowmeter_akhir_4 == '0'){
+                                $flowmeter_akhir_4 = "0";
+                            }
+                            else{
+                                $flowmeter_akhir_4 = $row->flowmeter_akhir_4;
+                            }
+    
+                            if($row->flowmeter_akhir_4 != NULL && $row->flowmeter_awal_4 != NULL){
+                                $realisasi = $row->flowmeter_akhir_4 - $row->flowmeter_awal_4;
+                                $flow_sebelum = $flowmeter_awal_4;
+                                $flow_sesudah = $flowmeter_akhir_4;
+    
+                                if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
+                                    $realisasi += $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
+                                    $flow_sebelum .= " , ".$flowmeter_awal_3;
+                                    $flow_sesudah .= " , ".$flowmeter_akhir_3;
+    
+                                    if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                                        $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                                        $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                        $flow_sebelum .= " , ".$flowmeter_awal_2." , ".$flowmeter_awal;
+                                        $flow_sesudah .= " , ".$flowmeter_akhir_2." , ".$flowmeter_akhir;
+                                    } else{
+                                        $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                        $flow_sebelum .= " , ".$flowmeter_awal;
+                                        $flow_sesudah .= " , ".$flowmeter_akhir;
+                                    }
+                                }
+                                else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                                    $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                                    $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                    $flow_sebelum .= " , ".$flowmeter_awal_2." , ".$flowmeter_awal;
+                                    $flow_sesudah .= " , ".$flowmeter_akhir_2." , ".$flowmeter_akhir;
+                                }
+                                else {
+                                    $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                    $flow_sebelum .= " , ".$flowmeter_awal;
+                                    $flow_sesudah .= " , ".$flowmeter_akhir;
+                                }
+                            }
+                            else if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
+                                $realisasi = $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
+                                $flow_sebelum = $flowmeter_awal_3;
+                                $flow_sesudah = $flowmeter_akhir_3;
+    
+                                if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                                    $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                                    $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                    $flow_sebelum .= " , ".$flowmeter_awal_2." , ".$flowmeter_awal;
+                                    $flow_sesudah .= " , ".$flowmeter_akhir_2." , ".$flowmeter_akhir;
+                                } else {
+                                    $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                    $flow_sebelum .= " , ".$flowmeter_awal;
+                                    $flow_sesudah .= " , ".$flowmeter_akhir;
+                                }
+                            }
+                            else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
+                                $realisasi = $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
+                                $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
+                                $flow_sebelum = $flowmeter_awal_2." , ".$flowmeter_awal;
+                                $flow_sesudah = $flowmeter_akhir_2." , ".$flowmeter_akhir;
+                            }
+                            else{
+                                $realisasi = $row->flowmeter_akhir - $row->flowmeter_awal;
+                                $flow_sebelum = $flowmeter_awal;
+                                $flow_sesudah = $flowmeter_akhir;
+                            }
+    
+                            if($row->diskon != NULL || $row->diskon != 0){
+                                $row->tarif -= $row->tarif * $row->diskon/100;
+                                $total_pembayaran = $row->tarif * $realisasi;
+                            }
+                            else{
+                                $total_pembayaran = $row->tarif * $realisasi;
+                            }
+    
+                            if($total_pembayaran >= 250000 && $total_pembayaran <= 1000000){
+                                $total_pembayaran += 3000;
+                            } else if($total_pembayaran > 1000000){
+                                $total_pembayaran += 6000;
+                            } else{
+                                $total_pembayaran += 0;
+                            }
+    
+                            $total += $total_pembayaran;
+                            $ton += $row->total_permintaan;
+                            $ton_realiasi += $realisasi;
+                            $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi ));
+    
+                            if($row->pengguna_jasa_id_tarif == 8){
                                 $row->pengguna_jasa_id_tarif = "Peti Kemas";
                             }else{
                                 $row->pengguna_jasa_id_tarif = "Tongkang";
                             }
-
+    
                             $tabel .='<tr>
-                          <td align="center">'.$no.'</td>
-                          <td align="center">'.$row->no_nota.'</td>
-                          <td align="center">'.$row->no_faktur.'</td>
-                          <td align="center">'.$row->id_vessel.'</td>
-                          <td align="center">'.$row->nama_vessel.'</td>
-                          <td align="center">'.$row->voy_no.'</td>
-                          <td align="center">'.$row->pengguna_jasa_id_tarif.'</td>
-                          <td align="center">'.$row->nama_agent.'</td>
-                          <td align="center">'.$format_tgl.'</td>
-                          <td align="center">'.$this->Ribuan($row->tarif).'</td>
-                          <td align="center">'.$row->total_permintaan.'</td>
-                          <td align="center">'.$realisasi.'</td>
-                          <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
-                      </tr>
-                      ';
+                              <td align="center">'.$no.'</td>
+                              <td align="center">'.$row->id_vessel.'</td>
+                              <td align="center">'.$row->nama_vessel.'</td>
+                              <td align="center">'.$row->voy_no.'</td>
+                              <td align="center">'.$row->pengguna_jasa_id_tarif.'</td>
+                              <td align="center">'.$row->nama_agent.'</td>
+                              <td align="center">'.$format_tgl.'</td>
+                              <td align="center">'.$this->Ribuan($row->tarif).'</td>
+                              <td align="center">'.$row->total_permintaan.'</td>
+                              <td align="center">'.$realisasi.'</td>
+                              <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
+                          </tr>
+                          ';
                             $no++;
                         }
                     }
-                    else if($this->session->userdata('role_name') == 'wtp' || $this->session->userdata('role_name') == 'perencanaan' || $this->session->userdata('role_name') == 'admin'){
-                        if($row->flowmeter_awal == NULL || $row->flowmeter_awal == '0'){
-                            $flowmeter_awal = "0";
-                        }
-                        else{
-                            $flowmeter_awal = $row->flowmeter_awal;
-                        }
-
-                        if($row->flowmeter_akhir == NULL || $row->flowmeter_akhir == '0'){
-                            $flowmeter_akhir = "0";
-                        }
-                        else{
-                            $flowmeter_akhir = $row->flowmeter_akhir;
-                        }
-
-                        if($row->flowmeter_awal_2 == NULL || $row->flowmeter_awal_2 == '0'){
-                            $flowmeter_awal_2 = "0";
-                        }
-                        else{
-                            $flowmeter_awal_2 = $row->flowmeter_awal_2;
-                        }
-
-                        if($row->flowmeter_akhir_2 == NULL || $row->flowmeter_akhir_2 == '0'){
-                            $flowmeter_akhir_2 = "0";
-                        }
-                        else{
-                            $flowmeter_akhir_2 = $row->flowmeter_akhir_2;
-                        }
-
-                        if($row->flowmeter_awal_3 == NULL || $row->flowmeter_awal_3 == '0'){
-                            $flowmeter_awal_3 = "0";
-                        }
-                        else{
-                            $flowmeter_awal_3 = $row->flowmeter_awal_3;
-                        }
-
-                        if($row->flowmeter_akhir_3 == NULL || $row->flowmeter_akhir_3 == '0'){
-                            $flowmeter_akhir_3 = "0";
-                        }
-                        else{
-                            $flowmeter_akhir_3 = $row->flowmeter_akhir_3;
-                        }
-
-                        if($row->flowmeter_awal_4 == NULL || $row->flowmeter_awal_4 == '0'){
-                            $flowmeter_awal_4 = "0";
-                        }
-                        else{
-                            $flowmeter_awal_4 = $row->flowmeter_awal_4;
-                        }
-
-                        if($row->flowmeter_akhir_4 == NULL || $row->flowmeter_akhir_4 == '0'){
-                            $flowmeter_akhir_4 = "0";
-                        }
-                        else{
-                            $flowmeter_akhir_4 = $row->flowmeter_akhir_4;
-                        }
-
-                        if($row->flowmeter_akhir_4 != NULL && $row->flowmeter_awal_4 != NULL){
-                            $realisasi = $row->flowmeter_akhir_4 - $row->flowmeter_awal_4;
-                            $flow_sebelum = $flowmeter_awal_4;
-                            $flow_sesudah = $flowmeter_akhir_4;
-
-                            if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
-                                $realisasi += $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
-                                $flow_sebelum .= " , ".$flowmeter_awal_3;
-                                $flow_sesudah .= " , ".$flowmeter_akhir_3;
-
-                                if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
-                                    $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
-                                    $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
-                                    $flow_sebelum .= " , ".$flowmeter_awal_2." , ".$flowmeter_awal;
-                                    $flow_sesudah .= " , ".$flowmeter_akhir_2." , ".$flowmeter_akhir;
-                                } else{
-                                    $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
-                                    $flow_sebelum .= " , ".$flowmeter_awal;
-                                    $flow_sesudah .= " , ".$flowmeter_akhir;
-                                }
-                            }
-                            else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
-                                $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
-                                $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
-                                $flow_sebelum .= " , ".$flowmeter_awal_2." , ".$flowmeter_awal;
-                                $flow_sesudah .= " , ".$flowmeter_akhir_2." , ".$flowmeter_akhir;
-                            }
-                            else {
-                                $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
-                                $flow_sebelum .= " , ".$flowmeter_awal;
-                                $flow_sesudah .= " , ".$flowmeter_akhir;
-                            }
-                        }
-                        else if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
-                            $realisasi = $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
-                            $flow_sebelum = $flowmeter_awal_3;
-                            $flow_sesudah = $flowmeter_akhir_3;
-
-                            if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
-                                $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
-                                $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
-                                $flow_sebelum .= " , ".$flowmeter_awal_2." , ".$flowmeter_awal;
-                                $flow_sesudah .= " , ".$flowmeter_akhir_2." , ".$flowmeter_akhir;
-                            } else {
-                                $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
-                                $flow_sebelum .= " , ".$flowmeter_awal;
-                                $flow_sesudah .= " , ".$flowmeter_akhir;
-                            }
-                        }
-                        else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
-                            $realisasi = $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
-                            $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
-                            $flow_sebelum = $flowmeter_awal_2." , ".$flowmeter_awal;
-                            $flow_sesudah = $flowmeter_akhir_2." , ".$flowmeter_akhir;
-                        }
-                        else{
-                            $realisasi = $row->flowmeter_akhir - $row->flowmeter_awal;
-                            $flow_sebelum = $flowmeter_awal;
-                            $flow_sesudah = $flowmeter_akhir;
-                        }
-
-                        if($row->diskon != NULL || $row->diskon != 0){
-                            $row->tarif -= $row->tarif * $row->diskon/100;
-                            $total_pembayaran = $row->tarif  * $realisasi;
-                        }
-                        else{
-                            $total_pembayaran = $row->tarif * $realisasi;
-                        }
-
-                        if($total_pembayaran >= 250000 && $total_pembayaran <= 1000000){
-                            $total_pembayaran += 3000;
-                        } else if($total_pembayaran > 1000000){
-                            $total_pembayaran += 6000;
-                        } else{
-                            $total_pembayaran += 0;
-                        }
-
-                        $total += $total_pembayaran;
-                        $ton += $row->total_permintaan;
-                        $ton_realiasi += $realisasi;
-                        $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi ));
-
-                        if($row->tipe_kapal == 8){
-                            $row->tipe_kapal = "Peti Kemas";
-                        }else{
-                            $row->tipe_kapal = "Tongkang";
-                        }
-
-                        $tabel .='<tr>
-                          <td align="center">'.$no.'</td>
-                          <td align="center">'.$row->id_vessel.'</td>
-                          <td align="center">'.$row->nama_vessel.'</td>
-                          <td align="center">'.$row->voy_no.'</td>
-                          <td align="center">'.$row->tipe_kapal.'</td>
-                          <td align="center">'.$row->nama_agent.'</td>
-                          <td align="center">'.$format_tgl.'</td>
-                          <td align="center">'.$flow_sebelum.'</td>
-                          <td align="center">'.$flow_sesudah.'</td>
-                          <td align="center">'.$row->total_permintaan.'</td>
-                          <td align="center">'.$realisasi.'</td>
-                          <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
-                      </tr>
-                      ';
-                        $no++;
-                    }
-                    else {
-                        if($row->flowmeter_awal == NULL || $row->flowmeter_awal == '0'){
-                            $flowmeter_awal = "0";
-                        }
-                        else{
-                            $flowmeter_awal = $row->flowmeter_awal;
-                        }
-
-                        if($row->flowmeter_akhir == NULL || $row->flowmeter_akhir == '0'){
-                            $flowmeter_akhir = "0";
-                        }
-                        else{
-                            $flowmeter_akhir = $row->flowmeter_akhir;
-                        }
-
-                        if($row->flowmeter_awal_2 == NULL || $row->flowmeter_awal_2 == '0'){
-                            $flowmeter_awal_2 = "0";
-                        }
-                        else{
-                            $flowmeter_awal_2 = $row->flowmeter_awal_2;
-                        }
-
-                        if($row->flowmeter_akhir_2 == NULL || $row->flowmeter_akhir_2 == '0'){
-                            $flowmeter_akhir_2 = "0";
-                        }
-                        else{
-                            $flowmeter_akhir_2 = $row->flowmeter_akhir_2;
-                        }
-
-                        if($row->flowmeter_awal_3 == NULL || $row->flowmeter_awal_3 == '0'){
-                            $flowmeter_awal_3 = "0";
-                        }
-                        else{
-                            $flowmeter_awal_3 = $row->flowmeter_awal_3;
-                        }
-
-                        if($row->flowmeter_akhir_3 == NULL || $row->flowmeter_akhir_3 == '0'){
-                            $flowmeter_akhir_3 = "0";
-                        }
-                        else{
-                            $flowmeter_akhir_3 = $row->flowmeter_akhir_3;
-                        }
-
-                        if($row->flowmeter_awal_4 == NULL || $row->flowmeter_awal_4 == '0'){
-                            $flowmeter_awal_4 = "0";
-                        }
-                        else{
-                            $flowmeter_awal_4 = $row->flowmeter_awal_4;
-                        }
-
-                        if($row->flowmeter_akhir_4 == NULL || $row->flowmeter_akhir_4 == '0'){
-                            $flowmeter_akhir_4 = "0";
-                        }
-                        else{
-                            $flowmeter_akhir_4 = $row->flowmeter_akhir_4;
-                        }
-
-                        if($row->flowmeter_akhir_4 != NULL && $row->flowmeter_awal_4 != NULL){
-                            $realisasi = $row->flowmeter_akhir_4 - $row->flowmeter_awal_4;
-                            $flow_sebelum = $flowmeter_awal_4;
-                            $flow_sesudah = $flowmeter_akhir_4;
-
-                            if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
-                                $realisasi += $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
-                                $flow_sebelum .= " , ".$flowmeter_awal_3;
-                                $flow_sesudah .= " , ".$flowmeter_akhir_3;
-
-                                if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
-                                    $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
-                                    $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
-                                    $flow_sebelum .= " , ".$flowmeter_awal_2." , ".$flowmeter_awal;
-                                    $flow_sesudah .= " , ".$flowmeter_akhir_2." , ".$flowmeter_akhir;
-                                } else{
-                                    $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
-                                    $flow_sebelum .= " , ".$flowmeter_awal;
-                                    $flow_sesudah .= " , ".$flowmeter_akhir;
-                                }
-                            }
-                            else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
-                                $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
-                                $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
-                                $flow_sebelum .= " , ".$flowmeter_awal_2." , ".$flowmeter_awal;
-                                $flow_sesudah .= " , ".$flowmeter_akhir_2." , ".$flowmeter_akhir;
-                            }
-                            else {
-                                $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
-                                $flow_sebelum .= " , ".$flowmeter_awal;
-                                $flow_sesudah .= " , ".$flowmeter_akhir;
-                            }
-                        }
-                        else if($row->flowmeter_akhir_3 != NULL && $row->flowmeter_awal_3 != NULL){
-                            $realisasi = $row->flowmeter_akhir_3 - $row->flowmeter_awal_3;
-                            $flow_sebelum = $flowmeter_awal_3;
-                            $flow_sesudah = $flowmeter_akhir_3;
-
-                            if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
-                                $realisasi += $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
-                                $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
-                                $flow_sebelum .= " , ".$flowmeter_awal_2." , ".$flowmeter_awal;
-                                $flow_sesudah .= " , ".$flowmeter_akhir_2." , ".$flowmeter_akhir;
-                            } else {
-                                $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
-                                $flow_sebelum .= " , ".$flowmeter_awal;
-                                $flow_sesudah .= " , ".$flowmeter_akhir;
-                            }
-                        }
-                        else if($row->flowmeter_akhir_2 != NULL && $row->flowmeter_awal_2 != NULL){
-                            $realisasi = $row->flowmeter_akhir_2 - $row->flowmeter_awal_2;
-                            $realisasi += $row->flowmeter_akhir - $row->flowmeter_awal;
-                            $flow_sebelum = $flowmeter_awal_2." , ".$flowmeter_awal;
-                            $flow_sesudah = $flowmeter_akhir_2." , ".$flowmeter_akhir;
-                        }
-                        else{
-                            $realisasi = $row->flowmeter_akhir - $row->flowmeter_awal;
-                            $flow_sebelum = $flowmeter_awal;
-                            $flow_sesudah = $flowmeter_akhir;
-                        }
-
-                        if($row->diskon != NULL || $row->diskon != 0){
-                            $row->tarif -= $row->tarif * $row->diskon/100;
-                            $total_pembayaran = $row->tarif * $realisasi;
-                        }
-                        else{
-                            $total_pembayaran = $row->tarif * $realisasi;
-                        }
-
-                        if($total_pembayaran >= 250000 && $total_pembayaran <= 1000000){
-                            $total_pembayaran += 3000;
-                        } else if($total_pembayaran > 1000000){
-                            $total_pembayaran += 6000;
-                        } else{
-                            $total_pembayaran += 0;
-                        }
-
-                        $total += $total_pembayaran;
-                        $ton += $row->total_permintaan;
-                        $ton_realiasi += $realisasi;
-                        $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi ));
-
-                        if($row->pengguna_jasa_id_tarif == 8){
-                            $row->pengguna_jasa_id_tarif = "Peti Kemas";
-                        }else{
-                            $row->pengguna_jasa_id_tarif = "Tongkang";
-                        }
-
-                        $tabel .='<tr>
-                          <td align="center">'.$no.'</td>
-                          <td align="center">'.$row->id_vessel.'</td>
-                          <td align="center">'.$row->nama_vessel.'</td>
-                          <td align="center">'.$row->voy_no.'</td>
-                          <td align="center">'.$row->pengguna_jasa_id_tarif.'</td>
-                          <td align="center">'.$row->nama_agent.'</td>
-                          <td align="center">'.$format_tgl.'</td>
-                          <td align="center">'.$this->Ribuan($row->tarif).'</td>
-                          <td align="center">'.$row->total_permintaan.'</td>
-                          <td align="center">'.$realisasi.'</td>
-                          <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
-                      </tr>
-                      ';
-                        $no++;
-                    }
                 }
             }
-
+            
             if($this->session->userdata('role_name') == 'keuangan' ){
                 $tabel .= '<tr>
                         <td align="center" colspan="10"><b>Total</b></td>
@@ -1945,10 +1972,83 @@ class Report extends MY_Controller{
         echo json_encode($data);
     }
 
+    public function laporanRealisasiAir() {
+        $tgl_awal = $this->input->post('tgl_awal');
+        $tgl_akhir = $this->input->post('tgl_akhir');
+        $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"realisasiAir");
+
+        if($result != NULL){
+            $ton_total = 0;
+            $no = 1;
+            $tabel = '<center><h4>Laporan Realisasi Pemakaian Air Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir )).'</h4></center>
+                    <table class="table table-responsive table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th align="center"><center>No</th>
+                            <th align="center"><center>Nama Tenant</th>
+                            <th align="center"><center>Nama Flow Meter</th>
+                            <th align="center"><center>Lokasi</th>
+                            <th align="center"><center>Tanggal Awal Realisasi</th>
+                            <th align="center"><center>Tanggal Akhir Realisasi</th>
+                            <th align="center"><center>Flow Awal</th>
+                            <th align="center"><center>Flow Akhir</th>
+                            <th align="center"><center>Issued By</th>
+                            <th align="center"><center>Total Pengisian (m3)</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+
+            foreach($result as $row){
+                $ttl_awal = $row->flow_awal;
+                $ttl_akhir = $row->flow_akhir;
+                $ton = $ttl_akhir - $ttl_awal;
+                $ton_total += $ton;
+
+                $tabel .='<tr>
+                        <td align="center">'.$no.'</td>
+                        <td align="center">'.$row->nama_tenant.'</td>
+                        <td align="center">'.$row->nama_flowmeter.'</td>
+                        <td align="center">'.$row->lokasi.'</td>
+                        <td align="center">'.$row->tgl_awal.'</td>
+                        <td align="center">'.$row->tgl_akhir.'</td>
+                        <td align="center">'.$ttl_awal.'</td>
+                        <td align="center">'.$ttl_akhir.'</td>
+                        <td align="center">'.$row->issued_by.'</td>
+                        <td align="center">'.$this->koma($ton).'</td>
+                    </tr>
+                    ';
+                $no++;
+
+            }
+
+            $tabel .= '<tr>
+                        <td align="center" colspan="9"><b>Total</b></td>
+                        <td align="center"><b>'.$this->Koma($ton_total).'</b></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </tbody>
+                </table>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporan/".$tgl_awal."/".$tgl_akhir."/realisasiAir").'>Cetak PDF</a>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/excelRealisasiAir/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>';
+
+            $data = array(
+                'status' => 'success',
+                'tabel' => $tabel
+            );
+        }
+        else{
+            $data = array(
+                'status' => 'failed'
+            );
+        }
+
+        echo json_encode($data);
+    }
+
 
     public function excelDarat($tgl_awal,$tgl_akhir) {
         if($this->session->userdata('role_name') == 'keuangan'){
-            $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"darat");
+            $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"darat_keuangan");
 
             // Create new PHPExcel object
             $object = new PHPExcel();
@@ -1980,8 +2080,8 @@ class Report extends MY_Controller{
             $object->getActiveSheet()->getStyle('A7:J7')->getAlignment()->setWrapText(true);
 
             // Set properties
-            $object->getProperties()->setCreator($this->session->userdata('nama'))
-                ->setLastModifiedBy($this->session->userdata('nama'))
+            $object->getProperties()->setCreator($this->session->userdata('first_name'))
+                ->setLastModifiedBy($this->session->userdata('first_name'))
                 ->setCategory("Approve by ");
             // Add some data
             $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
@@ -2005,7 +2105,7 @@ class Report extends MY_Controller{
             $tgl_akhir = date('d-m-Y',strtotime($tgl_akhir));
 
             $object->setActiveSheetIndex(0)
-                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
+                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('first_name'))
                 ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
                 ->setCellValue('A4', 'Terminal Peti Kemas')
                 ->setCellValue('A5', 'Laporan Transaksi Air Darat Periode '.$tgl_awal.' s/d '.$tgl_akhir)
@@ -2078,7 +2178,7 @@ class Report extends MY_Controller{
 
             // Redirect output to a client’s web browser (Excel2007)
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment;filename="Laporan_Transaksi_Darat_periode_'.$_GET['id'].'_'.$_GET['id2'].'.xlsx"');
+            header('Content-Disposition: attachment;filename="Laporan_Transaksi_Darat_periode_'.$tgl_awal.'_'.$tgl_akhir.'.xlsx"');
             header('Cache-Control: max-age=0');
 
             $objWriter = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
@@ -2113,8 +2213,8 @@ class Report extends MY_Controller{
             $object->getActiveSheet()->getStyle('A7:J7')->getAlignment()->setWrapText(true);
 
             // Set properties
-            $object->getProperties()->setCreator($this->session->userdata('nama'))
-                ->setLastModifiedBy($this->session->userdata('nama'))
+            $object->getProperties()->setCreator($this->session->userdata('first_name'))
+                ->setLastModifiedBy($this->session->userdata('first_name'))
                 ->setCategory("Approve by ");
             // Add some data
             $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
@@ -2138,7 +2238,7 @@ class Report extends MY_Controller{
             $tgl_akhir = date('d-m-Y',strtotime($tgl_akhir));
 
             $object->setActiveSheetIndex(0)
-                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
+                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('first_name'))
                 ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
                 ->setCellValue('A4', 'Terminal Peti Kemas')
                 ->setCellValue('A5', 'Laporan Transaksi Air Darat Periode '.$tgl_awal.' s/d '.$tgl_akhir)
@@ -2247,8 +2347,8 @@ class Report extends MY_Controller{
             $object->getActiveSheet()->getStyle('A7:M7')->getAlignment()->setWrapText(true);
 
             // Set properties
-            $object->getProperties()->setCreator($this->session->userdata('nama'))
-                ->setLastModifiedBy($this->session->userdata('nama'))
+            $object->getProperties()->setCreator($this->session->userdata('first_name'))
+                ->setLastModifiedBy($this->session->userdata('first_name'))
                 ->setCategory("Approve by ");
             // Add some data
             $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
@@ -2275,7 +2375,7 @@ class Report extends MY_Controller{
             $tgl_akhir = date('d-m-Y',strtotime($tgl_akhir));
 
             $object->setActiveSheetIndex(0)
-                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
+                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('first_name'))
                 ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
                 ->setCellValue('A4', 'Terminal Peti Kemas')
                 ->setCellValue('A5', 'Laporan Transaksi Air Darat Periode '.$tgl_awal.' s/d '.$tgl_akhir)
@@ -2405,7 +2505,7 @@ class Report extends MY_Controller{
             $objWriter->save('php://output');
         }
         else{
-            $result = $this->data->getDataLaporan($tgl_awal,$tgl_akhir,"darat");
+            $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"darat");
 
             // Create new PHPExcel object
             $object = new PHPExcel();
@@ -2433,8 +2533,8 @@ class Report extends MY_Controller{
             $object->getActiveSheet()->getStyle('A7:L7')->getAlignment()->setWrapText(true);
 
             // Set properties
-            $object->getProperties()->setCreator($this->session->userdata('nama'))
-                ->setLastModifiedBy($this->session->userdata('nama'))
+            $object->getProperties()->setCreator($this->session->userdata('first_name'))
+                ->setLastModifiedBy($this->session->userdata('first_name'))
                 ->setCategory("Approve by ");
             // Add some data
             $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
@@ -2460,7 +2560,7 @@ class Report extends MY_Controller{
             $tgl_akhir = date('d-m-Y',strtotime($tgl_akhir));
 
             $object->setActiveSheetIndex(0)
-                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
+                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('first_name'))
                 ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
                 ->setCellValue('A4', 'Terminal Peti Kemas')
                 ->setCellValue('A5', 'Laporan Transaksi Air Darat Periode '.$tgl_awal.' s/d '.$tgl_akhir)
@@ -2611,8 +2711,8 @@ class Report extends MY_Controller{
         );
 
         // Set properties
-        $object->getProperties()->setCreator($this->session->userdata('nama'))
-            ->setLastModifiedBy($this->session->userdata('nama'))
+        $object->getProperties()->setCreator($this->session->userdata('first_name'))
+            ->setLastModifiedBy($this->session->userdata('first_name'))
             ->setCategory("Approve by ");
         // Add some data
         if($this->session->userdata('role_name') == 'keuangan'){
@@ -2646,7 +2746,7 @@ class Report extends MY_Controller{
             $tgl_akhir = date('d-m-Y',strtotime($tgl_akhir));
 
             $object->setActiveSheetIndex(0)
-                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
+                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('first_name'))
                 ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
                 ->setCellValue('A4', 'Terminal Peti Kemas')
                 ->setCellValue('A5', 'Laporan Transaksi Air Kapal Periode '.$tgl_awal.' s/d '.$tgl_akhir)
@@ -2812,7 +2912,7 @@ class Report extends MY_Controller{
             $tgl_akhir = date('d-m-Y',strtotime($tgl_akhir));
 
             $object->setActiveSheetIndex(0)
-                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
+                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('first_name'))
                 ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
                 ->setCellValue('A4', 'Terminal Peti Kemas')
                 ->setCellValue('A5', 'Laporan Transaksi Air Kapal Periode '.$tgl_awal.' s/d '.$tgl_akhir)
@@ -2971,7 +3071,7 @@ class Report extends MY_Controller{
             $tgl_akhir = date('d-m-Y',strtotime($tgl_akhir));
 
             $object->setActiveSheetIndex(0)
-                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
+                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('first_name'))
                 ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
                 ->setCellValue('A4', 'Terminal Peti Kemas')
                 ->setCellValue('A5', 'Laporan Transaksi Air Kapal Periode '.$tgl_awal.' s/d '.$tgl_akhir)
@@ -3224,8 +3324,8 @@ class Report extends MY_Controller{
         $object->getActiveSheet()->getStyle('A7:J7')->getAlignment()->setWrapText(true);
 
         // Set properties
-        $object->getProperties()->setCreator($this->session->userdata('nama'))
-            ->setLastModifiedBy($this->session->userdata('nama'))
+        $object->getProperties()->setCreator($this->session->userdata('first_name'))
+            ->setLastModifiedBy($this->session->userdata('first_name'))
             ->setCategory("Approve by ");
         // Add some data
         if($this->session->userdata('role_name') == "keuangan"){
@@ -3252,7 +3352,7 @@ class Report extends MY_Controller{
             $tgl_akhir = date('d-m-Y',strtotime($tgl_akhir));
 
             $object->setActiveSheetIndex(0)
-                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
+                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('first_name'))
                 ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
                 ->setCellValue('A4', 'Terminal Peti Kemas')
                 ->setCellValue('A5', 'Laporan Transaksi Air Ruko Periode '.$tgl_awal.' s/d '.$tgl_akhir)
@@ -3276,7 +3376,7 @@ class Report extends MY_Controller{
 
             foreach($result as $row){
                 $no++;
-                $data_tagihan = $this->data->getTagihan($tgl_awal,$tgl_akhir,$row->id_flow);
+                $data_tagihan = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$row->id_flow);
                 $i = 1;
                 $no_perjanjian = '';
                 $ttl_awal = '';
@@ -3393,7 +3493,7 @@ class Report extends MY_Controller{
             $tgl_akhir = date('d-m-Y',strtotime($tgl_akhir));
 
             $object->setActiveSheetIndex(0)
-                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
+                ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('first_name'))
                 ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
                 ->setCellValue('A4', 'Terminal Peti Kemas')
                 ->setCellValue('A5', 'Laporan Transaksi Air Ruko Periode '.$tgl_awal.' s/d '.$tgl_akhir)
@@ -3417,7 +3517,7 @@ class Report extends MY_Controller{
 
             foreach($result as $row){
                 $no++;
-                $data_tagihan = $this->data->getTagihan($tgl_awal,$tgl_akhir,$row->id_flow);
+                $data_tagihan = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$row->id_flow);
                 $i = 1;
                 $no_perjanjian = '';
                 $ttl_awal = '';
@@ -3553,8 +3653,8 @@ class Report extends MY_Controller{
         $object->getActiveSheet()->getStyle('A7:E7')->getAlignment()->setWrapText(true);
 
         // Set properties
-        $object->getProperties()->setCreator($this->session->userdata('nama'))
-            ->setLastModifiedBy($this->session->userdata('nama'))
+        $object->getProperties()->setCreator($this->session->userdata('first_name'))
+            ->setLastModifiedBy($this->session->userdata('first_name'))
             ->setCategory("Approve by ");
         // Add some data
         $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"flow");
@@ -3575,7 +3675,7 @@ class Report extends MY_Controller{
         $tgl_akhir = date('d-m-Y',strtotime($tgl_akhir));
 
         $object->setActiveSheetIndex(0)
-            ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
+            ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('first_name'))
             ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
             ->setCellValue('A4', 'Terminal Peti Kemas')
             ->setCellValue('A5', 'Laporan Pencatatan Flow Meter Periode '.$tgl_awal.' s/d '.$tgl_akhir)
@@ -3592,7 +3692,7 @@ class Report extends MY_Controller{
 
         foreach($result as $row){
             $no++;
-            $data_tagihan = $this->data->getFlow($tgl_awal,$tgl_akhir,$row->id_flow);
+            $data_tagihan = $this->tenant->getFlow($tgl_awal,$tgl_akhir,$row->id_flow);
             $i = 1;
             $ttl_akhir=0;
 
@@ -3678,8 +3778,8 @@ class Report extends MY_Controller{
         $object->getActiveSheet()->getStyle('A7:D7')->getAlignment()->setWrapText(true);
 
         // Set properties
-        $object->getProperties()->setCreator($this->session->userdata('nama'))
-            ->setLastModifiedBy($this->session->userdata('nama'))
+        $object->getProperties()->setCreator($this->session->userdata('first_name'))
+            ->setLastModifiedBy($this->session->userdata('first_name'))
             ->setCategory("Approve by ");
         // Add some data
         $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"per_flow",$id);
@@ -3698,7 +3798,7 @@ class Report extends MY_Controller{
         $tgl_akhir = date('d-m-Y',strtotime($tgl_akhir));
 
         $object->setActiveSheetIndex(0)
-            ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
+            ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('first_name'))
             ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
             ->setCellValue('A4', 'Terminal Peti Kemas')
             ->setCellValue('A5', 'Laporan Pencatatan Flow Meter '.$judul.' Periode '.$tgl_awal.' s/d '.$tgl_akhir)
@@ -3808,8 +3908,8 @@ class Report extends MY_Controller{
         $object->getActiveSheet()->getStyle('A7:O7')->getAlignment()->setWrapText(true);
 
         // Set properties
-        $object->getProperties()->setCreator($this->session->userdata('nama'))
-            ->setLastModifiedBy($this->session->userdata('nama'))
+        $object->getProperties()->setCreator($this->session->userdata('first_name'))
+            ->setLastModifiedBy($this->session->userdata('first_name'))
             ->setCategory("Approve by ");
         // Add some data
         $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"sumur");
@@ -3840,7 +3940,7 @@ class Report extends MY_Controller{
         $tgl_akhir = date('d-m-Y',strtotime($tgl_akhir));
 
         $object->setActiveSheetIndex(0)
-            ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('nama'))
+            ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('first_name'))
             ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
             ->setCellValue('A4', 'Terminal Peti Kemas')
             ->setCellValue('A5', 'Laporan Pencatatan Sumur Periode '.$tgl_awal.' s/d '.$tgl_akhir)
@@ -4052,6 +4152,140 @@ class Report extends MY_Controller{
         $objWriter->save('php://output');
     }
 
+    public function excelRealisasiAir($tgl_awal,$tgl_akhir) {
+        // Create new PHPExcel object
+        $object = new PHPExcel();
+        $style = array(
+            'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+            ),
+            'borders' => array(
+                'allborders' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
+                )
+            )
+        );
+        $font = array(
+            'font'  => array(
+                'bold'  => true,
+                'size'  => 12,
+                'name'  => 'Times New Roman'
+            )
+        );
+
+        $object->getActiveSheet()->getStyle("A7:J7")->applyFromArray($style);
+        $object->getActiveSheet()->getStyle("A7:J7")->applyFromArray($font);
+        $object->getActiveSheet()->getStyle("A1:J5")->applyFromArray($font);
+        $object->getActiveSheet()->getStyle('A7:J7')->getAlignment()->setWrapText(true);
+
+        // Set properties
+        $object->getProperties()->setCreator($this->session->userdata('username'))
+            ->setLastModifiedBy($this->session->userdata('username'))
+            ->setCategory("Approve by ");
+        // Add some data
+        $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"realisasiAir");
+
+        $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
+        $object->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+        $object->getActiveSheet()->getColumnDimension('C')->setWidth(20);
+        $object->getActiveSheet()->getColumnDimension('D')->setWidth(20);
+        $object->getActiveSheet()->getColumnDimension('E')->setWidth(20);
+        $object->getActiveSheet()->getColumnDimension('F')->setWidth(20);
+        $object->getActiveSheet()->getColumnDimension('G')->setWidth(20);
+        $object->getActiveSheet()->getColumnDimension('H')->setWidth(20);
+        $object->getActiveSheet()->getColumnDimension('I')->setWidth(20);
+        $object->getActiveSheet()->getColumnDimension('J')->setWidth(20);
+
+        $object->getActiveSheet()->mergeCells('A1:J1');
+        $object->getActiveSheet()->mergeCells('A2:J2');
+        $object->getActiveSheet()->mergeCells('A3:J3');
+        $object->getActiveSheet()->mergeCells('A4:J4');
+        $object->getActiveSheet()->mergeCells('A5:J5');
+
+        $tgl_awal = date('d-m-Y',strtotime($tgl_awal));
+        $tgl_akhir = date('d-m-Y',strtotime($tgl_akhir));
+
+        $object->setActiveSheetIndex(0)
+            ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('username'))
+            ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
+            ->setCellValue('A4', 'Terminal Peti Kemas')
+            ->setCellValue('A5', 'Laporan Pencatatan Sumur Periode '.$tgl_awal.' s/d '.$tgl_akhir)
+            ->setCellValue('A7', 'No')
+            ->setCellValue('B7', 'Nama Tempat')
+            ->setCellValue('C7', 'Nama Flow Meter')
+            ->setCellValue('D7', 'lokasi')
+            ->setCellValue('E7', 'Tanggal Awal Realisasi')
+            ->setCellValue('F7', 'Tanggal Akhir Realisasi')
+            ->setCellValue('G7', 'Flow Awal')
+            ->setCellValue('H7', 'Flow Akhir')
+            ->setCellValue('I7', 'Issued By')
+            ->setCellValue('J7', 'Total Pengisian (m3)')
+        ;
+        $no=0;
+        //add data
+        $counter=8;
+        $ton_total = 0;
+        $ex = $object->setActiveSheetIndex(0);
+
+        foreach($result as $row){
+            $no++;
+
+            $object->getActiveSheet()->getStyle("A".$counter.":J".$counter)->applyFromArray($style);
+
+            $ttl_awal = $row->flow_awal;
+            $ttl_akhir = $row->flow_akhir;
+            $ton =$ttl_akhir - $ttl_awal;
+            $ton_total += $ton;
+            
+            $ex->setCellValue("A".$counter,"$no");
+            $ex->setCellValue("B".$counter,"$row->nama_tenant");
+            $ex->setCellValue("C".$counter,"$row->nama_flowmeter");
+            $ex->setCellValue("D".$counter,"$row->lokasi");
+            $ex->setCellValue("E".$counter,"$row->tgl_awal");
+            $ex->setCellValue("F".$counter,"$row->tgl_akhir");
+            $ex->setCellValue("G".$counter,"$ttl_awal");
+            $ex->setCellValue("H".$counter,"$ttl_akhir");
+            $ex->setCellValue("I".$counter,"$row->issued_by");
+            $ex->setCellValue("J".$counter,"$ton");
+
+            $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
+            $object->getActiveSheet()->getStyle("B".$counter)->applyFromArray($style);
+            $object->getActiveSheet()->getStyle("C".$counter)->applyFromArray($style);
+            $object->getActiveSheet()->getStyle("D".$counter)->applyFromArray($style);
+            $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($style);
+            $object->getActiveSheet()->getStyle("F".$counter)->applyFromArray($style);
+            $object->getActiveSheet()->getStyle("G".$counter)->applyFromArray($style);
+            $object->getActiveSheet()->getStyle("H".$counter)->applyFromArray($style);
+            $object->getActiveSheet()->getStyle("I".$counter)->applyFromArray($style);
+            $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($style);
+                
+            $counter=$counter+1;
+        }
+        $object->getActiveSheet()->mergeCells('A'.$counter.':I'.$counter);
+        $object->getActiveSheet()->getStyle("A".$counter.":J".$counter)->applyFromArray($style);
+
+        $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($font);
+        $object->getActiveSheet()->getStyle("J".$counter)->applyFromArray($font);
+
+        $ex->setCellValue("A".$counter,"Total");
+        $ex->setCellValue("J".$counter,"$ton_total");
+
+        // Rename sheet
+        $object->getActiveSheet()->setTitle('Lap_Pemakaian_Air');
+
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $object->setActiveSheetIndex(0);
+
+        // Redirect output to a client’s web browser (Excel2007)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="Laporan_Pemakaian_Air_periode_'.$tgl_awal.'_'.$tgl_akhir.'.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $objWriter = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
+        $objWriter->save('php://output');
+    }
+
     public function cetakLaporan($tgl_awal,$tgl_akhir,$tipe,$id=''){
         ini_set('memory_limit', '256M');
         if($tipe == "darat"){
@@ -4062,6 +4296,8 @@ class Report extends MY_Controller{
                 $this->load->view('report/cetaklaporan/v_cetaklaporan_darat_wtp', $data);
             elseif($this->session->userdata('role_name') == "operasi")
                 $this->load->view('report/cetaklaporan/v_cetaklaporan_darat_operasi', $data);
+            elseif($this->session->userdata('role_name') == "keuangan")
+                $this->load->view('report/cetaklaporan/v_cetaklaporan_darat_keuangan', $data);
             else
                 $this->load->view('report/cetaklaporan/v_cetaklaporan_darat', $data);
 
@@ -4189,6 +4425,23 @@ class Report extends MY_Controller{
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
             $this->load->view('report/cetaklaporan/v_cetaklaporan_ruko_keuangan', $data);
+
+            $paper_size  = 'A4'; //paper size
+            $orientation = 'landscape'; //tipe format kertas
+            $html = $this->output->get_output();
+
+            $this->dompdf->set_paper($paper_size, $orientation);
+            //Convert to PDF
+            $this->dompdf->load_html($html);
+            $this->dompdf->render();
+            $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
+        }
+        else if($tipe == "realisasiAir"){
+            $data['title'] = 'Laporan Pemakaian Air Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
+            $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
+            $data['tgl_awal'] = $tgl_awal;
+            $data['tgl_akhir'] = $tgl_akhir;
+            $this->load->view('report/cetaklaporan/v_cetaklaporan_pemakaian_air', $data);
 
             $paper_size  = 'A4'; //paper size
             $orientation = 'landscape'; //tipe format kertas

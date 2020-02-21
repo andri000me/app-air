@@ -5,10 +5,12 @@ class M_report extends MY_Model{
     function getDataLaporan($tgl_awal = '',$tgl_akhir = '', $tipe, $id =''){
         if($tipe == "darat"){
             $this->db->select('*');
-            $this->db->from('transaksi_darat , pembeli_darat');
+            $this->db->from('transaksi_darat');
+            $this->db->join('pembeli_darat','pembeli_darat_id_pengguna_jasa = id_pengguna_jasa','left');
             $this->db->where('tgl_transaksi BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:59")).'"');
-            $this->db->where('pembeli_darat_id_pengguna_jasa = id_pengguna_jasa');
-            $this->db->where('transaksi_darat.soft_delete =',0);
+            $this->db->where('transaksi_darat.soft_delete',0);
+            $this->db->where('status_pembayaran','1');
+            $this->db->or_where('status_invoice','1');
             $this->db->order_by('tgl_transaksi','ASC');
         }
         else if($tipe == "darat_keuangan"){
@@ -37,7 +39,8 @@ class M_report extends MY_Model{
             $this->db->where('tgl_transaksi BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:59")).'"');
             $this->db->where('pembeli_laut_id_pengguna_jasa = id_pengguna_jasa');
             $this->db->where('id_agent = id_agent_master');
-            $this->db->where('transaksi_laut.soft_delete =',0);
+            $this->db->where('transaksi_laut.soft_delete',0);
+            $this->db->where('transaksi_laut.status_pengerjaan',1);
             $this->db->order_by('tgl_transaksi','ASC');
         }
         else if($tipe == "flow"){
@@ -81,6 +84,15 @@ class M_report extends MY_Model{
             $this->db->where('status_pencatatan','1');
             $this->db->where('soft_delete','0');
             $this->db->order_by('waktu_perekaman','ASC');
+        }
+        else if($tipe == "realisasiAir"){
+            $this->db->select('*');
+            $this->db->from('realisasi_tenant');
+            $this->db->join('master_flowmeter','realisasi_tenant.id_ref_flowmeter = id_flow','left');
+            $this->db->join('master_tenant','master_tenant.id_ref_flowmeter = id_flow','left');
+            $this->db->where('tgl_transaksi BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:59")).'"');
+            $this->db->where('realisasi_tenant.soft_delete','0');
+            $this->db->order_by('tgl_transaksi','ASC');
         }
         else if($tipe == "ruko_keuangan"){
             $this->db->select('*');

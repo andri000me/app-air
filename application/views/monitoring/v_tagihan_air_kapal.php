@@ -38,6 +38,8 @@
                     "<td align='center'>" + myArr[i]["realisasi"] + "</td>";
                 if (myArr[i]["aksi"] != null) {
                     a += "<td align='center'>" + myArr[i]["aksi"] + "</td>";
+                }else{
+                    a += "<td align='center'></td>";
                 }
                 a += "</tr>";
                 i++;
@@ -62,8 +64,41 @@
             document.getElementById("table").innerHTML = a;
         }
     }
-    xmlhttp.open("GET", "<?php echo base_url("kapal/tabel_pembayaran?id=laut_operasi")?>", true);
+    xmlhttp.open("GET", "<?php echo base_url("kapal/tabel_pembayaran")?>", true);
     xmlhttp.send();
+
+    function reload() {
+        location.reload();
+    }
+
+    function batal(id){
+        var url;
+        var id = id;
+        url = "<?php echo site_url('kapal/cancelTransaksiLaut')?>";
+        if (confirm('Batalkan Transaksi ?')) {
+            $.ajax({
+                url : url,
+                type: "POST",
+                data: {
+                    id: id
+                },
+                dataType: 'json',
+                success: function(response) {
+                    if(response.status == "sukses"){
+                        alert('Transaksi Sudah Dibatalkan');
+                        window.location.replace('<?php echo base_url('main/monitoring/permohonan_air_kapal');?>');
+                    } else{
+                        alert('Transaksi Gagal Dibatalkan....Kemungkinan Pengisian Kapal Sudah Dilakukan');
+                        window.location.replace('<?php echo base_url('main/monitoring/permintaan_air_kapal');?>');
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown)
+                {
+                    alert('Gagal Mengupdate Data'+" "+textStatus+" "+errorThrown);
+                }
+            });
+        }
+    }
 </script>
 
 <body>
@@ -72,7 +107,7 @@
     </div>
     <div class="container container-fluid">
         <div class="row">
-            <center><h4>Daftar Tagihan Pelayanan Jasa Air Bersih Untuk Kapal</h4></center>
+            <center><h4>Daftar Permohonan Pelayanan Jasa Air Bersih Untuk Kapal</h4></center>
             <br>
             <table class="table table-responsive table-bordered table-condensed" id="table"></table>
         </div>

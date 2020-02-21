@@ -141,6 +141,7 @@ class M_kapal extends MY_Model{
 
     public function ubah_waktu_pengisian($data){
         $this->db->set('start_work',$data['waktu']);
+        $this->db->set('status_pengerjaan','1');
         $this->db->set('last_modified',$data['waktu']);
         $this->db->set('modified_by',$data['user']);
         //$this->db->set('pengantar',$data['user']);

@@ -4,7 +4,7 @@ if(($this->session->userdata('role_name') == "wtp" || $this->session->userdata('
     <!DOCTYPE html>
     <html>
     <head>
-        <title><?php echo$title?></title>
+        <title><?php echo $title?></title>
         <style>
             table{
                 border-collapse: collapse;
@@ -42,33 +42,16 @@ if(($this->session->userdata('role_name') == "wtp" || $this->session->userdata('
         </tr>
     </table>
         <?php
-        $no = 0;
-        $total =0;
-        $ton = 0;
         $ton_total=0;
         $ttl_akhir=0;
         $ttl_awal=0;
-        $i=1;
 
-        if($tagihan != NULL){
-            foreach($tagihan as $row) {
-                if($i == 1 && $row->flow_hari_ini != NULL){
-                    $ttl_awal = $row->flow_hari_ini;
-                }else{
-                    if($ttl_awal == 0){
-                        $ttl_awal = $row->flow_hari_ini;
-                    }
-                }
-
-                if($i == count($tagihan) && $row->flow_hari_ini != NULL){
-                    $ttl_akhir = $row->flow_hari_ini;
-                }
-                $i++;
-                $tes = count($tagihan);
-            }
+        if($data != NULL){
+            $ttl_awal = $data->flow_awal;
+            $ttl_akhir = $data->flow_akhir;
         }
 
-        $ton_total = $detail_tagihan->total_pakai;
+        $ton_total = $ttl_akhir - $ttl_awal;
         
         ?>
     <br>

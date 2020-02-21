@@ -281,11 +281,11 @@ class Admin extends MY_Controller{
         }
     }
 
-    public function oauth2callback(){
+    public function callback(){
         $google_data = $this->google->validate();
         
         // browse user from table m_user
-        $data = $this->admin->checkEmail($google_data['email']);
+        $data = $this->admin->cekEmail($google_data['email']);
         if ($data == TRUE){
             // update table m_user
             $data = array(
@@ -309,7 +309,7 @@ class Admin extends MY_Controller{
                 'last_name' => $google_data['last_name'],
                 'link' => $google_data['link'],
                 'picture' =>  $google_data['profile_pic'],
-                'created_date' => date("Y-m-d H:i:s"),
+                'date_created' => date("Y-m-d H:i:s"),
             );
 
             $this->admin->save($data);

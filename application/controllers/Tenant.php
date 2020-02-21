@@ -361,57 +361,56 @@ class Tenant extends MY_Controller{
     }
 
     public function tabel_tagihan_tenant(){
-        if($this->session->userdata('role_name')== 'operasi' || $this->session->userdata('role_name')== 'wtp' || $this->session->userdata('role_name')== 'admin'){
+        if($this->session->userdata('role_name')== 'operasi' || $this->session->userdata('role_name')== 'admin'){
             $result = $this->tenant->get_tabel_transaksi();
             $data = array();
             $no = 1;
 
-            foreach ($result as $row){
-                if($this->session->userdata('role_name')== 'admin'){
-                    $aksi = '<span class=""><a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" title="Cetak Tagihan" target="_blank" href="'.base_url("tenant/cetakTagihan/".$row->id_transaksi."/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
-                    $aksi .= '&nbsp;<span class=""><a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" title="Cetak Realisasi Pemakaian" target="_blank" href="'.base_url("tenant/cetakRealisasiPemakaian/".$row->id_transaksi."/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
-                    $aksi .= '&nbsp;<a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="Batal Invoice" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a>';
-                }else if($this->session->userdata('role_name') == 'operasi'){
-                    $aksi = '<span class=""><a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" title="Cetak Tagihan" target="_blank" href="'.base_url("tenant/cetakTagihan/".$row->id_transaksi."/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
-                    $aksi .= '&nbsp;<a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="Batal Invoice" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a>';
-                }else if($this->session->userdata('role_name') == 'wtp'){
-                    $aksi = '<span class=""><a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" title="Cetak Realisasi Pemakaian" target="_blank" href="'.base_url("tenant/cetakRealisasiPemakaian/".$row->id_transaksi."/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
-                } 
-                else{
-                    $aksi = '<span class=""><a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" title="Realisasi Pembayaran" href="javascript:void(0)" onclick="realisasi('."'".$row->id_transaksi."'".');"> </a></span>';
-                }
-
-                if($row->no_perjanjian == NULL){
-                    $row->no_perjanjian = "";
-                }
-                $tarif = '';
-
-                if($row->diskon != NULL || $row->diskon != ''){
-                    $tarif = $row->tarif - ($row->diskon * $row->tarif / 100);
-                } else{
-                    $tarif = $row->tarif;
-                }
-
-                $tgl_awal = date("d-M-Y",strtotime($row->tgl_awal));
-                $tgl_akhir = date("d-M-Y",strtotime($row->tgl_akhir));
-
-                if($row->soft_delete == 0 && $row->status_invoice == 1){
-                    $data[] = array(
-                        'no' => $no,
-                        'no_invoice' => $row->no_invoice,
-                        'id_flowmeter' => $row->id_flowmeter,
-                        'nama_tenant' => $row->nama_tenant,
-                        'periode' => $tgl_awal." s/d ".$tgl_akhir,
-                        'waktu_transaksi' => $row->tgl_transaksi,
-                        'lokasi' => $row->lokasi,
-                        'no_telp' => $row->no_telp,
-                        'tarif' => $tarif,
-                        'no_perjanjian' => $row->no_perjanjian,
-                        'total_pakai' => $row->total_pakai,
-                        'total_bayar' => $this->Ribuan($row->total_bayar),
-                        'aksi' => $aksi,
-                    );
-                    $no++;
+            if($result != NULL){
+                foreach ($result as $row){
+                    if($this->session->userdata('role_name')== 'admin'){
+                        $aksi = '<span class=""><a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" title="Cetak Tagihan" target="_blank" href="'.base_url("tenant/cetakTagihan/".$row->id_transaksi."/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
+                        $aksi .= '&nbsp;<a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="Batal Invoice" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a>';
+                    }else if($this->session->userdata('role_name') == 'operasi'){
+                        $aksi = '<span class=""><a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" title="Cetak Tagihan" target="_blank" href="'.base_url("tenant/cetakTagihan/".$row->id_transaksi."/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
+                        $aksi .= '&nbsp;<a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="Batal Invoice" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a>';
+                    } 
+                    else{
+                        $aksi = '<span class=""><a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" title="Realisasi Pembayaran" href="javascript:void(0)" onclick="realisasi('."'".$row->id_transaksi."'".');"> </a></span>';
+                    }
+    
+                    if($row->no_perjanjian == NULL){
+                        $row->no_perjanjian = "";
+                    }
+                    $tarif = '';
+    
+                    if($row->diskon != NULL || $row->diskon != ''){
+                        $tarif = $row->tarif - ($row->diskon * $row->tarif / 100);
+                    } else{
+                        $tarif = $row->tarif;
+                    }
+    
+                    $tgl_awal = date("d-M-Y",strtotime($row->tgl_awal));
+                    $tgl_akhir = date("d-M-Y",strtotime($row->tgl_akhir));
+    
+                    if($row->soft_delete == 0 && $row->status_invoice == 1){
+                        $data[] = array(
+                            'no' => $no,
+                            'no_invoice' => $row->no_invoice,
+                            'id_flowmeter' => $row->id_flowmeter,
+                            'nama_tenant' => $row->nama_tenant,
+                            'periode' => $tgl_awal." s/d ".$tgl_akhir,
+                            'waktu_transaksi' => $row->tgl_transaksi,
+                            'lokasi' => $row->lokasi,
+                            'no_telp' => $row->no_telp,
+                            'tarif' => $tarif,
+                            'no_perjanjian' => $row->no_perjanjian,
+                            'total_pakai' => $row->total_pakai,
+                            'total_bayar' => $this->Ribuan($row->total_bayar),
+                            'aksi' => $aksi,
+                        );
+                        $no++;
+                    }
                 }
             }
         } else{
@@ -443,10 +442,59 @@ class Tenant extends MY_Controller{
         echo json_encode($data);
     }
 
+    public function tabel_realisasi_tenant(){
+        if($this->session->userdata('role_name')== 'wtp' || $this->session->userdata('role_name')== 'admin'){
+            $result = $this->tenant->get_tabel_realisasi();
+            $data = array();
+            $no = 1;
+
+            if($result != NULL){
+                foreach ($result as $row){
+                    $aksi = '<span class=""><a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" title="Cetak Realisasi Pemakaian" target="_blank" href="'.base_url("tenant/cetakRealisasiPemakaian/".$row->id_realisasi."/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
+                    
+                    if($row->status_tagihan == 0)
+                        $aksi .= '&nbsp;<a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="Batal Realisasi" href="javascript:void(0)" onclick="batal('."'".$row->id_realisasi."'".');"></a>';
+                    
+                    if($row->no_perjanjian == NULL){
+                        $row->no_perjanjian = "";
+                    }
+                    
+                    $tgl_awal = date("d-M-Y",strtotime($row->tgl_awal));
+                    $tgl_akhir = date("d-M-Y",strtotime($row->tgl_akhir));
+                    $total_pakai = $row->flow_akhir - $row->flow_awal;
+    
+                    if($row->soft_delete == 0){
+                        $data[] = array(
+                            'no' => $no,
+                            'id_flowmeter' => $row->id_flowmeter,
+                            'nama_tenant' => $row->nama_tenant,
+                            'periode' => $tgl_awal." s/d ".$tgl_akhir,
+                            'waktu_transaksi' => $row->tgl_transaksi,
+                            'lokasi' => $row->lokasi,
+                            'no_telp' => $row->no_telp,
+                            'no_perjanjian' => $row->no_perjanjian,
+                            'total_pakai' => $total_pakai,
+                            'aksi' => $aksi,
+                        );
+                        $no++;
+                    }
+                }
+            }
+        }
+
+        echo json_encode($data);
+    }
+
     public function cancelTransaksiRuko(){
-        $data['tipe'] = "ruko";
         $data['id'] = $this->input->post('id');
-        $this->tenant->cancelOrder($data);
+        $result = $this->tenant->cancelOrder($data);
+        if($result)
+            $this->tenant->setStatusTagihan($result,0);
+    }
+
+    public function cancelRealisasiTenant(){
+        $data['id'] = $this->input->post('id');
+        $this->tenant->cancelRealisasi($data);
     }
 
     public function realisasi_pembayaran_tenant(){
@@ -521,20 +569,19 @@ class Tenant extends MY_Controller{
         $this->dompdf->stream("tagihan.pdf", array('Attachment'=>0));
     }
 
-    public function cetakRealisasiPemakaian($id_transaksi,$id_flowmeter,$tgl_awal,$tgl_akhir){
+    public function cetakRealisasiPemakaian($id_realisasi,$id_flowmeter,$tgl_awal,$tgl_akhir){
         $row = $this->tenant->get_by_id("ruko",$id_flowmeter);
         $data['title'] = 'Realisasi Penggunaan Air Periode '.date('d-M-Y', strtotime($tgl_awal)).' s/d '.date('d-M-Y', strtotime($tgl_akhir)); //judul title
 
         $data['tanggal'] = $this->indonesian_date("l, d F Y",time());
         $data['tgl'] = $this->indonesian_date("d F Y",time());
+
         if($row->id_ref_tenant != NULL){
-            $data['tagihan'] = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+            $data['data'] = $this->tenant->getDataRealisasi($tgl_awal,$tgl_akhir,$id_realisasi);
             $data['data_tagihan'] = $this->tenant->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
-            $data['detail_tagihan'] = $this->tenant->getDetailTagihan($id_flowmeter);
         } else{
-            $data['tagihan'] = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+            $data['data'] = $this->tenant->getDataRealisasi($tgl_awal,$tgl_akhir,$id_realisasi);
             $data['data_tagihan'] = $this->tenant->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
-            $data['detail_tagihan'] = $this->tenant->getDetailTagihan($id_flowmeter);
         }
         $this->load->view('tenant/v_realisasi_pemakaian_tenant', $data);
 
@@ -550,6 +597,192 @@ class Tenant extends MY_Controller{
     }
 
     public function tagihan_ruko() {
+        $tgl_awal = $this->input->post('tgl_awal');
+        $tgl_akhir = $this->input->post('tgl_akhir');
+        $id_flowmeter = $this->input->post('id');
+        $no = 1;
+
+        $cekRealisasi = $this->tenant->cekRealisasi($tgl_awal,$tgl_akhir,$id_flowmeter);
+
+        if($cekRealisasi != NULL){
+            $data = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+            $data_tagihan = $this->tenant->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+            $tabel = '';
+            
+            if($data_tagihan != NULL){
+                if($data != NULL) {
+                    if ($data_tagihan->id_ref_tenant == NULL) {
+                        $tabel = '
+                        <div class="col-sm-7">
+                        <table class="table table-responsive table-condensed table-striped">
+                            <tr>
+                                <td>Nama Tenant</td>
+                                <td>:</td>
+                                <td>' . $data_tagihan->nama_tenant . '</td>
+                            </tr>
+                            <tr>
+                                <td>Lokasi</td>
+                                <td>:</td>
+                                <td>' . $data_tagihan->lokasi . '</td>
+                            </tr>
+                            <tr>
+                                <td>No Telepon</td>
+                                <td>:</td>
+                                <td>' . $data_tagihan->no_telp . '</td>
+                            </tr>
+                            <tr>
+                                <td>Penanggung Jawab</td>
+                                <td>:</td>
+                                <td>' . $data_tagihan->penanggung_jawab . '</td>
+                            </tr>
+                        </table></div>';
+                        $tabel .= '
+                    <table class="table table-responsive table-condensed table-striped">
+                        <thead>
+                            <td>No</td>
+                            <td>Tanggal Pencatatan</td>
+                            <td>Flow Meter</td>
+                        </thead>
+                        ';
+                            foreach ($data as $row) {
+                                $tabel .= '
+                        <tr>
+                        <td>' . $no . '</td>
+                        <td>' . $row->waktu_perekaman . '</td>
+                        <td>' . $row->flow_hari_ini . '</td>
+                        </tr>';
+                            $no++;
+                        }
+                        $tabel .= '</table>';
+        
+                        $data = array(
+                            'status' => 'success',
+                            'tabel' => $tabel,
+                            'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Buat Tagihan</a>'
+                        );
+                    }
+                    else {
+                        $tabel = '
+                        <div class="col-sm-7">
+                        <table class="table table-responsive table-condensed table-striped">
+                            <tr>
+                                <td>Nama Tenant</td>
+                                <td>:</td>
+                                <td>' . $data_tagihan->nama_tenant . '</td>
+                            </tr>
+                            <tr>
+                                <td>Lokasi</td>
+                                <td>:</td>
+                                <td>' . $data_tagihan->lokasi . '</td>
+                            </tr>
+                            <tr>
+                                <td>No Telepon</td>
+                                <td>:</td>
+                                <td>' . $data_tagihan->no_telp . '</td>
+                            </tr>
+                            <tr>
+                                <td>Penanggung Jawab</td>
+                                <td>:</td>
+                                <td>' . $data_tagihan->penanggung_jawab . '</td>
+                            </tr>
+                        </table></div>';
+                        $tabel .= '
+                    <table class="table table-responsive table-condensed table-striped">
+                        <tr>
+                            <td>No Perjanjian</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->no_perjanjian . '</td>
+                        </tr>
+                        <tr>    
+                            <td>Perihal</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->perihal . '</td>
+                        </tr>
+                        <tr>    
+                            <td>Waktu Kadaluarsa</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->waktu_kadaluarsa . '</td>
+                        </tr>
+                        <tr>    
+                            <td>Nominal</td>
+                            <td>:</td>
+                            <td>Rp. ' . $this->Ribuan($data_tagihan->nominal) . '</td>
+                        </tr>';
+                        $tabel .= '</table>';
+        
+                        $data = array(
+                            'status' => 'success',
+                            'tabel' => $tabel,
+                            'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Buat Tagihan</a>'
+                        );
+                    }
+                }else {
+                    $tabel = '
+                        <div class="col-sm-7">
+                        <table class="table table-responsive table-condensed table-striped">
+                            <tr>
+                                <td>Nama Tenant</td>
+                                <td>:</td>
+                                <td>' . $data_tagihan->nama_tenant . '</td>
+                            </tr>
+                            <tr>
+                                <td>Lokasi</td>
+                                <td>:</td>
+                                <td>' . $data_tagihan->lokasi . '</td>
+                            </tr>
+                            <tr>
+                                <td>No Telepon</td>
+                                <td>:</td>
+                                <td>' . $data_tagihan->no_telp . '</td>
+                            </tr>
+                            <tr>
+                                <td>Penanggung Jawab</td>
+                                <td>:</td>
+                                <td>' . $data_tagihan->penanggung_jawab . '</td>
+                            </tr>
+                        </table></div>';
+                    $tabel .= '
+                    <table class="table table-responsive table-condensed table-striped">
+                        <tr>
+                            <td>No Perjanjian</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->no_perjanjian . '</td>
+                        </tr>
+                        <tr>    
+                            <td>Perihal</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->perihal . '</td>
+                        </tr>
+                        <tr>    
+                            <td>Waktu Kadaluarsa</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->waktu_kadaluarsa . '</td>
+                        </tr>
+                        <tr>    
+                            <td>Nominal</td>
+                            <td>:</td>
+                            <td>Rp. ' . $this->Ribuan($data_tagihan->nominal) . '</td>
+                        </tr>
+                        ';
+                    $tabel .= '</table>';
+        
+                    $data = array(
+                        'status' => 'success',
+                        'tabel' => $tabel,
+                        'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Realisasi Pemakaian</a>'
+                    );
+                }
+            }
+        }else{
+            $data = array(
+                'status' => 'failed',
+            );
+        }
+
+        echo json_encode($data);
+    }
+
+    public function realisasiTenant() {
         $tgl_awal = $this->input->post('tgl_awal');
         $tgl_akhir = $this->input->post('tgl_akhir');
         $id_flowmeter = $this->input->post('id');
@@ -607,7 +840,7 @@ class Tenant extends MY_Controller{
                     $data = array(
                         'status' => 'success',
                         'tabel' => $tabel,
-                        'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Realisasi Pemakaian</a>'
+                        'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatRealisasi/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Realisasi Pemakaian</a>'
                     );
                 }
                 else {
@@ -662,7 +895,7 @@ class Tenant extends MY_Controller{
                     $data = array(
                         'status' => 'success',
                         'tabel' => $tabel,
-                        'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Realiasi Pemakaian</a>'
+                        'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatRealisasi/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Realiasi Pemakaian</a>'
                     );
                 }
             }else {
@@ -718,7 +951,7 @@ class Tenant extends MY_Controller{
                 $data = array(
                     'status' => 'success',
                     'tabel' => $tabel,
-                    'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Realisasi Pemakaian</a>'
+                    'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatRealisasi/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Realisasi Pemakaian</a>'
                 );
             }
         }
@@ -745,30 +978,124 @@ class Tenant extends MY_Controller{
         $invoice = $this->data->get_no_invoice();
         $tgl_tahun = date("YYYY",time());
         $bulan = date("m",time());
-
+        $cekRealisasi = $this->tenant->cekRealisasi($tgl_awal,$tgl_akhir,$id);
         $data_tenant = $this->tenant->getDataTenant($id);
         $data_tarif = $this->master->getDataTarif($data_tenant->pengguna_jasa_id);
 
-        if($invoice != NULL ){
-            $tahun = substr($tgl_tahun, 2, 2);
-            $no_tahun = sprintf("%02s",$tahun);
-            $no = (int) $invoice;
-            if($no < 99999){
-                $no++;
+        if($cekRealisasi != NULL){
+            if($invoice != NULL ){
+                $tahun = substr($tgl_tahun, 2, 2);
+                $no_tahun = sprintf("%02s",$tahun);
+                $no = (int) $invoice;
+                if($no < 99999){
+                    $no++;
+                }
+                else{
+                    $no = 1;
+                }
+                $no_invoice = $no_tahun.".".$bulan.".".sprintf("%02s", $id).".".sprintf("%03s", $no);
+                $this->data->setNoInvoice($no);
             }
             else{
+                $tahun = substr($tgl_tahun, 2, 2);
+                $no_tahun = sprintf("%02s",$tahun);
                 $no = 1;
+                $no_invoice = $no_tahun.".".$bulan.".".sprintf("%02s", $id).".".sprintf("%03s", $no);
+                $this->data->setNoInvoice($no);
             }
-            $no_invoice = $no_tahun.".".$bulan.".".sprintf("%02s", $id).".".sprintf("%03s", $no);
-            $this->data->setNoInvoice($no);
+    
+            if($tagihan != NULL) {
+                foreach ($tagihan as $row) {
+                    if ($i == 1 && $row->flow_hari_ini != NULL) {
+                        $ttl_awal = $row->flow_hari_ini;
+                    } else {
+                        if ($ttl_awal == 0) {
+                            $ttl_awal = $row->flow_hari_ini;
+                        }
+                    }
+    
+                    if ($i == count($tagihan) && $row->flow_hari_ini != NULL) {
+                        $ttl_akhir = $row->flow_hari_ini;
+                    }
+                    $i++;
+                }
+    
+                $ton_total = $ttl_akhir - $ttl_awal;
+                $tarif = $data_tarif->tarif;
+                $diskon = $data_tarif->diskon;
+            }else{
+                $ton_total = 0;
+            }
+    
+            if($data_tagihan->diskon != NULL){
+                $total = $ton_total * ($data_tagihan->tarif - ($data_tagihan->tarif * $data_tagihan->diskon/100));
+            }
+            else{
+                $total = $ton_total * $data_tagihan->tarif;
+            }
+    
+            if($data_tagihan->id_ref_tenant != NULL){
+                $diskon = '';
+                $date = date('Y-m-d');
+                if($date <= $data_tagihan->waktu_kadaluarsa ){
+                    $total = $data_tagihan->nominal;
+                    $tarif = $total;
+                }
+            }
+    
+            if($total >= 249999 && $total < 999999){
+                $materai = 3000;
+                $total = $total + $materai;
+            } else if($total >= 999999){
+                $materai = 6000;
+                $total = $total + $materai;
+            } else {
+                $materai = 0;
+                $total = $total + $materai;
+            }
+    
+            $data = array(
+                'id' => $id,
+                'tgl_awal' => $tgl_awal,
+                'tgl_akhir' => $tgl_akhir,
+                'total_pakai' => $ton_total,
+                'tarif' => $tarif,
+                'diskon' => $diskon,
+                'total_bayar' => $total,
+                'no_invoice' => $no_invoice,
+                'issued_by' => $this->session->userdata('username'),
+                'issued_at' => date("Y-m-d H:i:s",time()),
+            );
+    
+            $result = $this->tenant->tagihanTenant($data);
+            $this->tenant->setStatusTagihan($cekRealisasi->id_realisasi,1);
+    
+        }else{
+            $result == NULL;
         }
-        else{
-            $tahun = substr($tgl_tahun, 2, 2);
-            $no_tahun = sprintf("%02s",$tahun);
-            $no = 1;
-            $no_invoice = $no_tahun.".".$bulan.".".sprintf("%02s", $id).".".sprintf("%03s", $no);
-            $this->data->setNoInvoice($no);
+
+        
+        if($result != NULL){
+            $web = base_url('main/tenant/penagihan_air_tenant');
+            echo "<script type='text/javascript'>
+                    alert('Tagihan Berhasil Dibuat')
+                    window.location.replace('$web')
+                    </script>";
+        }else{
+            $web = base_url('main/tenant/penagihan_air_tenant');
+            echo "<script type='text/javascript'>
+                    alert('Tagihan Gagal Dibuat! Belum Ada Realisasi')
+                    window.location.replace('$web')
+                    </script>";
         }
+    }
+
+    public function buatRealisasi($id,$tgl_awal,$tgl_akhir){
+        $ttl_awal = 0;
+        $ttl_akhir = 0;
+        $i = 1;
+        
+        $tagihan = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$id);
 
         if($tagihan != NULL) {
             foreach ($tagihan as $row) {
@@ -785,68 +1112,35 @@ class Tenant extends MY_Controller{
                 }
                 $i++;
             }
-
-            $ton_total = $ttl_akhir - $ttl_awal;
-            $tarif = $data_tarif->tarif;
-            $diskon = $data_tarif->diskon;
+            //$ton_total = $ttl_akhir - $ttl_awal;
         }else{
-            $ton_total = 0;
-        }
-
-        if($data_tagihan->diskon != NULL){
-            $total = $ton_total * ($data_tagihan->tarif - ($data_tagihan->tarif * $data_tagihan->diskon/100));
-        }
-        else{
-            $total = $ton_total * $data_tagihan->tarif;
-        }
-
-        if($data_tagihan->id_ref_tenant != NULL){
-            $diskon = '';
-            $date = date('Y-m-d');
-            if($date <= $data_tagihan->waktu_kadaluarsa ){
-                $total = $data_tagihan->nominal;
-                $tarif = $total;
-            }
-        }
-
-        if($total >= 249999 && $total < 999999){
-            $materai = 3000;
-            $total = $total + $materai;
-        } else if($total >= 999999){
-            $materai = 6000;
-            $total = $total + $materai;
-        } else {
-            $materai = 0;
-            $total = $total + $materai;
+            //$ton_total = 0;
+            $ttl_awal = 0;
+            $ttl_akhir = 0;
         }
 
         $data = array(
             'id' => $id,
             'tgl_awal' => $tgl_awal,
             'tgl_akhir' => $tgl_akhir,
-            'total_pakai' => $ton_total,
-            'tarif' => $tarif,
-            'diskon' => $diskon,
-            'total_bayar' => $total,
-            'no_invoice' => $no_invoice,
+            'flow_awal' => $ttl_awal,
+            'flow_akhir' => $ttl_akhir,
             'issued_by' => $this->session->userdata('username'),
             'issued_at' => date("Y-m-d H:i:s",time()),
         );
 
-        $result = $this->tenant->tagihanTenant($data);
+        $result = $this->tenant->realisasiTagihanTenant($data);
 
         if($result != NULL){
-            $web = base_url('main/tenant/penagihan_air_tenant');
+            $web = base_url('main/tenant/realisasi_air_tenant');
             echo "<script type='text/javascript'>
-                    alert('Tagihan Berhasil Dibuat')
+                    alert('Realisasi Berhasil Dibuat')
                     window.location.replace('$web')
                     </script>";
         }
     }
 
     public function updatePerekaman($tipe){
-        //$tipe = $this->input->post('action');
-
         if($tipe == 'batal'){
             $result = $this->tenant->setPerekaman($tipe);
 

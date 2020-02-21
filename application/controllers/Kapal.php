@@ -375,47 +375,70 @@ class Kapal extends MY_Controller{
         $data = array();
         $no = 1;
 
-        foreach ($result as $row){
-            $aksi = "";
-            $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi ));
-            $realisasi = $row->flowmeter_akhir - $row->flowmeter_awal;
-
-            if($this->session->userdata('role_name') == "operasi") {
-                if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL){
-                    $aksi = '<a class="btn btn-primary" target="_blank" href="'.base_url("kapal/cetakPerhitungan/".$row->id_transaksi."").'">Cetak Perhitungan</a><br><br>';
+        if($result != NULL){
+            foreach ($result as $row){
+                $aksi = "";
+                $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi ));
+                $realisasi = $row->flowmeter_akhir - $row->flowmeter_awal;
+    
+                if($this->session->userdata('role_name') == "operasi") {
+                    if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL){
+                        $aksi = '<a class="btn btn-primary" target="_blank" href="'.base_url("kapal/cetakPerhitungan/".$row->id_transaksi."").'">Cetak Perhitungan</a><br><br>';
+                    }
+                }else if($this->session->userdata('role_name') == "keuangan") {
+                    if ($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
+                        $aksi = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Realisasi" onclick="realisasi(' . "'" . $row->id_transaksi . "'" . ')"> Realisasi <br/> Piutang</a>';
+                    }
+                }else{
+                    if(($row->flowmeter_awal == NULL && $row->flowmeter_akhir == NULL) || $row->start_work == NULL)
+                        $aksi = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Batal" onclick="batal(' . "'" . $row->id_transaksi . "'" . ')"> Batal <br/> Transaksi</a>';
+                    else
+                        $aksi = "";
                 }
-            }else if($this->session->userdata('role_name') == "keuangan") {
-                if ($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
-                    $aksi = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Realisasi" onclick="realisasi(' . "'" . $row->id_transaksi . "'" . ')"> Realisasi <br/> Piutang</a>';
+                if($row->diskon != NULL){
+                    $tarif = $row->tarif - ($row->tarif * $row->diskon);
                 }
-            }else{
-                if(($row->flowmeter_awal == NULL && $row->flowmeter_akhir == NULL) || $row->start_work == NULL)
-                    $aksi = '<a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Batal" onclick="batal(' . "'" . $row->id_transaksi . "'" . ')"> Batal <br/> Transaksi</a>';
-                else
-                    $aksi = "";
-            }
-            if($row->diskon != NULL){
-                $tarif = $row->tarif - ($row->tarif * $row->diskon);
-            }
-            else{
-                $tarif = $row->tarif;
-            }
-
-            if($row->flowmeter_awal == NULL){
-                $flowmeter_awal = "0";
-            }else{
-                $flowmeter_awal = $row->flowmeter_awal;
-            }
-
-            if($row->flowmeter_akhir == NULL){
-                $flowmeter_akhir = "0";
-            }else{
-                $flowmeter_akhir = $row->flowmeter_akhir;
-            }
-
-            if($row->realisasi_transaksi_laut_id_realisasi == NULL){
-                if($this->session->userdata('role_name') == "keuangan"){
-                    if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
+                else{
+                    $tarif = $row->tarif;
+                }
+    
+                if($row->flowmeter_awal == NULL){
+                    $flowmeter_awal = "0";
+                }else{
+                    $flowmeter_awal = $row->flowmeter_awal;
+                }
+    
+                if($row->flowmeter_akhir == NULL){
+                    $flowmeter_akhir = "0";
+                }else{
+                    $flowmeter_akhir = $row->flowmeter_akhir;
+                }
+    
+                if($row->realisasi_transaksi_laut_id_realisasi == NULL){
+                    if($this->session->userdata('role_name') == "keuangan"){
+                        if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
+                            $data[] = array(
+                                'no' => $no,
+                                'id_kapal' => $row->id_vessel,
+                                'nama_lct' => $row->nama_vessel,
+                                'voy_no' => $row->voy_no,
+                                'nama_perusahaan' => $row->nama_agent,
+                                'nama_pemohon' => $row->nama_pemohon,
+                                'tgl_transaksi' => $format_tgl,
+                                'total_permintaan' => $row->total_permintaan . " Ton",
+                                'flow_sebelum' => $flowmeter_awal,
+                                'flow_sesudah' => $flowmeter_akhir,
+                                'keterangan' => $row->keterangan,
+                                'realisasi' => $realisasi." Ton",
+                                'tarif' => $this->Ribuan($tarif),
+                                'pembayaran' => $this->Ribuan($tarif * ($flowmeter_akhir - $flowmeter_awal)),
+                                'aksi' => $aksi
+                            );
+                            $aksi = "";
+                            $no++;
+                        }
+                    }
+                    else{
                         $data[] = array(
                             'no' => $no,
                             'id_kapal' => $row->id_vessel,
@@ -429,32 +452,11 @@ class Kapal extends MY_Controller{
                             'flow_sesudah' => $flowmeter_akhir,
                             'keterangan' => $row->keterangan,
                             'realisasi' => $realisasi." Ton",
-                            'tarif' => $this->Ribuan($tarif),
-                            'pembayaran' => $this->Ribuan($tarif * ($flowmeter_akhir - $flowmeter_awal)),
                             'aksi' => $aksi
                         );
                         $aksi = "";
                         $no++;
                     }
-                }
-                else{
-                    $data[] = array(
-                        'no' => $no,
-                        'id_kapal' => $row->id_vessel,
-                        'nama_lct' => $row->nama_vessel,
-                        'voy_no' => $row->voy_no,
-                        'nama_perusahaan' => $row->nama_agent,
-                        'nama_pemohon' => $row->nama_pemohon,
-                        'tgl_transaksi' => $format_tgl,
-                        'total_permintaan' => $row->total_permintaan . " Ton",
-                        'flow_sebelum' => $flowmeter_awal,
-                        'flow_sesudah' => $flowmeter_akhir,
-                        'keterangan' => $row->keterangan,
-                        'realisasi' => $realisasi." Ton",
-                        'aksi' => $aksi
-                    );
-                    $aksi = "";
-                    $no++;
                 }
             }
         }
@@ -667,44 +669,46 @@ class Kapal extends MY_Controller{
         $result = $this->kapal->get_tabel_transaksi();
         $data = array();
         $no = 1;
-        foreach ($result as $row){
-            $aksi = "";
-            if($row->flowmeter_awal == NULL && $row->flowmeter_akhir == NULL && $row->start_work == NULL){
-                $aksi = '<a class="btn btn-sm btn-info glyphicon glyphicon-play-circle" href="javascript:void(0)" title="Start Work" onclick="start_work('."'".$row->id_transaksi."'".')"></a>';
-                $status = "Belum Di Isi";
-            }else if($row->start_work != NULL){
-                $aksi = '<a class="btn btn-sm btn-primary glyphicon glyphicon-download-alt" href="javascript:void(0)" title="Realisasi Pengisian" onclick="realisasi('."'".$row->id_transaksi."'".')"></a>';
-                $status = "Proses Pengisian";
-            }else{
+        if($result != NULL){
+            foreach ($result as $row){
                 $aksi = "";
-                $status = "Sudah Di Isi";
-            }
-
-            if($row->voy_no == NULL){
-                $row->voy_no = "";
-            }
-
-            $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi ));
-            $waktu_pelayanan = date('d-m-Y H:i',strtotime($row->waktu_pelayanan));
-
-            if($row->flowmeter_awal == NULL && $row->flowmeter_akhir == NULL){
-                $data[] = array(
-                    'no' => $no,
-                    'id_kapal' => $row->id_vessel,
-                    'nama_lct' => $row->nama_vessel,
-                    'voy_no' => $row->voy_no,
-                    'nama_perusahaan' => $row->nama_agent,
-                    'nama_pemohon' => $row->nama_pemohon,
-                    'tgl_transaksi' => $format_tgl,
-                    'waktu_pelayanan' => $waktu_pelayanan,
-                    'total_permintaan' => $row->total_permintaan." Ton",
-                    'flow_sebelum' => "0",
-                    'flow_sesudah' => "0",
-                    'keterangan' => $row->keterangan,
-                    'status' => $status,
-                    'aksi' => $aksi
-                );
-                $no++;
+                if($row->flowmeter_awal == NULL && $row->flowmeter_akhir == NULL && $row->start_work == NULL){
+                    $aksi = '<a class="btn btn-sm btn-info glyphicon glyphicon-play-circle" href="javascript:void(0)" title="Start Work" onclick="start_work('."'".$row->id_transaksi."'".')"></a>';
+                    $status = "Belum Di Isi";
+                }else if($row->start_work != NULL){
+                    $aksi = '<a class="btn btn-sm btn-primary glyphicon glyphicon-download-alt" href="javascript:void(0)" title="Realisasi Pengisian" onclick="realisasi('."'".$row->id_transaksi."'".')"></a>';
+                    $status = "Proses Pengisian";
+                }else{
+                    $aksi = "";
+                    $status = "Sudah Di Isi";
+                }
+    
+                if($row->voy_no == NULL){
+                    $row->voy_no = "";
+                }
+    
+                $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi ));
+                $waktu_pelayanan = date('d-m-Y H:i',strtotime($row->waktu_pelayanan));
+    
+                if($row->flowmeter_awal == NULL && $row->flowmeter_akhir == NULL){
+                    $data[] = array(
+                        'no' => $no,
+                        'id_kapal' => $row->id_vessel,
+                        'nama_lct' => $row->nama_vessel,
+                        'voy_no' => $row->voy_no,
+                        'nama_perusahaan' => $row->nama_agent,
+                        'nama_pemohon' => $row->nama_pemohon,
+                        'tgl_transaksi' => $format_tgl,
+                        'waktu_pelayanan' => $waktu_pelayanan,
+                        'total_permintaan' => $row->total_permintaan." Ton",
+                        'flow_sebelum' => "0",
+                        'flow_sesudah' => "0",
+                        'keterangan' => $row->keterangan,
+                        'status' => $status,
+                        'aksi' => $aksi
+                    );
+                    $no++;
+                }
             }
         }
 
@@ -886,7 +890,7 @@ class Kapal extends MY_Controller{
 
     function cetakFormPermintaan($id){
         //$id = $this->input->get('id');
-        define('FPDF_FONTPATH',$this->config->item('fonts_path'));
+        define("FPDF_FONTPATH",$this->config->item('fonts_path'));
         $query = $this->kapal->cetakkwitansi($id);
         $tanggal = $this->indonesian_date('d F Y', strtotime($query->waktu_pelayanan ));
         $tgl_transaksi = $this->indonesian_date('d F Y', strtotime($query->tgl_transaksi));

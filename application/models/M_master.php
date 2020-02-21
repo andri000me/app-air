@@ -40,6 +40,7 @@ class M_master extends MY_Model{
     private function _get_datatables_query_agent(){
 
         $this->db->from("master_agent");
+        $this->db->where('soft_delete','0');
         $i = 0;
 
         foreach ($this->column_search_agent as $item) // loop column
@@ -82,11 +83,13 @@ class M_master extends MY_Model{
 
     public function count_all_agent(){
         $this->db->from("master_agent");
+        $this->db->where('soft_delete','0');
         return $this->db->count_all_results();
     }
 
     public function getAgent(){
         $this->db->from("master_agent");
+        $this->db->where('soft_delete','0');
         $query = $this->db->get();
 
         return $query->result();
@@ -96,14 +99,19 @@ class M_master extends MY_Model{
         $query = $this->db->select('*')
             ->from('master_agent')
             ->where('id_agent',$id)
+            ->where('soft_delete','0')
             ->get();
 
         return $query->row();
     }
 
     public function delete_data_agent($id){
+        $this->db->set('soft_delete','1');
         $this->db->where('id_agent', $id);
-        $this->db->delete("master_agent");
+        //$this->db->delete("master_agent");
+        $this->db->update('master_agent');
+
+        return $this->db->affected_rows();
     }
 
     //fungsi database untuk master data tandon
@@ -177,8 +185,7 @@ class M_master extends MY_Model{
     }
 
     //fungsi database untuk master data tarif
-    public function get_datatables_tarif()
-    {
+    public function get_datatables_tarif(){
         $this->_get_datatables_query_tarif();
         if($_POST['length'] != -1){
             $this->db->limit($_POST['length'], $_POST['start']);
@@ -242,12 +249,15 @@ class M_master extends MY_Model{
 
     public function delete_data_tarif($id)
     {
+        $this->db->set('soft_delete','1');
         $this->db->where('id_tarif', $id);
-        $this->db->delete("pengguna_jasa");
+        $this->db->update('pengguna_jasa');
+        //$this->db->delete("pengguna_jasa");
     }
 
     public function getTarif(){
         $this->db->from("pengguna_jasa");
+        $this->db->where('soft_delete','0');
         $query = $this->db->get();
 
         return $query->result();
@@ -257,14 +267,14 @@ class M_master extends MY_Model{
         $query = $this->db->select('*')
                         ->from('pengguna_jasa')
                         ->where('id_tarif',$id)
+                        ->where('soft_delete','0')
                         ->get();
 
         return $query->row();
     }
 
     //fungsi database untuk master data darat
-    public function get_datatables_darat()
-    {
+    public function get_datatables_darat(){
         $this->_get_datatables_query_darat();
         if($_POST['length'] != -1){
             $this->db->limit($_POST['length'], $_POST['start']);
@@ -273,11 +283,11 @@ class M_master extends MY_Model{
         return $query->result();
     }
 
-    private function _get_datatables_query_darat()
-    {
+    private function _get_datatables_query_darat(){
 
         $this->db->from("pembeli_darat");
         $this->db->where("pengguna_jasa_id_tarif != 1");
+        $this->db->where('soft_delete','0');
         $i = 0;
 
         foreach ($this->column_search_darat as $item) // loop column
@@ -312,17 +322,16 @@ class M_master extends MY_Model{
         }
     }
 
-    public function count_filtered_darat()
-    {
+    public function count_filtered_darat(){
         $this->_get_datatables_query_darat();
         $query = $this->db->get();
         return $query->num_rows();
     }
 
-    public function count_all_darat()
-    {
+    public function count_all_darat(){
         $this->db->from("pembeli_darat");
         $this->db->where("pengguna_jasa_id_tarif !=", "1");
+        $this->db->where('soft_delete','0');
         return $this->db->count_all_results();
     }
 
@@ -330,6 +339,7 @@ class M_master extends MY_Model{
         $query = $this->db->select('*')
             ->from('pembeli_darat')
             ->where('id_pengguna_jasa',$id)
+            ->where('soft_delete','0')
             ->get();
 
         return $query->row();
@@ -339,6 +349,7 @@ class M_master extends MY_Model{
         $query = $this->db->select('*')
             ->from('pembeli_laut')
             ->where('id_pengguna_jasa',$id)
+            ->where('soft_delete','0')
             ->get();
 
         return $query->row();
@@ -369,6 +380,7 @@ class M_master extends MY_Model{
     private function _get_datatables_query_lumpsum()
     {
         $this->db->from("master_lumpsum");
+        $this->db->where('soft_delete','0');
 
         $i = 0;
 

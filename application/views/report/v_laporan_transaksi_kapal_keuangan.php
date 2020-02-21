@@ -1,3 +1,7 @@
+<?php
+if($this->session->userdata('role_name') == "keuangan" ){
+?>
+
 <script>
     //ambil data ketika form pencarian memiliki perubahan value
     $(document).ready(function(){
@@ -16,7 +20,7 @@
             new_div = document.createElement("div"),
             existingdiv1 = document.getElementById("tabel");
         $.ajax({
-            url: "<?php echo base_url('report/laporanLaut')?>",
+            url: "<?php echo base_url('report/laporan_laut')?>",
             method: "POST",
             data: {
                 tgl_awal: tgl_awal,
@@ -84,3 +88,7 @@
         </div>
     </div>
 </body>
+
+<?php
+}
+?>

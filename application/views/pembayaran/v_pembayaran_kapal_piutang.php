@@ -167,7 +167,7 @@
                 {
                     $('#modal_menu').modal('hide');
                     alert('Realisasi Berhasil Disimpan');
-                    window.location.replace('<?php echo base_url('main/monitoring/tagihan_air_kapal')?>');
+                    window.location.replace('<?php echo base_url('main/pembayaran/pembayaran_kapal_piutang')?>');
                 }
                 else {
                     for (var i = 0; i < data.inputerror.length; i++) {

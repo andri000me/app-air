@@ -230,42 +230,44 @@ class Darat extends MY_Controller {
         $no = 1;
         $color = '';
 
-        foreach ($result as $row){
-            if($row->diskon != NULL || $row->diskon != 0){
-                $row->tarif -= $row->diskon/100 * $row->tarif;
-                $total_pembayaran = $row->tarif * $row->total_permintaan;
-            }else{
-                $total_pembayaran = $row->tarif * $row->total_permintaan;
-            }
-
-            $aksi = '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="realisasi pembayaran" onclick="realisasi('."'".$row->id_transaksi."'".');" target="_self" href="javascript:void(0)"> </a></span>';
-
-            if($row->waktu_mulai_pengantaran == NULL){
-                $row->waktu_mulai_pengantaran = "";
-            }
-
-            if($row->waktu_selesai_pengantaran == NULL){
-                $row->waktu_selesai_pengantaran = "";
-            }
-
-            if($row->tgl_perm_pengantaran == NULL){
-                $row->tgl_perm_pengantaran = "";
-            }
-
-            if($row->status_delivery == 1 && $row->soft_delete == 0 && $row->batal_nota == 0 && $row->batal_kwitansi == 0 && $row->status_invoice == 1){
-                $data[] = array(
-                    'no' => $no,
-                    'nama_pelanggan' => $row->nama_pengguna_jasa." / ".$row->nama_pemohon,
-                    'waktu_transaksi' => $row->tgl_transaksi,
-                    'no_telp' => $row->no_telp,
-                    'alamat' => $row->alamat,
-                    'tarif' => $this->Ribuan($row->tarif),
-                    'total_pengisian' => $row->total_permintaan,
-                    'pembayaran' => $this->Ribuan($total_pembayaran),
-                    'aksi' => $aksi,
-                    'color' => $color
-                );
-                $no++;
+        if($result != NULL){
+            foreach ($result as $row){
+                if($row->diskon != NULL || $row->diskon != 0){
+                    $row->tarif -= $row->diskon/100 * $row->tarif;
+                    $total_pembayaran = $row->tarif * $row->total_permintaan;
+                }else{
+                    $total_pembayaran = $row->tarif * $row->total_permintaan;
+                }
+    
+                $aksi = '<span class=""><a class="btn btn-primary glyphicon glyphicon-list-alt" title="realisasi pembayaran" onclick="realisasi('."'".$row->id_transaksi."'".');" target="_self" href="javascript:void(0)"> </a></span>';
+    
+                if($row->waktu_mulai_pengantaran == NULL){
+                    $row->waktu_mulai_pengantaran = "";
+                }
+    
+                if($row->waktu_selesai_pengantaran == NULL){
+                    $row->waktu_selesai_pengantaran = "";
+                }
+    
+                if($row->tgl_perm_pengantaran == NULL){
+                    $row->tgl_perm_pengantaran = "";
+                }
+    
+                if($row->status_delivery == 1 && $row->soft_delete == 0 && $row->batal_nota == 0 && $row->batal_kwitansi == 0 && $row->status_invoice == 1){
+                    $data[] = array(
+                        'no' => $no,
+                        'nama_pelanggan' => $row->nama_pengguna_jasa." / ".$row->nama_pemohon,
+                        'waktu_transaksi' => $row->tgl_transaksi,
+                        'no_telp' => $row->no_telp,
+                        'alamat' => $row->alamat,
+                        'tarif' => $this->Ribuan($row->tarif),
+                        'total_pengisian' => $row->total_permintaan,
+                        'pembayaran' => $this->Ribuan($total_pembayaran),
+                        'aksi' => $aksi,
+                        'color' => $color
+                    );
+                    $no++;
+                }
             }
         }
 
@@ -541,9 +543,7 @@ class Darat extends MY_Controller {
 
     //untuk membuat tampilan tabel status pembayaran transaksi kapal,darat dan ruko
     public function tabel_pembayaran(){
-        $result = $this->darat->get_tabel_transaksi()->result();
-        $recordTotal = $this->darat->get_tabel_transaksi()->num_rows();
-        $recordFiltered = $this->darat->get_tabel_transaksi()->num_rows();
+        $result = $this->darat->get_tabel_transaksi();
 
         $data = array();
         $no = 1;

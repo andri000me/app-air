@@ -31,6 +31,22 @@ class M_tenant extends MY_Model{
         $this->db->where('id_transaksi',$data['id']);
         $this->db->update('transaksi_tenant');
 
+        if($this->db->affected_rows() > 0){
+            $result = $this->get_by_id("tenant",$data['id']);
+            $this->db->set('status_tagihan', 0);
+            $this->db->where('id_realisasi',$result->id_ref_realisasi);
+            $this->db->update('realisasi_tenant');
+
+            return TRUE;
+        }
+
+    }
+
+    public function cancelRealisasi($data){
+        $this->db->set('soft_delete', 1 );
+        $this->db->where('id_realisasi',$data['id']);
+        $this->db->update('realisasi_tenant');
+
         if($this->db->affected_rows() > 0)
             return TRUE;
 
@@ -79,8 +95,7 @@ class M_tenant extends MY_Model{
         return $query->row();
     }
 
-    public function get_datatables_pompa()
-    {
+    public function get_datatables_pompa() {
         $this->_get_datatables_query_pompa();
         if($_POST['length'] != -1){
             $this->db->limit($_POST['length'], $_POST['start']);
@@ -89,10 +104,10 @@ class M_tenant extends MY_Model{
         return $query->result();
     }
 
-    private function _get_datatables_query_pompa()
-    {
+    private function _get_datatables_query_pompa() {
 
         $this->db->from("master_pompa");
+        $this->db->where('soft_delete','0');
 
         $i = 0;
 
@@ -128,16 +143,15 @@ class M_tenant extends MY_Model{
         }
     }
 
-    public function count_filtered_pompa()
-    {
+    public function count_filtered_pompa(){
         $this->_get_datatables_query_pompa();
         $query = $this->db->get();
         return $query->num_rows();
     }
 
-    public function count_all_pompa()
-    {
+    public function count_all_pompa(){
         $this->db->from("master_pompa");
+        $this->db->where('soft_delete','0');
         return $this->db->count_all_results();
     }
 
@@ -173,6 +187,7 @@ class M_tenant extends MY_Model{
     {
 
         $this->db->from("master_sumur");
+        $this->db->where('soft_delete','0');
 
         $i = 0;
 
@@ -218,12 +233,14 @@ class M_tenant extends MY_Model{
     public function count_all_sumur()
     {
         $this->db->from("master_sumur");
+        $this->db->where('soft_delete','0');
         return $this->db->count_all_results();
     }
 
     public function getNamaSumur($id){
         $this->db->from('master_sumur');
         $this->db->where('id_master_sumur',$id);
+        $this->db->where('soft_delete','0');
         $query = $this->db->get();
 
         return $query->row();
@@ -232,6 +249,7 @@ class M_tenant extends MY_Model{
     public function getIDSumur(){
         $this->db->from('master_sumur');
         $this->db->where('status_aktif',1);
+        $this->db->where('soft_delete','0');
         $query = $this->db->get();
 
         return $query->result();
@@ -266,6 +284,7 @@ class M_tenant extends MY_Model{
     private function _get_datatables_query_flowmeter()
     {
         $this->db->from("master_flowmeter");
+        $this->db->where('soft_delete','0');
 
         $i = 0;
 
@@ -313,11 +332,13 @@ class M_tenant extends MY_Model{
     public function count_all_flowmeter()
     {
         $this->db->from("master_flowmeter");
+        $this->db->where('soft_delete','0');
         return $this->db->count_all_results();
     }
 
     public function getKondisi(){
         $this->db->from('master_flowmeter');
+        $this->db->where('soft_delete','0');
         $query = $this->db->get();
 
         return $query->result();
@@ -325,6 +346,7 @@ class M_tenant extends MY_Model{
 
     public function cekFlowAwal($id){
         $this->db->from('master_flowmeter');
+        $this->db->where('soft_delete','0');
         $this->db->where('id_flow',$id);
         $query = $this->db->get();
 
@@ -343,6 +365,7 @@ class M_tenant extends MY_Model{
     public function getFlowmeter(){
         $this->db->from('master_flowmeter');
         $this->db->where('status_aktif',1);
+        $this->db->where('soft_delete','0');
         $this->db->order_by('id_flowmeter','ASC');
         $query = $this->db->get();
 
@@ -369,84 +392,6 @@ class M_tenant extends MY_Model{
         return $this->db->affected_rows();
     }
 
-    //fungsi database untuk master data ruko
-    public function edit_master_ruko($data){
-        $this->db->set('flowmeter_awal',$data['flowmeter_awal']);
-        $this->db->where('id_flowmeter',$data['id_flowmeter']);
-        $query = $this->db->update('master_flowmeter');
-
-        $data = array(
-            'ruko_id_flowmeter' => $data['id_flowmeter'],
-            'tanggal_perekaman' => $data['tanggal_perekaman'],
-            'flowmeter_hari_ini' => $data['flowmeter_awal']
-        );
-        $this->db->insert('penggunaan_air_ruko',$data);
-        return $query;
-    }
-
-    public function get_datatables_ruko()
-    {
-        $this->_get_datatables_query_ruko();
-        if($_POST['length'] != -1){
-            $this->db->limit($_POST['length'], $_POST['start']);
-        }
-        $query = $this->db->get();
-        return $query->result();
-    }
-
-    private function _get_datatables_query_ruko()
-    {
-
-        $this->db->from("pembeli_darat,master_flowmeter");
-        $this->db->join('master_flowmeter','master_flowmeter_id_flowmaster = id_flowmeter','left');
-
-        $i = 0;
-
-        foreach ($this->column_search_ruko as $item) // loop column
-        {
-            if($_POST['search']['value']) // if datatable send POST for search
-            {
-
-                if($i===0) // first loop
-                {
-                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
-                    $this->db->like($item, $_POST['search']['value']);
-                }
-                else
-                {
-                    $this->db->or_like($item, $_POST['search']['value']);
-                }
-
-                if(count($this->column_search_ruko) - 1 == $i) //last loop
-                    $this->db->group_end(); //close bracket
-            }
-            $i++;
-        }
-
-        if(isset($_POST['order'])) // here order processing
-        {
-            $this->db->order_by($this->column_order_ruko[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
-        }
-        else if(isset($this->order_ruko))
-        {
-            $order = $this->order_ruko;
-            $this->db->order_by(key($order), $order[key($order)]);
-        }
-    }
-
-    public function count_filtered_ruko()
-    {
-        $this->_get_datatables_query_ruko();
-        $query = $this->db->get();
-        return $query->num_rows();
-    }
-
-    public function count_all_ruko()
-    {
-        $this->db->from("master_flowmeter");
-        return $this->db->count_all_results();
-    }
-
     //fungsi database untuk master data tenant
     public function edit_master_tenant($data){
         $this->db->set('flow_awal',$data['flowmeter_awal']);
@@ -456,8 +401,7 @@ class M_tenant extends MY_Model{
         return $query;
     }
 
-    public function get_datatables_tenant()
-    {
+    public function get_datatables_tenant(){
         $this->_get_datatables_query_tenant();
         if($_POST['length'] != -1){
             $this->db->limit($_POST['length'], $_POST['start']);
@@ -466,11 +410,11 @@ class M_tenant extends MY_Model{
         return $query->result();
     }
 
-    private function _get_datatables_query_tenant()
-    {
+    private function _get_datatables_query_tenant(){
 
         $this->db->from("master_tenant");
         $this->db->join('master_flowmeter','id_ref_flowmeter = id_flow','left');
+        $this->db->where('master_tenant.soft_delete','0');
 
         $i = 0;
 
@@ -506,21 +450,21 @@ class M_tenant extends MY_Model{
         }
     }
 
-    public function count_filtered_tenant()
-    {
+    public function count_filtered_tenant(){
         $this->_get_datatables_query_tenant();
         $query = $this->db->get();
         return $query->num_rows();
     }
 
-    public function count_all_tenant()
-    {
+    public function count_all_tenant(){
         $this->db->from("master_tenant");
+        $this->db->where('soft_delete','0');
         return $this->db->count_all_results();
     }
 
     public function getIDTenant(){
         $this->db->from('master_tenant');
+        $this->db->where('soft_delete','0');
         $query = $this->db->get();
 
         return $query->result();
@@ -537,11 +481,15 @@ class M_tenant extends MY_Model{
     //fungsi database untuk delete data master pada ruko,darat dan laut
     public function delete_data($tipe,$id){
         if($tipe == "tenant"){
+            $this->db->set('soft_delete','1');
             $this->db->where('id_tenant', $id);
-            $this->db->delete("master_tenant");
+            $this->db->update('master_tenant');
+            //$this->db->delete("master_tenant");
         }else{
+            $this->db->set('soft_delete','1');
             $this->db->where('id_flowmeter', $id);
-            $this->db->delete("master_flowmeter");
+            $this->db->update('master_flowmeter');
+            //$this->db->delete("master_flowmeter");
         }
     }
 
@@ -636,9 +584,28 @@ class M_tenant extends MY_Model{
             'diskon' => $data['diskon'],
             'total_bayar' => $data['total_bayar'],
             'no_invoice' => $data['no_invoice'],
+            'issued_by' => '',
+            'issued_at' => '',
         );
 
         $query = $this->db->insert("transaksi_tenant",$data_tagihan);
+
+        return $query;
+    }
+
+    function realisasiTagihanTenant($data){
+        $data_realisasi = array(
+            'tgl_transaksi' => date('Y-m-d H:i:s',time()),
+            'tgl_awal' => $data['tgl_awal'],
+            'tgl_akhir' => $data['tgl_akhir'],
+            'id_ref_flowmeter' => $data['id'],
+            'flow_awal' => $data['flow_awal'],
+            'flow_akhir' => $data['flow_akhir'],
+            'issued_by' => $data['issued_by'],
+            'issued_at' => $data['issued_at'],
+        );
+
+        $query = $this->db->insert("realisasi_tenant",$data_realisasi);
 
         return $query;
     }
@@ -677,6 +644,22 @@ class M_tenant extends MY_Model{
         }
     }
 
+    function getDataRealisasi($tgl_awal = '',$tgl_akhir = '',$id){
+        $this->db->select('*');
+        $this->db->from('realisasi_tenant');
+        $this->db->where('tgl_awal',$tgl_awal);
+        $this->db->where('tgl_akhir',$tgl_akhir);
+        $this->db->where('id_realisasi',$id);
+        $this->db->where('soft_delete','0');
+        $query = $this->db->get();
+
+        if($query->num_rows() > 0){
+            return $query->row();
+        }else{
+            return false;
+        }
+    }
+
     function getTagihan($tgl_awal = '',$tgl_akhir = '',$id){
         $this->db->select('*');
         $this->db->from('master_tenant');
@@ -696,6 +679,33 @@ class M_tenant extends MY_Model{
         }else{
             return false;
         }
+    }
+
+    function cekRealisasi($tgl_awal = '',$tgl_akhir = '',$id){
+        $this->db->select('*');
+        $this->db->from('realisasi_tenant');
+        $this->db->where('tgl_awal',date('Y-m-d', strtotime($tgl_awal)));
+        $this->db->where('tgl_akhir',date('Y-m-d', strtotime($tgl_akhir)));
+        $this->db->where('status_tagihan',0);
+        $this->db->where('id_ref_flowmeter =',$id);
+        $query = $this->db->get();
+
+        if($query->num_rows() > 0){
+            return $query->row();
+        }else{
+            return NULL;
+        }
+    }
+
+    function setStatusTagihan($id,$status){
+        $this->db->set('status_tagihan',$status);
+        $this->db->where('id_realisasi',$id);
+        $this->db->update('realisasi_tenant');
+
+        if($this->db->affected_rows() > 0)
+            return TRUE;
+        else
+            return FALSE;
     }
 
     public function setPencatatan($tipe){
@@ -839,6 +849,25 @@ class M_tenant extends MY_Model{
         }
     }
 
+    public function get_tabel_realisasi($config = ''){
+        $this->db->select('*');
+        $this->db->from('realisasi_tenant');
+        $this->db->join('master_flowmeter','realisasi_tenant.id_ref_flowmeter = id_flow','left');
+        $this->db->join('master_tenant','master_tenant.id_ref_flowmeter = id_flow','left');
+        $this->db->join('master_lumpsum','id_ref_tenant = id_tenant','left');
+        $this->db->where('realisasi_tenant.soft_delete','0');
+        $this->db->order_by('id_realisasi','DESC');
+
+        if($config != NULL)
+            $query = $this->db->get('',$config['per_page'], $this->uri->segment(3));
+        else
+            $query = $this->db->get();
+
+        if($query->num_rows() > 0){
+            return $query->result();
+        }
+    }
+
     public function input_transaksi($tipe,$data){
         if($tipe == "ruko"){
             $insert_data = array(
@@ -867,6 +896,7 @@ class M_tenant extends MY_Model{
             $this->db->or_like('nama_flowmeter', $nama);
             $this->db->where('id_flow !=',0);
             $this->db->where('status_aktif',1);
+            $this->db->where('master_flowmeter.soft_delete','0');
             $this->db->from('master_flowmeter');
             $this->db->order_by('id_flowmeter','ASC');
         }
@@ -876,7 +906,8 @@ class M_tenant extends MY_Model{
             $this->db->or_like('nama_flowmeter', $nama);
             $this->db->from('master_tenant');
             $this->db->join('master_flowmeter','id_flow = id_ref_flowmeter','left');
-            $this->db->where('status_aktif_tenant',1);
+            $this->db->where('master_tenant.soft_delete','0');
+            $this->db->where('master_tenant.status_aktif_tenant','1');
         }
         else{
             $this->db->like('id_flowmeter', $nama);

@@ -64,7 +64,7 @@
     <body>
     <div class="container container-fluid">
         <div class="row">
-            <center><h4>Status Pengantaran Pelayanan Jasa Air Bersih Di Darat</h4></center><br>
+            <center><h4>Daftar Pengantaran Pelayanan Jasa Air Bersih Di Darat</h4></center><br>
             <table class="table table-responsive table-bordered table-striped" id="table"></table>
         </div>
     </div>
