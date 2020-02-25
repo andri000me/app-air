@@ -43,14 +43,32 @@
                                     <span class="help-block"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="agent_name" class="form-label">Status</label>
+                                    <select name="status" id="status" class="form-control">
+                                        <option value="domestik">Domestik</option>
+                                        <option value="internasional">Internasional</option>
+                                    </select>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="agent_name" class="form-label">Mata Uang</label>
+                                    <select name="mata_uang" id="mata_uang" class="form-control">
+                                    </select>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="agent_name" class="form-label">Tarif</label>
                                     <input required id="tarif" name="tarif" class="form-control" type="text" required>
                                     <span class="help-block"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="agent_name" class="form-label">Diskon</label>
                                     <input class="form-control" type="text" name="diskon" id="diskon"> 
@@ -100,6 +118,12 @@
                     <center>Tipe
                 </th>
                 <th>
+                    <center>Status
+                </th>
+                <th>
+                    <center>Mata Uang
+                </th>
+                <th>
                     <center>Tarif
                 </th>
                 <th>
@@ -127,6 +151,12 @@
                     <center>Tipe
                 </th>
                 <th>
+                    <center>Status
+                </th>
+                <th>
+                    <center>Mata Uang
+                </th>
+                <th>
                     <center>Tarif
                 </th>
                 <th>
@@ -142,6 +172,15 @@
 </div>
 <script type="text/javascript">
     var table;
+
+    $("#status").change(function() {
+        if(this.value == 'internasional'){
+            $("#mata_uang").prop('disabled', false);
+        }else{
+            $("#mata_uang").val('0').change();
+            $("#mata_uang").prop('disabled', true);
+        }
+    });
 
     $(document).ready(function() {
         //datatables
@@ -167,6 +206,17 @@
         });
     });
 
+    $.ajax({
+            url:'<?php echo site_url('master/populateCurrency')?>',
+            type:'POST',
+            dataType: 'json',
+            success: function( json ) {
+                $.each(json, function(i, value) {
+                    $('#mata_uang').append($('<option>').text(value.nama_mata_uang).attr('value', value.id));
+                });
+            }
+        });
+
     function reload_table() {
         table.ajax.reload(null,false);
     }
@@ -189,11 +239,18 @@
             {		
                 $('#md-form').modal('show'); // show bootstrap modal when complete loaded
                 $('.modal-title').text('Edit Data Tarif'); // Set title to Bootstrap modal title
-
+            
                 $('#idm').val(data.id_tarif);
                 $('#tipe_pengguna').val(data.tipe_pengguna_jasa);
                 $('#kawasan').val(data.kawasan).change();
                 $('#tipe').val(data.tipe).change();
+                $('#status').val(data.status).change();
+                if(data.status == 'internasional'){
+                    $("#mata_uang").prop('disabled', false);
+                }else{
+                    $("#mata_uang").prop('disabled', true);
+                }
+                $('#mata_uang').val(data.id_mata_uang).change();
                 $('#tarif').val(data.tarif).change();
                 $('#diskon').val(data.diskon);
             },
@@ -256,6 +313,7 @@
 
     function add(){
         save_method = 'add';
+        $("#mata_uang").prop('disabled', true);
         $('#frm-modal')[0].reset(); // reset form on modals
         $('.form-group').removeClass('has-error'); // clear error class
         $('.help-block').empty(); // clear error string
@@ -275,6 +333,7 @@
 
     $('.modal').on('hidden.bs.modal', function () {
         reload_table();
+        $("#mata_uang").prop('disabled', true);
     });
 
     function delete_data_tarif(id) {

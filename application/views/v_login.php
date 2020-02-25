@@ -38,7 +38,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                     <td><input class="form-control" type="password" name="password" id="password" placeholder="kata sandi anda" required/></td>
                 </tr>
                 <tr>
-                    <td colspan="3" align="center"><input type="submit" class="btn btn-success" value="Masuk" name="submit"/></td>
+                    <td colspan="1" align="center"><a class="btn btn-info" href="https://forms.gle/yDcv8PGsAHuMj8LH9" target="_blank">Register</a></td>
+                    <td colspan="2" align="center"><input type="submit" class="btn btn-success" value="Masuk" name="submit"/></td>
                 </tr>
             </table>
             <?php echo form_close(); ?>

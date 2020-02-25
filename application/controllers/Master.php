@@ -1292,11 +1292,24 @@ class Master extends MY_Controller{
 
         foreach ($list as $result) {
             $no++;
+            $mata_uang = $this->master->getCurrency($result->id_mata_uang)->nama_mata_uang;
+            if($result->status == 'domestik')
+                $result->status = 'Domestik';
+            else
+                $result->status = 'Internasional';
+
+            if($result->tipe == 'darat')
+                $result->tipe = 'Darat';
+            else
+                $result->tipe = 'Laut';
+            
             $row = array();
             $row[] = "<center>".$no;
             $row[] = "<center>".$result->tipe_pengguna_jasa;
             $row[] = "<center>".$result->kawasan;
             $row[] = "<center>".$result->tipe;
+            $row[] = "<center>".$result->status;
+            $row[] = "<center>".$mata_uang;
             $row[] = "<center>".$result->tarif;
             $row[] = "<center>".$result->diskon;
 
@@ -1320,6 +1333,11 @@ class Master extends MY_Controller{
         $tarif = $this->input->post('tarif');
         $tipe = $this->input->post('tipe');
         $diskon = $this->input->post('diskon');
+        $status = $this->input->post('status');
+        $mata_uang = $this->input->post('mata_uang');
+
+        if($mata_uang == NULL)
+            $mata_uang = '0';
 
         if(isset($tipe_pengguna)  && $tarif != NULL && $tipe != NULL ){
             $data_insert = array(
@@ -1328,6 +1346,8 @@ class Master extends MY_Controller{
                 'tipe' => $tipe,
                 'tarif' => $tarif,
                 'diskon' => $diskon,
+                'id_mata_uang' => $mata_uang,
+                'status' => $status,
                 'issued_at' => date("Y-m-d H:i:s",time()),
                 'issued_by' => $this->session->userdata('username')
             );
@@ -1346,6 +1366,11 @@ class Master extends MY_Controller{
         echo json_encode($message);
     }
 
+    public function populateCurrency(){
+        $data = $this->master->getAllCurrency();
+        echo json_encode($data);
+    }
+
     public function editTarif($id){
         //$id = $_GET['id'];
         $data['id'] = $id;
@@ -1362,6 +1387,8 @@ class Master extends MY_Controller{
             'tipe' => $result->tipe,
             'tarif' => $result->tarif,
             'diskon' => $result->diskon,
+            'id_mata_uang' => $result->id_mata_uang,
+            'status' => $result->status,
         );
 
         //$this->load->template('v_edit_tarif',$data);
@@ -1375,15 +1402,24 @@ class Master extends MY_Controller{
         $tarif = $this->input->post('tarif');
         $tipe = $this->input->post('tipe');
         $diskon = $this->input->post('diskon');
+        $status = $this->input->post('status');
+        $mata_uang = $this->input->post('mata_uang');
+        
+        if($mata_uang == NULL)
+            $mata_uang = '0';
+
         $data_edit = array(
             'tipe_pengguna_jasa' => $tipe_pengguna,
             'kawasan' => $kawasan,
             'tipe' => $tipe,
             'tarif' => $tarif,
             'diskon' => $diskon,
+            'id_mata_uang' => $mata_uang,
+            'status' => $status,
             'last_modified' => date("Y-m-d H:i:s",time()),
             'modified_by' => $this->session->userdata('username')
         );
+
         if($id != ""){
             $this->db->set($data_edit);
             $this->db->where('id_tarif', $id);

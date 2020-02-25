@@ -5,8 +5,9 @@ class M_master extends MY_Model{
     var $tabel_darat     = 'pembeli_darat';
     var $tabel_pengguna  = 'pengguna_jasa';
     var $tabel_tandon    = 'master_tandon';
+    var $tabel_uang      = 'master_mata_uang';
 
-    var $column_order_tarif = array(null,'tipe_pengguna_jasa',null,null, null,null); //set column field database for datatable orderable
+    var $column_order_tarif = array(null,'tipe_pengguna_jasa',null,null, null,null,null,null); //set column field database for datatable orderable
     var $column_search_tarif = array('tipe_pengguna_jasa'); //set column field database for datatable searchable
     var $order_tarif = array('id_tarif' => 'desc');
 
@@ -26,6 +27,90 @@ class M_master extends MY_Model{
     var $column_search_tandon = array('nama_tandon','lokasi'); //set column field database for datatable searchable
     var $order_tandon = array('id' => 'asc');
 
+    var $column_order_uang = array(null,'nama_mata_uang','nilai_tukar');
+    var $column_search_uang = array('nama_mata_uang','nilai_tukar'); //set column field database for datatable searchable
+    var $order_uang = array('id' => 'asc');
+
+    //fungsi database untuk master data agent
+    public function get_datatables_currency() {
+        $this->_get_datatables_query_currency();
+        if($_POST['length'] != -1){
+            $this->db->limit($_POST['length'], $_POST['start']);
+        }
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    private function _get_datatables_query_currency(){
+
+        $this->db->from($this->tabel_uang);
+        $this->db->where('soft_delete','0');
+        $i = 0;
+
+        foreach ($this->column_search_uang as $item) // loop column
+        {
+            if($_POST['search']['value']) // if datatable send POST for search
+            {
+
+                if($i===0) // first loop
+                {
+                    $this->db->group_start(); // open bracket. query Where with OR clause better with bracket. because maybe can combine with other WHERE with AND.
+                    $this->db->like($item, $_POST['search']['value']);
+                }
+                else
+                {
+                    $this->db->or_like($item, $_POST['search']['value']);
+                }
+
+                if(count($this->column_search_uang) - 1 == $i) //last loop
+                    $this->db->group_end(); //close bracket
+            }
+            $i++;
+        }
+
+        if(isset($_POST['order'])) // here order processing
+        {
+            $this->db->order_by($this->column_order_uang[$_POST['order']['0']['column']], $_POST['order']['0']['dir']);
+        }
+        else if(isset($this->order_uang))
+        {
+            $order = $this->order_uang;
+            $this->db->order_by(key($order), $order[key($order)]);
+        }
+    }
+
+    public function count_filtered_currency(){
+        $this->_get_datatables_query_currency();
+        $query = $this->db->get();
+        return $query->num_rows();
+    }
+
+    public function count_all_currency(){
+        $this->db->from($this->tabel_uang);
+        $this->db->where('soft_delete','0');
+        return $this->db->count_all_results();
+    }
+
+    public function getCurrency($id){
+        $this->db->from($this->tabel_uang);
+        $this->db->where('id',$id);
+        
+        $query = $this->db->get();
+
+        $result = $query->row();
+        
+        return $result;
+    }
+
+    public function getAllCurrency(){
+        $this->db->from($this->tabel_uang);
+        
+        $query = $this->db->get();
+
+        $result = $query->result();
+        
+        return $result;
+    }
 
     //fungsi database untuk master data agent
     public function get_datatables_agent() {

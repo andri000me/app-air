@@ -204,16 +204,16 @@ if(($this->session->userdata('role_name') == "operasi" || $this->session->userda
         </tr>
         <tr>
             <td style="width: 80%" align="right" colspan="4">&nbsp;</td>
-            <td align="center">ASMAN OPERASI PELAYANAN NON PETI KEMAS</td>
+            <td align="center">ASMAN PERENCANAAN DAN PEMASARAN</td>
         </tr>
     </table>
     <br><br><br>
     <table border="0">
         <tr>
-            <td style="width: 80%" align="right" colspan="4">&nbsp;</td>
-            <td align="center">(..............................................)</td>
+            <td style="width: 80%;height:-40%;" align="right" colspan="4">&nbsp;</td>
+            <td align="center">(<u>&nbsp;&nbsp;&nbsp;&nbsp;BOGIE BRAMANTO&nbsp;&nbsp;&nbsp;&nbsp;</u>)</td>
         </tr>
-    </table>
+    </uBOGIE>
     </body>
     </html>
     <?php
