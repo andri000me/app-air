@@ -455,15 +455,18 @@ class Tenant extends MY_Controller{
                     if($row->status_tagihan == 0)
                         $aksi .= '&nbsp;<a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="Batal Realisasi" href="javascript:void(0)" onclick="batal('."'".$row->id_realisasi."'".');"></a>';
                     
-                    if($row->no_perjanjian == NULL){
-                        $row->no_perjanjian = "";
+                    $tanggal_sekarang = date('Y-m-d',time());
+                    if($row->no_perjanjian != NULL && $row->waktu_kadaluarsa > $tanggal_sekarang){
+                        $perjanjian = $row->no_perjanjian;
+                    }else{
+                        $perjanjian = '';
                     }
                     
                     $tgl_awal = date("d-M-Y",strtotime($row->tgl_awal));
                     $tgl_akhir = date("d-M-Y",strtotime($row->tgl_akhir));
                     $total_pakai = $row->flow_akhir - $row->flow_awal;
     
-                    if($row->soft_delete == 0){
+                    if($row->soft_delete == 0 && $row->status_pembayaran == 0){
                         $data[] = array(
                             'no' => $no,
                             'id_flowmeter' => $row->id_flowmeter,
@@ -472,7 +475,7 @@ class Tenant extends MY_Controller{
                             'waktu_transaksi' => $row->tgl_transaksi,
                             'lokasi' => $row->lokasi,
                             'no_telp' => $row->no_telp,
-                            'no_perjanjian' => $row->no_perjanjian,
+                            'no_perjanjian' => $perjanjian,
                             'total_pakai' => $total_pakai,
                             'aksi' => $aksi,
                         );
@@ -499,6 +502,7 @@ class Tenant extends MY_Controller{
 
     public function realisasi_pembayaran_tenant(){
         $this->_validate_pembayaran_tenant();
+        $id_realisasi = $this->input->post('id_realisasi');
         $data = array(
             'id_ref_transaksi' => $this->input->post('id-transaksi'),
             'no_nota' => $this->input->post('no_nota'),
@@ -508,6 +512,7 @@ class Tenant extends MY_Controller{
             'issued_by' => $this->session->userdata('username')
         );
         $this->tenant->update_pembayaran_tenant($this->input->post('id-transaksi'), $data);
+        $this->tenant->update_status_pembayaran_tenant($id_realisasi);
         echo json_encode(array("status" => TRUE));
     }
 
@@ -611,7 +616,8 @@ class Tenant extends MY_Controller{
             
             if($data_tagihan != NULL){
                 if($data != NULL) {
-                    if ($data_tagihan->id_ref_tenant == NULL) {
+                    $tanggal_sekarang = date('Y-m-d',time());
+                    if ($data_tagihan->id_ref_tenant != NULL && $data_tagihan->waktu_kadaluarsa > $tanggal_sekarang) {
                         $tabel = '
                         <div class="col-sm-7">
                         <table class="table table-responsive table-condensed table-striped">
@@ -637,22 +643,27 @@ class Tenant extends MY_Controller{
                             </tr>
                         </table></div>';
                         $tabel .= '
-                    <table class="table table-responsive table-condensed table-striped">
-                        <thead>
-                            <td>No</td>
-                            <td>Tanggal Pencatatan</td>
-                            <td>Flow Meter</td>
-                        </thead>
-                        ';
-                            foreach ($data as $row) {
-                                $tabel .= '
+                        <table class="table table-responsive table-condensed table-striped">
                         <tr>
-                        <td>' . $no . '</td>
-                        <td>' . $row->waktu_perekaman . '</td>
-                        <td>' . $row->flow_hari_ini . '</td>
+                            <td>No Perjanjian</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->no_perjanjian . '</td>
+                        </tr>
+                        <tr>    
+                            <td>Perihal</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->perihal . '</td>
+                        </tr>
+                        <tr>    
+                            <td>Waktu Kadaluarsa</td>
+                            <td>:</td>
+                            <td>' . $data_tagihan->waktu_kadaluarsa . '</td>
+                        </tr>
+                        <tr>    
+                            <td>Nominal</td>
+                            <td>:</td>
+                            <td>Rp. ' . $this->Ribuan($data_tagihan->nominal) . '</td>
                         </tr>';
-                            $no++;
-                        }
                         $tabel .= '</table>';
         
                         $data = array(
@@ -687,27 +698,22 @@ class Tenant extends MY_Controller{
                             </tr>
                         </table></div>';
                         $tabel .= '
-                    <table class="table table-responsive table-condensed table-striped">
+                        <table class="table table-responsive table-condensed table-striped">
+                        <thead>
+                            <td>No</td>
+                            <td>Tanggal Pencatatan</td>
+                            <td>Flow Meter</td>
+                        </thead>
+                        ';
+                            foreach ($data as $row) {
+                                $tabel .= '
                         <tr>
-                            <td>No Perjanjian</td>
-                            <td>:</td>
-                            <td>' . $data_tagihan->no_perjanjian . '</td>
-                        </tr>
-                        <tr>    
-                            <td>Perihal</td>
-                            <td>:</td>
-                            <td>' . $data_tagihan->perihal . '</td>
-                        </tr>
-                        <tr>    
-                            <td>Waktu Kadaluarsa</td>
-                            <td>:</td>
-                            <td>' . $data_tagihan->waktu_kadaluarsa . '</td>
-                        </tr>
-                        <tr>    
-                            <td>Nominal</td>
-                            <td>:</td>
-                            <td>Rp. ' . $this->Ribuan($data_tagihan->nominal) . '</td>
+                        <td>' . $no . '</td>
+                        <td>' . $row->waktu_perekaman . '</td>
+                        <td>' . $row->flow_hari_ini . '</td>
                         </tr>';
+                            $no++;
+                        }
                         $tabel .= '</table>';
         
                         $data = array(
@@ -716,61 +722,6 @@ class Tenant extends MY_Controller{
                             'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Buat Tagihan</a>'
                         );
                     }
-                }else {
-                    $tabel = '
-                        <div class="col-sm-7">
-                        <table class="table table-responsive table-condensed table-striped">
-                            <tr>
-                                <td>Nama Tenant</td>
-                                <td>:</td>
-                                <td>' . $data_tagihan->nama_tenant . '</td>
-                            </tr>
-                            <tr>
-                                <td>Lokasi</td>
-                                <td>:</td>
-                                <td>' . $data_tagihan->lokasi . '</td>
-                            </tr>
-                            <tr>
-                                <td>No Telepon</td>
-                                <td>:</td>
-                                <td>' . $data_tagihan->no_telp . '</td>
-                            </tr>
-                            <tr>
-                                <td>Penanggung Jawab</td>
-                                <td>:</td>
-                                <td>' . $data_tagihan->penanggung_jawab . '</td>
-                            </tr>
-                        </table></div>';
-                    $tabel .= '
-                    <table class="table table-responsive table-condensed table-striped">
-                        <tr>
-                            <td>No Perjanjian</td>
-                            <td>:</td>
-                            <td>' . $data_tagihan->no_perjanjian . '</td>
-                        </tr>
-                        <tr>    
-                            <td>Perihal</td>
-                            <td>:</td>
-                            <td>' . $data_tagihan->perihal . '</td>
-                        </tr>
-                        <tr>    
-                            <td>Waktu Kadaluarsa</td>
-                            <td>:</td>
-                            <td>' . $data_tagihan->waktu_kadaluarsa . '</td>
-                        </tr>
-                        <tr>    
-                            <td>Nominal</td>
-                            <td>:</td>
-                            <td>Rp. ' . $this->Ribuan($data_tagihan->nominal) . '</td>
-                        </tr>
-                        ';
-                    $tabel .= '</table>';
-        
-                    $data = array(
-                        'status' => 'success',
-                        'tabel' => $tabel,
-                        'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatTagihan/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Realisasi Pemakaian</a>'
-                    );
                 }
             }
         }else{
@@ -793,7 +744,8 @@ class Tenant extends MY_Controller{
 
         if($data_tagihan != NULL){
             if($data != NULL) {
-                if ($data_tagihan->id_ref_tenant == NULL) {
+                $tanggal_sekarang = date('Y-m-d',time());
+                if ($data_tagihan->id_ref_tenant != NULL && $data_tagihan->waktu_kadaluarsa > $tanggal_sekarang) {
                     $tabel = '
                     <div class="col-sm-7">
                     <table class="table table-responsive table-condensed table-striped">
@@ -819,57 +771,7 @@ class Tenant extends MY_Controller{
                         </tr>
                     </table></div>';
                     $tabel .= '
-                <table class="table table-responsive table-condensed table-striped">
-                    <thead>
-                        <td>No</td>
-                        <td>Tanggal Pencatatan</td>
-                        <td>Flow Meter</td>
-                    </thead>
-                    ';
-                        foreach ($data as $row) {
-                            $tabel .= '
-                    <tr>
-                    <td>' . $no . '</td>
-                    <td>' . $row->waktu_perekaman . '</td>
-                    <td>' . $row->flow_hari_ini . '</td>
-                    </tr>';
-                        $no++;
-                    }
-                    $tabel .= '</table>';
-    
-                    $data = array(
-                        'status' => 'success',
-                        'tabel' => $tabel,
-                        'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatRealisasi/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Realisasi Pemakaian</a>'
-                    );
-                }
-                else {
-                    $tabel = '
-                    <div class="col-sm-7">
                     <table class="table table-responsive table-condensed table-striped">
-                        <tr>
-                            <td>Nama Tenant</td>
-                            <td>:</td>
-                            <td>' . $data_tagihan->nama_tenant . '</td>
-                        </tr>
-                        <tr>
-                            <td>Lokasi</td>
-                            <td>:</td>
-                            <td>' . $data_tagihan->lokasi . '</td>
-                        </tr>
-                        <tr>
-                            <td>No Telepon</td>
-                            <td>:</td>
-                            <td>' . $data_tagihan->no_telp . '</td>
-                        </tr>
-                        <tr>
-                            <td>Penanggung Jawab</td>
-                            <td>:</td>
-                            <td>' . $data_tagihan->penanggung_jawab . '</td>
-                        </tr>
-                    </table></div>';
-                    $tabel .= '
-                <table class="table table-responsive table-condensed table-striped">
                     <tr>
                         <td>No Perjanjian</td>
                         <td>:</td>
@@ -898,8 +800,8 @@ class Tenant extends MY_Controller{
                         'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatRealisasi/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Realiasi Pemakaian</a>'
                     );
                 }
-            }else {
-                $tabel = '
+                else {
+                    $tabel = '
                     <div class="col-sm-7">
                     <table class="table table-responsive table-condensed table-striped">
                         <tr>
@@ -923,36 +825,31 @@ class Tenant extends MY_Controller{
                             <td>' . $data_tagihan->penanggung_jawab . '</td>
                         </tr>
                     </table></div>';
-                $tabel .= '
-                <table class="table table-responsive table-condensed table-striped">
-                    <tr>
-                        <td>No Perjanjian</td>
-                        <td>:</td>
-                        <td>' . $data_tagihan->no_perjanjian . '</td>
-                    </tr>
-                    <tr>    
-                        <td>Perihal</td>
-                        <td>:</td>
-                        <td>' . $data_tagihan->perihal . '</td>
-                    </tr>
-                    <tr>    
-                        <td>Waktu Kadaluarsa</td>
-                        <td>:</td>
-                        <td>' . $data_tagihan->waktu_kadaluarsa . '</td>
-                    </tr>
-                    <tr>    
-                        <td>Nominal</td>
-                        <td>:</td>
-                        <td>Rp. ' . $this->Ribuan($data_tagihan->nominal) . '</td>
-                    </tr>
+                    $tabel .= '
+                    <table class="table table-responsive table-condensed table-striped">
+                    <thead>
+                        <td>No</td>
+                        <td>Tanggal Pencatatan</td>
+                        <td>Flow Meter</td>
+                    </thead>
                     ';
-                $tabel .= '</table>';
+                        foreach ($data as $row) {
+                            $tabel .= '
+                    <tr>
+                    <td>' . $no . '</td>
+                    <td>' . $row->waktu_perekaman . '</td>
+                    <td>' . $row->flow_hari_ini . '</td>
+                    </tr>';
+                        $no++;
+                    }
+                    $tabel .= '</table>';
     
-                $data = array(
-                    'status' => 'success',
-                    'tabel' => $tabel,
-                    'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatRealisasi/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Realisasi Pemakaian</a>'
-                );
+                    $data = array(
+                        'status' => 'success',
+                        'tabel' => $tabel,
+                        'url' => '<a class="btn btn-primary" target="_self" href=' . base_url('tenant/buatRealisasi/') . $id_flowmeter . "/" . $tgl_awal . "/" . $tgl_akhir . '>Realisasi Pemakaian</a>'
+                    );
+                }
             }
         }
 
@@ -1061,6 +958,7 @@ class Tenant extends MY_Controller{
                 'total_pakai' => $ton_total,
                 'tarif' => $tarif,
                 'diskon' => $diskon,
+                'id_ref_realisasi' =>$cekRealisasi->id_realisasi,
                 'total_bayar' => $total,
                 'no_invoice' => $no_invoice,
                 'issued_by' => $this->session->userdata('username'),

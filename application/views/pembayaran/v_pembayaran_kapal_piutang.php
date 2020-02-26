@@ -117,26 +117,51 @@
                     realisasi = data.flowmeter_akhir - data.flowmeter_awal;
                     $('[name="realisasi"]').val(realisasi);
                 }
-                if (data.diskon != null) {
-                    total_bayar = (data.tarif - (data.tarif * data.diskon/100)) * realisasi;
-                    if(total_bayar > 1000000 ) {
-                        $('[name="pembayaran"]').val(total_bayar + 6000);
-                    } else if(total_bayar >= 250000 && total_bayar <= 1000000){
-                        $('[name="pembayaran"]').val(total_bayar + 3000);
-                    } else{
-                        $('[name="pembayaran"]').val(total_bayar);
+                if(data.status_kapal == 'internasional'){
+                    if (data.diskon != null) {
+                        total_bayar = (data.tarif * data.nilai_tukar - (data.tarif * data.nilai_tukar * data.diskon/100)) * realisasi;
+                        if(total_bayar > 1000000 ) {
+                            $('[name="pembayaran"]').val(total_bayar + 6000);
+                        } else if(total_bayar >= 250000 && total_bayar <= 1000000){
+                            $('[name="pembayaran"]').val(total_bayar + 3000);
+                        } else{
+                            $('[name="pembayaran"]').val(total_bayar);
+                        }
+                    }
+                    else {
+                        total_bayar = data.tarif * data.nilai_tukar * realisasi;
+                        if(total_bayar > 1000000 ){
+                            $('[name="pembayaran"]').val(total_bayar + 6000);
+                        } else if(total_bayar >= 250000 && total_bayar <= 1000000){
+                            $('[name="pembayaran"]').val(total_bayar + 3000);
+                        } else {
+                            $('[name="pembayaran"]').val(total_bayar);
+                        }
+                    }
+                }else{
+                    if (data.diskon != null) {
+                        total_bayar = (data.tarif - (data.tarif * data.diskon/100)) * realisasi;
+                        if(total_bayar > 1000000 ) {
+                            $('[name="pembayaran"]').val(total_bayar + 6000);
+                        } else if(total_bayar >= 250000 && total_bayar <= 1000000){
+                            $('[name="pembayaran"]').val(total_bayar + 3000);
+                        } else{
+                            $('[name="pembayaran"]').val(total_bayar);
+                        }
+                    }
+                    else {
+                        total_bayar = data.tarif * realisasi;
+                        if(total_bayar > 1000000 ){
+                            $('[name="pembayaran"]').val(total_bayar + 6000);
+                        } else if(total_bayar >= 250000 && total_bayar <= 1000000){
+                            $('[name="pembayaran"]').val(total_bayar + 3000);
+                        } else {
+                            $('[name="pembayaran"]').val(total_bayar);
+                        }
                     }
                 }
-                else {
-                    total_bayar = data.tarif * realisasi;
-                    if(total_bayar > 1000000 ){
-                        $('[name="pembayaran"]').val(total_bayar + 6000);
-                    } else if(total_bayar >= 250000 && total_bayar <= 1000000){
-                        $('[name="pembayaran"]').val(total_bayar + 3000);
-                    } else {
-                        $('[name="pembayaran"]').val(total_bayar);
-                    }
-                }
+
+                
                 $('#modal_menu').modal('show'); // show bootstrap modal when complete loaded
                 $('.modal-title').text('Realisasi Pembayaran Piutang'); // Set title to Bootstrap modal title
             },

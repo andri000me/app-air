@@ -409,11 +409,8 @@ class Report extends MY_Controller{
         $tgl_awal = $this->input->post('tgl_awal');
         $tgl_akhir = $this->input->post('tgl_akhir');
 
-        if($this->session->userdata('role_name') == 'keuangan')
-            $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"laut");
-        else
-            $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"laut_operasi");
-
+        $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"laut");
+       
 
         if($result != NULL){
             $total = 0;
@@ -443,26 +440,6 @@ class Report extends MY_Controller{
                     </thead>
                     <tbody>';
             }
-            else if($this->session->userdata('role_name') == 'operasi') {
-                $tabel = '<center><h4>Laporan Pendapatan Air Kapal Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir)).'</h4></center>
-                    <table class="table table-responsive table-condensed table-striped">
-                    <thead>
-                        <tr>
-                            <th align="center">No</th>
-                            <th align="center">ID VESSEL</th>
-                            <th align="center">Nama VESSEL</th>
-                            <th align="center">Voy No</th>
-                            <th align="center">Tipe Kapal</th>
-                            <th align="center">Nama Perusahaan</th>
-                            <th align="center">Tanggal Transaksi</th>
-                            <th align="center">Tarif (Rp.)</th>
-                            <th align="center">Total Permintaan (Ton)</th>
-                            <th align="center">Realisasi Pengisian (Ton)</th>
-                            <th align="center">Total Pembayaran (Rp.)</th>
-                        </tr>
-                    </thead>
-                    <tbody>';
-            }
             else {
                 $tabel = '<center><h4>Laporan Pendapatan Air Kapal Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir)).'</h4></center>
                     <table class="table table-responsive table-condensed table-striped">
@@ -475,8 +452,7 @@ class Report extends MY_Controller{
                             <th align="center">Tipe Kapal</th>
                             <th align="center">Nama Perusahaan</th>
                             <th align="center">Tanggal Transaksi</th>
-                            <th align="center">Flow Meter Awal</th>
-                            <th align="center">Flow Meter Akhir</th>
+                            <th align="center">Tarif (Rp.)</th>
                             <th align="center">Total Permintaan (Ton)</th>
                             <th align="center">Realisasi Pengisian (Ton)</th>
                             <th align="center">Total Pembayaran (Rp.)</th>
@@ -848,7 +824,7 @@ class Report extends MY_Controller{
             }
             else {
                 $tabel .= '<tr>
-                          <td align="center" colspan="9"><b>Total</b></td>
+                          <td align="center" colspan="8"><b>Total</b></td>
                           <td align="center"><b>'.$ton.'</b></td>
                           <td align="center"><b>'.$ton_realiasi.'</b></td>
                           <td align="center"><b>'.$this->Ribuan($total).'</b></td>

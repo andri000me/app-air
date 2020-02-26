@@ -672,6 +672,7 @@ class M_tenant extends MY_Model{
         $this->db->where('status_perekaman',1);
         $this->db->where('master_tenant.id_ref_flowmeter =',$id);
         $this->db->order_by('waktu_perekaman', 'ASC');
+        $this->db->group_by('pencatatan_flow.id_transaksi');
         $query = $this->db->get();
 
         if($query->num_rows() > 0){
@@ -794,6 +795,14 @@ class M_tenant extends MY_Model{
         return $this->db->affected_rows();
     }
 
+    public function update_status_pembayaran_tenant($where){
+        $this->db->set('status_pembayaran', 1);
+        $this->db->where('id_realisasi',$where);
+        $this->db->update("realisasi_tenant");
+
+        return $this->db->affected_rows();
+    }
+
     public function get_by_id($tipe,$id) {
         if($tipe == "ruko"){
             $this->db->from('master_tenant');
@@ -821,6 +830,7 @@ class M_tenant extends MY_Model{
         $this->db->join('master_lumpsum','id_ref_tenant = id_tenant','left');
         $this->db->where('transaksi_tenant.soft_delete','0');
         $this->db->order_by('nama_tenant','ASC');
+        $this->db->group_by('transaksi_tenant.id_transaksi');
 
         $query = $this->db->get();
 
@@ -838,6 +848,7 @@ class M_tenant extends MY_Model{
         $this->db->join('master_lumpsum','id_ref_tenant = id_tenant','left');
         $this->db->where('transaksi_tenant.soft_delete','0');
         $this->db->order_by('id_transaksi','DESC');
+        $this->db->group_by('transaksi_tenant.id_transaksi');
 
         if($config != NULL)
             $query = $this->db->get('',$config['per_page'], $this->uri->segment(3));
@@ -857,6 +868,7 @@ class M_tenant extends MY_Model{
         $this->db->join('master_lumpsum','id_ref_tenant = id_tenant','left');
         $this->db->where('realisasi_tenant.soft_delete','0');
         $this->db->order_by('id_realisasi','DESC');
+        $this->db->group_by('realisasi_tenant.id_realisasi');
 
         if($config != NULL)
             $query = $this->db->get('',$config['per_page'], $this->uri->segment(3));

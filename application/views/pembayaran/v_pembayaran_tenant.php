@@ -78,6 +78,7 @@ if(($this->session->userdata('role_name') == "keuangan" || $this->session->userd
             <div class="modal-body form">
                 <form action="#" id="form_realisasi" class="form-horizontal">
                     <input type="hidden" value="" name="id-transaksi"/>
+                    <input type="hidden" value="" name="id_realisasi"/>
                     <div class="form-body">
                         <div class="form-group">
                             <label class="control-label col-md-3">No Invoice</label>
@@ -167,6 +168,7 @@ if(($this->session->userdata('role_name') == "keuangan" || $this->session->userd
                 $('[name="alamat"]').val(data.lokasi);
                 $('[name="no_telp"]').val(data.no_telp);
                 $('[name="tgl_transaksi"]').val(data.tgl_transaksi);
+                $('[name="id_realisasi"]').val(data.id_ref_realisasi);
                 $('[name="total_pembayaran"]').val(data.total_bayar);
                 $('#modal_menu').modal('show'); // show bootstrap modal when complete loaded
                 $('.modal-title').text('Realisasi Pembayaran Piutang Tenant'); // Set title to Bootstrap modal title

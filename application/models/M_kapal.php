@@ -94,10 +94,12 @@ class M_kapal extends MY_Model{
     //fungsi database untuk pembuatan laporan, kwitansi dan tagihan
     function cetakKwitansi($id){
         $query = $this->db->select('*')
-            ->from('transaksi_laut,pembeli_laut,master_agent')
-            ->where('id_transaksi', $id)
-            ->where('pembeli_laut_id_pengguna_jasa = id_pengguna_jasa')
-            ->where('id_agent = id_agent_master')
+            ->from('transaksi_laut')
+            ->join('pembeli_laut','pembeli_laut_id_pengguna_jasa = id_pengguna_jasa','left')
+            ->join('master_agent','id_agent = id_agent_master','left')
+            ->join('pengguna_jasa','id_tarif = pengguna_jasa_id_tarif','left')
+            //->join('master_mata_uang','id_mata_uang = master_mata_uang.id','left')
+            ->where('transaksi_laut.id_transaksi', $id)
             ->get();
         
         return $query->row();
@@ -120,19 +122,20 @@ class M_kapal extends MY_Model{
 
     public function get_by_id($tipe,$id) {
         if($tipe == "laut_realisasi"){
-            $this->db->from('transaksi_laut ,pembeli_laut,pengguna_jasa,master_agent');
+            $this->db->from('transaksi_laut');
+            $this->db->join('pembeli_laut','pembeli_laut_id_pengguna_jasa = id_pengguna_jasa','left');
+            $this->db->join('pengguna_jasa','pengguna_jasa_id_tarif = id_tarif','left');
+            $this->db->join('master_agent','id_agent = id_agent_master','left');
+            //$this->db->join('master_mata_uang','id_mata_uang = master_mata_uang.id','left');
             $this->db->where('id_transaksi',$id);
-            $this->db->where('pembeli_laut_id_pengguna_jasa = id_pengguna_jasa');
-            $this->db->where('id_agent = id_agent_master');
-            $this->db->where('pengguna_jasa_id_tarif = id_tarif');
         }
         else{
             $null = NULL;
-            $this->db->from('transaksi_laut ,pembeli_laut');
+            $this->db->from('transaksi_laut');
+            $this->db->join('pembeli_laut','pembeli_laut_id_pengguna_jasa = id_pengguna_jasa','left');
             $this->db->where('id_transaksi',$id);
             $this->db->where('flowmeter_awal !=',$null);
             $this->db->where('flowmeter_akhir !=',$null);
-            $this->db->where('pembeli_laut_id_pengguna_jasa = id_pengguna_jasa');
         }
 
         $query = $this->db->get();
@@ -161,12 +164,14 @@ class M_kapal extends MY_Model{
 
     public function get_num_tabel_transaksi(){
         $this->db->select('*');
-        $this->db->from('transaksi_laut ,pembeli_laut,pengguna_jasa,master_agent');
-        $this->db->where('pembeli_laut_id_pengguna_jasa = id_pengguna_jasa');
-        $this->db->where('pengguna_jasa_id_tarif = id_tarif');
-        $this->db->where('id_agent = id_agent_master');
-        $this->db->order_by('tgl_transaksi', 'DESC');
-        $this->db->where('soft_delete = 0');
+        $this->db->from('transaksi_laut');
+        $this->db->join('pembeli_laut','pembeli_laut_id_pengguna_jasa = id_pengguna_jasa','left');
+        $this->db->join('pengguna_jasa','pengguna_jasa_id_tarif = id_tarif','left');
+        $this->db->join('master_agent','id_agent = id_agent_master','left');
+        //$this->db->join('master_mata_uang','id_mata_uang = master_mata_uang.id','left');
+        $this->db->order_by('transaksi_laut.tgl_transaksi', 'DESC');
+        $this->db->group_by('transaksi_laut.id_transaksi');
+        $this->db->where('transaksi_laut.soft_delete = 0');
         $this->db->where('status_invoice = 1');
 
         $query = $this->db->get();
@@ -178,12 +183,14 @@ class M_kapal extends MY_Model{
 
     public function get_tabel_transaksi($config = ''){
         $this->db->select('*');
-        $this->db->from('transaksi_laut ,pembeli_laut,pengguna_jasa,master_agent');
-        $this->db->where('pembeli_laut_id_pengguna_jasa = id_pengguna_jasa');
-        $this->db->where('pengguna_jasa_id_tarif = id_tarif');
-        $this->db->where('id_agent = id_agent_master');
+        $this->db->from('transaksi_laut');
+        $this->db->join('pembeli_laut','pembeli_laut_id_pengguna_jasa = id_pengguna_jasa','left');
+        $this->db->join('pengguna_jasa','pengguna_jasa_id_tarif = id_tarif','left');
+        $this->db->join('master_agent','id_agent = id_agent_master','left');
+        //$this->db->join('master_mata_uang','id_mata_uang = master_mata_uang.id','left');
         $this->db->where('transaksi_laut.soft_delete = 0');
         $this->db->order_by('tgl_transaksi', 'DESC');
+        $this->db->group_by('transaksi_laut.id_transaksi');
 
         if($config != NULL || $config != '')
             $query = $this->db->get('',$config['per_page'], $this->uri->segment(3));
@@ -201,6 +208,5 @@ class M_kapal extends MY_Model{
             return TRUE;
         }
     }
-
 }
 ?>

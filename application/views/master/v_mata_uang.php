@@ -68,7 +68,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 <div class="form-group">
                     <form id="frm-modal" action="#" enctype="multipart/form-data">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="agent_name" class="form-label">Nama Mata Uang</label>
                                     <input hidden id="idm" name="idm">
@@ -76,7 +76,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                                     <span class="help-block"></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="agent_name" class="form-label">Nilai Tukar</label>
                                     <input class="form-control" type="number" name="nilai_tukar" id="nilai_tukar" required>                                   
@@ -156,12 +156,10 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 $('#md-form').modal('show'); // show bootstrap modal when complete loaded
                 $('.modal-title').text('Edit Data Mata Uang'); // Set title to Bootstrap modal title
 
-                $('#idm').val(data.id_pengguna);
-                $('#nama').val(data.nama_pembeli);
-                $('#alamat').val(data.alamat);
-                $('#no_telp').val(data.no_telp);
-                $('#pengguna').val(data.pengguna).change();
-                $('#npwp').val(data.npwp);
+                $('#idm').val(data.id);
+                $('#nama_mata_uang').val(data.nama_mata_uang);
+                $('#simbol').val(data.simbol);
+                $('#nilai_tukar').val(data.nilai_tukar);
             },
             error: function (jqXHR, textStatus, errorThrown)
             {
@@ -244,7 +242,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
         reload_table();
     });
 
-    function delete_data_darat(id){
+    function delete_data(id){
         if(confirm('Apakah Anda Yakin Untuk Menghapus Data Ini?'))
         {
             // ajax delete data to database
@@ -256,6 +254,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
                 {
                     //if success reload ajax table
                     alert("Data Berhasil Dihapus");
+                    reload_table();
                 },
                 error: function (jqXHR, textStatus, errorThrown)
                 {

@@ -66,21 +66,48 @@ class Kapal extends MY_Controller{
         $this->form_validation->set_rules('nama_pemohon', 'Nama Pemohon', 'required');
         $this->form_validation->set_rules('tanggal', 'Tanggal', 'required');
         $this->form_validation->set_rules('tonnase', 'Total Pengisian', 'required');
+        $data_transaksi = array();
 
-        $data_transaksi = array(
-            'pembeli_laut_id_pengguna_jasa' => $id_pengguna,
-            'voy_no' => $voy_no,
-            'nama_pemohon' => $nama_pemohon,
-            'tgl_transaksi' => date("Y-m-d H:i:s",time()),
-            'keterangan' => $keterangan,
-            'waktu_pelayanan' => $tanggal,
-            'tipe_kapal' => $tipe_kapal,
-            'total_permintaan' => $tonnase,
-            'tarif' => $data_tarif->tarif,
-            'diskon' => $data_tarif->diskon,
-            'issued_at' => date("Y-m-d H:i:s",time()),
-            'issued_by' => $this->session->userdata('username')
-        );
+        if($data_tarif->status == 'internasional'){
+            $getCurrency = $this->master->getCurrency($data_tarif->id_mata_uang);
+            $tarif_internasional = $data_tarif->tarif;
+            $data_tarif->tarif = $data_tarif->tarif * $getCurrency->nilai_tukar;
+
+            $data_transaksi = array(
+                'pembeli_laut_id_pengguna_jasa' => $id_pengguna,
+                'voy_no' => $voy_no,
+                'nama_pemohon' => $nama_pemohon,
+                'tgl_transaksi' => date("Y-m-d H:i:s",time()),
+                'keterangan' => $keterangan,
+                'waktu_pelayanan' => $tanggal,
+                'tipe_kapal' => $tipe_kapal,
+                'total_permintaan' => $tonnase,
+                'tarif' => $data_tarif->tarif,
+                'tarif_internasional' => $tarif_internasional,
+                'nilai_tukar' => $getCurrency->nilai_tukar,
+                'simbol' => $getCurrency->simbol,
+                'mata_uang' => $getCurrency->nama_mata_uang,
+                'status_kapal' => 'internasional',
+                'diskon' => $data_tarif->diskon,
+                'issued_at' => date("Y-m-d H:i:s",time()),
+                'issued_by' => $this->session->userdata('username')
+            );
+        }else{
+            $data_transaksi = array(
+                'pembeli_laut_id_pengguna_jasa' => $id_pengguna,
+                'voy_no' => $voy_no,
+                'nama_pemohon' => $nama_pemohon,
+                'tgl_transaksi' => date("Y-m-d H:i:s",time()),
+                'keterangan' => $keterangan,
+                'waktu_pelayanan' => $tanggal,
+                'tipe_kapal' => $tipe_kapal,
+                'total_permintaan' => $tonnase,
+                'tarif' => $data_tarif->tarif,
+                'diskon' => $data_tarif->diskon,
+                'issued_at' => date("Y-m-d H:i:s",time()),
+                'issued_by' => $this->session->userdata('username')
+            );
+        }
 
         if ($this->form_validation->run() == FALSE) {
             $data['title']='Aplikasi Pelayanan Jasa Air Bersih';
@@ -159,9 +186,9 @@ class Kapal extends MY_Controller{
                         $aksi = '<a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" target="_blank" href="' . base_url("kapal/cetakFormPermintaan/" . $row->id_transaksi . "").'" title="Cetak Form Permintaan"></a>';
                     }
                 }
-                else if($this->session->userdata('role_name') == "admin" && $tipe == "laut_keuangan_admin"){
+                else if($this->session->userdata('role_name') == "admin" && $tipe == "laut"){
                     if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL){
-                        $aksi = '&nbsp;<a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" href="javascript:void(0)" title="Realisasi Piutang" onclick="realisasi(' . "'" . $row->id_transaksi . "'" . ')"></a>';
+                        $aksi = '<a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" href="javascript:void(0)" title="Realisasi Piutang" onclick="realisasi(' . "'" . $row->id_transaksi . "'" . ')"></a>&nbsp;<a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" href="javascript:void(0)" title="Realisasi Piutang" onclick="realisasi(' . "'" . $row->id_transaksi . "'" . ')"></a>';
                     } else{
                         $aksi = '';
                     }
@@ -171,6 +198,8 @@ class Kapal extends MY_Controller{
                         $aksi = '<a class="btn btn-sm btn-danger glyphicon glyphicon-trash" href="javascript:void(0)" title="Batal Transaksi" onclick="batal(' . "'" . $row->id_transaksi . "'" . ')"></a>';
                     else
                         $aksi = '';
+                }else{
+                    
                 }
 
                 if($row->flowmeter_awal == NULL || $row->flowmeter_awal == '0'){
@@ -290,13 +319,24 @@ class Kapal extends MY_Controller{
                     $flow_sesudah = $flowmeter_akhir;
                 }
 
-                if($row->diskon != NULL || $row->diskon != 0){
-                    $total = ($row->tarif * $realisasi) - (($row->diskon / 100) * ($row->tarif * $realisasi));
-                    $tarif = $row->tarif - ($row->tarif * ($row->diskon / 100));
-                }
-                else{
-                    $tarif = $row->tarif;
-                    $total = $row->tarif * $realisasi;
+                if($row->status_kapal == 'internasional'){
+                    if($row->diskon != NULL || $row->diskon != 0){
+                        $total = ($row->tarif * $row->nilai_tukar * $realisasi) - (($row->diskon / 100) * ($row->tarif * $row->nilai_tukar * $realisasi));
+                        $tarif = $row->tarif * $row->nilai_tukar - ($row->tarif * $row->nilai_tukar * ($row->diskon / 100));
+                    }
+                    else{
+                        $tarif = $row->tarif;
+                        $total = $row->tarif * $row->nilai_tukar * $realisasi;
+                    }
+                }else{
+                    if($row->diskon != NULL || $row->diskon != 0){
+                        $total = ($row->tarif * $realisasi) - (($row->diskon / 100) * ($row->tarif * $realisasi));
+                        $tarif = $row->tarif - ($row->tarif * ($row->diskon / 100));
+                    }
+                    else{
+                        $tarif = $row->tarif;
+                        $total = $row->tarif * $realisasi;
+                    }
                 }
 
                 if($total >= 250000 && $total <= 1000000){
@@ -833,12 +873,22 @@ class Kapal extends MY_Controller{
             $realisasi = $query->flowmeter_akhir - $query->flowmeter_awal;
         }
 
-        if($query->diskon != NULL){
-            $tarif = $query->tarif;
-            $total = ($query->tarif * $realisasi) - (($query->diskon / 100) * ($query->tarif * $realisasi));
+        if($query->status == 'domestik'){
+            if($query->diskon != NULL){
+                $tarif = $query->tarif;
+                $total = ($query->tarif * $realisasi) - (($query->diskon / 100) * ($query->tarif * $realisasi));
+            }else{
+                $tarif = $query->tarif;
+                $total = $query->tarif * $realisasi;
+            }
         }else{
-            $tarif = $query->tarif;
-            $total = $query->tarif * $realisasi;
+            if($query->diskon != NULL){
+                $tarif = $query->tarif * $query->nilai_tukar;
+                $total = ($query->tarif * $query->nilai_tukar * $realisasi) - (($query->diskon / 100) * ($query->tarif * $query->nilai_tukar * $realisasi));
+            }else{
+                $tarif = $query->tarif;
+                $total = $query->tarif * $query->nilai_tukar * $realisasi;
+            }
         }
 
         if($total >= 250000 && $total <= 1000000){
@@ -868,22 +918,47 @@ class Kapal extends MY_Controller{
             $this->kapal->updatePrint($id);
         }
 
-        $hasil = array(
-            'id_lct' => $query->id_vessel,
-            'nama_kapal' => $query->nama_vessel,
-            'voy_no' => $query->voy_no,
-            'pelayaran' => $query->nama_agent,
-            'realisasi' => $realisasi,
-            'tarif' => $tarif,
-            'diskon' => $query->diskon,
-            'total' => $total,
-            'materai' => $materai,
-            'tgl_transaksi' => $this->indonesian_date('l, d M Y', $query->tgl_transaksi,''),
-            'tanggal' => $tanggal,
-            'nama_pemohon' => $query->nama_pemohon,
-            'total_bayar' => $total_bayar,
-            'terbilang' => $terbilang
-        );
+        if($query->status == 'internasional'){
+            $hasil = array(
+                'id_lct' => $query->id_vessel,
+                'nama_kapal' => $query->nama_vessel,
+                'voy_no' => $query->voy_no,
+                'pelayaran' => $query->nama_agent,
+                'realisasi' => $realisasi,
+                'status_kapal' => 'internasional',
+                'simbol' => $query->simbol,
+                'nilai_tukar' => $query->nilai_tukar,
+                'tarif' => $tarif,
+                'tarif_internasional' => $query->tarif,
+                'diskon' => $query->diskon,
+                'total' => $total,
+                'materai' => $materai,
+                'tgl_transaksi' => $this->indonesian_date('l, d M Y', $query->tgl_transaksi,''),
+                'tanggal' => $tanggal,
+                'nama_pemohon' => $query->nama_pemohon,
+                'total_bayar' => $total_bayar,
+                'terbilang' => $terbilang
+            );
+        }else{
+            $hasil = array(
+                'status_kapal' => 'domestik',
+                'id_lct' => $query->id_vessel,
+                'nama_kapal' => $query->nama_vessel,
+                'voy_no' => $query->voy_no,
+                'pelayaran' => $query->nama_agent,
+                'realisasi' => $realisasi,
+                'tarif' => $tarif,
+                'diskon' => $query->diskon,
+                'total' => $total,
+                'materai' => $materai,
+                'tgl_transaksi' => $this->indonesian_date('l, d M Y', $query->tgl_transaksi,''),
+                'tanggal' => $tanggal,
+                'nama_pemohon' => $query->nama_pemohon,
+                'total_bayar' => $total_bayar,
+                'terbilang' => $terbilang
+            );
+        }
+        
         $data['hasil'] = $hasil;
         $this->load->view('kapal/v_perhitungan', $data);
     }

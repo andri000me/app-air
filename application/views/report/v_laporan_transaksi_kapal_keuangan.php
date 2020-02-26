@@ -1,5 +1,5 @@
 <?php
-if($this->session->userdata('role_name') == "keuangan" ){
+if($this->session->userdata('role_name') == "keuangan" || $this->session->userdata('role_name') == "admin"){
 ?>
 
 <script>

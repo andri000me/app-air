@@ -91,6 +91,14 @@ class M_master extends MY_Model{
         return $this->db->count_all_results();
     }
 
+    public function delete_data_currency($id){
+        $this->db->set('soft_delete','1');
+        $this->db->where('id', $id);
+        $this->db->update('master_mata_uang');
+
+        return $this->db->affected_rows();
+    }
+
     public function getCurrency($id){
         $this->db->from($this->tabel_uang);
         $this->db->where('id',$id);
@@ -110,6 +118,10 @@ class M_master extends MY_Model{
         $result = $query->result();
         
         return $result;
+    }
+
+    public function cekStatusInter(){
+        
     }
 
     //fungsi database untuk master data agent

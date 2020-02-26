@@ -22,7 +22,7 @@ class Master extends MY_Controller{
             $row[] = "<center>".$result->lokasi;
             $row[] = "<center>".$result->no_telp;
             $row[] = '<center><a class="btn btn-sm btn-primary" href="editRuko?id=' . $result->id_flowmeter . '" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>
-                    <a class="btn btn-sm btn-primary" href="javascript:void(0)" title="Delete" onclick="delete_data_ruko('."'".$result->id_flowmeter."'".')"><i class="glyphicon glyphicon-pencil"></i> Delete</a>';
+                    <a class="btn btn-sm btn-danger" href="javascript:void(0)" title="Delete" onclick="delete_data_ruko('."'".$result->id_flowmeter."'".')"><i class="glyphicon glyphicon-remove"></i> Delete</a>';
 
             $data[] = $row;
         }
@@ -746,11 +746,11 @@ class Master extends MY_Controller{
             $row[] = "<center>Rp. ".$this->Ribuan($result->nominal);
             $nama = $this->tenant->getTenant($result->id_ref_tenant);
             $row[] = "<center>".$nama->nama_tenant;
-            if($date_now < $date_kadaluarsa || $date_now == $date_kadaluarsa){
+            //if($date_now < $date_kadaluarsa || $date_now == $date_kadaluarsa){
                 $row[] = '<center><a class="btn btn-sm btn-primary" href="javascript:void(0)" onclick="edit('."'".$result->id_lumpsum."'".')" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>';
-            } else{
-                $row[] = '';
-            }
+            //} else{
+            //    $row[] = '';
+            //}
 
             $data[] = $row;
         }
@@ -1279,9 +1279,119 @@ class Master extends MY_Controller{
         echo json_encode($message);
     }
 
+    public function ajax_data_mata_uang(){
+        $list = $this->master->get_datatables_currency();
+        $data = array();
+        $no = $_POST['start'];
+
+        foreach ($list as $result) {
+            $no++;
+            $row = array();
+            $row[] = "<center>".$no;
+            $row[] = "<center>".$result->nama_mata_uang;
+            $row[] = "<center>".$result->nilai_tukar;
+            $row[] = "<center>".$result->simbol;
+
+            $row[] = '<center><a class="btn btn-sm btn-primary" href="javascript:void(0)" onclick="edit('."'".$result->id."'".')" title="Edit"><i class="glyphicon glyphicon-pencil"></i> Edit</a>&nbsp;
+            <a class="btn btn-sm btn-danger" href="javascript:void(0)" onclick="delete_data('."'".$result->id."'".')" title="Edit"><i class="glyphicon glyphicon-remove"></i> Delete</a>';
+            $data[] = $row;
+        }
+
+        $output = array(
+            "draw" => $_POST['draw'],
+            "recordsTotal" => $this->master->count_all_currency(),
+            "recordsFiltered" => $this->master->count_filtered_currency(),
+            "data" => $data,
+        );
+        //output to json format
+        echo json_encode($output);
+    }
+
+    public function input_data_mata_uang(){
+        $nama_mata_uang = $this->input->post('nama_mata_uang');
+        $nilai_tukar = $this->input->post('nilai_tukar');
+        $simbol = $this->input->post('simbol');
+
+        if($nama_mata_uang != NULL && $nilai_tukar != NULL && $simbol != NULL){
+            $data_insert = array(
+                'nama_mata_uang' => $nama_mata_uang,
+                'simbol' => $simbol,
+                'nilai_tukar' => $nilai_tukar,
+                'issued_at' => date("Y-m-d H:i:s",time()),
+                'issued_by' => $this->session->userdata('username')
+            );
+            $query = $this->db->insert('master_mata_uang',$data_insert);
+
+            if($query){
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
+            }
+            else{
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
+            }
+        }
+        else{
+            $message = array("status" => FALSE,"info" => "Simpan data gagal");
+        }
+
+        echo json_encode($message);
+    }
+
+    public function editMataUang($id){
+        $this->db->from('master_mata_uang');
+        $this->db->where('id',$id);
+        $query = $this->db->get();
+        $result = $query->row();
+
+        $data = array(
+            'id' => $id,
+            'nama_mata_uang' => $result->nama_mata_uang,
+            'simbol' => $result->simbol,
+            'nilai_tukar' => $result->nilai_tukar,
+        );
+
+        echo json_encode($data);
+    }
+
+    public function edit_mata_uang(){
+        $id = $this->input->post('idm');
+        $nama_mata_uang = $this->input->post('nama_mata_uang');
+        $nilai_tukar = $this->input->post('nilai_tukar');
+        $simbol = $this->input->post('simbol');
+
+        $data_edit = array(
+            'nama_mata_uang' => $nama_mata_uang,
+            'nilai_tukar' => $nilai_tukar,
+            'simbol' => $simbol,
+            'modified_at' => date("Y-m-d H:i:s",time()),
+            'modified_by' => $this->session->userdata('username')
+        );
+
+        if($id != ""){
+            $this->db->set($data_edit);
+            $this->db->where('id', $id);
+            $query = $this->db->update('master_mata_uang');
+
+            if($query){
+                $message = array("status" => TRUE,"info" => "Simpan data sukses");
+            }else{
+                $message = array("status" => FALSE,"info" => "Simpan data gagal");
+            }
+        }
+        else{
+            $message = array("status" => FALSE,"info" => "Simpan data gagal");
+        }
+
+        echo json_encode($message);
+    }
+
+    public function delete_data_mata_uang($id){
+        $this->master->delete_data_currency($id);
+        echo json_encode(array("status" => TRUE));
+    }
+
     //fungsi untuk master data tarif
     public function delete_data_tarif($id){
-        $this->data->delete_data_tarif($id);
+        $this->master->delete_data_tarif($id);
         echo json_encode(array("status" => TRUE));
     }
 

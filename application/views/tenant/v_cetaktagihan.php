@@ -129,7 +129,34 @@ if(($this->session->userdata('role_name') == "operasi" || $this->session->userda
     <br>
     <table border="1">
         <?php
-        if($data_tagihan->id_ref_tenant == NULL){
+        $tanggal_sekarang = date('Y-m-d',time());
+        if($data_tagihan->id_ref_tenant != NULL && $data_tagihan->waktu_kadaluarsa > $tanggal_sekarang){
+            ?>
+            <tr>
+                <td align="center">Kegiatan</td>
+                <td align="center">Satuan</td>
+                <td align="center">Pemakaian</td>
+                <td align="center">Tarif</td>
+                <td align="center">Total</td>
+            </tr>
+            <tr>
+                <td align="center">Pemakaian Air</td>
+                <td align="center">Per Bulan</td>
+                <td align="center">1</td>
+                <td align="center"><?php echo $total ?></td>
+                <td align="center"><?php echo $total ?></td>
+            </tr>
+            <tr>
+                <td align="right" colspan="4">Sub Total</td>
+                <td align="center"><?php echo $total ?></td>
+            </tr>
+            <tr>
+                <td align="right" colspan="4">Total</td>
+                <td align="center">Rp. <?php echo $total ?></td>
+            </tr>
+            <?php
+        }
+        else{
             ?>
             <tr>
                 <td align="center">Pembayaran</td>
@@ -162,32 +189,6 @@ if(($this->session->userdata('role_name') == "operasi" || $this->session->userda
             <tr>
                 <td align="right" colspan="7">Total</td>
                 <td align="center">Rp. <?php echo $total_bayar ?></td>
-            </tr>
-            <?php
-        }
-        else{
-            ?>
-            <tr>
-                <td align="center">Kegiatan</td>
-                <td align="center">Satuan</td>
-                <td align="center">Pemakaian</td>
-                <td align="center">Tarif</td>
-                <td align="center">Total</td>
-            </tr>
-            <tr>
-                <td align="center">Pemakaian Air</td>
-                <td align="center">Per Bulan</td>
-                <td align="center">1</td>
-                <td align="center"><?php echo $total ?></td>
-                <td align="center"><?php echo $total ?></td>
-            </tr>
-            <tr>
-                <td align="right" colspan="4">Sub Total</td>
-                <td align="center"><?php echo $total ?></td>
-            </tr>
-            <tr>
-                <td align="right" colspan="4">Total</td>
-                <td align="center">Rp. <?php echo $total ?></td>
             </tr>
             <?php
         }

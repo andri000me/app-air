@@ -228,6 +228,7 @@ else if($this->session->userdata('role_name') == "wtp" && $this->session->userda
                     $('[name="nama"]').val(data.nama_pengguna_jasa);
                     $('[name="alamat"]').val(data.alamat);
                     $('[name="no_telp"]').val(data.no_telp);
+                    $('[name="id_realisasi"]').val(data.id_realisasi);
                     $('[name="tonnase"]').val(data.total_permintaan);
                     $('#modal_menu').modal('show'); // show bootstrap modal when complete loaded
                     $('.modal-title').text('Realisasi Pengantaran'); // Set title to Bootstrap modal title
