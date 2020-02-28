@@ -1310,32 +1310,36 @@ class Report extends MY_Controller{
                             } else{
                                 $total_pembayaran += 0;
                             }
-    
-                            $total += $total_pembayaran;
-                            $ton += $row->total_permintaan;
-                            $ton_realiasi += $realisasi;
-                            $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi ));
-    
-                            if($row->pengguna_jasa_id_tarif == 8){
-                                $row->pengguna_jasa_id_tarif = "Peti Kemas";
-                            }else{
-                                $row->pengguna_jasa_id_tarif = "Tongkang";
+
+                            if($row->status_print == '1'){
+                                $total += $total_pembayaran;
+                                $ton += $row->total_permintaan;
+                                $ton_realiasi += $realisasi;
+                                $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi ));
+        
+                                if($row->pengguna_jasa_id_tarif == 8){
+                                    $row->pengguna_jasa_id_tarif = "Peti Kemas";
+                                }else{
+                                    $row->pengguna_jasa_id_tarif = "Tongkang";
+                                }
+                                
+                                $tabel .='<tr>
+                                <td align="center">'.$no.'</td>
+                                <td align="center">'.$row->id_vessel.'</td>
+                                <td align="center">'.$row->nama_vessel.'</td>
+                                <td align="center">'.$row->voy_no.'</td>
+                                <td align="center">'.$row->pengguna_jasa_id_tarif.'</td>
+                                <td align="center">'.$row->nama_agent.'</td>
+                                <td align="center">'.$format_tgl.'</td>
+                                <td align="center">'.$this->Ribuan($row->tarif).'</td>
+                                <td align="center">'.$row->total_permintaan.'</td>
+                                <td align="center">'.$realisasi.'</td>
+                                <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
+                                </tr>
+                                ';
                             }
     
-                            $tabel .='<tr>
-                              <td align="center">'.$no.'</td>
-                              <td align="center">'.$row->id_vessel.'</td>
-                              <td align="center">'.$row->nama_vessel.'</td>
-                              <td align="center">'.$row->voy_no.'</td>
-                              <td align="center">'.$row->pengguna_jasa_id_tarif.'</td>
-                              <td align="center">'.$row->nama_agent.'</td>
-                              <td align="center">'.$format_tgl.'</td>
-                              <td align="center">'.$this->Ribuan($row->tarif).'</td>
-                              <td align="center">'.$row->total_permintaan.'</td>
-                              <td align="center">'.$realisasi.'</td>
-                              <td align="center">'.$this->Ribuan($total_pembayaran).'</td>
-                          </tr>
-                          ';
+                            
                             $no++;
                         }
                     }

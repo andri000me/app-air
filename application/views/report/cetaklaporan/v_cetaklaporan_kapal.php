@@ -109,44 +109,47 @@
                         $total_pembayaran += 0;
                     }
 
-                    $total += $total_pembayaran;
-                    $ton += $row->total_permintaan;
-                    $ton_realiasi += $realisasi;
-                    $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi));
+                    if($row->status_print == '1'){
 
-                    if ($row->pengguna_jasa_id_tarif == 6) {
-                        $row->pengguna_jasa_id_tarif = "Peti Kemas";
-                    } else {
-                        $row->pengguna_jasa_id_tarif = "Tongkang";
-                    }
+                        $total += $total_pembayaran;
+                        $ton += $row->total_permintaan;
+                        $ton_realiasi += $realisasi;
+                        $format_tgl = date('d-m-Y', strtotime($row->tgl_transaksi));
 
-                    if ($total_pembayaran == '0')
-                        return '';
-                    elseif ($total_pembayaran < 100)
-                        $total_pembayaran .= ',-';
-                    else
-                        $total_pembayaran = number_format($total_pembayaran, 0, '', '.') . ',-';
+                        if ($row->pengguna_jasa_id_tarif == 6) {
+                            $row->pengguna_jasa_id_tarif = "Peti Kemas";
+                        } else {
+                            $row->pengguna_jasa_id_tarif = "Tongkang";
+                        }
 
-                    if ($row->tarif == '0')
-                        return '';
-                    elseif ($row->tarif < 100)
-                        $row->tarif .= ',-';
-                    else
-                        $row->tarif = number_format($row->tarif, 0, '', '.') . ',-';
-                    ?>
-                    <tr>
-                        <td align="center"><?php echo $no ?></td>
-                        <td align="center"><?php echo $row->id_vessel ?></td>
-                        <td align="center"><?php echo $row->nama_vessel ?></td>
-                        <td align="center"><?php echo $row->voy_no ?></td>
-                        <td align="center"><?php echo $row->pengguna_jasa_id_tarif ?></td>
-                        <td align="center"><?php echo $row->nama_agent ?></td>
-                        <td align="center"><?php echo $format_tgl ?></td>
-                        <td align="center"><?php echo $row->total_permintaan ?></td>
-                        <td align="center"><?php echo $realisasi ?></td>
-                        <td align="center"><?php echo $total_pembayaran ?></td>
-                    </tr>
+                        if ($total_pembayaran == '0')
+                            return '';
+                        elseif ($total_pembayaran < 100)
+                            $total_pembayaran .= ',-';
+                        else
+                            $total_pembayaran = number_format($total_pembayaran, 0, '', '.') . ',-';
+
+                        if ($row->tarif == '0')
+                            return '';
+                        elseif ($row->tarif < 100)
+                            $row->tarif .= ',-';
+                        else
+                            $row->tarif = number_format($row->tarif, 0, '', '.') . ',-';
+                        ?>
+                        <tr>
+                            <td align="center"><?php echo $no ?></td>
+                            <td align="center"><?php echo $row->id_vessel ?></td>
+                            <td align="center"><?php echo $row->nama_vessel ?></td>
+                            <td align="center"><?php echo $row->voy_no ?></td>
+                            <td align="center"><?php echo $row->pengguna_jasa_id_tarif ?></td>
+                            <td align="center"><?php echo $row->nama_agent ?></td>
+                            <td align="center"><?php echo $format_tgl ?></td>
+                            <td align="center"><?php echo $row->total_permintaan ?></td>
+                            <td align="center"><?php echo $realisasi ?></td>
+                            <td align="center"><?php echo $total_pembayaran ?></td>
+                        </tr>
                     <?php
+                    }
                 }
             }
 

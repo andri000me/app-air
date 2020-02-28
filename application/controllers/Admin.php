@@ -331,6 +331,6 @@ class Admin extends MY_Controller{
 		);
 		$this->session->set_userdata($session_data);
         redirect(base_url());
-	}
+    }
 }
 ?>

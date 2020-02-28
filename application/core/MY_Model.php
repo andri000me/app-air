@@ -162,6 +162,18 @@ class MY_Model extends CI_Model {
         }
         return FALSE;
     }
+
+    public function insertLog($log){
+        $user = $this->session->userdata('username');
+        $time = date('Y-m-d H:i:s',time());
+        $data = array(
+            'log' => $log,
+            'user' => $user,
+            'time' => $time,
+        );
+        $this->db->insert('service_log', $data);
+        return $this->db->insert_id();
+    }
     
 }
 

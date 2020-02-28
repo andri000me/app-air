@@ -268,6 +268,12 @@ class M_admin extends MY_Model{
             'soft_delete' => '1',
         );
         $this->db->update($this->table,$data);
+
+         //input log
+         $id_trans = $id;
+         $log = "Penghapusan User Dengan ID ".$id_trans;
+         $this->insertLog($log);
+
         return $this->db->affected_rows();
     }
 }

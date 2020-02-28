@@ -31,6 +31,11 @@ class M_tenant extends MY_Model{
         $this->db->where('id_transaksi',$data['id']);
         $this->db->update('transaksi_tenant');
 
+         //input log
+         $id_trans = $data['id'];
+         $log = "Cancel Transaksi Air Tenant Dengan ID Transaksi ".$id_trans;
+         $this->insertLog($log);
+
         if($this->db->affected_rows() > 0){
             $result = $this->get_by_id("tenant",$data['id']);
             $this->db->set('status_tagihan', 0);
@@ -46,6 +51,11 @@ class M_tenant extends MY_Model{
         $this->db->set('soft_delete', 1 );
         $this->db->where('id_realisasi',$data['id']);
         $this->db->update('realisasi_tenant');
+
+        //input log
+        $id_trans = $data['id'];
+        $log = "Cancel Realisasi Air Tenant Dengan ID Transaksi ".$id_trans;
+        $this->insertLog($log);
 
         if($this->db->affected_rows() > 0)
             return TRUE;
@@ -69,6 +79,11 @@ class M_tenant extends MY_Model{
         $this->db->set('flowmeter',$data['flowmeter']);
         $this->db->where('id_master_pompa',$data['id_master_pompa']);
         $query = $this->db->update('master_pompa');
+
+        //input log
+        $id_trans = $data['id_master_pompa'];
+        $log = "Ubah Data Pompa Dengan ID ".$id_trans;
+        $this->insertLog($log);
 
         return $query->affected_rows();
     }
@@ -268,6 +283,11 @@ class M_tenant extends MY_Model{
         $this->db->where('id_flow',$data['id_master_flowmeter']);
         $query = $this->db->update('master_flowmeter');
 
+        //input log
+        $id_trans = $data['id_master_flowmeter'];
+        $log = "Ubah Master Data Flow Meter Dengan ID ".$id_trans;
+        $this->insertLog($log);
+
         return $query->affected_rows();
     }
 
@@ -359,6 +379,11 @@ class M_tenant extends MY_Model{
         $this->db->where('id_flow',$data['id_flow']);
         $this->db->update('master_flowmeter');
 
+         //input log
+         $id_trans = $data['id_flow'];
+         $log = "Input Flow Awal Flow Meter Dengan ID ".$id_trans;
+         $this->insertLog($log);
+
         return $this->db->affected_rows();
     }
 
@@ -389,6 +414,11 @@ class M_tenant extends MY_Model{
         $this->db->where('id_flow',$data['id']);
         $this->db->update("master_flowmeter");
 
+         //input log
+         $id_trans = $data['id'];
+         $log = "Set Flow Akhir Untuk Flow Meter Dengan ID ".$id_trans;
+         $this->insertLog($log);
+
         return $this->db->affected_rows();
     }
 
@@ -397,6 +427,11 @@ class M_tenant extends MY_Model{
         $this->db->set('flow_awal',$data['flowmeter_awal']);
         $this->db->where('id_flowmeter',$data['id_flowmeter']);
         $query = $this->db->update('master_flowmeter');
+
+        //input log
+        $id_trans = $data['id_flowmeter'];
+        $log = "Ubah Master Tenant Dengan ID ".$id_trans;
+        $this->insertLog($log);
 
         return $query;
     }
@@ -484,11 +519,21 @@ class M_tenant extends MY_Model{
             $this->db->set('soft_delete','1');
             $this->db->where('id_tenant', $id);
             $this->db->update('master_tenant');
+
+            //input log
+            $id_trans = $id;
+            $log = "Hapus Data Master Tenant Dengan ID ".$id_trans;
+            $this->insertLog($log);
             //$this->db->delete("master_tenant");
         }else{
             $this->db->set('soft_delete','1');
             $this->db->where('id_flowmeter', $id);
             $this->db->update('master_flowmeter');
+
+            //input log
+            $id_trans = $id;
+            $log = "Hapus Data Master Flow Meter Dengan ID ".$id_trans;
+            $this->insertLog($log);
             //$this->db->delete("master_flowmeter");
         }
     }
@@ -590,6 +635,11 @@ class M_tenant extends MY_Model{
 
         $query = $this->db->insert("transaksi_tenant",$data_tagihan);
 
+         //input log
+         $id_trans = $this->db->insert_id();
+         $log = "Pembuatan Tagihan Tenant Dengan ID Transaksi ".$id_trans;
+         $this->insertLog($log);
+
         return $query;
     }
 
@@ -606,6 +656,11 @@ class M_tenant extends MY_Model{
         );
 
         $query = $this->db->insert("realisasi_tenant",$data_realisasi);
+
+         //input log
+         $id_trans = $this->db->insert_id();
+         $log = "Pembuatan Realisasi Pemakaian Air Tenant Dengan ID Transaksi ".$id_trans;
+         $this->insertLog($log);
 
         return $query;
     }
@@ -792,6 +847,11 @@ class M_tenant extends MY_Model{
         $this->db->where('id_transaksi',$where);
         $this->db->update("transaksi_tenant");
 
+        //input log
+        $id_trans = $where;
+        $log = "Update Pembayaran Tagihan Tenant Dengan ID Transaksi ".$id_trans;
+        $this->insertLog($log);
+
         return $this->db->affected_rows();
     }
 
@@ -890,10 +950,22 @@ class M_tenant extends MY_Model{
                 'issued_by' => $data['issued_by'],
             );
             $query = $this->db->insert($this->tabel_transaksi_ruko, $insert_data);
+             //input log
+            $id_trans = $this->db->insert_id();
+            $log = "Update Status Tagihan Tenant Dengan ID Transaksi ".$id_trans;
+            $this->insertLog($log);
         } else if($tipe == "tandon"){
             $query = $this->db->insert('transaksi_tandon', $data);
+             //input log
+            $id_trans = $this->db->insert_id();
+            $log = "Update Status Tagihan Tenant Dengan ID Transaksi ".$id_trans;
+            $this->insertLog($log);
         } else {
             $query = $this->db->insert('pencatatan_sumur', $data);
+             //input log
+            $id_trans = $this->db->insert_id();
+            $log = "Update Status Tagihan Tenant Dengan ID Transaksi ".$id_trans;
+            $this->insertLog($log);
         } 
 
         if($query){

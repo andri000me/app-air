@@ -87,6 +87,11 @@ class M_kapal extends MY_Model{
         $this->db->where('id_transaksi',$data['id']);
         $this->db->update('transaksi_laut');
         
+         //input log
+         $id_trans = $data['id'];
+         $log = "Cancel Nota Air Kapal Dengan ID Transaksi ".$id_trans;
+         $this->insertLog($log);
+
         if($this->db->affected_rows() > 0)
             return TRUE;
     }
@@ -112,11 +117,22 @@ class M_kapal extends MY_Model{
         $this->db->where('id_transaksi',$where);
         $this->db->update('transaksi_laut');
 
+        //input log
+        $id_trans = $where;
+        $log = "Update Pembayaran Air Kapal Dengan ID Transaksi ".$id_trans;
+        $this->insertLog($log);
+
         return $this->db->affected_rows();
     }
 
     public function update_realisasi($where, $data){
         $this->db->update($this->tabel_transaksi_laut, $data, $where);
+
+         //input log
+         $id_trans = $where['id_transaksi'];
+         $log = "Update Realisasi Pengisian Air Kapal Dengan ID Transaksi ".$id_trans;
+         $this->insertLog($log);
+
         return $this->db->affected_rows();
     }
 
@@ -150,6 +166,11 @@ class M_kapal extends MY_Model{
         //$this->db->set('pengantar',$data['user']);
         $this->db->where('id_transaksi',$data['id']);
         $this->db->update('transaksi_laut');
+
+        //input log
+        $id_trans = $data['id'];
+        $log = "Ubah Waktu Pengisian Air Kapal Dengan ID Transaksi ".$id_trans;
+        $this->insertLog($log);
 
         return $this->db->affected_rows();
     }
@@ -204,6 +225,12 @@ class M_kapal extends MY_Model{
 
     public function input_transaksi($data){
         $query = $this->db->insert($this->tabel_transaksi_laut,$data);
+
+         //input log
+         $id_trans = $this->db->insert_id();
+         $log = "Insert Permohonan Air Kapal Dengan ID Transaksi ".$id_trans;
+         $this->insertLog($log);
+
         if($query){
             return TRUE;
         }

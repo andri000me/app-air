@@ -154,7 +154,7 @@ class Kapal extends MY_Controller{
                     $row->voy_no = "";
                 }
 
-                if(($this->session->userdata('role_name') == "operasi" || $this->session->userdata('role_name') == "admin")) {
+                if(($this->session->userdata('role_name') == "operasi")) {
                     if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL){
                         $aksi = '<a class="btn btn-primary glyphicon glyphicon-list-alt" target="_blank" href="'.base_url("kapal/cetakPerhitungan/".$row->id_transaksi."").'" title="Cetak Perhitungan" onclick="reload()"></a>';
                     }
@@ -176,7 +176,7 @@ class Kapal extends MY_Controller{
                         $aksi = '';
                     }
                 }
-                else if($this->session->userdata('role_name') == "wtp" || ($this->session->userdata('role_name') == "admin")){
+                else if($this->session->userdata('role_name') == "wtp"){
                     if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL) {
                         $aksi = '<a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" target="_blank" href="' . base_url("kapal/cetakFormPermintaan/" . $row->id_transaksi . "").'" title="Cetak Form Permintaan"></a><br><br>
                                 <a class="btn btn-sm btn-warning glyphicon glyphicon-list-alt" target="_blank" href="' . base_url("kapal/cetakDailyReportKapal/" . $row->id_transaksi . "") . '" title="Cetak Daily Report"></a><br><br>
@@ -186,18 +186,26 @@ class Kapal extends MY_Controller{
                         $aksi = '<a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" target="_blank" href="' . base_url("kapal/cetakFormPermintaan/" . $row->id_transaksi . "").'" title="Cetak Form Permintaan"></a>';
                     }
                 }
-                else if($this->session->userdata('role_name') == "admin" && $tipe == "laut"){
-                    if($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL){
-                        $aksi = '<a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" href="javascript:void(0)" title="Realisasi Piutang" onclick="realisasi(' . "'" . $row->id_transaksi . "'" . ')"></a>&nbsp;<a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" href="javascript:void(0)" title="Realisasi Piutang" onclick="realisasi(' . "'" . $row->id_transaksi . "'" . ')"></a>';
-                    } else{
-                        $aksi = '';
-                    }
-                }
-                else if($this->session->userdata('role_name') == "perencanaan" || ($this->session->userdata('role_name') == "admin")){
+                else if($this->session->userdata('role_name') == "perencanaan"){
                     if(($row->flowmeter_awal == NULL && $row->flowmeter_akhir == NULL) && $row->start_work == NULL)
                         $aksi = '<a class="btn btn-sm btn-danger glyphicon glyphicon-trash" href="javascript:void(0)" title="Batal Transaksi" onclick="batal(' . "'" . $row->id_transaksi . "'" . ')"></a>';
                     else
                         $aksi = '';
+                }else if($this->session->userdata('role_name') == 'admin'){
+                    if( ($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL)){
+                        $aksi = '<a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" target="_blank" href="'.base_url("kapal/cetakPerhitungan/".$row->id_transaksi."").'" title="Cetak Perhitungan" onclick="reload()"></a>';
+                        $aksi .= '<a class="btn btn-sm btn-danger glyphicon glyphicon-trash" href="javascript:void(0)" title="Batal Transaksi" onclick="batal(' . "'" . $row->id_transaksi . "'" . ')"></a>';
+                    }else{
+                        $aksi = '';
+                    }
+                }else if($this->session->userdata('role_name') == 'admin' && $tipe="wtp"){
+                    if( ($row->flowmeter_awal != NULL && $row->flowmeter_akhir != NULL)){
+                        $aksi = '<a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" target="_blank" href="' . base_url("kapal/cetakFormPermintaan/" . $row->id_transaksi . "").'" title="Cetak Form Permintaan"></a><br><br>
+                        <a class="btn btn-sm btn-warning glyphicon glyphicon-list-alt" target="_blank" href="' . base_url("kapal/cetakDailyReportKapal/" . $row->id_transaksi . "") . '" title="Cetak Daily Report"></a><br><br>
+                        <a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" target="_blank" href="' . base_url("kapal/cetakPengisian/" . $row->id_transaksi . "") . '" title="Cetak Form Pengisian"></a>';
+                    }else{
+                        $aksi = '';
+                    }
                 }else{
                     
                 }

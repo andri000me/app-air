@@ -64,7 +64,7 @@
             document.getElementById("table").innerHTML = a;
         }
     }
-    xmlhttp.open("GET", "<?php echo base_url("kapal/tabel_pembayaran")?>", true);
+    xmlhttp.open("GET", "<?php echo base_url("kapal/tabel_pembayaran/perencanaan")?>", true);
     xmlhttp.send();
 
     function reload() {
@@ -86,10 +86,10 @@
                 success: function(response) {
                     if(response.status == "sukses"){
                         alert('Transaksi Sudah Dibatalkan');
-                        window.location.replace('<?php echo base_url('main/monitoring/permohonan_air_kapal');?>');
+                        window.location.replace('<?php echo base_url('main/monitoring/tagihan_air_kapal');?>');
                     } else{
                         alert('Transaksi Gagal Dibatalkan....Kemungkinan Pengisian Kapal Sudah Dilakukan');
-                        window.location.replace('<?php echo base_url('main/monitoring/permintaan_air_kapal');?>');
+                        window.location.replace('<?php echo base_url('main/monitoring/tagihan_air_kapal');?>');
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown)

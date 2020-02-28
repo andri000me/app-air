@@ -198,8 +198,8 @@ class Darat extends MY_Controller {
                 $this->db->from('pembeli_darat');
                 $this->db->where('nama_pengguna_jasa',$nama_pengguna);
                 $query = $this->db->get();
-                $result = $query->row();
-                $data_transaksi['pembeli_darat_id_pengguna_jasa'] = $result->id_pengguna_jasa;
+                $rs = $query->row();
+                $data_transaksi['pembeli_darat_id_pengguna_jasa'] = $rs->id_pengguna_jasa;
                 $this->darat->input_transaksi($data_transaksi);
             }
         }
@@ -297,6 +297,8 @@ class Darat extends MY_Controller {
                 $this->db->set('modified_by',$this->session->userdata('username'));
                 $this->db->where('no_kwitansi', $id);
                 $query = $this->db->update('transaksi_darat');
+                $log = "Pembayaran Air Darat Cash Dengan No Kwitansi ".$id;
+                $this->darat->insertLog($log);
 
                 if($query){
                     $web = base_url('main/pembayaran/pembayaran_darat_cash');
