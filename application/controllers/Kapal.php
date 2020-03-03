@@ -115,7 +115,16 @@ class Kapal extends MY_Controller{
             $this->load->template('kapal/v_input_laut',$data);
         }
         else {
-            $result = $this->kapal->input_transaksi($data_transaksi);
+            if($id_pengguna == '0' || $id_pengguna == NULL){
+                $web = base_url('main/kapal/input_laut');
+                echo "<script type='text/javascript'>
+                        alert('Permintaan Gagal Di Input ! Coba Lagi')
+                        window.location.replace('$web')
+                        </script>";
+            }
+            else{
+                $result = $this->kapal->input_transaksi($data_transaksi);
+            }
         }
 
         if($result == TRUE){
