@@ -25,7 +25,7 @@ $this->fpdf->Cell(140, 7, 'Keterangan', 1,1, 'C');
 $this->fpdf->Ln(0);
 $this->fpdf->Cell(10, 7, '', 0, 'C');
 $this->fpdf->Cell(25, 7, $hasil['jam_pelayanan'].' WITA', 'LTR',0, 'C');
-$this->fpdf->Cell(140, 7, 'Informasi dari pihak Perencanaan bahwa kapal Armada Senada akan melakukan bunker', 'LTR',1, 'L');
+$this->fpdf->Cell(140, 7, 'Informasi dari pihak Perencanaan bahwa kapal'.$hasil['nama_vessel'].'akan melakukan bunker', 'LTR',1, 'L');
 $this->fpdf->Ln(0);
 $this->fpdf->Cell(10, 7, '', 0, 'C');
 $this->fpdf->Cell(25, 7, '', 'LRB',0, 'C');

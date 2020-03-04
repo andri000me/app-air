@@ -1077,7 +1077,7 @@ class Kapal extends MY_Controller{
             'flowmeter_akhir' =>$flowmeter_akhir,
             'flowmeter_awal_2' => $flowmeter_awal_2,
             'flowmeter_akhir_2' =>$flowmeter_akhir_2,
-            'flowmeter_awal_3' => $flowmeter_awal_2,
+            'flowmeter_awal_3' => $flowmeter_awal_3,
             'flowmeter_akhir_3' =>$flowmeter_akhir_3,
             'flowmeter_awal_4' => $flowmeter_awal_4,
             'flowmeter_akhir_4' =>$flowmeter_akhir_4,
