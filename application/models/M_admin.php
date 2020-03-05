@@ -121,10 +121,10 @@ class M_admin extends MY_Model{
     }
 
     public function update_login($data){
-        $condition = "username =" . "'" . $data['username'] . "'";
         $this->db->select('last_login');
         $this->db->from('users');
-        $this->db->where($condition);
+        $this->db->where('username',$data['username']);
+        $this->db->or_where('email',$data['username']);
         $this->db->limit(1);
         $query = $this->db->get();
 
@@ -134,7 +134,8 @@ class M_admin extends MY_Model{
 
         if ($query->num_rows() == 1) {
             // Query to insert data in database
-            $this->db->where($condition);
+            $this->db->where('username',$data['username']);
+            $this->db->or_where('email',$data['username']);
             $this->db->update('users', $login_data);
             if ($this->db->affected_rows() > 0) {
                 return true;
