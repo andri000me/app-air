@@ -78,6 +78,7 @@ class Admin extends MY_Controller{
             $row[] = '<input type="checkbox" class="data-check" value="'.$person->id_user.'">';
             $row[] = $person->username;
             $row[] = $person->first_name." ".$person->last_name;
+            $row[] = $person->email;
             $row[] = $person->nama_role;
 
             //add html for action
@@ -109,6 +110,7 @@ class Admin extends MY_Controller{
             'password' => password_hash($this->input->post('pass'), PASSWORD_DEFAULT),
             'first_name' => $this->input->post('nama_depan'),
             'last_name' => $this->input->post('nama_belakang'),
+            'email' => $this->input->post('email'),
             'role' => $this->input->post('role'),
         );
 
@@ -133,6 +135,7 @@ class Admin extends MY_Controller{
                 'username' => strtolower($this->input->post('username')),
                 'first_name' => $this->input->post('nama_depan'),
                 'last_name' => $this->input->post('nama_belakang'),
+                'email' => $this->input->post('email'),
                 'role' => $this->input->post('role'),
             );
         }else{
@@ -141,6 +144,7 @@ class Admin extends MY_Controller{
                 'password' => password_hash($this->input->post('pass'), PASSWORD_DEFAULT),
                 'first_name' => $this->input->post('nama_depan'),
                 'last_name' => $this->input->post('nama_belakang'),
+                'email' => $this->input->post('email'),
                 'role' => $this->input->post('role'),
             );
         }

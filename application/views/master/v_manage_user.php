@@ -18,6 +18,7 @@
                         <th style="width:10px;"><input type="checkbox" id="check-all"></th>
                         <th>Nama Akun</th>
                         <th>Nama Pengguna</th>
+                        <th>Email</th>
                         <th>Hak Akses</th>
                         <th style="width:150px;">Action</th>
                     </tr>
@@ -29,6 +30,7 @@
                         <th></th>
                         <th>Nama Akun</th>
                         <th>Nama Pengguna</th>
+                        <th>Email</th>
                         <th>Hak Akses</th>
                         <th>Action</th>
                     </tr>
@@ -94,6 +96,7 @@
         $('#username').attr('type','text');
         $('#nama_depan').attr('type','text');
         $('#nama_belakang').attr('type','text');
+        $('#email').attr('type','email');
         $('#password').attr('type','password');
         $('#confirm_password').attr('type','password');
         $('#modal_form').modal('show'); // show bootstrap modal
@@ -117,6 +120,7 @@
                 $('[name="username"]').val(data.username);
                 $('[name="nama_depan"]').val(data.first_name);
                 $('[name="nama_belakang"]').val(data.last_name);
+                $('[name="email"]').val(data.email);
                 $('[name="role"]').val(data.role).change();
                 $('#modal_form').modal('show'); // show bootstrap modal when complete loaded
                 $('.modal-title').text('Ubah Data Akun'); // Set title to Bootstrap modal title
@@ -268,14 +272,21 @@
                         <div class="form-group">
                             <label class="control-label col-md-3">Nama Depan</label>
                             <div class="col-md-9">
-                                <input name="nama_depan" id="nama_depan" placeholder="Nama Pengguna" class="form-control" type="text">
+                                <input name="nama_depan" id="nama_depan" placeholder="Nama Depan" class="form-control" type="text">
                                 <span class="help-block"></span>
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-3">Nama Belakang</label>
                             <div class="col-md-9">
-                                <input name="nama_belakang" id="nama_belakang" placeholder="Nama Pengguna" class="form-control" type="text">
+                                <input name="nama_belakang" id="nama_belakang" placeholder="Nama Belakang" class="form-control" type="text">
+                                <span class="help-block"></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3">Email</label>
+                            <div class="col-md-9">
+                                <input name="email" id="email" placeholder="Email" class="form-control" type="email">
                                 <span class="help-block"></span>
                             </div>
                         </div>
