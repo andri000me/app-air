@@ -9,8 +9,9 @@ class M_report extends MY_Model{
             $this->db->join('pembeli_darat','pembeli_darat_id_pengguna_jasa = id_pengguna_jasa','left');
             $this->db->where('tgl_transaksi BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:59")).'"');
             $this->db->where('transaksi_darat.soft_delete',0);
-            $this->db->where('status_pembayaran','1');
-            $this->db->or_where('status_invoice','1');
+            $this->db->where('status_delivery','1');
+            $this->db->or_where('status_pembayaran','1');
+            //$this->db->or_where('status_invoice','1');
             $this->db->order_by('tgl_transaksi','ASC');
         }
         else if($tipe == "darat_keuangan"){

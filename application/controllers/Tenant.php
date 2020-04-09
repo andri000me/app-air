@@ -555,10 +555,12 @@ class Tenant extends MY_Controller{
         if($row->id_ref_tenant != NULL){
             $data['tagihan'] = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
             $data['data_tagihan'] = $this->tenant->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+            $data['diskon'] = $this->tenant->getDiskonTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
             $data['detail_tagihan'] = $this->tenant->getDetailTagihan($id_flowmeter);
         } else{
             $data['tagihan'] = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
             $data['data_tagihan'] = $this->tenant->getDataTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
+            $data['diskon'] = $this->tenant->getDiskonTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
             $data['detail_tagihan'] = $this->tenant->getDetailTagihan($id_flowmeter);
         }
         $this->load->view('tenant/v_cetaktagihan', $data);

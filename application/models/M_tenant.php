@@ -699,6 +699,23 @@ class M_tenant extends MY_Model{
         }
     }
 
+    function getDiskonTagihan($tgl_awal = '',$tgl_akhir = '',$id){
+        $this->db->select('*');
+        $this->db->from('transaksi_tenant');
+        $this->db->join('master_flowmeter','transaksi_tenant.id_ref_flowmeter = id_flow','left');
+        $this->db->join('pencatatan_flow','pencatatan_flow.id_ref_flowmeter = id_flow','left');
+        $this->db->where('waktu_perekaman BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:59")).'"');
+        $this->db->where('status_perekaman',1);
+        $this->db->where('transaksi_tenant.id_ref_flowmeter =',$id);
+        $query = $this->db->get();
+
+        if($query->num_rows() > 0){
+            return $query->row();
+        }else{
+            return false;
+        }
+    }
+
     function getDataRealisasi($tgl_awal = '',$tgl_akhir = '',$id){
         $this->db->select('*');
         $this->db->from('realisasi_tenant');

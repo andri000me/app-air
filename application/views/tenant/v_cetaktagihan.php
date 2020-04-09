@@ -79,18 +79,21 @@ if(($this->session->userdata('role_name') == "operasi" || $this->session->userda
 
         if($total >= 250000 && $total <= 1000000){
             $materai = 3000;
+            $total -= $materai;
             $total_bayar = $total + $materai;
             $total = number_format($total,0,'','.').',-';
             $total_bayar = number_format($total_bayar,0,'','.').',-';
             $materai = number_format($materai,0,'','.').',-';
         } else if($total > 1000000){
             $materai = 6000;
+            $total -= $materai;
             $total_bayar = $total + $materai;
             $total = number_format($total,0,'','.').',-';
             $total_bayar = number_format($total_bayar,0,'','.').',-';
             $materai = number_format($materai,0,'','.').',-';
         } else {
             $materai = 0;
+            $total -= $materai;
             $total_bayar = $total + $materai;
             $total = number_format($total,0,'','.').',-';
             $total_bayar = number_format($total_bayar,0,'','.').',-';
@@ -120,8 +123,8 @@ if(($this->session->userdata('role_name') == "operasi" || $this->session->userda
             $data_tagihan->tarif = number_format($data_tagihan->tarif,0,'','.').',-';
         }
 
-        if($data_tagihan->diskon != NULL || $data_tagihan->diskon != '')
-            $diskon = $data_tagihan->diskon." %";
+        if($diskon->diskon != NULL || $diskon->diskon != '')
+            $diskon = $diskon->diskon." %";
         else
             $diskon = '';
         
