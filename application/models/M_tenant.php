@@ -761,6 +761,7 @@ class M_tenant extends MY_Model{
         $this->db->where('tgl_akhir',date('Y-m-d', strtotime($tgl_akhir)));
         $this->db->where('status_tagihan',0);
         $this->db->where('id_ref_flowmeter =',$id);
+        $this->db->where('soft_delete','0');
         $query = $this->db->get();
 
         if($query->num_rows() > 0){
