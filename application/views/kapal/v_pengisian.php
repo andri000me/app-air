@@ -114,7 +114,9 @@ $this->fpdf->Cell(195, 3, 'BERLY KARDIN SENAPATI', 0, 0, 'C');
 $this->fpdf->Ln(1);
 $this->fpdf->Cell(195, 3, '(.................................................)', 0, 0, 'C');
 
-$this->fpdf->Ln(40);
+$this->fpdf->Ln(20);
+$this->fpdf->Line(0, 148.5, 210, 148.5); // 20mm from each edge
+$this->fpdf->Ln(20);
 
 $this->fpdf->SetFont('Arial', '', 10);
 $this->fpdf->Ln();
