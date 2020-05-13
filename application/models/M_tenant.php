@@ -665,10 +665,12 @@ class M_tenant extends MY_Model{
         return $query;
     }
 
-    function getDetailTagihan($id){
+    function getDetailTagihan($id,$tgl_awal,$tgl_akhir){
         $this->db->select('*');
         $this->db->from('transaksi_tenant');
         $this->db->where('id_ref_flowmeter =',$id);
+        $this->db->where('tgl_awal',$tgl_awal);
+        $this->db->where('tgl_akhir',$tgl_akhir);
         $this->db->where('soft_delete = 0');
         $query = $this->db->get();
 

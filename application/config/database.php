@@ -75,7 +75,7 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => '47.74.234.241',
+	'hostname' => 'qapps.site',
 	'username' => 'fendy',
 	'password' => 'fendy123',
 	'database' => 'app-air',
