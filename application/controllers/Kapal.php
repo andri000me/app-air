@@ -562,6 +562,36 @@ class Kapal extends MY_Controller{
 
     public function update_realisasi_laut(){
         $this->_validate_realisasi_laut();
+        $flowmeter_awal_4 = $this->input->post('flowmeter_awal_4');
+        $flowmeter_akhir_4 = $this->input->post('flowmeter_akhir_4');
+        $flowmeter_awal_3 = $this->input->post('flowmeter_awal_3');
+        $flowmeter_akhir_3 = $this->input->post('flowmeter_akhir_3');
+        $flowmeter_awal_2 = $this->input->post('flowmeter_awal_2');
+        $flowmeter_akhir_2 = $this->input->post('flowmeter_akhir_2');
+        $flowmeter_awal = $this->input->post('flowmeter_awal');
+        $flowmeter_akhir = $this->input->post('flowmeter_akhir');
+
+        if($flowmeter_akhir_4 != NULL && $flowmeter_awal_4 != NULL){
+            $realisasi = $flowmeter_akhir_4 - $flowmeter_awal_4;
+            if($flowmeter_akhir_3 != NULL && $flowmeter_awal_3 != NULL){
+                $realisasi += $flowmeter_akhir_3 - $flowmeter_awal_3;
+                if($flowmeter_akhir_2 != NULL && $flowmeter_awal_2 != NULL){
+                    $realisasi += $flowmeter_akhir_2 - $flowmeter_awal_2;
+                }
+            }
+            $realisasi += $flowmeter_akhir - $flowmeter_awal;
+        } else if($flowmeter_akhir_3 != NULL && $flowmeter_awal_3 != NULL){
+            $realisasi = $flowmeter_akhir_3 - $flowmeter_awal_3;
+            if($flowmeter_akhir_2 != NULL && $flowmeter_awal_2 != NULL){
+                $realisasi += $flowmeter_akhir_2 - $flowmeter_awal_2;
+            }
+            $realisasi += $flowmeter_akhir - $flowmeter_awal;
+        } else if($flowmeter_akhir_2 != NULL && $flowmeter_awal_2 != NULL){
+            $realisasi = $flowmeter_akhir_2 - $flowmeter_awal_2;
+            $realisasi += $flowmeter_akhir - $flowmeter_awal;
+        } else{
+            $realisasi = $flowmeter_akhir - $flowmeter_awal;
+        }
 
         $data = array(
             'flowmeter_awal' => $this->input->post('flowmeter_awal'),
@@ -573,6 +603,7 @@ class Kapal extends MY_Controller{
             'flowmeter_awal_4' => $this->input->post('flowmeter_awal_4'),
             'flowmeter_akhir_4' => $this->input->post('flowmeter_akhir_4'),
             'pengisi' => $this->input->post('pengisi'),
+            'total_realisasi' => $realisasi,
             'end_work' => date("Y-m-d H:i:s",time()),
             'last_modified' => date("Y-m-d H:i:s",time()),
             'modified_by' => $this->session->userdata('username')

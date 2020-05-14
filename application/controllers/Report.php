@@ -2025,7 +2025,6 @@ class Report extends MY_Controller{
         echo json_encode($data);
     }
 
-
     public function excelDarat($tgl_awal,$tgl_akhir) {
         if($this->session->userdata('role_name') == 'keuangan'){
             $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,"darat_keuangan");
@@ -4268,6 +4267,7 @@ class Report extends MY_Controller{
 
     public function cetakLaporan($tgl_awal,$tgl_akhir,$tipe,$id=''){
         ini_set('memory_limit', '256M');
+        $this->dompdf->set_option('enable_html5_parser', TRUE);
         if($tipe == "darat"){
             $data['title'] = 'Laporan Transaksi Air Darat Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
             $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
@@ -4451,6 +4451,401 @@ class Report extends MY_Controller{
             $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
         }
     }
+
+    public function laporanProduksi(){
+        $tgl_awal = $this->input->post('tgl_awal');
+        $tgl_akhir = $this->input->post('tgl_akhir');
+        $air_kapal = $this->report->getLaporanProduksiAirKapal($tgl_awal,$tgl_akhir);
+        $air_darat = $this->report->getLaporanProduksiAirDarat($tgl_awal,$tgl_akhir);
+        $air_tenant = $this->report->getLaporanProduksiAirTenant($tgl_awal,$tgl_akhir);
+        $total_realisasi_kapal = 0;
+        $total_bayar_kapal = 0;
+        $total_permintaan_darat = 0;
+        $total_bayar_darat = 0;
+        $total_pemakaian_tenant = 0;
+        $total_bayar_tenant = 0;
+
+        $tabel = '<center><h4>Laporan Produksi Air Periode '.date('d-m-Y', strtotime($tgl_awal)).' s/d '.date('d-m-Y', strtotime($tgl_akhir )).'</h4></center>';
+        
+        if($air_kapal != NULL || $air_darat != NULL || $air_tenant != NULL){
+            if($air_kapal != NULL){
+                $no = 1;
+                $tabel .= '
+                        <table class="table table-responsive table-condensed table-striped">
+                        <thead>
+                            <tr><th colspan="5">Produksi Air Kapal</th></tr>
+                            <tr>
+                                <th align="center"><center>No</th>
+                                <th align="center"><center>Nama Agent</th>
+                                <th align="center"><center>Nama Vessel</th>
+                                <th align="center"><center>Total Realisasi (m3)</th>
+                                <th align="center"><center>Jumlah Bayar (Rp.)</th>
+                            </tr>
+                        </thead>
+                        <tbody>';
+    
+                foreach($air_kapal as $row){
+                    $tabel .='
+                        <tr>
+                            <td align="center">'.$no.'</td>
+                            <td align="center">'.$row->nama_agent.'</td>
+                            <td align="center">'.$row->nama_vessel.'</td>
+                            <td align="center">'.$this->koma($row->total_realisasi).'</td>
+                            <td align="center">'.$this->rupiah($row->jumlah_bayar).'</td>
+                        </tr>
+                        ';
+                    $total_realisasi_kapal += $row->total_realisasi;
+                    $total_bayar_kapal += $row->jumlah_bayar;
+                    $no++;
+                }
+    
+                $tabel .= '
+                        <tr>
+                            <td align="center" colspan="3"><b>Total</b></td>
+                            <td align="center"><b>'.$this->Koma($total_realisasi_kapal).'</b></td>
+                            <td align="center"><b>'.$this->rupiah($total_bayar_kapal).'</b></td>
+                        </tr>
+                    </tbody>';
+            }
+    
+            if($air_darat != NULL){
+                $tabel .='    
+                    <thead>
+                        <tr><th colspan="5">Produksi Air Darat</th></tr>
+                        <tr>
+                            <th align="center"><center>No</th>
+                            <th colspan="2" align="center"><center>Nama Pengguna Jasa</th>
+                            <th align="center"><center>Total Permintaan (m3)</th>
+                            <th align="center"><center>Jumlah Bayar (Rp.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                
+                foreach($air_darat as $row){
+                    $tabel .='
+                        <tr>
+                            <td align="center">'.$no.'</td>
+                            <td colspan="2" align="center">'.$row->nama_pengguna_jasa.'</td>
+                            <td align="center">'.$this->koma($row->total_permintaan).'</td>
+                            <td align="center">'.$this->rupiah($row->jumlah_bayar).'</td>
+                        </tr>
+                        ';
+                    $total_permintaan_darat += $row->total_permintaan;
+                    $total_bayar_darat += $row->jumlah_bayar;
+                    $no++;
+                }    
+    
+                $tabel .= '
+                    <tr>
+                        <td align="center" colspan="3"><b>Total</b></td>
+                        <td align="center"><b>'.$this->Koma($total_permintaan_darat).'</b></td>
+                        <td align="center"><b>'.$this->rupiah($total_bayar_darat).'</b></td>
+                    </tr>
+                </tbody>';
+            }
+            if($air_tenant != NULL){
+                $tabel .='    
+                    <thead>
+                        <tr><th colspan="5">Pemakaian Air Tenant</th></tr>
+                        <tr>
+                            <th align="center"><center>No</th>
+                            <th align="center"><center>Nama Tenant</th>
+                            <th align="center"><center>Nama ID Flowmeter</th>
+                            <th align="center"><center>Total Pemakaian (m3)</th>
+                            <th align="center"><center>Jumlah Bayar (Rp.)</th>
+                        </tr>
+                    </thead>
+                    <tbody>';
+                
+                foreach($air_tenant as $row){
+                    $tabel .='
+                        <tr>
+                            <td align="center">'.$no.'</td>
+                            <td align="center">'.$row->nama_tenant.'</td>
+                            <td align="center">'.$row->id_flowmeter.'</td>
+                            <td align="center">'.$this->Koma($row->total_pakai).'</td>
+                            <td align="center">'.$this->rupiah($row->total_bayar).'</td>
+                        </tr>
+                        ';
+                    $total_pemakaian_tenant += $row->total_pakai;
+                    $total_bayar_tenant += $row->total_bayar;
+                    $no++;
+                }    
+    
+                $tabel .= '
+                    <tr>
+                        <td align="center" colspan="3"><b>Total</b></td>
+                        <td align="center"><b>'.$this->Koma($total_pemakaian_tenant).'</b></td>
+                        <td align="center"><b>'.$this->rupiah($total_bayar_tenant).'</b></td>
+                    </tr>
+                </tbody>';
+            }
+            
+            $total_bayar_keseluruhan = $total_bayar_kapal + $total_bayar_darat + $total_bayar_tenant;
+            $total_produksi_air = $total_pemakaian_tenant + $total_permintaan_darat + $total_realisasi_kapal;
+
+            $tabel .='
+                <tfoot>
+                    <tr>
+                        <td align="center" colspan="3"><b>Total Keseluruhan</b></td>
+                        <td align="center"><b>'.$this->Koma($total_produksi_air).'</b></td>
+                        <td align="center"><b>'.$this->rupiah($total_bayar_keseluruhan).'</b></td>
+                    </tr>
+                </tfoot>    
+                </table>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/cetakLaporanProduksi/".$tgl_awal."/".$tgl_akhir).'>Cetak PDF</a>
+                <a class="btn btn-primary" target="_blank" href='.base_url("report/excelProduksiAir/".$tgl_awal."/".$tgl_akhir).'>Cetak Excel</a>';
+
+            $data = array(
+                'status' => 'success',
+                'tabel' => $tabel
+            );
+        }
+        else{
+            $data = array(
+                'status' => 'failed'
+            );
+        }
+
+        echo json_encode($data);
+    }
+
+    public function excelProduksiAir($tgl_awal,$tgl_akhir){
+        // Create new PHPExcel object
+        $object = new PHPExcel();
+        $style = array(
+            'alignment' => array(
+                'horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                'vertical' => PHPExcel_Style_Alignment::VERTICAL_CENTER,
+            ),
+            'borders' => array(
+                'allborders' => array(
+                    'style' => PHPExcel_Style_Border::BORDER_THIN
+                )
+            )
+        );
+        $font = array(
+            'font'  => array(
+                'bold'  => true,
+                'size'  => 12,
+                'name'  => 'Times New Roman'
+            )
+        );
+
+        $object->getActiveSheet()->getStyle("A7:E7")->applyFromArray($style);
+        $object->getActiveSheet()->getStyle("A7:E7")->applyFromArray($font);
+        $object->getActiveSheet()->getStyle("A1:E5")->applyFromArray($font);
+        $object->getActiveSheet()->getStyle('A7:E7')->getAlignment()->setWrapText(true);
+
+        // Set properties
+        $object->getProperties()->setCreator($this->session->userdata('username'))
+            ->setLastModifiedBy($this->session->userdata('username'))
+            ->setCategory("Approve by ");
+        // Add some data
+        $air_kapal = $this->report->getLaporanProduksiAirKapal($tgl_awal,$tgl_akhir);
+        $air_darat = $this->report->getLaporanProduksiAirDarat($tgl_awal,$tgl_akhir);
+        $air_tenant = $this->report->getLaporanProduksiAirTenant($tgl_awal,$tgl_akhir);
+
+        $total_realisasi_kapal = 0;
+        $total_bayar_kapal = 0;
+        $total_permintaan_darat = 0;
+        $total_bayar_darat = 0;
+        $total_pemakaian_tenant = 0;
+        $total_bayar_tenant = 0;
+
+        $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
+        $object->getActiveSheet()->getColumnDimension('B')->setWidth(20);
+        $object->getActiveSheet()->getColumnDimension('C')->setWidth(20);
+        $object->getActiveSheet()->getColumnDimension('D')->setWidth(20);
+        $object->getActiveSheet()->getColumnDimension('E')->setWidth(20);
+
+        $object->getActiveSheet()->mergeCells('A1:E1');
+        $object->getActiveSheet()->mergeCells('A2:E2');
+        $object->getActiveSheet()->mergeCells('A3:E3');
+        $object->getActiveSheet()->mergeCells('A4:E4');
+        $object->getActiveSheet()->mergeCells('A5:E5');
+
+        $tgl_awal = date('d-m-Y',strtotime($tgl_awal));
+        $tgl_akhir = date('d-m-Y',strtotime($tgl_akhir));
+
+        $object->setActiveSheetIndex(0)
+            ->setCellValue('A1', 'Laporan Generated by : '.$this->session->userdata('username'))
+            ->setCellValue('A3', 'PT Kaltim Kariangau Terminal')
+            ->setCellValue('A4', 'Terminal Peti Kemas')
+            ->setCellValue('A5', 'Laporan Produksi Air Periode '.$tgl_awal.' s/d '.$tgl_akhir)
+        ;
+        $no=0;
+        //add data
+        $counter=8;
+        $ex = $object->setActiveSheetIndex(0);
+
+        if($air_kapal != NULL){
+            $object->setActiveSheetIndex(0)
+                ->setCellValue('A7', 'No')
+                ->setCellValue('B7', 'Nama Agent')
+                ->setCellValue('C7', 'Nama Vessel')
+                ->setCellValue('D7', 'Total Realisasi (m3)')
+                ->setCellValue('E7', 'Jumlah Bayar (Rp.)')
+            ;
+            foreach($air_kapal as $row){
+                $no++;
+                $object->getActiveSheet()->getStyle("A".$counter.":E".$counter)->applyFromArray($style);
+    
+                $total_realisasi_kapal += $row->total_realisasi;
+                $total_bayar_kapal += $row->jumlah_bayar;
+                
+                $ex->setCellValue("A".$counter,"$no");
+                $ex->setCellValue("B".$counter,"$row->nama_agent");
+                $ex->setCellValue("C".$counter,"$row->nama_vessel");
+                $ex->setCellValue("D".$counter,"$row->total_realisasi");
+                $ex->setCellValue("E".$counter,"$row->jumlah_bayar");
+    
+                $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
+                $object->getActiveSheet()->getStyle("B".$counter)->applyFromArray($style);
+                $object->getActiveSheet()->getStyle("C".$counter)->applyFromArray($style);
+                $object->getActiveSheet()->getStyle("D".$counter)->applyFromArray($style);
+                $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($style);
+                    
+                $counter=$counter+1;
+            }
+
+            $object->getActiveSheet()->mergeCells('A'.$counter.':C'.$counter);
+            $object->getActiveSheet()->getStyle("A".$counter.":E".$counter)->applyFromArray($style);
+    
+            $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($font);
+            $object->getActiveSheet()->getStyle("D".$counter)->applyFromArray($font);
+            $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($font);
+    
+            $ex->setCellValue("A".$counter,"Total");
+            $ex->setCellValue("D".$counter,"$total_realisasi_kapal");
+            $ex->setCellValue("E".$counter,"$total_bayar_kapal");
+        }
+
+        if($air_darat != NULL){
+            $counter++;
+            $object->getActiveSheet()->mergeCells('B'.$counter.':C'.$counter);
+            $object->setActiveSheetIndex(0)
+                ->setCellValue('A'.$counter, 'No')
+                ->setCellValue('B'.$counter, 'Nama Pengguna Jasa')
+                ->setCellValue('D'.$counter, 'Total Permintaan (m3)')
+                ->setCellValue('E'.$counter, 'Jumlah Bayar (Rp.)')
+            ;
+
+            foreach($air_darat as $row){
+                $no++;
+                $object->getActiveSheet()->getStyle("A".$counter.":E".$counter)->applyFromArray($style);
+    
+                $total_permintaan_darat += $row->total_permintaan;
+                $total_bayar_darat += $row->jumlah_bayar;
+                $object->getActiveSheet()->mergeCells('B'.$counter.':C'.$counter);
+                $ex->setCellValue("A".$counter,"$no");
+                $ex->setCellValue("B".$counter,"$row->nama_pengguna_jasa");
+                $ex->setCellValue("D".$counter,"$row->total_permintaan");
+                $ex->setCellValue("E".$counter,"$row->jumlah_bayar");
+    
+                $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
+                $object->getActiveSheet()->getStyle("B".$counter)->applyFromArray($style);
+                $object->getActiveSheet()->getStyle("D".$counter)->applyFromArray($style);
+                $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($style);
+                    
+                $counter=$counter+1;
+            }
+
+            $object->getActiveSheet()->mergeCells('A'.$counter.':C'.$counter);
+            $object->getActiveSheet()->getStyle("A".$counter.":E".$counter)->applyFromArray($style);
+
+            $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($font);
+            $object->getActiveSheet()->getStyle("D".$counter)->applyFromArray($font);
+            $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($font);
+
+            $ex->setCellValue("A".$counter,"Total");
+            $ex->setCellValue("D".$counter,"$total_permintaan_darat");
+            $ex->setCellValue("E".$counter,"$total_bayar_darat");
+        }
+
+        if($air_tenant != NULL){
+            $counter++;
+            $object->getActiveSheet()->mergeCells('B'.$counter.':C'.$counter);
+            $object->setActiveSheetIndex(0)
+                ->setCellValue('A'.$counter, 'No')
+                ->setCellValue('B'.$counter, 'Nama Tenant')
+                ->setCellValue('C'.$counter, 'ID Flowmeter')
+                ->setCellValue('D'.$counter, 'Total Pemakaian (m3)')
+                ->setCellValue('E'.$counter, 'Jumlah Bayar (Rp.)')
+            ;
+
+            foreach($air_tenant as $row){
+                $no++;
+                $object->getActiveSheet()->getStyle("A".$counter.":E".$counter)->applyFromArray($style);
+    
+                $total_pemakaian_tenant += $row->total_pakai;
+                $total_bayar_tenant += $row->total_bayar;
+                
+                $ex->setCellValue("A".$counter,"$no");
+                $ex->setCellValue("B".$counter,"$row->nama_tenant");
+                $ex->setCellValue("C".$counter,"$row->id_flowmeter");
+                $ex->setCellValue("D".$counter,"$row->total_pakai");
+                $ex->setCellValue("E".$counter,"$row->total_bayar");
+    
+                $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
+                $object->getActiveSheet()->getStyle("B".$counter)->applyFromArray($style);
+                $object->getActiveSheet()->getStyle("C".$counter)->applyFromArray($style);
+                $object->getActiveSheet()->getStyle("D".$counter)->applyFromArray($style);
+                $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($style);
+                    
+                $counter=$counter+1;
+            }
+
+            $object->getActiveSheet()->mergeCells('A'.$counter.':C'.$counter);
+            $object->getActiveSheet()->getStyle("A".$counter.":E".$counter)->applyFromArray($style);
+
+            $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($font);
+            $object->getActiveSheet()->getStyle("D".$counter)->applyFromArray($font);
+            $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($font);
+
+            $ex->setCellValue("A".$counter,"Total");
+            $ex->setCellValue("D".$counter,"$total_pemakaian_tenant");
+            $ex->setCellValue("E".$counter,"$total_bayar_tenant");
+        }
+
+        // Rename sheet
+        $object->getActiveSheet()->setTitle('Lap_Produksi_Air');
+
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        $object->setActiveSheetIndex(0);
+
+        // Redirect output to a client’s web browser (Excel2007)
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="laporan_produksi_air_periode_'.$tgl_awal.'_'.$tgl_akhir.'.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $objWriter = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
+        $objWriter->save('php://output');
+    }
+
+    public function cetakLaporanProduksi($tgl_awal,$tgl_akhir){
+        ini_set('memory_limit', '256M');
+        $data['air_kapal'] = $this->report->getLaporanProduksiAirKapal($tgl_awal,$tgl_akhir);
+        $data['air_darat'] = $this->report->getLaporanProduksiAirDarat($tgl_awal,$tgl_akhir);
+        $data['air_tenant'] = $this->report->getLaporanProduksiAirTenant($tgl_awal,$tgl_akhir);
+        $data['title'] = 'Laporan Produksi Air Periode '
+                        .date('d-M-Y', strtotime($tgl_awal )).' s/d '
+                        .date('d-M-Y', strtotime($tgl_akhir )); //judul title
+
+        $this->load->view('report/cetaklaporan/v_cetaklaporan_produksi', $data);
+        
+        $paper_size  = 'A4'; //paper size
+        $orientation = 'potrait'; //tipe format kertas
+        
+        $html = $this->output->get_output(array("compress" => 0));
+        $this->dompdf->set_option('enable_html5_parser', TRUE);
+        $this->dompdf->set_paper($paper_size, $orientation);
+        //Convert to PDF
+        $this->dompdf->load_html($html);
+        $this->dompdf->render();
+        $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
+    }
+
 }
 
 ?>

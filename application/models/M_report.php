@@ -6,8 +6,8 @@ class M_report extends MY_Model{
         if($tipe == "darat"){
             $this->db->select('*');
             $this->db->from('transaksi_darat');
-            $this->db->join('pembeli_darat','pembeli_darat_id_pengguna_jasa = id_pengguna_jasa','left');
             $this->db->where('tgl_transaksi BETWEEN "'. date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:59")).'"');
+            $this->db->join('pembeli_darat','pembeli_darat_id_pengguna_jasa = id_pengguna_jasa','left');
             $this->db->where('transaksi_darat.soft_delete',0);
             $this->db->where('status_delivery','1');
             $this->db->or_where('status_pembayaran','1');
@@ -118,6 +118,73 @@ class M_report extends MY_Model{
             $this->db->or_where('master_lumpsum.waktu_kadaluarsa >=',$tgl_sekarang);
             $this->db->order_by('master_tenant.id_tenant','ASC');
         }
+
+        $query = $this->db->get();
+
+        if($query->num_rows() > 0){
+            return $query->result();
+        }
+    }
+
+    function getLaporanProduksiAirKapal($tgl_awal,$tgl_akhir){
+        $this->db->select('any_value(master_agent.nama_agent) as nama_agent,
+                        pembeli_laut.nama_vessel as nama_vessel,
+                        sum(transaksi_laut.total_realisasi) as total_realisasi,
+                        sum(transaksi_laut.total_realisasi) * any_value(transaksi_laut.tarif) as jumlah_bayar');
+        $this->db->from('transaksi_laut');
+        $this->db->where('tgl_transaksi BETWEEN "'. 
+                    date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. 
+                    date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:59")).'"');
+        $this->db->join('pembeli_laut','transaksi_laut.pembeli_laut_id_pengguna_jasa = pembeli_laut.id_pengguna_jasa','left');
+        $this->db->join('master_agent','master_agent.id_agent = pembeli_laut.id_agent_master','left');
+        $this->db->where('transaksi_laut.soft_delete',0);
+        $this->db->where('transaksi_laut.status_pengerjaan',1);
+        $this->db->group_by('pembeli_laut.nama_vessel');
+        $this->db->order_by('any_value(master_agent.nama_agent)','ASC');
+
+        $query = $this->db->get();
+
+        if($query->num_rows() > 0){
+            return $query->result();
+        }
+    }
+
+    function getLaporanProduksiAirDarat($tgl_awal,$tgl_akhir){
+        $this->db->select('pembeli_darat.nama_pengguna_jasa as nama_pengguna_jasa,
+                        sum(transaksi_darat.total_permintaan) as total_permintaan,
+                        sum(transaksi_darat.total_permintaan) * any_value(transaksi_darat.tarif) as jumlah_bayar');
+        $this->db->from('transaksi_darat');
+        $this->db->where('tgl_transaksi BETWEEN "'. 
+                    date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. 
+                    date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:59")).'"');
+        $this->db->join('pembeli_darat','pembeli_darat_id_pengguna_jasa = id_pengguna_jasa','left');
+        $this->db->where('transaksi_darat.soft_delete',0);
+        $this->db->where('transaksi_darat.status_delivery','1');
+        $this->db->or_where('transaksi_darat.status_pembayaran','1');
+        $this->db->group_by('pembeli_darat.nama_pengguna_jasa');
+        $this->db->order_by('pembeli_darat.nama_pengguna_jasa','ASC');
+
+        $query = $this->db->get();
+
+        if($query->num_rows() > 0){
+            return $query->result();
+        }
+    }
+
+    function getLaporanProduksiAirTenant($tgl_awal,$tgl_akhir){
+        $this->db->select('master_tenant.nama_tenant as nama_tenant,
+                        master_flowmeter.id_flowmeter as id_flowmeter,
+                        sum(transaksi_tenant.total_pakai) as total_pakai,
+                        sum(transaksi_tenant.total_bayar) as total_bayar');
+        $this->db->from('transaksi_tenant');
+        $this->db->where('transaksi_tenant.tgl_transaksi BETWEEN "'. 
+                    date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. 
+                    date('Y-m-d H:i:s', strtotime($tgl_akhir." 23:59:59")).'"');
+        $this->db->join('master_flowmeter','id_flow = transaksi_tenant.id_ref_flowmeter','left');
+        $this->db->join('master_tenant','id_flow = master_tenant.id_ref_flowmeter','left');
+        $this->db->where('transaksi_tenant.soft_delete',0);
+        $this->db->group_by('master_tenant.nama_tenant,master_flowmeter.id_flowmeter');
+        $this->db->order_by('master_tenant.nama_tenant','ASC');
 
         $query = $this->db->get();
 
