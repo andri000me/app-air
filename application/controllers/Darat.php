@@ -564,6 +564,7 @@ class Darat extends MY_Controller {
     
                 if($this->session->userdata('role_name') == 'loket' || $this->session->userdata('role_name') == 'admin'){
                     $aksi = '<a class="btn btn-sm btn-success glyphicon glyphicon-list-alt" title="Cetak Form Permintaan" target="_blank" href="'.base_url("darat/cetakFPermintaan/".$row->id_transaksi."").'"></a>&nbsp;';
+                    $aksi .= '<span class=""><a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" title="Cetak Perhitungan" target="_blank" href="'.base_url("darat/cetakPerhitunganPiutang/".$row->id_transaksi."").'"> </a>&nbsp;</span>';
                 }
     
                 if($row->batal_nota == 1){
@@ -571,14 +572,13 @@ class Darat extends MY_Controller {
                     $color = '#ff0000';
                 } else if($row->waktu_mulai_pengantaran == NULL || $row->waktu_selesai_pengantaran == NULL){
                     if($row->status_invoice == 1){
-                        $aksi .= '<span class=""><a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" title="Cetak Perhitungan" target="_blank" href="'.base_url("darat/cetakPerhitunganPiutang/".$row->id_transaksi."").'"> </a>&nbsp;</span>';
                         $aksi .= '<span class=""><a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="Batal Transaksi" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a></span>';
                     }else{
                         $aksi .= '<span class=""><a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" title="cetak kwitansi" target="_blank" href="'.base_url("darat/cetakKwitansi/".$row->id_transaksi."").'"> </a></span>';
                         $aksi .= '&nbsp;<span class=""><a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="batal transaksi" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a></span>';
                     }
                 } else{
-                    $aksi = "";
+                    //$aksi = "";
                 }
     
                 if($row->waktu_mulai_pengantaran == NULL){

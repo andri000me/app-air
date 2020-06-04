@@ -4654,10 +4654,10 @@ class Report extends MY_Controller{
         $total_bayar_tenant = 0;
 
         $object->getActiveSheet()->getColumnDimension('A')->setWidth(5);
-        $object->getActiveSheet()->getColumnDimension('B')->setWidth(20);
-        $object->getActiveSheet()->getColumnDimension('C')->setWidth(20);
-        $object->getActiveSheet()->getColumnDimension('D')->setWidth(20);
-        $object->getActiveSheet()->getColumnDimension('E')->setWidth(20);
+        $object->getActiveSheet()->getColumnDimension('B')->setWidth(35);
+        $object->getActiveSheet()->getColumnDimension('C')->setWidth(25);
+        $object->getActiveSheet()->getColumnDimension('D')->setWidth(25);
+        $object->getActiveSheet()->getColumnDimension('E')->setWidth(25);
 
         $object->getActiveSheet()->mergeCells('A1:E1');
         $object->getActiveSheet()->mergeCells('A2:E2');
@@ -4724,6 +4724,9 @@ class Report extends MY_Controller{
         if($air_darat != NULL){
             $counter++;
             $object->getActiveSheet()->mergeCells('B'.$counter.':C'.$counter);
+            $object->getActiveSheet()->getStyle("A".$counter.":E".$counter)->applyFromArray($style);
+            $object->getActiveSheet()->getStyle("A".$counter.":E".$counter)->applyFromArray($font);
+            $object->getActiveSheet()->getStyle('A'.$counter.':E'.$counter)->getAlignment()->setWrapText(true);
             $object->setActiveSheetIndex(0)
                 ->setCellValue('A'.$counter, 'No')
                 ->setCellValue('B'.$counter, 'Nama Pengguna Jasa')
@@ -4732,6 +4735,7 @@ class Report extends MY_Controller{
             ;
 
             foreach($air_darat as $row){
+                $counter++;
                 $no++;
                 $object->getActiveSheet()->getStyle("A".$counter.":E".$counter)->applyFromArray($style);
     
@@ -4746,11 +4750,10 @@ class Report extends MY_Controller{
                 $object->getActiveSheet()->getStyle("A".$counter)->applyFromArray($style);
                 $object->getActiveSheet()->getStyle("B".$counter)->applyFromArray($style);
                 $object->getActiveSheet()->getStyle("D".$counter)->applyFromArray($style);
-                $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($style);
-                    
-                $counter=$counter+1;
+                $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($style);                    
             }
 
+            $counter++;
             $object->getActiveSheet()->mergeCells('A'.$counter.':C'.$counter);
             $object->getActiveSheet()->getStyle("A".$counter.":E".$counter)->applyFromArray($style);
 
@@ -4766,6 +4769,9 @@ class Report extends MY_Controller{
         if($air_tenant != NULL){
             $counter++;
             $object->getActiveSheet()->mergeCells('B'.$counter.':C'.$counter);
+            $object->getActiveSheet()->getStyle("A".$counter.":E".$counter)->applyFromArray($style);
+            $object->getActiveSheet()->getStyle("A".$counter.":E".$counter)->applyFromArray($font);
+            $object->getActiveSheet()->getStyle('A'.$counter.':E'.$counter)->getAlignment()->setWrapText(true);
             $object->setActiveSheetIndex(0)
                 ->setCellValue('A'.$counter, 'No')
                 ->setCellValue('B'.$counter, 'Nama Tenant')
@@ -4776,6 +4782,7 @@ class Report extends MY_Controller{
 
             foreach($air_tenant as $row){
                 $no++;
+                $counter++;
                 $object->getActiveSheet()->getStyle("A".$counter.":E".$counter)->applyFromArray($style);
     
                 $total_pemakaian_tenant += $row->total_pakai;
@@ -4791,11 +4798,10 @@ class Report extends MY_Controller{
                 $object->getActiveSheet()->getStyle("B".$counter)->applyFromArray($style);
                 $object->getActiveSheet()->getStyle("C".$counter)->applyFromArray($style);
                 $object->getActiveSheet()->getStyle("D".$counter)->applyFromArray($style);
-                $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($style);
-                    
-                $counter=$counter+1;
+                $object->getActiveSheet()->getStyle("E".$counter)->applyFromArray($style);                    
             }
 
+            $counter++;
             $object->getActiveSheet()->mergeCells('A'.$counter.':C'.$counter);
             $object->getActiveSheet()->getStyle("A".$counter.":E".$counter)->applyFromArray($style);
 
@@ -4807,6 +4813,17 @@ class Report extends MY_Controller{
             $ex->setCellValue("D".$counter,"$total_pemakaian_tenant");
             $ex->setCellValue("E".$counter,"$total_bayar_tenant");
         }
+        $counter++;
+        $total_bayar_keseluruhan = $total_bayar_tenant + $total_bayar_kapal + $total_bayar_darat;
+        $total_produksi_air = $total_realisasi_kapal + $total_permintaan_darat + $total_pemakaian_tenant;
+        $object->getActiveSheet()->mergeCells('A'.$counter.':C'.$counter);
+        $object->getActiveSheet()->getStyle("A".$counter.":E".$counter)->applyFromArray($font);
+        $object->getActiveSheet()->getStyle("A".$counter.":E".$counter)->applyFromArray($style);
+        $object->setActiveSheetIndex(0)
+                ->setCellValue('A'.$counter, "Total Keseluruhan")
+                ->setCellValue('D'.$counter, "$total_produksi_air")
+                ->setCellValue('E'.$counter, "$total_bayar_keseluruhan")
+        ;
 
         // Rename sheet
         $object->getActiveSheet()->setTitle('Lap_Produksi_Air');
