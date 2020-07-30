@@ -565,8 +565,12 @@ class Darat extends MY_Controller {
                 if($this->session->userdata('role_name') == 'loket' || $this->session->userdata('role_name') == 'admin'){
                     $aksi = '<a class="btn btn-sm btn-success glyphicon glyphicon-list-alt" title="Cetak Form Permintaan" target="_blank" href="'.base_url("darat/cetakFPermintaan/".$row->id_transaksi."").'"></a>&nbsp;';
                     $aksi .= '<span class=""><a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" title="Cetak Perhitungan" target="_blank" href="'.base_url("darat/cetakPerhitunganPiutang/".$row->id_transaksi."").'"> </a>&nbsp;</span>';
+                    
+                    if($row->status_pembayaran == 0 && $row->status_invoice == 0){
+                        $aksi .= '<span class=""><a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="Batal Transaksi" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a></span>';
+                    }
                 }
-    
+                
                 if($row->batal_nota == 1){
                     $aksi .= '<span class=""><a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="batal kwitansi" target="_blank" href="javascript:void(0)" onclick="cancel_kwitansi('."'".$row->id_transaksi."'".');"> </a></span>';
                     $color = '#ff0000';
@@ -574,8 +578,10 @@ class Darat extends MY_Controller {
                     if($row->status_invoice == 1){
                         $aksi .= '<span class=""><a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="Batal Transaksi" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a></span>';
                     }else{
-                        $aksi .= '<span class=""><a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" title="cetak kwitansi" target="_blank" href="'.base_url("darat/cetakKwitansi/".$row->id_transaksi."").'"> </a></span>';
-                        $aksi .= '&nbsp;<span class=""><a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="batal transaksi" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a></span>';
+                        if($this->session->userdata('role_name' == 'keuangan' || $this->session->userdata('role_name') == 'admin')){
+                            $aksi .= '<span class=""><a class="btn btn-sm btn-info glyphicon glyphicon-list-alt" title="cetak kwitansi" target="_blank" href="'.base_url("darat/cetakKwitansi/".$row->id_transaksi."").'"> </a></span>';
+                            $aksi .= '&nbsp;<span class=""><a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="batal transaksi" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a></span>';
+                        }
                     }
                 } else{
                     //$aksi = "";

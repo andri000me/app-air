@@ -4280,32 +4280,12 @@ class Report extends MY_Controller{
                 $this->load->view('report/cetaklaporan/v_cetaklaporan_darat_keuangan', $data);
             else
                 $this->load->view('report/cetaklaporan/v_cetaklaporan_darat', $data);
-
-            $paper_size  = 'A4'; //paper size
-            $orientation = 'landscape'; //tipe format kertas
-            $html = $this->output->get_output();
-
-            $this->dompdf->set_paper($paper_size, $orientation);
-            //Convert to PDF
-            $this->dompdf->load_html($html);
-            $this->dompdf->render();
-            $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
         }
         else if($tipe == "laut"){
             $data['title'] = 'Laporan Transaksi Air Kapal Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
             $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
 
             $this->load->view('report/cetaklaporan/v_cetaklaporan_kapal', $data);
-
-            $paper_size  = 'A4'; //paper size
-            $orientation = 'landscape'; //tipe format kertas
-            $html = $this->output->get_output();
-
-            $this->dompdf->set_paper($paper_size, $orientation);
-            //Convert to PDF
-            $this->dompdf->load_html($html);
-            $this->dompdf->render();
-            $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
         }
         else if($tipe == "laut_operasi"){
             $data['title'] = 'Laporan Transaksi Air Kapal Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
@@ -4315,16 +4295,6 @@ class Report extends MY_Controller{
                 $this->load->view('report/cetaklaporan/v_cetaklaporan_kapal_admin_operasi', $data);
             else
                 $this->load->view('report/cetaklaporan/v_cetaklaporan_kapal_operasi', $data);
-            
-            $paper_size  = 'A4'; //paper size
-            $orientation = 'landscape'; //tipe format kertas
-            $html = $this->output->get_output();
-
-            $this->dompdf->set_paper($paper_size, $orientation);
-            //Convert to PDF
-            $this->dompdf->load_html($html);
-            $this->dompdf->render();
-            $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
         }
         else if($tipe == "flow"){
             $data['title'] = 'Laporan Pencatatan Flow Meter Per Tanggal '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
@@ -4332,16 +4302,6 @@ class Report extends MY_Controller{
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
             $this->load->view('report/cetaklaporan/v_cetaklaporan_flow', $data);
-
-            $paper_size  = 'A4'; //paper size
-            $orientation = 'landscape'; //tipe format kertas
-            $html = $this->output->get_output();
-
-            $this->dompdf->set_paper($paper_size, $orientation);
-            //Convert to PDF
-            $this->dompdf->load_html($html);
-            $this->dompdf->render();
-            $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
         }
         else if($tipe == "per_flow"){
             $result = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe,$id); //query model semua barang
@@ -4354,16 +4314,6 @@ class Report extends MY_Controller{
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
             $this->load->view('report/cetaklaporan/v_cetaklaporan_per_flow', $data);
-
-            $paper_size  = 'A4'; //paper size
-            $orientation = 'landscape'; //tipe format kertas
-            $html = $this->output->get_output();
-
-            $this->dompdf->set_paper($paper_size, $orientation);
-            //Convert to PDF
-            $this->dompdf->load_html($html);
-            $this->dompdf->render();
-            $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
         }
         else if($tipe == "sumur"){
             $data['title'] = 'Laporan Pencatatan Sumur Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
@@ -4371,16 +4321,6 @@ class Report extends MY_Controller{
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
             $this->load->view('report/cetaklaporan/v_cetaklaporan_sumur', $data);
-
-            $paper_size  = 'A4'; //paper size
-            $orientation = 'landscape'; //tipe format kertas
-            $html = $this->output->get_output();
-
-            $this->dompdf->set_paper($paper_size, $orientation);
-            //Convert to PDF
-            $this->dompdf->load_html($html);
-            $this->dompdf->render();
-            $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
         }
         else if($tipe == "tandon"){
             $data['title'] = 'Laporan Pengisian Tandon Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
@@ -4388,16 +4328,6 @@ class Report extends MY_Controller{
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
             $this->load->view('report/cetaklaporan/v_cetaklaporan_tandon', $data);
-
-            $paper_size  = 'A4'; //paper size
-            $orientation = 'landscape'; //tipe format kertas
-            $html = $this->output->get_output();
-
-            $this->dompdf->set_paper($paper_size, $orientation);
-            //Convert to PDF
-            $this->dompdf->load_html($html);
-            $this->dompdf->render();
-            $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
         }
         else if($tipe == "ruko_keuangan"){
             $data['title'] = 'Laporan Transaksi Air Ruko Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
@@ -4405,16 +4335,6 @@ class Report extends MY_Controller{
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
             $this->load->view('report/cetaklaporan/v_cetaklaporan_ruko_keuangan', $data);
-
-            $paper_size  = 'A4'; //paper size
-            $orientation = 'landscape'; //tipe format kertas
-            $html = $this->output->get_output();
-
-            $this->dompdf->set_paper($paper_size, $orientation);
-            //Convert to PDF
-            $this->dompdf->load_html($html);
-            $this->dompdf->render();
-            $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
         }
         else if($tipe == "realisasiAir"){
             $data['title'] = 'Laporan Pemakaian Air Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
@@ -4422,16 +4342,6 @@ class Report extends MY_Controller{
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
             $this->load->view('report/cetaklaporan/v_cetaklaporan_pemakaian_air', $data);
-
-            $paper_size  = 'A4'; //paper size
-            $orientation = 'landscape'; //tipe format kertas
-            $html = $this->output->get_output();
-
-            $this->dompdf->set_paper($paper_size, $orientation);
-            //Convert to PDF
-            $this->dompdf->load_html($html);
-            $this->dompdf->render();
-            $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
         }
         else{
             $data['title'] = 'Laporan Transaksi Air Ruko Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
@@ -4439,17 +4349,17 @@ class Report extends MY_Controller{
             $data['tgl_awal'] = $tgl_awal;
             $data['tgl_akhir'] = $tgl_akhir;
             $this->load->view('report/cetaklaporan/v_cetaklaporan_ruko_operasi', $data);
-
-            $paper_size  = 'A4'; //paper size
-            $orientation = 'landscape'; //tipe format kertas
-            $html = $this->output->get_output();
-
-            $this->dompdf->set_paper($paper_size, $orientation);
-            //Convert to PDF
-            $this->dompdf->load_html($html);
-            $this->dompdf->render();
-            $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
         }
+
+        $paper_size  = 'A4'; //paper size
+        $orientation = 'landscape'; //tipe format kertas
+        $html = $this->output->get_output();
+        //$this->dompdf->set_option('enable_html5_parser', TRUE);
+        $this->dompdf->set_paper($paper_size, $orientation);
+        //Convert to PDF
+        $this->dompdf->load_html($html);
+        $this->dompdf->render();
+        $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
     }
 
     public function laporanProduksi(){

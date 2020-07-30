@@ -36,6 +36,9 @@
                     <center>Status
                 </th>
                 <th>
+                    <center>Diskon
+                </th>
+                <th>
                     <center>ID Flow Meter
                 </th>
                 <th>
@@ -64,6 +67,9 @@
                 </th>
                 <th>
                     <center>Status
+                </th>
+                <th>
+                    <center>Diskon
                 </th>
                 <th>
                     <center>ID Flow Meter
@@ -113,27 +119,34 @@
                                     <span class="help-block"></span>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="agent_name" class="form-label">Penanggung Jawab</label>
                                     <input class="form-control" type="text" name="penanggung_jawab" id="penanggung_jawab" required>                                    
                                     <span class="help-block"></span>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="agent_name" class="form-label">No Telepon</label>
                                     <input class="form-control" type="text" name="no_telp" id="no_telp" required>                                    
                                     <span class="help-block"></span>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="agent_name" class="form-label">Status Keaktifan</label>
                                     <select class="form-control" name="status_aktif" id="status_aktif">
                                         <option value="1">Aktif</option>
                                         <option value="0">Tidak Aktif</option>
                                     </select>
+                                    <span class="help-block"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="agent_name" class="form-label">Diskon</label>
+                                    <input class="form-control" type="text" name="diskon" id="diskon" required>                                    
                                     <span class="help-block"></span>
                                 </div>
                             </div>
@@ -189,6 +202,15 @@
                     $('#id_flowmeter').append($('<option>').text(value.nama_flowmeter).attr('value', value.id_flow));
                 });
             }
+        });
+
+        $.ajax({
+            url:'<?php echo site_url('master/getTarifDiskonTenant')?>',
+            type:'POST',
+            dataType: 'json',
+            success: function( json ) {
+                $('#diskon').val(value.diskon);
+            }
         });    
     });
 
@@ -222,6 +244,7 @@
                 $('#penanggung_jawab').val(data.penanggung_jawab);
                 $('#no_telp').val(data.no_telp);
                 $('#status_aktif').val(data.status_aktif).change();
+                $('#diskon').val(data.discount);
             },
             error: function (jqXHR, textStatus, errorThrown)
             {

@@ -442,6 +442,10 @@ class Master extends MY_Controller{
                 else
                     $status = "Tidak Aktif";
                 $row[] = $status;
+                if($result->discount == 0)
+                    $row[] = " ";
+                else
+                    $row[] = $result->discount." %";
                 $data_flow = $this->tenant->getIdFlowmeter($result->id_ref_flowmeter);
                 if($data_flow == NULL)
                     $flowmeter = '';
@@ -478,6 +482,10 @@ class Master extends MY_Controller{
                 else
                     $status = "Tidak Aktif";
                 $row[] = $status;
+                if($result->discount == 0)
+                    $row[] = " ";
+                else
+                    $row[] = $result->discount." %";
                 $data_flow = $this->tenant->getIdFlowmeter($result->id_ref_flowmeter);
                 $row[] = $data_flow->id_flowmeter;
                 $row[] = '';

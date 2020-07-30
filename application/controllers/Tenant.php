@@ -568,7 +568,7 @@ class Tenant extends MY_Controller{
         $paper_size  = 'A4'; //paper size
         $orientation = 'landscape'; //tipe format kertas
         $html = $this->output->get_output();
-
+        $this->dompdf->set_option('enable_html5_parser', TRUE);
         $this->dompdf->set_paper($paper_size, $orientation);
         //Convert to PDF
         $this->dompdf->load_html($html);
@@ -595,7 +595,8 @@ class Tenant extends MY_Controller{
         $paper_size  = 'A4'; //paper size
         $orientation = 'landscape'; //tipe format kertas
         $html = $this->output->get_output();
-
+        //$html = $this->load->view('tenant/v_realisasi_pemakaian_tenant', $data,true);
+        //$this->dompdf->set_option('enable_html5_parser', TRUE);
         $this->dompdf->set_paper($paper_size, $orientation);
         //Convert to PDF
         $this->dompdf->load_html($html);
@@ -921,7 +922,7 @@ class Tenant extends MY_Controller{
     
                 $ton_total = $ttl_akhir - $ttl_awal;
                 $tarif = $data_tarif->tarif;
-                $diskon = $data_tarif->diskon;
+                $diskon = $data_tenant->discount;
             }else{
                 $ton_total = 0;
             }
