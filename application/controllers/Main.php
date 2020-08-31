@@ -7,8 +7,44 @@ class Main extends MY_Controller {
     }
 
     public function index(){
+        $period = date('Y-m-d');
+        #$period = date_format(date_create("2020-04-01"),"Y-m-d");
         $this->ceksesi();
         //$this->cekAccess();
+
+        $resultKapal = $this->kapal->getTabelAirKapal($period);
+        $resultDarat = $this->darat->getTabelAirDarat($period);
+        $resultTenant = $this->tenant->getTabelAirTenant($period);
+
+        $tabelKapal = array();
+        $tabelDarat = array();
+        $tabelTenant = array();
+
+        if($resultKapal != NULL){
+            foreach($resultKapal as $row){
+                $tabelKapal[] = array("y"=> $row->jumlah_realisasi,"label" => $row->nama_agent);
+            }
+        }
+        
+        if($resultDarat != NULL){
+            foreach($resultDarat as $row){
+                $tabelDarat[] = array("y"=> $row->jumlah_permintaan,"label" => $row->nama_pengguna_jasa);
+            }
+        }
+
+        if($resultTenant != NULL){
+            foreach($resultTenant as $row){
+                $tabelTenant[] = array("y"=> $row->jumlah_pakai,"label" => $row->nama_tenant);
+            }
+        }
+
+        $data['tabelKapal'] = $tabelKapal;
+        $data['tabelDarat'] = $tabelDarat;
+        $data['tabelTenant'] = $tabelTenant;
+        $data['period'] = $period;
+        $data['air_kapal'] = number_format($this->kapal->getTotalAirKapal($period), 2, '.', '');
+        $data['air_ruko'] = number_format($this->tenant->getTotalAirTenant($period), 2, '.', '');
+        $data['air_darat'] = number_format($this->darat->getTotalAirDarat($period), 2, '.', '');
         $data['title']='PT KKT APP-AIR';
         $this->load->template('v_main',$data);
     }

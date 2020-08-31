@@ -25,7 +25,7 @@ if(($this->session->userdata('role_name') == "operasi"  || $this->session->userd
                     "</thead>" +
                     "<tbody>";
                 while (i < myArr.length) {
-                    a +="<tr>" +
+                    a +="<tr bgcolor='"+myArr[i]["warna"]+"'>" +
                         "<td align='center'>"+myArr[i]["no"]+"</td>" +
                         "<td align='center'>"+myArr[i]["no_invoice"]+"</td>" +
                         "<td align='center'>"+myArr[i]["id_flowmeter"]+"</td>" +

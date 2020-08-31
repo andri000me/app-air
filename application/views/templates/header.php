@@ -12,11 +12,13 @@
     <![endif]-->
 
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap.min.css'); ?>">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap-datepicker3.min.css')?>" >
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap-datetimepicker.min.css')?>" >
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/bootstrap-clockpicker.min.css')?>" >
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/jquery-ui.css'); ?>">
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/jquery.dataTables.min.css')?>" >
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/css/Chart.min.css')?>" >
     <link rel="stylesheet" href="<?php echo base_url()?>/assets/select2/dist/css/select2.min.css">
     <link rel="stylesheet" href="<?php echo base_url()?>/assets/sweetalert2/dist/sweetalert2.min.css">
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro|Open+Sans+Condensed:300|Raleway' rel='stylesheet' type='text/css'>
@@ -38,6 +40,9 @@
 
     <script src="<?php echo base_url()?>/assets/loadingoverlay/loadingoverlay.min.js"></script>
     <script src="<?php echo base_url()?>/assets/sweetalert2/dist/sweetalert2.min.js"></script>
+    <script src="<?php echo base_url()?>/assets/js/canvasjs.min.js"></script>
+    <script src="<?php echo base_url()?>/assets/js/Chart.min.js"></script>
+    <script src="<?php echo base_url()?>/assets/js/chartjs-plugin-datalabels.min.js"></script>
 
     <style type="text/css">
         td {

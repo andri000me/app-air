@@ -235,5 +235,28 @@ class M_kapal extends MY_Model{
             return TRUE;
         }
     }
+
+    public function getTotalAirKapal($period){
+        $sql = "SELECT sum(total_realisasi) as jumlah_realisasi from transaksi_laut
+                where DATE_FORMAT(?,?) >= DATE_FORMAT(tgl_transaksi ,?) and 
+                DATE_FORMAT(?,?) <= DATE_FORMAT(tgl_transaksi ,?) AND 
+                soft_delete  = 0 and status_pengerjaan = 1 group by soft_delete";
+        $query = $this->db->query($sql, array($period,'%Y%m','%Y%m',$period,'%Y%m','%Y%m'));
+
+        if($query->num_rows() > 0)
+            return $query->row()->jumlah_realisasi;
+    }
+
+    public function getTabelAirKapal($period){
+        $sql = "select nama_agent ,sum(total_realisasi) as jumlah_realisasi
+        from vw_transaksi_laut vtl
+        where DATE_FORMAT(?,?) >= DATE_FORMAT(waktu_pelayanan ,?) and 
+        DATE_FORMAT(?,?) <= DATE_FORMAT(waktu_pelayanan ,?) and status_pengerjaan = 1
+        group by nama_agent";
+        $query = $this->db->query($sql, array($period,'%Y%m','%Y%m',$period,'%Y%m','%Y%m'));
+
+        if($query->num_rows() > 0)
+            return $query->result();
+    }
 }
 ?>

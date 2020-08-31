@@ -368,6 +368,8 @@ class Tenant extends MY_Controller{
 
             if($result != NULL){
                 foreach ($result as $row){
+                    $warna = "";
+                    
                     if($this->session->userdata('role_name')== 'admin'){
                         $aksi = '<span class=""><a class="btn btn-sm btn-primary glyphicon glyphicon-list-alt" title="Cetak Tagihan" target="_blank" href="'.base_url("tenant/cetakTagihan/".$row->id_transaksi."/".$row->id_flow."/".$row->tgl_awal."/"."$row->tgl_akhir").'"> </a></span>';
                         $aksi .= '&nbsp;<a class="btn btn-sm btn-danger glyphicon glyphicon-remove" title="Batal Invoice" href="javascript:void(0)" onclick="batal('."'".$row->id_transaksi."'".');"></a>';
@@ -389,6 +391,9 @@ class Tenant extends MY_Controller{
                     } else{
                         $tarif = $row->tarif;
                     }
+
+                    if($row->status_print == 1)
+                        $warna == "#7FFF00";
     
                     $tgl_awal = date("d-M-Y",strtotime($row->tgl_awal));
                     $tgl_akhir = date("d-M-Y",strtotime($row->tgl_akhir));
@@ -408,6 +413,7 @@ class Tenant extends MY_Controller{
                             'total_pakai' => $row->total_pakai,
                             'total_bayar' => $this->Ribuan($row->total_bayar),
                             'aksi' => $aksi,
+                            'warna' => $warna,
                         );
                         $no++;
                     }
@@ -490,6 +496,7 @@ class Tenant extends MY_Controller{
 
     public function cancelTransaksiRuko(){
         $data['id'] = $this->input->post('id');
+        
         $result = $this->tenant->cancelOrder($data);
         if($result)
             $this->tenant->setStatusTagihan($result,0);
@@ -551,6 +558,7 @@ class Tenant extends MY_Controller{
     public function cetakTagihan($id_transaksi,$id_flowmeter,$tgl_awal,$tgl_akhir){
         $row = $this->tenant->get_by_id("ruko",$id_flowmeter);
         $data['title'] = 'Tagihan Penggunaan Air Periode '.date('d-M-Y', strtotime($tgl_awal)).' s/d '.date('d-M-Y', strtotime($tgl_akhir)); //judul title
+        $status_print = $this->tenant->setStatusPrint($id_transaksi,1);
 
         if($row->id_ref_tenant != NULL){
             $data['tagihan'] = $this->tenant->getTagihan($tgl_awal,$tgl_akhir,$id_flowmeter);
@@ -927,8 +935,8 @@ class Tenant extends MY_Controller{
                 $ton_total = 0;
             }
     
-            if($data_tagihan->diskon != NULL){
-                $total = $ton_total * ($data_tagihan->tarif - ($data_tagihan->tarif * $data_tagihan->diskon/100));
+            if($diskon != NULL || $diskon != '0'){
+                $total = $ton_total * ($data_tagihan->tarif - ($data_tagihan->tarif * $diskon/100));
             }
             else{
                 $total = $ton_total * $data_tagihan->tarif;
@@ -961,7 +969,7 @@ class Tenant extends MY_Controller{
                 'total_pakai' => $ton_total,
                 'tarif' => $tarif,
                 'diskon' => $diskon,
-                'id_ref_realisasi' =>$cekRealisasi->id_realisasi,
+                'id_ref_realisasi' => $cekRealisasi->id_realisasi,
                 'total_bayar' => $total,
                 'no_invoice' => $no_invoice,
                 'issued_by' => $this->session->userdata('username'),
@@ -972,7 +980,7 @@ class Tenant extends MY_Controller{
             $this->tenant->setStatusTagihan($cekRealisasi->id_realisasi,1);
     
         }else{
-            $result == NULL;
+            $result = NULL;
         }
 
         

@@ -176,5 +176,28 @@ class M_darat extends MY_Model{
         }
     }
 
+    public function getTotalAirDarat($period){
+        $sql = "SELECT sum(total_permintaan) as jumlah_permintaan from transaksi_darat
+                where DATE_FORMAT(?,?) >= DATE_FORMAT(tgl_transaksi ,?) and 
+                DATE_FORMAT(?,?) <= DATE_FORMAT(tgl_transaksi ,?) AND 
+                soft_delete  = 0 and batal_nota = 0 and batal_kwitansi = 0 group by soft_delete";
+        $query = $this->db->query($sql, array($period,'%Y%m','%Y%m',$period,'%Y%m','%Y%m'));
+
+        if($query->num_rows() > 0)
+            return $query->row()->jumlah_permintaan;
+    }
+
+    public function getTabelAirDarat($period){
+        $sql = "select nama_pengguna_jasa ,sum(total_permintaan) as jumlah_permintaan
+        from vw_transaksi_darat vtd
+        where DATE_FORMAT(?,?) >= DATE_FORMAT(tgl_transaksi ,?) and 
+        DATE_FORMAT(?,?) <= DATE_FORMAT(tgl_transaksi ,?)
+        group by nama_pengguna_jasa";
+        $query = $this->db->query($sql, array($period,'%Y%m','%Y%m',$period,'%Y%m','%Y%m'));
+
+        if($query->num_rows() > 0)
+            return $query->result();
+    }
+
 }
 ?>

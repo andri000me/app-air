@@ -37,9 +37,10 @@ class M_tenant extends MY_Model{
          $this->insertLog($log);
 
         if($this->db->affected_rows() > 0){
-            $result = $this->get_by_id("tenant",$data['id']);
+            $IdRealisasi = $this->getIdRealisasi($data['id']);
+
             $this->db->set('status_tagihan', 0);
-            $this->db->where('id_realisasi',$result->id_ref_realisasi);
+            $this->db->where('id_realisasi',$IdRealisasi);
             $this->db->update('realisasi_tenant');
 
             return TRUE;
@@ -103,8 +104,8 @@ class M_tenant extends MY_Model{
 
     public function getNamaPompa($id){
         $this->db->from('master_flowmeter,master_pompa');
-        $this->db->where('id_flow',$id);
         $this->db->where('id_ref_pompa = id_master_pompa');
+        $this->db->where('id_flow',$id);
         $query = $this->db->get();
 
         return $query->row();
@@ -624,13 +625,14 @@ class M_tenant extends MY_Model{
             'tgl_awal' => $data['tgl_awal'],
             'tgl_akhir' => $data['tgl_akhir'],
             'id_ref_flowmeter' => $data['id'],
+            'id_ref_realisasi' => $data['id_ref_realisasi'],
             'total_pakai' => $data['total_pakai'],
             'tarif' => $data['tarif'],
             'diskon' => $data['diskon'],
             'total_bayar' => $data['total_bayar'],
             'no_invoice' => $data['no_invoice'],
-            'issued_by' => '',
-            'issued_at' => '',
+            'issued_by' => $data['issued_by'],
+            'issued_at' => $data['issued_at'],
         );
 
         $query = $this->db->insert("transaksi_tenant",$data_tagihan);
@@ -756,7 +758,7 @@ class M_tenant extends MY_Model{
         }
     }
 
-    function cekRealisasi($tgl_awal = '',$tgl_akhir = '',$id){
+    function cekRealisasi($tgl_awal,$tgl_akhir,$id){
         $this->db->select('*');
         $this->db->from('realisasi_tenant');
         $this->db->where('tgl_awal',date('Y-m-d', strtotime($tgl_awal)));
@@ -773,10 +775,34 @@ class M_tenant extends MY_Model{
         }
     }
 
+    function getIdRealisasi($id){
+        $this->db->select('*');
+        $this->db->from('transaksi_tenant');
+        $this->db->where('id_transaksi =',$id);
+        $query = $this->db->get();
+
+        if($query->num_rows() > 0){
+            return $query->row()->id_ref_realisasi;
+        }else{
+            return NULL;
+        }
+    }
+
     function setStatusTagihan($id,$status){
         $this->db->set('status_tagihan',$status);
         $this->db->where('id_realisasi',$id);
         $this->db->update('realisasi_tenant');
+
+        if($this->db->affected_rows() > 0)
+            return TRUE;
+        else
+            return FALSE;
+    }
+
+    function setStatusPrint($id,$status){
+        $this->db->set('status_print',$status);
+        $this->db->where('id_transaksi',$id);
+        $this->db->update('tagihan_tenant');
 
         if($this->db->affected_rows() > 0)
             return TRUE;
@@ -1039,6 +1065,29 @@ class M_tenant extends MY_Model{
         if ($query->num_rows() > 0) { //jika ada maka jalankan
             return $query->result();
         }
+    }
+
+    public function getTotalAirTenant($period){
+        $sql = "SELECT sum(total_pakai) as jumlah_pemakaian from transaksi_tenant
+                where DATE_FORMAT(?,?) >= DATE_FORMAT(tgl_transaksi ,?) and 
+                DATE_FORMAT(?,?) <= DATE_FORMAT(tgl_transaksi ,?) AND 
+                soft_delete  = 0 group by soft_delete";
+        $query = $this->db->query($sql, array($period,'%Y%m','%Y%m',$period,'%Y%m','%Y%m'));
+
+        if($query->num_rows() > 0)
+            return $query->row()->jumlah_pemakaian;
+    }
+
+    public function getTabelAirTenant($period){
+        $sql = "select nama_tenant ,sum(total_pakai) as jumlah_pakai
+        from vw_transaksi_tenant vtt
+        where DATE_FORMAT(?,?) >= DATE_FORMAT(tgl_transaksi ,?) and 
+        DATE_FORMAT(?,?) <= DATE_FORMAT(tgl_transaksi ,?)
+        group by nama_tenant";
+        $query = $this->db->query($sql, array($period,'%Y%m','%Y%m',$period,'%Y%m','%Y%m'));
+
+        if($query->num_rows() > 0)
+            return $query->result();
     }
 
 }

@@ -200,22 +200,22 @@ if(($this->session->userdata('role_name') == "operasi" || $this->session->userda
     <br>
     <table border="0">
         <tr>
-            <td style="width: 80%" align="right" colspan="4">&nbsp;</td>
+            <td style="width: 80%" align="right" colspan="4"></td>
             <td align="center">Balikpapan, <?php echo date("d M Y",time())?></td>
         </tr>
         <tr>
             <td><br></td>
         </tr>
         <tr>
-            <td style="width: 80%" align="right" colspan="4">&nbsp;</td>
+            <td style="width: 80%" align="right" colspan="4"></td>
             <td align="center">ASMAN PERENCANAAN DAN PEMASARAN</td>
         </tr>
     </table>
     <br><br><br>
     <table border="0">
         <tr>
-            <td style="width: 80%;height:-40%;" align="right" colspan="4">&nbsp;</td>
-            <td align="center">(<u>&nbsp;&nbsp;&nbsp;&nbsp;BOGIE BRAMANTO&nbsp;&nbsp;&nbsp;&nbsp;</u>)</td>
+            <td style="width: 80%;height:-40%;" align="right" colspan="4"></td>
+            <td align="center">(<u>BOGIE BRAMANTO</u>)</td>
         </tr>
     </uBOGIE>
     </body>
