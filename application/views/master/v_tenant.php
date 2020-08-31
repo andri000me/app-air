@@ -2,7 +2,7 @@
     <h3>Master Data Tenant</h3>
     <div class="row col-md-5">
         <?php 
-        if($this->session->userdata('role_name') == 'admin'){
+        if($this->session->userdata('role_name') == 'admin' || $this->session->userdata('role_name') == 'operasi'){
         ?>
         <button class="btn btn-primary" onclick="add()"> <span>Tambah Data</span></button>
         <?php

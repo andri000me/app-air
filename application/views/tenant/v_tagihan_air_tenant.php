@@ -88,7 +88,7 @@ if(($this->session->userdata('role_name') == "operasi"  || $this->session->userd
     <div class="container container-fluid">
         <div class="row">
             <center><h4>Daftar Tagihan Pelayanan Jasa Pengisian Air Bersih Untuk Tenant</h4></center><br>
-            <table class="table table-responsive table-bordered table-striped" id="table"></table>
+            <table class="table table-responsive table-bordered" id="table"></table>
         </div>
     </div>
     </body>

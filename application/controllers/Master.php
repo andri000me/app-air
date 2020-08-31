@@ -424,7 +424,7 @@ class Master extends MY_Controller{
     }
 
     public function ajax_data_tenant(){
-        if($this->session->userdata('role_name') == 'admin'){
+        if($this->session->userdata('role_name') == 'admin' || $this->session->userdata('role_name') == 'operasi'){
             $list = $this->tenant->get_datatables_tenant();
             $data = array();
             $no = $_POST['start'];
@@ -507,11 +507,12 @@ class Master extends MY_Controller{
     }
 
     public function input_data_tenant(){
-        if($this->session->userdata('role_name') == 'admin'){
+        if($this->session->userdata('role_name') == 'admin' || $this->session->userdata('role_name') == 'operasi'){
             $nama_tenant = $this->input->post('nama_tenant');
             $penanggung_jawab = $this->input->post('penanggung_jawab');
             $alamat = $this->input->post('alamat');
             $status = $this->input->post('status_aktif');
+            $diskon = $this->input->post('diskon');
             $no_telp = $this->input->post('no_telp');
             $id_flowmeter = $this->input->post('id_flowmeter');
 
@@ -522,6 +523,7 @@ class Master extends MY_Controller{
                     'lokasi' => $alamat,
                     'no_telp' => $no_telp,
                     'status_aktif_tenant' => $status,
+                    'discount' => $diskon,
                     'id_ref_flowmeter' => $id_flowmeter,
                     'pengguna_jasa_id' => '1',
                     'issued_at' => date("Y-m-d H:i:s",time()),
@@ -545,7 +547,7 @@ class Master extends MY_Controller{
     }
 
     public function editTenant($id){
-        if($this->session->userdata('role_name') == 'admin'){
+        if($this->session->userdata('role_name') == 'admin' || $this->session->userdata('role_name') == 'operasi'){
             //$id = $_GET['id'];
             $data['id'] = $id;
             $this->db->from('master_tenant');
@@ -561,6 +563,7 @@ class Master extends MY_Controller{
                 'alamat' => $result->lokasi,
                 'no_telp' => $result->no_telp,
                 'id_flowmeter' => $result->id_ref_flowmeter,
+                'discount' => $result->discount,
             );
         }
         echo json_encode($data);
@@ -573,11 +576,12 @@ class Master extends MY_Controller{
     }
 
     public function edit_tenant(){
-        if($this->session->userdata('role_name') == 'admin'){
+        if($this->session->userdata('role_name') == 'admin' || $this->session->userdata('role_name') == 'operasi'){
             $id = $this->input->post('idm');
             $nama_tenant = $this->input->post('nama_tenant');
             $penanggung_jawab = $this->input->post('penanggung_jawab');
             $alamat = $this->input->post('alamat');
+            $diskon = $this->input->post('diskon');
             $status = $this->input->post('status_aktif');
             $no_telp = $this->input->post('no_telp');
             $id_flowmeter = $this->input->post('id_flowmeter');
@@ -587,6 +591,7 @@ class Master extends MY_Controller{
                 'penanggung_jawab' => $penanggung_jawab,
                 'lokasi' => $alamat,
                 'no_telp' => $no_telp,
+                'discount' => $diskon,
                 'status_aktif_tenant' => $status,
                 'id_ref_flowmeter' => $id_flowmeter,
                 'modified_at' => date("Y-m-d H:i:s",time()),

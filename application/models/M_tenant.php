@@ -802,7 +802,7 @@ class M_tenant extends MY_Model{
     function setStatusPrint($id,$status){
         $this->db->set('status_print',$status);
         $this->db->where('id_transaksi',$id);
-        $this->db->update('tagihan_tenant');
+        $this->db->update('transaksi_tenant');
 
         if($this->db->affected_rows() > 0)
             return TRUE;

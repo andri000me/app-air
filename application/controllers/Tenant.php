@@ -393,7 +393,7 @@ class Tenant extends MY_Controller{
                     }
 
                     if($row->status_print == 1)
-                        $warna == "#7FFF00";
+                        $warna = "#7FFF00";
     
                     $tgl_awal = date("d-M-Y",strtotime($row->tgl_awal));
                     $tgl_akhir = date("d-M-Y",strtotime($row->tgl_akhir));
