@@ -2658,7 +2658,7 @@ class Report extends MY_Controller{
 
             // Redirect output to a client’s web browser (Excel2007)
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment;filename="Laporan_Transaksi_Darat_periode_'.$_GET['id'].'_'.$_GET['id2'].'.xlsx"');
+            header('Content-Disposition: attachment;filename="Laporan_Transaksi_Darat_periode_'.$tgl_awal.'_'.$tgl_akhir.'.xlsx"');
             header('Cache-Control: max-age=0');
 
             $objWriter = PHPExcel_IOFactory::createWriter($object, 'Excel2007');
@@ -4266,8 +4266,13 @@ class Report extends MY_Controller{
     }
 
     public function cetakLaporan($tgl_awal,$tgl_akhir,$tipe,$id=''){
+        date_default_timezone_set('Asia/Makassar');
         ini_set('memory_limit', '256M');
-        $this->dompdf->set_option('enable_html5_parser', TRUE);
+        ini_set('upload_max_filesize','20M');
+        ini_set('max_execution_time','240');
+        error_reporting(0);
+
+        //$this->dompdf->set_option('enable_html5_parser', TRUE);
         if($tipe == "darat"){
             $data['title'] = 'Laporan Transaksi Air Darat Periode '.date('d-M-Y', strtotime($tgl_awal )).' s/d '.date('d-M-Y', strtotime($tgl_akhir )); //judul title
             $data['laporan'] = $this->report->getDataLaporan($tgl_awal,$tgl_akhir,$tipe); //query model semua barang
@@ -4353,12 +4358,16 @@ class Report extends MY_Controller{
 
         $paper_size  = 'A4'; //paper size
         $orientation = 'landscape'; //tipe format kertas
-        $html = $this->output->get_output();
+        //$html = $this->output->get_output();
+        $html = ob_get_clean();
         //$this->dompdf->set_option('enable_html5_parser', TRUE);
         $this->dompdf->set_paper($paper_size, $orientation);
         //Convert to PDF
-        $this->dompdf->load_html($html);
+        $this->dompdf->load_html(html_entity_decode($html));
+        //$this->dompdf->load_html($html);
         $this->dompdf->render();
+        //ob_end_clean();
+        //ob_get_clean();
         $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
     }
 
@@ -4751,7 +4760,12 @@ class Report extends MY_Controller{
     }
 
     public function cetakLaporanProduksi($tgl_awal,$tgl_akhir){
+        date_default_timezone_set('Asia/Makassar');
         ini_set('memory_limit', '256M');
+        ini_set('upload_max_filesize','20M');
+        ini_set('max_execution_time','240');
+        error_reporting(0);
+
         $data['air_kapal'] = $this->report->getLaporanProduksiAirKapal($tgl_awal,$tgl_akhir);
         $data['air_darat'] = $this->report->getLaporanProduksiAirDarat($tgl_awal,$tgl_akhir);
         $data['air_tenant'] = $this->report->getLaporanProduksiAirTenant($tgl_awal,$tgl_akhir);
@@ -4764,12 +4778,16 @@ class Report extends MY_Controller{
         $paper_size  = 'A4'; //paper size
         $orientation = 'potrait'; //tipe format kertas
         
-        $html = $this->output->get_output(array("compress" => 0));
-        $this->dompdf->set_option('enable_html5_parser', TRUE);
+        //$html = $this->output->get_output(array("compress" => 0));
+        $html = ob_get_clean();
+        //$this->dompdf->set_option('enable_html5_parser', TRUE);
         $this->dompdf->set_paper($paper_size, $orientation);
         //Convert to PDF
-        $this->dompdf->load_html($html);
+        $this->dompdf->load_html(html_entity_decode($html));
+        //$this->dompdf->load_html($html);
         $this->dompdf->render();
+        //ob_end_clean();
+        ob_get_clean();
         $this->dompdf->stream("laporan.pdf", array('Attachment'=>0));
     }
 

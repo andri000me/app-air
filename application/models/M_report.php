@@ -127,10 +127,10 @@ class M_report extends MY_Model{
     }
 
     function getLaporanProduksiAirKapal($tgl_awal,$tgl_akhir){
-        $this->db->select('any_value(master_agent.nama_agent) as nama_agent,
+        $this->db->select('MAX(master_agent.nama_agent) as nama_agent,
                         pembeli_laut.nama_vessel as nama_vessel,
                         sum(transaksi_laut.total_realisasi) as total_realisasi,
-                        sum(transaksi_laut.total_realisasi) * any_value(transaksi_laut.tarif) as jumlah_bayar');
+                        sum(transaksi_laut.total_realisasi) * MAX(transaksi_laut.tarif) as jumlah_bayar');
         $this->db->from('transaksi_laut');
         $this->db->where('tgl_transaksi BETWEEN "'. 
                     date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. 
@@ -140,7 +140,7 @@ class M_report extends MY_Model{
         $this->db->where('transaksi_laut.soft_delete',0);
         $this->db->where('transaksi_laut.status_pengerjaan',1);
         $this->db->group_by('pembeli_laut.nama_vessel');
-        $this->db->order_by('any_value(master_agent.nama_agent)','ASC');
+        $this->db->order_by('MAX(master_agent.nama_agent)','ASC');
 
         $query = $this->db->get();
 
@@ -152,7 +152,7 @@ class M_report extends MY_Model{
     function getLaporanProduksiAirDarat($tgl_awal,$tgl_akhir){
         $this->db->select('pembeli_darat.nama_pengguna_jasa as nama_pengguna_jasa,
                         sum(transaksi_darat.total_permintaan) as total_permintaan,
-                        sum(transaksi_darat.total_permintaan) * any_value(transaksi_darat.tarif) as jumlah_bayar');
+                        sum(transaksi_darat.total_permintaan) * MAX(transaksi_darat.tarif) as jumlah_bayar');
         $this->db->from('transaksi_darat');
         $this->db->where('tgl_transaksi BETWEEN "'. 
                     date('Y-m-d H:i:s', strtotime($tgl_awal." 00:00:00")). '" and "'. 

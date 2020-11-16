@@ -9,6 +9,7 @@
  */
 namespace Dompdf\Css;
 
+use DOMElement;
 use DOMXPath;
 use Dompdf\Dompdf;
 use Dompdf\Helpers;
@@ -171,8 +172,12 @@ class Stylesheet
         $this->setFontMetrics($dompdf->getFontMetrics());
         $this->_styles = array();
         $this->_loaded_files = array();
-        list($this->_protocol, $this->_base_host, $this->_base_path) = Helpers::explode_url($_SERVER["SCRIPT_FILENAME"]);
-        $this->_page_styles = array("base" => null);
+        $script = __FILE__;
+        if(isset($_SERVER["SCRIPT_FILENAME"])){
+            $script = $_SERVER["SCRIPT_FILENAME"];
+        }
+        list($this->_protocol, $this->_base_host, $this->_base_path) = Helpers::explode_url($script);
+        $this->_page_styles = array("base" => new Style($this));
     }
 
     /**
@@ -280,7 +285,7 @@ class Stylesheet
     }
 
     /**
-     * lookup a specifc Style collection
+     * lookup a specific Style collection
      *
      * lookup() returns the Style collection specified by $key, or null if the Style is
      * not found.
@@ -440,7 +445,7 @@ class Stylesheet
      * @param bool $first_pass
      *
      * @throws Exception
-     * @return string
+     * @return array
      */
     private function _css_selector_to_xpath($selector, $first_pass = false)
     {
@@ -565,7 +570,7 @@ class Stylesheet
                     break;
 
                 case "+":
-                    // All sibling elements that folow the current token
+                    // All sibling elements that follow the current token
                     if (mb_substr($query, -1, 1) !== "/") {
                         $query .= "/";
                     }
@@ -743,7 +748,7 @@ class Stylesheet
 
                         // the selector is not handled, until we support all possible selectors force an empty set (silent failure)
                         default:
-                            $query = "/..";
+                            $query = "/../.."; // go up two levels because generated content starts on the body element
                             $tok = "";
                             break;
                     }
@@ -965,6 +970,11 @@ class Stylesheet
 
                 /** @var \DOMElement $node */
                 foreach ($nodes as $node) {
+                    // Only DOMElements get styles
+                    if ($node->nodeType != XML_ELEMENT_NODE) {
+                        continue;
+                    }
+
                     foreach (array_keys($query["pseudo_elements"], true, true) as $pos) {
                         // Do not add a new pseudo element if another one already matched
                         if ($node->hasAttribute("dompdf_{$pos}_frame_id")) {
@@ -1255,7 +1265,7 @@ class Stylesheet
             throw new Exception("Error parsing css file: preg_match_all() failed.");
         }
 
-        // After matching, the array indicies are set as follows:
+        // After matching, the array indices are set as follows:
         //
         // [0] => complete text of match
         // [1] => contains '@import ...;' or '@media {' if applicable
@@ -1351,7 +1361,7 @@ class Stylesheet
                                 $key = $page_selector;
 
                             default:
-                                continue 3;
+                                break 2;
                         }
 
                         // Store the style for later...
@@ -1550,7 +1560,7 @@ class Stylesheet
 
         foreach ($properties as $prop) {
             // If the $prop contains an url, the regex may be wrong
-            // @todo: fix the regex so that it works everytime
+            // @todo: fix the regex so that it works every time
             /*if (strpos($prop, "url(") === false) {
               if (preg_match("/([a-z-]+)\s*:\s*[^:]+$/i", $prop, $m))
                 $prop = $m[0];
